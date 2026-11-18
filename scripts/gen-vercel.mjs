@@ -20,7 +20,15 @@ const HEADER = 'x-vercel-ip-country';
 
 export function buildVercelConfig() {
   const countries = gatedCountries();
-  const redirects = [];
+  // One host only: www answers with a permanent redirect to the apex.
+  const redirects = [
+    {
+      source: '/:path*',
+      has: [{ type: 'host', value: 'www.perpmath.com' }],
+      destination: 'https://perpmath.com/:path*',
+      permanent: true,
+    },
+  ];
   for (const [path, target] of Object.entries(EXITS)) {
     const sources = [path, path.replace(/\/$/, '')];
     for (const source of sources) {
