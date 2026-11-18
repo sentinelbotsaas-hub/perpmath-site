@@ -23,9 +23,9 @@ export function buildVercelConfig() {
   // One host only: www answers with a permanent redirect to the apex.
   const redirects = [
     {
-      source: '/:path*',
+      source: '/(.*)',
       has: [{ type: 'host', value: 'www.perpmath.com' }],
-      destination: 'https://perpmath.com/:path*',
+      destination: 'https://perpmath.com/$1',
       permanent: true,
     },
   ];
