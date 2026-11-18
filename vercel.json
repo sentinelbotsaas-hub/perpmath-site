@@ -1,0 +1,524 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "astro",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/go/bybit/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "US"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CA"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CN"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "HK"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "SG"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "GB"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "TW"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit/",
+      "missing": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "US"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CA"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CN"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "HK"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "SG"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "GB"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "TW"
+        }
+      ],
+      "destination": "https://www.bybit.com/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "US"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CA"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CN"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "HK"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "SG"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "GB"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "TW"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit",
+      "missing": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "US"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CA"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CN"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "HK"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "SG"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "GB"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "TW"
+        }
+      ],
+      "destination": "https://www.bybit.com/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "US"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CA"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CN"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "HK"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "SG"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "GB"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "TW"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet/",
+      "missing": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "US"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CA"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CN"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "HK"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "SG"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "GB"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "TW"
+        }
+      ],
+      "destination": "https://testnet.bybit.com/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "US"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CA"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CN"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "HK"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "SG"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "GB"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "TW"
+        }
+      ],
+      "destination": "/not-available/",
+      "permanent": false
+    },
+    {
+      "source": "/go/bybit-testnet",
+      "missing": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "US"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CA"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "CN"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "HK"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "SG"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "GB"
+        },
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "TW"
+        }
+      ],
+      "destination": "https://testnet.bybit.com/",
+      "permanent": false
+    }
+  ],
+  "headers": [
+    {
+      "source": "/go/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ]
+}

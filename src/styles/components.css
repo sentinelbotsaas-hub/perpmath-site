@@ -1,0 +1,581 @@
+/* Components. One block per component, in the order they appear on a page.
+   Tokens only: no literal colours, fonts or spacing. States change instantly,
+   with no easing between them. */
+
+/* --- Nav ---------------------------------------------------------------- */
+/* The nav sits on the same surface as the first section of the page. */
+.site-nav {
+  padding-block: var(--space-md) 0;
+}
+
+.site-nav.on-measure {
+  background: var(--color-paper-2);
+}
+
+.site-nav.on-read {
+  background: var(--color-paper);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-lg);
+  font-size: var(--text-md);
+}
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  text-decoration: none;
+}
+
+.nav a:hover,
+.nav a[aria-current] {
+  text-decoration: underline;
+}
+
+.nav .wordmark {
+  font-family: var(--font-outlier);
+  font-weight: 500;
+  margin-right: auto;
+}
+
+.nav-links,
+.nav-langs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-lg);
+}
+
+.nav-langs {
+  gap: 0 var(--space-md);
+}
+
+/* --- Buttons and secondary actions --------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  padding: var(--space-sm) var(--space-lg);
+  border: var(--line) solid var(--color-ink);
+  border-radius: var(--radius);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.verdict .btn {
+  background: var(--color-paper);
+  border-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+/* Quiet button: an outline. For actions that are not the main one. */
+.btn.quiet {
+  background: none;
+  color: var(--color-ink);
+}
+
+.btn:hover {
+  opacity: var(--opacity-hover);
+}
+
+.btn:active {
+  transform: translateY(var(--hairline));
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn[aria-busy="true"] {
+  cursor: progress;
+}
+
+.lnk {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  white-space: nowrap;
+}
+
+.acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md) var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+/* --- The to-scale bar ---------------------------------------------------- */
+/* The whole bar is 100% of the entry price. The light part is the room left.
+   Width is set by a transform so that changing it never moves the layout. */
+.scale {
+  position: relative;
+  height: var(--space-3xl);
+  background: var(--color-ink);
+  border: var(--space-2xs) solid var(--color-ink);
+  margin-top: var(--space-lg);
+  overflow: hidden;
+}
+
+.scale.s {
+  height: var(--space-2xl);
+}
+
+.scale .room {
+  position: absolute;
+  inset: 0;
+  background: var(--color-paper);
+  transform-origin: left center;
+  transform: scaleX(var(--room, 0));
+}
+
+.ends {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--space-md);
+  margin-top: var(--space-xs);
+  font-size: var(--text-sm);
+}
+
+/* Two bars whose lengths are the two numbers (50 and 100). */
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.pair > div {
+  display: flex;
+  align-items: center;
+  min-height: var(--space-2xl);
+  padding-inline: var(--space-md);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+}
+
+.pair .half {
+  width: 50%;
+}
+
+/* --- Inputs -------------------------------------------------------------- */
+.fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  align-items: start;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2xs);
+  min-width: 0;
+  font-size: var(--text-sm);
+}
+
+.field-label {
+  font-weight: 700;
+}
+
+.field-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: var(--tap);
+  padding-inline: var(--space-md);
+  background: var(--color-paper);
+  border: var(--line) solid var(--color-ink);
+  border-radius: var(--radius);
+  font-size: var(--text-md);
+}
+
+.field-box:focus-within {
+  outline: var(--line) solid var(--color-focus);
+  outline-offset: var(--line);
+}
+
+.field-box input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: calc(var(--tap) - var(--line) * 2);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-outlier);
+  font-variant-numeric: tabular-nums;
+}
+
+.field-box input:focus-visible {
+  outline: none; /* the box shows the focus ring */
+}
+
+/* Error: the edge doubles in weight and the message under the field says how to fix it. */
+.field-box:has(input[aria-invalid="true"]) {
+  box-shadow: inset 0 0 0 var(--line) var(--color-ink);
+}
+
+.field-box:has(input:disabled) {
+  background: var(--color-rule);
+  border-color: var(--color-rule);
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+.field-box input:disabled {
+  cursor: not-allowed;
+}
+
+.field-hint,
+.field-error {
+  font-size: var(--text-sm);
+}
+
+.field-error {
+  font-weight: 700;
+}
+
+/* Two-way switch (long or short). The chosen half is filled with ink. */
+.seg {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-height: var(--tap);
+  background: var(--color-paper);
+  box-shadow: inset 0 0 0 var(--line) var(--color-ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-size: var(--text-md);
+}
+
+.seg label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.seg input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.seg span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding-inline: var(--space-sm);
+}
+
+.seg input:checked + span {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-weight: 700;
+}
+
+.seg input:hover:not(:checked) + span {
+  text-decoration: underline;
+}
+
+.seg input:focus-visible + span {
+  outline: var(--line) solid var(--color-focus);
+  outline-offset: calc(var(--line) * -3);
+}
+
+.seg input:checked:focus-visible + span {
+  outline-color: var(--color-focus-inv);
+}
+
+.seg input:disabled + span {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* Slider row: label, range, number. */
+.ctl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.ctl input[type="range"] {
+  flex: 1 1 200px;
+  max-width: 320px;
+  min-width: 0;
+  min-height: var(--tap);
+  margin: 0;
+  accent-color: var(--color-ink);
+  cursor: pointer;
+}
+
+.ctl .field-box {
+  flex: 0 0 auto;
+  width: calc(var(--space-3xl) + var(--space-md));
+}
+
+/* --- Result -------------------------------------------------------------- */
+.figure {
+  font-family: var(--font-outlier);
+  font-weight: 500;
+  font-size: var(--text-figure);
+  line-height: var(--leading-figure);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.06em;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.verdict-label {
+  font-weight: 700;
+}
+
+/* --- Tool page ----------------------------------------------------------- */
+.status {
+  min-height: calc(var(--text-sm) * var(--leading-body));
+  margin-top: var(--space-sm);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.docs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.toc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  position: sticky;
+  top: var(--space-lg);
+}
+
+/* Document pages (about, disclosure): heading on the left, text on the right. */
+.rows > div {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--space-md) var(--space-xl);
+  padding-block: var(--section-gap);
+  border-top: var(--hairline) solid var(--color-rule);
+}
+
+.rows > div:first-child {
+  border-top: var(--line) solid var(--color-ink);
+  padding-top: var(--space-xl);
+}
+
+.rows h2 {
+  font-size: var(--text-section);
+  font-weight: 800;
+  line-height: var(--leading-display);
+}
+
+.rows p {
+  max-width: var(--measure);
+}
+
+.rows p + p {
+  margin-top: var(--space-md);
+}
+
+.examples {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-md);
+}
+
+.examples > div > * + * {
+  margin-top: var(--space-sm);
+}
+
+/* --- Index of tools: one row per tool, big type, no cards ---------------- */
+.index {
+  margin-top: var(--space-xl);
+  border-top: var(--line) solid var(--color-ink);
+}
+
+.wrap > .index:first-child {
+  margin-top: 0;
+}
+
+.index li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-xs);
+  padding-block: var(--space-xl);
+  border-bottom: var(--hairline) solid var(--color-rule);
+}
+
+.index .name {
+  font-family: var(--font-display);
+  font-size: var(--text-section);
+  font-weight: 800;
+  line-height: var(--leading-display);
+  letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+:lang(zh-Hant) .index .name,
+:lang(zh-Hans) .index .name {
+  letter-spacing: 0;
+}
+
+.index .question {
+  font-size: var(--text-lg);
+  max-width: 46ch;
+}
+
+.index a.name {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+}
+
+.index .state {
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.index .state:empty {
+  display: none;
+}
+
+/* --- Article list -------------------------------------------------------- */
+.entries {
+  margin-top: var(--space-xl);
+  border-top: var(--line) solid var(--color-ink);
+}
+
+.entries li {
+  padding-block: var(--space-lg);
+  border-bottom: var(--hairline) solid var(--color-rule);
+}
+
+.entries a {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.entries p {
+  max-width: var(--measure);
+  margin-top: var(--space-xs);
+}
+
+/* --- Footer -------------------------------------------------------------- */
+.site-footer {
+  background: var(--color-paper);
+  border-top: var(--line) solid var(--color-ink);
+  padding-block: var(--space-2xl);
+  font-size: var(--text-sm);
+}
+
+.site-footer .cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--space-lg) var(--space-xl);
+}
+
+.site-footer .wordmark {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-family: var(--font-outlier);
+  font-weight: 500;
+  font-size: var(--text-md);
+  text-decoration: none;
+}
+
+.site-footer .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-lg);
+  margin-top: var(--space-xs);
+}
+
+.site-footer .links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+}
+
+.site-footer .legal > * + * {
+  margin-top: var(--space-sm);
+}
+
+.site-footer .legal p {
+  max-width: var(--measure);
+}
+
+/* --- Small screens ------------------------------------------------------- */
+@media (max-width: 760px) {
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .examples,
+  .docs,
+  .rows > div,
+  .site-footer .cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rows > div {
+    padding-block: var(--space-xl);
+  }
+
+  .toc {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-lg);
+  }
+
+  /* The bar stays in view while you change the inputs. */
+  .sticky-scale {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--color-paper-2);
+    margin-inline: calc(var(--space-2xs) * -1);
+    padding-inline: var(--space-2xs);
+    padding-bottom: var(--space-xs);
+    /* Chrome draws a dark hairline along the edge of a sticky box that has
+       a background. An outline in the surface colour paints over it. */
+    outline: var(--line) solid var(--color-paper-2);
+    outline-offset: calc(var(--hairline) * -1);
+  }
+
+  .sticky-scale .scale {
+    margin-top: var(--space-sm);
+  }
+}

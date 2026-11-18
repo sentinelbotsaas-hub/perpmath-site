@@ -1,0 +1,91 @@
+# Daily market data: fetch from Bybit's public API, run the tests, build the
+# site. Runs at 00:20 UTC, twenty minutes after Bybit closes the daily candle.
+#
+# What this workflow does today: it proves that the day's data can be fetched
+# and that the site builds with it, and it keeps the built site as an
+# artifact. It does NOT publish anything and does NOT write to the repository.
+# The two steps that would do so are placeholders at the bottom; read them
+# before switching this on.
+#
+# No secret is used. The Bybit endpoints need no API key.
+name: Daily market data
+
+on:
+  schedule:
+    - cron: '20 0 * * *' # 00:20 UTC every day
+  workflow_dispatch: {} # allow a manual run from the Actions tab
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-market-data
+  cancel-in-progress: false
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # scripts/fetch-market.mjs imports the TypeScript in src/lib/market/
+      # directly, which needs Node 22.18 or newer.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Exits non-zero and writes nothing if any response is empty,
+      # malformed or inconsistent. The job stops here in that case, so
+      # yesterday's pages are never replaced by empty ones.
+      - name: Fetch market data
+        run: node scripts/fetch-market.mjs
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Check the built site
+        run: npm run check:dist
+
+      - name: Keep the built site
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-${{ github.run_id }}
+          path: dist
+          retention-days: 7
+
+      # ------------------------------------------------------------------
+      # PLACEHOLDER 1: keep the dated files.
+      #
+      # /daily/<coin>/<date>/ pages are built from every dated JSON in
+      # src/data/market/. This job runs on a fresh checkout, so today's
+      # file is lost when the job ends unless it is committed back. To keep
+      # an archive, change `permissions: contents: read` above to
+      # `contents: write` and enable this step. It uses the token GitHub
+      # gives every run; no extra secret.
+      #
+      # - name: Commit the day's data
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      #     git add src/data/market
+      #     git diff --cached --quiet || git commit -m "Market data $(date -u +%F)"
+      #     git push
+      # ------------------------------------------------------------------
+
+      # ------------------------------------------------------------------
+      # PLACEHOLDER 2: deploy.
+      #
+      # The site owner deploys by hand with the Vercel CLI. Nothing here
+      # deploys. When a deploy token has been added to the repository
+      # secrets, replace this comment with the deploy step and reference
+      # that secret by the name it was given. No secret is referenced now
+      # on purpose: a workflow that names a secret that does not exist
+      # fails in ways that are hard to read.
+      # ------------------------------------------------------------------

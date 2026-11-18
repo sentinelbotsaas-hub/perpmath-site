@@ -1,0 +1,42 @@
+---
+// Links, risk warning, affiliate disclosure. Same on every page.
+import { common } from '../i18n/common';
+import { localePath } from '../i18n/config';
+import type { Locale } from '../i18n/config';
+import { pageExists } from '../lib/routes';
+import { AFFILIATE_ACTIVE } from '../../site.config.mjs';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = common[locale];
+
+const links = [
+  { path: '/tools/', label: t.nav.tools },
+  { path: '/learn/', label: t.nav.learn },
+  { path: '/daily/', label: t.nav.daily },
+  { path: '/data/', label: t.nav.data },
+  { path: '/backtests/', label: t.nav.backtests },
+  { path: '/bot/', label: t.nav.bot },
+  { path: '/about/', label: t.footer.about },
+].filter((l) => pageExists(l.path));
+const paidLine = AFFILIATE_ACTIVE ? t.footer.affiliate : t.footer.plain;
+---
+
+<footer class="site-footer">
+  <div class="wrap cols">
+    <nav aria-label={t.footer.label}>
+      <a class="wordmark" href={localePath(locale, '/')} aria-label={t.nav.home}>perpmath</a>
+      <div class="links">
+        {links.map((l) => <a href={localePath(locale, l.path)}>{l.label}</a>)}
+      </div>
+    </nav>
+    <div class="legal">
+      <p>{t.footer.risk}</p>
+      <p>{paidLine}</p>
+      <a class="lnk" href={localePath(locale, '/disclosure/')}>{t.footer.disclosure}</a>
+    </div>
+  </div>
+</footer>

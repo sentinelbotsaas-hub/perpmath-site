@@ -1,0 +1,49 @@
+---
+// /daily/<coin>/<YYYY-MM-DD>/: one page per dated file in
+// src/data/market/<SYMBOL>/. Archive pages are noindex, follow and are kept
+// out of the sitemap (NOT_IN_SITEMAP in astro.config.mjs): the page that is
+// meant to rank is the fixed address /daily/<coin>/.
+import { localeParam, locales } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { daily } from '../../../../i18n/daily';
+import Base from '../../../../layouts/Base.astro';
+import { fmt } from '../../../../lib/fmt';
+import type { MarketReport } from '../../../../lib/market/report';
+import { datedReports } from '../../../../lib/market/store';
+import { COINS } from '../../../../lib/market/view';
+import type { Coin } from '../../../../lib/market/view';
+import Report from '../_Report.astro';
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    COINS.flatMap(({ coin, symbol }) =>
+      datedReports(symbol).map(({ date, report }) => ({
+        params: { locale: localeParam(locale), coin, date },
+        props: { locale, coin, date, report },
+      })),
+    ),
+  );
+}
+
+interface Props {
+  locale: Locale;
+  coin: Coin;
+  date: string;
+  report: MarketReport;
+}
+
+const { locale, coin, date, report } = Astro.props;
+const t = daily[locale];
+const name = t.coins[coin];
+---
+
+<Base
+  locale={locale}
+  path={`/daily/${coin}/${date}/`}
+  title={fmt(t.report.datedTitle, { name, symbol: report.symbol, date })}
+  description={fmt(t.report.description, { symbol: report.symbol })}
+  surface="measure"
+  noindex
+>
+  <Report locale={locale} coin={coin} report={report} archive />
+</Base>

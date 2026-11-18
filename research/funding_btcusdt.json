@@ -1,0 +1,231 @@
+{
+  "question": "What did funding cost on the BTCUSDT perpetual over 365 days?",
+  "symbol": "BTCUSDT",
+  "range_utc": {
+    "first_settlement": "2025-11-18T00:00Z",
+    "last_settlement": "2026-11-17T16:00Z"
+  },
+  "fetched_at": "2026-11-18T12:06:46Z",
+  "sources": {
+    "funding_history": "https://api.bybit.com/v5/market/funding/history?category=linear&symbol=BTCUSDT",
+    "mark_price_240m": "https://api.bybit.com/v5/market/mark-price-kline?category=linear&symbol=BTCUSDT&interval=240",
+    "instrument": "https://api.bybit.com/v5/market/instruments-info?category=linear&symbol=BTCUSDT"
+  },
+  "instrument": {
+    "fundingInterval_minutes": 480,
+    "upperFundingRate": "0.00333",
+    "lowerFundingRate": "-0.00333"
+  },
+  "settlements": 1095,
+  "hours_between_settlements_seen": [
+    8
+  ],
+  "utc_hours_seen": [
+    0,
+    8,
+    16
+  ],
+  "positive": 791,
+  "negative": 304,
+  "zero": 0,
+  "positive_share_pct": 72.24,
+  "negative_share_pct": 27.76,
+  "mean_rate_pct": 0.00261,
+  "median_rate_pct": 0.00272,
+  "p10_rate_pct": -0.003128,
+  "p90_rate_pct": 0.008991,
+  "sum_rate_pct": 2.8582,
+  "mean_rate_annualised_pct": 2.858,
+  "settlements_at_exactly_0.01pct": 77,
+  "settlements_at_exactly_0.01pct_share_pct": 7.03,
+  "first_settlement_at_0.01pct": "2025-11-18T16:00Z",
+  "last_settlement_at_0.01pct": "2026-11-13T00:00Z",
+  "settlements_tied_for_largest_positive": 77,
+  "settlements_below_0.01pct": 1018,
+  "settlements_above_0.01pct": 0,
+  "largest_positive": {
+    "rate_pct": 0.01,
+    "time_utc": "2025-11-18T16:00Z",
+    "cost_long_usdt_per_1000": 0.1
+  },
+  "largest_negative": {
+    "rate_pct": -0.016192,
+    "time_utc": "2026-04-15T00:00Z",
+    "cost_long_usdt_per_1000": -0.1619
+  },
+  "long_1000_usdt": {
+    "fixed_notional_cost_usdt": 28.582,
+    "paid_on_positive_settlements_usdt": 37.0095,
+    "received_on_negative_settlements_usdt": 8.4275,
+    "fixed_quantity_btc": 0.01084934,
+    "fixed_quantity_entry_mark_price": 92171.5,
+    "fixed_quantity_last_mark_price": 64087.79,
+    "fixed_quantity_cost_usdt": 23.9024,
+    "if_every_settlement_were_0.01pct_usdt": 109.5
+  },
+  "leverage_view": [
+    {
+      "leverage": 1,
+      "margin_usdt": 1000.0,
+      "funding_as_pct_of_margin": 2.858
+    },
+    {
+      "leverage": 5,
+      "margin_usdt": 200.0,
+      "funding_as_pct_of_margin": 14.291
+    },
+    {
+      "leverage": 10,
+      "margin_usdt": 100.0,
+      "funding_as_pct_of_margin": 28.582
+    },
+    {
+      "leverage": 20,
+      "margin_usdt": 50.0,
+      "funding_as_pct_of_margin": 57.164
+    },
+    {
+      "leverage": 50,
+      "margin_usdt": 20.0,
+      "funding_as_pct_of_margin": 142.91
+    }
+  ],
+  "longest_negative_run": {
+    "settlements": 14,
+    "from": "2026-04-28T08:00Z",
+    "to": "2026-05-02T16:00Z"
+  },
+  "by_month": [
+    {
+      "month": "2025-11",
+      "settlements": 39,
+      "positive": 21,
+      "negative": 18,
+      "sum_rate_pct": 0.0565,
+      "cost_long_usdt_per_1000": 0.5645
+    },
+    {
+      "month": "2025-12",
+      "settlements": 93,
+      "positive": 67,
+      "negative": 26,
+      "sum_rate_pct": 0.2696,
+      "cost_long_usdt_per_1000": 2.6957
+    },
+    {
+      "month": "2026-01",
+      "settlements": 93,
+      "positive": 69,
+      "negative": 24,
+      "sum_rate_pct": 0.274,
+      "cost_long_usdt_per_1000": 2.7403
+    },
+    {
+      "month": "2026-02",
+      "settlements": 84,
+      "positive": 51,
+      "negative": 33,
+      "sum_rate_pct": 0.1186,
+      "cost_long_usdt_per_1000": 1.1855
+    },
+    {
+      "month": "2026-03",
+      "settlements": 93,
+      "positive": 47,
+      "negative": 46,
+      "sum_rate_pct": -0.0128,
+      "cost_long_usdt_per_1000": -0.1281
+    },
+    {
+      "month": "2026-04",
+      "settlements": 90,
+      "positive": 39,
+      "negative": 51,
+      "sum_rate_pct": -0.0751,
+      "cost_long_usdt_per_1000": -0.7511
+    },
+    {
+      "month": "2026-05",
+      "settlements": 93,
+      "positive": 64,
+      "negative": 29,
+      "sum_rate_pct": 0.1749,
+      "cost_long_usdt_per_1000": 1.7495
+    },
+    {
+      "month": "2026-06",
+      "settlements": 90,
+      "positive": 57,
+      "negative": 33,
+      "sum_rate_pct": 0.1154,
+      "cost_long_usdt_per_1000": 1.1543
+    },
+    {
+      "month": "2026-07",
+      "settlements": 93,
+      "positive": 79,
+      "negative": 14,
+      "sum_rate_pct": 0.3933,
+      "cost_long_usdt_per_1000": 3.9331
+    },
+    {
+      "month": "2026-08",
+      "settlements": 93,
+      "positive": 88,
+      "negative": 5,
+      "sum_rate_pct": 0.4403,
+      "cost_long_usdt_per_1000": 4.4032
+    },
+    {
+      "month": "2026-09",
+      "settlements": 90,
+      "positive": 81,
+      "negative": 9,
+      "sum_rate_pct": 0.3895,
+      "cost_long_usdt_per_1000": 3.8952
+    },
+    {
+      "month": "2026-10",
+      "settlements": 93,
+      "positive": 81,
+      "negative": 12,
+      "sum_rate_pct": 0.4048,
+      "cost_long_usdt_per_1000": 4.0478
+    },
+    {
+      "month": "2026-11",
+      "settlements": 51,
+      "positive": 47,
+      "negative": 4,
+      "sum_rate_pct": 0.3092,
+      "cost_long_usdt_per_1000": 3.092
+    }
+  ],
+  "settlements_on_2026-02-05_and_06": [
+    {
+      "time_utc": "2026-02-05T00:00Z",
+      "rate_pct": 0.00471
+    },
+    {
+      "time_utc": "2026-02-05T08:00Z",
+      "rate_pct": 0.002503
+    },
+    {
+      "time_utc": "2026-02-05T16:00Z",
+      "rate_pct": 0.002066
+    },
+    {
+      "time_utc": "2026-02-06T00:00Z",
+      "rate_pct": 0.000872
+    },
+    {
+      "time_utc": "2026-02-06T08:00Z",
+      "rate_pct": -0.000784
+    },
+    {
+      "time_utc": "2026-02-06T16:00Z",
+      "rate_pct": -0.009333
+    }
+  ],
+  "mark_price_change_pct": -30.47
+}

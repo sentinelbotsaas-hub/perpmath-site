@@ -1,0 +1,117 @@
+---
+// /bot/: the open-source backtester. What it is, the commands to a first
+// result, what it does and does not do, and how it is paid for.
+//
+// The commands are the ones in the engine's README (src/lib/backtests/engine.ts,
+// checked against the README by a test). The version number and the count of
+// shipped results come from src/data/backtests/. There is no exchange link on
+// this page: version 0.1 cannot trade, so there is nothing to open an account for.
+import Cta from '../../../components/Cta.astro';
+import { bot } from '../../../i18n/bot';
+import { common } from '../../../i18n/common';
+import { localePath, localeStaticPaths } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import Base from '../../../layouts/Base.astro';
+import { BACKTEST_COMMAND, DOWNLOAD_COMMAND, INSTALL_COMMANDS, REPO_URL } from '../../../lib/backtests/engine';
+import { formatCount } from '../../../lib/backtests/format';
+import { results } from '../../../lib/backtests/load';
+import { softwareSourceCodeLd } from '../../../lib/backtests/seo';
+import { lostInBothSamples } from '../../../lib/backtests/verdict';
+import { fmt } from '../../../lib/fmt';
+import { breadcrumbLd } from '../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = bot[locale];
+const c = common[locale];
+const PATH = '/bot/';
+
+if (results.length === 0) throw new Error('bot: src/data/backtests/ is empty. Run scripts/backtests-import.mjs.');
+
+// The engine version is the one that produced the published results. If the
+// results were made by different versions, name the newest.
+const version = results
+  .map((r) => r.package_version)
+  .sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))
+  .at(-1) as string;
+const n = formatCount(results.length);
+const resultsHead = fmt(results.every(lostInBothSamples) ? t.results.headAllLost : t.results.head, { n });
+
+const steps = [
+  { head: t.quickstart.install, code: INSTALL_COMMANDS.join('\n'), note: t.quickstart.installNote },
+  { head: t.quickstart.download, code: DOWNLOAD_COMMAND, note: t.quickstart.downloadNote },
+  { head: t.quickstart.backtest, code: BACKTEST_COMMAND, note: t.quickstart.backtestNote },
+];
+const statements = [
+  { head: t.does.head, body: t.does.body },
+  { head: t.doesNot.head, body: fmt(t.doesNot.body, { version }) },
+  { head: t.funded.head, body: t.funded.body },
+];
+
+const jsonLd = [
+  softwareSourceCodeLd(locale, { path: PATH, description: t.description, version }),
+  breadcrumbLd(locale, [
+    { name: c.breadcrumb.home, path: '/' },
+    { name: c.nav.bot, path: PATH },
+  ]),
+];
+---
+
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{t.head}</h1>
+      <p class="sub">{fmt(t.sub, { version })}</p>
+      <Cta
+        locale={locale}
+        pageType="bot"
+        position="hero"
+        primary={{ label: t.primary, href: '#quickstart' }}
+        secondary={{ label: t.secondary, href: REPO_URL }}
+      />
+    </div>
+  </section>
+
+  <section class="read" id="quickstart" aria-label={t.quickstart.head}>
+    <div class="wrap rows">
+      {
+        steps.map((step) => (
+          <div>
+            <h2>{step.head}</h2>
+            <div class="prose">
+              <pre>{step.code}</pre>
+              <p>{step.note}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="read">
+    <div class="wrap rows">
+      {
+        statements.map((s) => (
+          <div>
+            <h2>{s.head}</h2>
+            <div class="prose">
+              <p>{s.body}</p>
+            </div>
+          </div>
+        ))
+      }
+      <div>
+        <h2>{resultsHead}</h2>
+        <div class="prose">
+          <p>{t.results.body}</p>
+          <a class="lnk" href={localePath(locale, '/backtests/')}>{t.results.link}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

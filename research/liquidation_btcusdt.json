@@ -1,0 +1,739 @@
+{
+  "question": "Same-day liquidation of an isolated position opened at the daily open, BTCUSDT perpetual",
+  "symbol": "BTCUSDT",
+  "range_utc": {
+    "first_day": "2025-11-18",
+    "last_day": "2026-11-17",
+    "days": 365
+  },
+  "fetched_at": "2026-11-18T12:05:53Z",
+  "sources": {
+    "daily_last_price": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=D",
+    "daily_mark_price": "https://api.bybit.com/v5/market/mark-price-kline?category=linear&symbol=BTCUSDT&interval=D",
+    "hourly_last_price": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60",
+    "risk_limit": "https://api.bybit.com/v5/market/risk-limit?category=linear&symbol=BTCUSDT"
+  },
+  "tier1": {
+    "risk_limit_value_usdt": 300000.0,
+    "maintenance_margin_rate": 0.0033,
+    "initial_margin_rate": 0.0066,
+    "max_leverage": 150.0
+  },
+  "rule": "room = 1/leverage - MMR; long liquidated if (open-low)/open >= room; short liquidated if (high-open)/open >= room. Fees and funding ignored.",
+  "A_daily_last_price": {
+    "days": 365,
+    "table": [
+      {
+        "leverage": 2,
+        "room_pct": 49.67,
+        "long_days": 0,
+        "long_share_pct": 0.0,
+        "short_days": 0,
+        "short_share_pct": 0.0,
+        "both_days": 0,
+        "either_days": 0
+      },
+      {
+        "leverage": 5,
+        "room_pct": 19.67,
+        "long_days": 0,
+        "long_share_pct": 0.0,
+        "short_days": 0,
+        "short_share_pct": 0.0,
+        "both_days": 0,
+        "either_days": 0
+      },
+      {
+        "leverage": 10,
+        "room_pct": 9.67,
+        "long_days": 2,
+        "long_share_pct": 0.55,
+        "short_days": 1,
+        "short_share_pct": 0.27,
+        "both_days": 0,
+        "either_days": 3
+      },
+      {
+        "leverage": 20,
+        "room_pct": 4.67,
+        "long_days": 20,
+        "long_share_pct": 5.48,
+        "short_days": 21,
+        "short_share_pct": 5.75,
+        "both_days": 1,
+        "either_days": 40
+      },
+      {
+        "leverage": 50,
+        "room_pct": 1.67,
+        "long_days": 147,
+        "long_share_pct": 40.27,
+        "short_days": 118,
+        "short_share_pct": 32.33,
+        "both_days": 21,
+        "either_days": 244
+      },
+      {
+        "leverage": 100,
+        "room_pct": 0.67,
+        "long_days": 254,
+        "long_share_pct": 69.59,
+        "short_days": 253,
+        "short_share_pct": 69.32,
+        "both_days": 160,
+        "either_days": 347
+      }
+    ],
+    "adverse_long": {
+      "median_pct": 1.243,
+      "mean_pct": 1.7764,
+      "p90_pct": 3.8641,
+      "p99_pct": 7.3757,
+      "max_pct": 14.878,
+      "max_date": "2026-02-05",
+      "max_open": 73130.3,
+      "max_extreme": 62250.0
+    },
+    "adverse_short": {
+      "median_pct": 1.0764,
+      "mean_pct": 1.6135,
+      "p90_pct": 3.6311,
+      "p99_pct": 8.3782,
+      "max_pct": 14.0716,
+      "max_date": "2026-02-06",
+      "max_open": 62872.7,
+      "max_extreme": 71719.9
+    }
+  },
+  "B_daily_mark_price": {
+    "days": 365,
+    "table": [
+      {
+        "leverage": 2,
+        "room_pct": 49.67,
+        "long_days": 0,
+        "long_share_pct": 0.0,
+        "short_days": 0,
+        "short_share_pct": 0.0,
+        "both_days": 0,
+        "either_days": 0
+      },
+      {
+        "leverage": 5,
+        "room_pct": 19.67,
+        "long_days": 0,
+        "long_share_pct": 0.0,
+        "short_days": 0,
+        "short_share_pct": 0.0,
+        "both_days": 0,
+        "either_days": 0
+      },
+      {
+        "leverage": 10,
+        "room_pct": 9.67,
+        "long_days": 2,
+        "long_share_pct": 0.55,
+        "short_days": 1,
+        "short_share_pct": 0.27,
+        "both_days": 0,
+        "either_days": 3
+      },
+      {
+        "leverage": 20,
+        "room_pct": 4.67,
+        "long_days": 19,
+        "long_share_pct": 5.21,
+        "short_days": 21,
+        "short_share_pct": 5.75,
+        "both_days": 0,
+        "either_days": 40
+      },
+      {
+        "leverage": 50,
+        "room_pct": 1.67,
+        "long_days": 145,
+        "long_share_pct": 39.73,
+        "short_days": 117,
+        "short_share_pct": 32.05,
+        "both_days": 18,
+        "either_days": 244
+      },
+      {
+        "leverage": 100,
+        "room_pct": 0.67,
+        "long_days": 252,
+        "long_share_pct": 69.04,
+        "short_days": 250,
+        "short_share_pct": 68.49,
+        "both_days": 156,
+        "either_days": 346
+      }
+    ],
+    "adverse_long": {
+      "median_pct": 1.2345,
+      "mean_pct": 1.7535,
+      "p90_pct": 3.8407,
+      "p99_pct": 7.3506,
+      "max_pct": 14.7609,
+      "max_date": "2026-02-05",
+      "max_open": 73147.3,
+      "max_extreme": 62350.07
+    },
+    "adverse_short": {
+      "median_pct": 1.0647,
+      "mean_pct": 1.5939,
+      "p90_pct": 3.5973,
+      "p99_pct": 8.3648,
+      "max_pct": 14.0481,
+      "max_date": "2026-02-06",
+      "max_open": 62877.78,
+      "max_extreme": 71710.9
+    }
+  },
+  "C_hourly_entry_24h_hold": {
+    "entries": 8737,
+    "first_entry": "2025-11-18T00:00Z",
+    "last_entry": "2026-11-17T00:00Z",
+    "table": [
+      {
+        "leverage": 2,
+        "long_entries": 0,
+        "long_share_pct": 0.0,
+        "short_entries": 0,
+        "short_share_pct": 0.0
+      },
+      {
+        "leverage": 5,
+        "long_entries": 0,
+        "long_share_pct": 0.0,
+        "short_entries": 0,
+        "short_share_pct": 0.0
+      },
+      {
+        "leverage": 10,
+        "long_entries": 46,
+        "long_share_pct": 0.53,
+        "short_entries": 28,
+        "short_share_pct": 0.32
+      },
+      {
+        "leverage": 20,
+        "long_entries": 519,
+        "long_share_pct": 5.94,
+        "short_entries": 486,
+        "short_share_pct": 5.56
+      },
+      {
+        "leverage": 50,
+        "long_entries": 3433,
+        "long_share_pct": 39.29,
+        "short_entries": 3037,
+        "short_share_pct": 34.76
+      },
+      {
+        "leverage": 100,
+        "long_entries": 6141,
+        "long_share_pct": 70.29,
+        "short_entries": 6035,
+        "short_share_pct": 69.07
+      }
+    ],
+    "median_adverse_long_pct": 1.2752,
+    "median_adverse_short_pct": 1.149,
+    "by_entry_hour_100x": [
+      {
+        "utc_hour": 0,
+        "entries": 365,
+        "long_share_pct": 69.59,
+        "short_share_pct": 69.32
+      },
+      {
+        "utc_hour": 1,
+        "entries": 364,
+        "long_share_pct": 69.23,
+        "short_share_pct": 70.6
+      },
+      {
+        "utc_hour": 2,
+        "entries": 364,
+        "long_share_pct": 69.51,
+        "short_share_pct": 70.6
+      },
+      {
+        "utc_hour": 3,
+        "entries": 364,
+        "long_share_pct": 70.33,
+        "short_share_pct": 70.33
+      },
+      {
+        "utc_hour": 4,
+        "entries": 364,
+        "long_share_pct": 71.15,
+        "short_share_pct": 71.98
+      },
+      {
+        "utc_hour": 5,
+        "entries": 364,
+        "long_share_pct": 71.43,
+        "short_share_pct": 70.33
+      },
+      {
+        "utc_hour": 6,
+        "entries": 364,
+        "long_share_pct": 70.88,
+        "short_share_pct": 69.78
+      },
+      {
+        "utc_hour": 7,
+        "entries": 364,
+        "long_share_pct": 68.96,
+        "short_share_pct": 70.88
+      },
+      {
+        "utc_hour": 8,
+        "entries": 364,
+        "long_share_pct": 69.51,
+        "short_share_pct": 68.41
+      },
+      {
+        "utc_hour": 9,
+        "entries": 364,
+        "long_share_pct": 73.35,
+        "short_share_pct": 69.78
+      },
+      {
+        "utc_hour": 10,
+        "entries": 364,
+        "long_share_pct": 71.15,
+        "short_share_pct": 68.13
+      },
+      {
+        "utc_hour": 11,
+        "entries": 364,
+        "long_share_pct": 68.96,
+        "short_share_pct": 68.41
+      },
+      {
+        "utc_hour": 12,
+        "entries": 364,
+        "long_share_pct": 73.63,
+        "short_share_pct": 66.76
+      },
+      {
+        "utc_hour": 13,
+        "entries": 364,
+        "long_share_pct": 73.08,
+        "short_share_pct": 68.41
+      },
+      {
+        "utc_hour": 14,
+        "entries": 364,
+        "long_share_pct": 70.88,
+        "short_share_pct": 68.96
+      },
+      {
+        "utc_hour": 15,
+        "entries": 364,
+        "long_share_pct": 68.68,
+        "short_share_pct": 69.51
+      },
+      {
+        "utc_hour": 16,
+        "entries": 364,
+        "long_share_pct": 71.7,
+        "short_share_pct": 69.51
+      },
+      {
+        "utc_hour": 17,
+        "entries": 364,
+        "long_share_pct": 71.7,
+        "short_share_pct": 68.68
+      },
+      {
+        "utc_hour": 18,
+        "entries": 364,
+        "long_share_pct": 70.88,
+        "short_share_pct": 67.86
+      },
+      {
+        "utc_hour": 19,
+        "entries": 364,
+        "long_share_pct": 68.13,
+        "short_share_pct": 70.33
+      },
+      {
+        "utc_hour": 20,
+        "entries": 364,
+        "long_share_pct": 68.96,
+        "short_share_pct": 68.68
+      },
+      {
+        "utc_hour": 21,
+        "entries": 364,
+        "long_share_pct": 68.96,
+        "short_share_pct": 67.31
+      },
+      {
+        "utc_hour": 22,
+        "entries": 364,
+        "long_share_pct": 68.13,
+        "short_share_pct": 68.13
+      },
+      {
+        "utc_hour": 23,
+        "entries": 364,
+        "long_share_pct": 68.13,
+        "short_share_pct": 65.11
+      }
+    ]
+  },
+  "D_hour_of_liquidation_100x": {
+    "note": "hour index 0 = the candle 00:00-00:59 UTC",
+    "long_100x": {
+      "days": 254,
+      "median_hour_index": 3.0,
+      "within_first_hour": 38,
+      "within_first_4_hours": 131,
+      "within_first_8_hours": 171
+    },
+    "short_100x": {
+      "days": 253,
+      "median_hour_index": 5,
+      "within_first_hour": 39,
+      "within_first_4_hours": 110,
+      "within_first_8_hours": 147
+    }
+  },
+  "E_exact_bybit_formula_last_price": [
+    {
+      "leverage": 2,
+      "long_distance_pct": 49.8345,
+      "short_distance_pct": 49.5066,
+      "long_days": 0,
+      "short_days": 0
+    },
+    {
+      "leverage": 5,
+      "long_distance_pct": 19.7351,
+      "short_distance_pct": 19.6053,
+      "long_days": 0,
+      "short_days": 0
+    },
+    {
+      "leverage": 10,
+      "long_distance_pct": 9.702,
+      "short_distance_pct": 9.6382,
+      "long_days": 2,
+      "short_days": 1
+    },
+    {
+      "leverage": 20,
+      "long_distance_pct": 4.6855,
+      "short_distance_pct": 4.6546,
+      "long_days": 19,
+      "short_days": 21
+    },
+    {
+      "leverage": 50,
+      "long_distance_pct": 1.6755,
+      "short_distance_pct": 1.6645,
+      "long_days": 146,
+      "short_days": 118
+    },
+    {
+      "leverage": 100,
+      "long_distance_pct": 0.6722,
+      "short_distance_pct": 0.6678,
+      "long_days": 254,
+      "short_days": 253
+    }
+  ],
+  "E_exact_bybit_formula_mark_price": [
+    {
+      "leverage": 2,
+      "long_distance_pct": 49.8345,
+      "short_distance_pct": 49.5066,
+      "long_days": 0,
+      "short_days": 0
+    },
+    {
+      "leverage": 5,
+      "long_distance_pct": 19.7351,
+      "short_distance_pct": 19.6053,
+      "long_days": 0,
+      "short_days": 0
+    },
+    {
+      "leverage": 10,
+      "long_distance_pct": 9.702,
+      "short_distance_pct": 9.6382,
+      "long_days": 2,
+      "short_days": 1
+    },
+    {
+      "leverage": 20,
+      "long_distance_pct": 4.6855,
+      "short_distance_pct": 4.6546,
+      "long_days": 18,
+      "short_days": 21
+    },
+    {
+      "leverage": 50,
+      "long_distance_pct": 1.6755,
+      "short_distance_pct": 1.6645,
+      "long_days": 144,
+      "short_days": 117
+    },
+    {
+      "leverage": 100,
+      "long_distance_pct": 0.6722,
+      "short_distance_pct": 0.6678,
+      "long_days": 252,
+      "short_days": 251
+    }
+  ],
+  "F_details": {
+    "days_liquidating_10x": [
+      {
+        "date": "2026-01-31",
+        "side": "long",
+        "open": 84222.5,
+        "high": 84254.3,
+        "low": 75689.6,
+        "adverse_move_pct": 10.1314
+      },
+      {
+        "date": "2026-02-05",
+        "side": "long",
+        "open": 73130.3,
+        "high": 73312.1,
+        "low": 62250.0,
+        "adverse_move_pct": 14.878
+      },
+      {
+        "date": "2026-02-06",
+        "side": "short",
+        "open": 62872.7,
+        "high": 71719.9,
+        "low": 59888.0,
+        "adverse_move_pct": 14.0716
+      }
+    ],
+    "days_last_and_mark_price_disagree": [
+      {
+        "leverage": 20,
+        "side": "long",
+        "date": "2026-02-06",
+        "last_price_move_pct": 4.7472,
+        "mark_price_move_pct": 4.643
+      },
+      {
+        "leverage": 50,
+        "side": "short",
+        "date": "2026-02-04",
+        "last_price_move_pct": 1.6745,
+        "mark_price_move_pct": 1.6184
+      },
+      {
+        "leverage": 50,
+        "side": "long",
+        "date": "2026-05-23",
+        "last_price_move_pct": 1.706,
+        "mark_price_move_pct": 1.6644
+      },
+      {
+        "leverage": 50,
+        "side": "long",
+        "date": "2026-06-10",
+        "last_price_move_pct": 1.7592,
+        "mark_price_move_pct": 1.5619
+      },
+      {
+        "leverage": 100,
+        "side": "short",
+        "date": "2025-12-24",
+        "last_price_move_pct": 0.6735,
+        "mark_price_move_pct": 0.6642
+      },
+      {
+        "leverage": 100,
+        "side": "short",
+        "date": "2026-03-07",
+        "last_price_move_pct": 0.6776,
+        "mark_price_move_pct": 0.6352
+      },
+      {
+        "leverage": 100,
+        "side": "long",
+        "date": "2026-05-31",
+        "last_price_move_pct": 0.6812,
+        "mark_price_move_pct": 0.6673
+      },
+      {
+        "leverage": 100,
+        "side": "long",
+        "date": "2026-09-11",
+        "last_price_move_pct": 0.826,
+        "mark_price_move_pct": 0.6596
+      },
+      {
+        "leverage": 100,
+        "side": "short",
+        "date": "2026-09-24",
+        "last_price_move_pct": 0.6808,
+        "mark_price_move_pct": 0.6369
+      }
+    ],
+    "by_month": [
+      {
+        "month": "2025-11",
+        "days": 13,
+        "long_20x": 3,
+        "short_20x": 0,
+        "long_50x": 7,
+        "short_50x": 6
+      },
+      {
+        "month": "2025-12",
+        "days": 31,
+        "long_20x": 1,
+        "short_20x": 1,
+        "long_50x": 11,
+        "short_50x": 16
+      },
+      {
+        "month": "2026-01",
+        "days": 31,
+        "long_20x": 3,
+        "short_20x": 1,
+        "long_50x": 10,
+        "short_50x": 8
+      },
+      {
+        "month": "2026-02",
+        "days": 28,
+        "long_20x": 5,
+        "short_20x": 3,
+        "long_50x": 20,
+        "short_50x": 11
+      },
+      {
+        "month": "2026-03",
+        "days": 31,
+        "long_20x": 1,
+        "short_20x": 6,
+        "long_50x": 15,
+        "short_50x": 14
+      },
+      {
+        "month": "2026-04",
+        "days": 30,
+        "long_20x": 0,
+        "short_20x": 2,
+        "long_50x": 9,
+        "short_50x": 13
+      },
+      {
+        "month": "2026-05",
+        "days": 31,
+        "long_20x": 0,
+        "short_20x": 0,
+        "long_50x": 13,
+        "short_50x": 7
+      },
+      {
+        "month": "2026-06",
+        "days": 30,
+        "long_20x": 4,
+        "short_20x": 1,
+        "long_50x": 16,
+        "short_50x": 8
+      },
+      {
+        "month": "2026-07",
+        "days": 31,
+        "long_20x": 0,
+        "short_20x": 0,
+        "long_50x": 9,
+        "short_50x": 10
+      },
+      {
+        "month": "2026-08",
+        "days": 31,
+        "long_20x": 0,
+        "short_20x": 3,
+        "long_50x": 5,
+        "short_50x": 9
+      },
+      {
+        "month": "2026-09",
+        "days": 30,
+        "long_20x": 0,
+        "short_20x": 3,
+        "long_50x": 10,
+        "short_50x": 7
+      },
+      {
+        "month": "2026-10",
+        "days": 31,
+        "long_20x": 0,
+        "short_20x": 0,
+        "long_50x": 11,
+        "short_50x": 7
+      },
+      {
+        "month": "2026-11",
+        "days": 17,
+        "long_20x": 3,
+        "short_20x": 1,
+        "long_50x": 11,
+        "short_50x": 2
+      }
+    ],
+    "days_neither_side_liquidated_100x": 18,
+    "daily_range_median_pct": 2.9751,
+    "daily_range_min_pct": 0.4389,
+    "room_in_usdt_at_last_close": [
+      {
+        "leverage": 2,
+        "room_pct": 49.67,
+        "usdt_per_btc": 32245.71
+      },
+      {
+        "leverage": 5,
+        "room_pct": 19.67,
+        "usdt_per_btc": 12769.74
+      },
+      {
+        "leverage": 10,
+        "room_pct": 9.67,
+        "usdt_per_btc": 6277.75
+      },
+      {
+        "leverage": 20,
+        "room_pct": 4.67,
+        "usdt_per_btc": 3031.76
+      },
+      {
+        "leverage": 50,
+        "room_pct": 1.67,
+        "usdt_per_btc": 1084.16
+      },
+      {
+        "leverage": 100,
+        "room_pct": 0.67,
+        "usdt_per_btc": 434.96
+      }
+    ],
+    "last_close": 64919.9
+  },
+  "period_price": {
+    "first_open": 92171.4,
+    "last_close": 64919.9,
+    "change_pct": -29.57,
+    "highest_high": 97963.2,
+    "lowest_low": 57755.8,
+    "up_days": 176,
+    "down_days": 189
+  }
+}

@@ -1,0 +1,59 @@
+---
+// /about/: who makes the site and how the numbers are made. Short and
+// factual: no credentials, no user counts, nothing that is not true today.
+import { localePath, localeStaticPaths } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { pages } from '../../../i18n/pages';
+import Base from '../../../layouts/Base.astro';
+import { AFFILIATE_ACTIVE } from '../../../../site.config.mjs';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = pages[locale].about;
+// The author's research log.
+const RESEARCH_LOG = 'https://edgeautopsy.com';
+---
+
+<Base locale={locale} path="/about/" title={t.title} description={t.description}>
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{t.head}</h1>
+      <p class="sub">{t.lead}</p>
+    </div>
+  </section>
+  <section class="read">
+    <div class="wrap rows">
+      {
+        t.sections.map((section) => (
+          <div>
+            <h2>{section.title}</h2>
+            <div>
+              {section.body.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+      <div>
+        <h2>{t.paidTitle}</h2>
+        <div>
+          <p>{AFFILIATE_ACTIVE ? t.paidBody : t.paidBodyPlain}</p>
+          <a class="lnk" href={localePath(locale, '/disclosure/')}>{t.paidLink}</a>
+        </div>
+      </div>
+      <div>
+        <h2>{t.logTitle}</h2>
+        <div>
+          <p>{t.logBody}</p>
+          <a class="lnk" href={RESEARCH_LOG} rel="noopener">{t.logLinkLabel}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,144 @@
+---
+// Home. One file serves /, /zh-hant/ and /zh-hans/.
+import Cta from '../../components/Cta.astro';
+import Scale from '../../components/Scale.astro';
+import ToolIndex from '../../components/ToolIndex.astro';
+import { localePath, localeStaticPaths } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import { home } from '../../i18n/home';
+import Base from '../../layouts/Base.astro';
+import { liquidationPrice, roomLeft, roundToTick } from '../../lib/calc/liquidation';
+import { fmt, formatNumber, formatPercent } from '../../lib/fmt';
+import { BTCUSDT, snapshotDate, tierOne } from '../../lib/risk-limit';
+import { pageExists } from '../../lib/routes';
+import { webSiteLd } from '../../lib/seo';
+import { toolPath } from '../../lib/tools';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = home[locale];
+
+// The hero example. Entry price is an illustration; the maintenance margin
+// rate is Bybit's tier 1 rate from the snapshot. The same numbers are
+// recomputed in the browser by src/scripts/home-hero.ts when the slider moves.
+const ENTRY = 68000;
+const START_LEVERAGE = 20;
+const mmr = tierOne(BTCUSDT).maintenanceMargin;
+
+const room = roomLeft(START_LEVERAGE, mmr);
+const result = liquidationPrice({ side: 'long', entryPrice: ENTRY, leverage: START_LEVERAGE, mmr });
+const liq = result.ok ? roundToTick(result.liquidationPrice, 1) : 0;
+
+const lev = fmt(t.hero.levFormat, { n: START_LEVERAGE });
+const pct = formatPercent(room);
+const calculatorPath = toolPath('liquidation-price-calculator');
+const calculatorHref = localePath(locale, calculatorPath);
+const drawdownPath = toolPath('drawdown-calculator');
+
+// Everything the browser script needs, as plain data.
+const heroData = JSON.stringify({
+  entry: ENTRY,
+  mmr,
+  calculatorHref,
+  strings: {
+    head: t.hero.head,
+    levFormat: t.hero.levFormat,
+    barLabel: t.hero.barLabel,
+    liquidation: t.hero.liquidation,
+    sub: t.hero.sub,
+    sliderText: t.hero.sliderText,
+  },
+});
+---
+
+<Base
+  locale={locale}
+  path="/"
+  title={t.title}
+  bareTitle
+  description={t.description}
+  surface="measure"
+  jsonLd={webSiteLd(locale, t.description)}
+>
+  <section class="measure" data-hero={heroData}>
+    <div class="wrap">
+      <h1 class="head" id="hero-head">{fmt(t.hero.head, { lev })}</h1>
+      <Scale id="hero-scale" room={room} label={fmt(t.hero.barLabel, { pct })} />
+      <div class="ends num">
+        <span id="hero-liq">{fmt(t.hero.liquidation, { price: formatNumber(liq) })}</span>
+        <span>{fmt(t.hero.entry, { price: formatNumber(ENTRY) })}</span>
+      </div>
+      <p class="sub" id="hero-sub">{fmt(t.hero.sub, { pct })}</p>
+      <div class="ctl">
+        <label class="field-label" for="hero-lev">{t.hero.leverage}</label>
+        <input
+          id="hero-lev"
+          type="range"
+          min="2"
+          max="100"
+          step="1"
+          value={START_LEVERAGE}
+          aria-valuetext={fmt(t.hero.sliderText, { lev, pct })}
+        />
+        <span class="field-box">
+          <input
+            id="hero-lev-n"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            value={START_LEVERAGE}
+            aria-label={t.hero.leverageNumber}
+          />
+          <span aria-hidden="true">{t.hero.levUnit}</span>
+        </span>
+      </div>
+      <Cta
+        locale={locale}
+        pageType="home"
+        position="hero"
+        primary={{ label: t.hero.primary, href: `${calculatorHref}?lev=${START_LEVERAGE}` }}
+        secondary={{ label: t.hero.secondary, href: `${calculatorHref}#how-it-is-calculated` }}
+      />
+      <p class="fine">{fmt(t.hero.fine, { mmr: formatPercent(mmr), date: snapshotDate(BTCUSDT) })}</p>
+    </div>
+  </section>
+
+  <section class="verdict">
+    <div class="wrap">
+      <h2 class="head">{t.recover.head}</h2>
+      <div class="pair">
+        <div class="half">{t.recover.lost}</div>
+        <div>{t.recover.needed}</div>
+      </div>
+      <p class="sub">{t.recover.body}</p>
+      {
+        pageExists(drawdownPath) ? (
+          <div class="acts">
+            <a class="lnk" href={localePath(locale, drawdownPath)}>
+              {t.recover.link}
+            </a>
+          </div>
+        ) : (
+          <p class="fine">{t.recover.coming}</p>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="read">
+    <div class="wrap">
+      <h2 class="head">{t.tools.head}</h2>
+      <p class="sub">{t.tools.sub}</p>
+      <ToolIndex locale={locale} />
+    </div>
+  </section>
+
+  <script>
+    import '../../scripts/home-hero.ts';
+  </script>
+</Base>

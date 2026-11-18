@@ -1,0 +1,75 @@
+---
+// Two quantities on one to-scale bar: an upper lane and a lower lane inside
+// the same frame, both measured against the same full width. The folder name
+// starts with an underscore, so Astro does not turn this file into a route.
+//
+//   <Lanes id="calc-scale" top={0.02} bottom={0.0205}
+//          label="The stop is 2.00% away. At 42x the liquidation price is 2.05% away."
+//          topText="Stop: 2.00% from entry"
+//          bottomText="Liquidation at 42x: 2.05% from entry"
+//          endText="Entry 68,000 is the full width" />
+//
+// It reuses the .scale and .room blocks of src/components/Scale.astro and only
+// adds the split into two lanes. Like Scale, a lane is never enlarged to look
+// better: the exact figures are in the text above and below the bar.
+//
+// Rendered ids: the bar is #<id>, the texts are #<id>-top, #<id>-bottom and
+// #<id>-end. To update it from a script:
+//   bar.style.setProperty('--top', '0.02'); bar.style.setProperty('--bottom', '0.03');
+//   bar.setAttribute('aria-label', '...');
+interface Props {
+  id: string;
+  /** Upper lane, fraction of the full width, 0 to 1. Values outside are clamped. */
+  top: number;
+  /** Lower lane, fraction of the full width, 0 to 1. Values outside are clamped. */
+  bottom: number;
+  /** Text alternative. Full sentences with both numbers in them. */
+  label: string;
+  /** Visible text for the upper lane, shown above the bar. */
+  topText: string;
+  /** Visible text for the lower lane, shown under the bar on the left. */
+  bottomText: string;
+  /** What the full width stands for, shown under the bar on the right. */
+  endText: string;
+}
+
+const { id, top, bottom, label, topText, bottomText, endText } = Astro.props;
+const clamp = (n: number) => (Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : 0);
+---
+
+<div class="lanes">
+  <p class="lane-text num" id={`${id}-top`}>{topText}</p>
+  <div class="scale s" id={id} role="img" aria-label={label} style={`--top:${clamp(top).toFixed(4)};--bottom:${clamp(bottom).toFixed(4)}`}>
+    <div class="room top"></div>
+    <div class="room bottom"></div>
+  </div>
+  <div class="ends num">
+    <span id={`${id}-bottom`}>{bottomText}</span>
+    <span id={`${id}-end`}>{endText}</span>
+  </div>
+</div>
+
+<style>
+  .lanes {
+    margin-top: var(--space-lg);
+  }
+
+  .lane-text {
+    font-size: var(--text-sm);
+  }
+
+  .lanes .scale {
+    margin-top: var(--space-xs);
+  }
+
+  /* The frame's ink shows through between the lanes as a dividing line. */
+  .scale .room.top {
+    bottom: calc(50% + var(--hairline));
+    transform: scaleX(var(--top, 0));
+  }
+
+  .scale .room.bottom {
+    top: calc(50% + var(--hairline));
+    transform: scaleX(var(--bottom, 0));
+  }
+</style>

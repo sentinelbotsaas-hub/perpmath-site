@@ -1,0 +1,8 @@
+---
+// Fallback for /go/bybit/. The real behaviour is the redirect in vercel.json
+// (generated from site.config.mjs). See src/components/ExitFallback.astro.
+import ExitFallback from '../../../components/ExitFallback.astro';
+import { GO_BYBIT } from '../../../../site.config.mjs';
+---
+
+<ExitFallback path={GO_BYBIT} />

@@ -1,0 +1,60 @@
+---
+// /learn/: list of articles in this locale. Builds with zero articles.
+import { common } from '../../../i18n/common';
+import { localePath, localeStaticPaths } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { pages } from '../../../i18n/pages';
+import Base from '../../../layouts/Base.astro';
+import { articlePath, getArticlesFor } from '../../../lib/articles';
+import { breadcrumbLd } from '../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = pages[locale].learn;
+const c = common[locale];
+const articles = await getArticlesFor(locale);
+
+const jsonLd = breadcrumbLd(locale, [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.learn, path: '/learn/' },
+]);
+---
+
+<Base locale={locale} path="/learn/" title={t.title} description={t.description} jsonLd={jsonLd}>
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{t.head}</h1>
+      <p class="sub">{articles.length > 0 ? t.sub : t.empty}</p>
+      {
+        articles.length === 0 && (
+          <div class="acts">
+            <a class="btn" href={localePath(locale, '/tools/')}>
+              {t.toTools}
+            </a>
+          </div>
+        )
+      }
+    </div>
+  </section>
+  {
+    articles.length > 0 && (
+      <section class="read">
+        <div class="wrap">
+          <ol class="entries">
+            {articles.map(({ entry }) => (
+              <li>
+                <a href={localePath(locale, articlePath(entry.data.slug))}>{entry.data.title}</a>
+                <p>{entry.data.description}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+</Base>

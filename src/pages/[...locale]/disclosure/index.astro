@@ -1,0 +1,43 @@
+---
+// /disclosure/: how the site earns money. Linked from the footer and from the
+// line under every affiliate action.
+import { localeStaticPaths } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { pages } from '../../../i18n/pages';
+import Base from '../../../layouts/Base.astro';
+import { AFFILIATE_ACTIVE } from '../../../../site.config.mjs';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = AFFILIATE_ACTIVE ? pages[locale].disclosure : pages[locale].disclosurePlain;
+---
+
+<Base locale={locale} path="/disclosure/" title={t.title} description={t.description}>
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{t.head}</h1>
+      <p class="sub">{t.lead}</p>
+    </div>
+  </section>
+  <section class="read">
+    <div class="wrap rows">
+      {
+        t.sections.map((section) => (
+          <div>
+            <h2>{section.title}</h2>
+            <div>
+              {section.body.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</Base>

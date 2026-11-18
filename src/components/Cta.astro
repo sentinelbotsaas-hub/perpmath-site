@@ -1,0 +1,69 @@
+---
+// Call to action: one primary action, an optional secondary one, and the
+// disclosure line underneath when either of them leaves the site for Bybit.
+//
+//   <Cta locale={locale} pageType="tool" position="result"
+//        primary={{ label: t.cta.testnet, exit: 'bybit-testnet' }}
+//        secondary={{ label: t.cta.liveAccount, exit: 'bybit' }} />
+//
+// Rules (PLAN_06 section 5):
+// - at most two actions per page;
+// - an affiliate action never carries its own URL: `exit: 'bybit'` always
+//   renders href="/go/bybit/", and the region gate lives in vercel.json;
+// - every action carries data-cta="<pageType>:<position>" for measurement.
+//   Nothing reads it yet; tracking is wired later.
+import { AFFILIATE_ACTIVE, GO_BYBIT, GO_BYBIT_TESTNET } from '../../site.config.mjs';
+import { common } from '../i18n/common';
+import type { Locale } from '../i18n/config';
+
+type Action =
+  | { label: string; exit: 'bybit' | 'bybit-testnet' }
+  /** An internal link. Pass a path that is already localised with localePath(). */
+  | { label: string; href: string };
+
+interface Props {
+  locale: Locale;
+  /** tool, home, daily, data, article, bot ... */
+  pageType: string;
+  /** Where on the page: hero, result, end ... */
+  position: string;
+  primary: Action;
+  secondary?: Action;
+  /** Override the disclosure line. Shown only when an action exits to Bybit. */
+  disclosure?: string;
+}
+
+const { locale, pageType, position, primary, secondary, disclosure } = Astro.props;
+const t = common[locale];
+const tag = `${pageType}:${position}`;
+
+const EXIT_HREF = { bybit: GO_BYBIT, 'bybit-testnet': GO_BYBIT_TESTNET } as const;
+const resolve = (a: Action) =>
+  'exit' in a
+    ? { label: a.label, href: EXIT_HREF[a.exit], rel: 'sponsored nofollow noopener', exit: a.exit }
+    : { label: a.label, href: a.href, rel: /^https?:/.test(a.href) ? 'noopener' : undefined, exit: undefined };
+
+const first = resolve(primary);
+const second = secondary ? resolve(secondary) : undefined;
+const hasAffiliate = first.exit === 'bybit' || second?.exit === 'bybit';
+// While AFFILIATE_ACTIVE is false the link earns nothing, and the line says so.
+const own = AFFILIATE_ACTIVE ? t.cta.disclosure : t.cta.disclosurePlain;
+const live = AFFILIATE_ACTIVE ? t.cta.disclosureLiveLink : t.cta.disclosureLiveLinkPlain;
+const line = disclosure ?? (hasAffiliate ? (first.exit === 'bybit' ? own : live) : undefined);
+---
+
+<div class="cta">
+  <div class="acts">
+    <a class="btn" href={first.href} rel={first.rel} data-cta={tag} data-cta-action="primary" data-exit={first.exit}>
+      {first.label}
+    </a>
+    {
+      second && (
+        <a class="lnk" href={second.href} rel={second.rel} data-cta={tag} data-cta-action="secondary" data-exit={second.exit}>
+          {second.label}
+        </a>
+      )
+    }
+  </div>
+  {line && <p class="fine">{line}</p>}
+</div>

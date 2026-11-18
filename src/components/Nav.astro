@@ -1,0 +1,71 @@
+---
+// Wordmark, section links, language switcher.
+//
+// A section link appears only once its index page exists
+// (src/pages/[...locale]/<section>/index.astro), so the nav never points at a
+// page that has not been built. Adding the page is enough; do not edit this.
+import { common } from '../i18n/common';
+import { htmlLang, localePath, locales } from '../i18n/config';
+import type { Locale } from '../i18n/config';
+import { pageExists } from '../lib/routes';
+
+interface Props {
+  locale: Locale;
+  path: string;
+  surface?: 'measure' | 'read';
+  availableLocales?: readonly Locale[];
+}
+
+const { locale, path, surface = 'read', availableLocales = locales } = Astro.props;
+const t = common[locale].nav;
+
+const sections = [
+  { path: '/tools/', label: t.tools },
+  { path: '/learn/', label: t.learn },
+  { path: '/daily/', label: t.daily },
+  { path: '/data/', label: t.data },
+  { path: '/backtests/', label: t.backtests },
+  { path: '/bot/', label: t.bot },
+].filter((s) => pageExists(s.path));
+
+// Short labels in the bar, full language name for assistive tech.
+const langShort: Record<Locale, string> = { en: 'EN', 'zh-hant': '繁體', 'zh-hans': '简体' };
+const langFull: Record<Locale, string> = { en: 'English', 'zh-hant': '繁體中文', 'zh-hans': '简体中文' };
+
+// The switcher keeps you on the same page. If this page does not exist in a
+// language (an article that was not translated), it goes to that language's
+// parent section instead.
+const parent = path.replace(/[^/]+\/$/, '');
+const langHref = (l: Locale) => localePath(l, availableLocales.includes(l) ? path : parent);
+const isCurrent = (sectionPath: string) => path.startsWith(sectionPath);
+---
+
+<header class:list={['site-nav', `on-${surface}`]}>
+  <nav class="nav wrap" aria-label={t.label}>
+    <a class="wordmark" href={localePath(locale, '/')} aria-label={t.home}>perpmath</a>
+    <div class="nav-links">
+      {
+        sections.map((s) => (
+          <a href={localePath(locale, s.path)} aria-current={isCurrent(s.path) ? 'page' : undefined}>
+            {s.label}
+          </a>
+        ))
+      }
+    </div>
+    <div class="nav-langs" role="group" aria-label={t.language}>
+      {
+        locales.map((l) => (
+          <a
+            href={langHref(l)}
+            lang={htmlLang[l]}
+            hreflang={htmlLang[l]}
+            aria-label={langFull[l]}
+            aria-current={l === locale ? 'true' : undefined}
+          >
+            {langShort[l]}
+          </a>
+        ))
+      }
+    </div>
+  </nav>
+</header>

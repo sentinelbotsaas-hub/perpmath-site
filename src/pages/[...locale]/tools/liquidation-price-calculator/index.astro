@@ -1,0 +1,203 @@
+---
+// Liquidation price calculator. One file serves all three locales.
+// The interactive part is src/scripts/liquidation-calculator.ts; everything
+// on this page is also correct with scripting off (it shows the 20x example).
+import Cta from '../../../../components/Cta.astro';
+import Field from '../../../../components/Field.astro';
+import Scale from '../../../../components/Scale.astro';
+import Segmented from '../../../../components/Segmented.astro';
+import Verdict from '../../../../components/Verdict.astro';
+import { common } from '../../../../i18n/common';
+import { localePath, localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { liquidation } from '../../../../i18n/liquidation';
+import { toolIndex } from '../../../../i18n/tool-index';
+import Base from '../../../../layouts/Base.astro';
+import { liquidationPrice, roomLeft, roundToTick } from '../../../../lib/calc/liquidation';
+import type { Side } from '../../../../lib/calc/liquidation';
+import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../../lib/fmt';
+import { BTCUSDT, snapshotDate, tierOne } from '../../../../lib/risk-limit';
+import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = liquidation[locale];
+const c = common[locale];
+const PATH = '/tools/liquidation-price-calculator/';
+
+// Exchange parameters come from the snapshot, never from a constant here.
+const tier = tierOne(BTCUSDT);
+const mmr = tier.maintenanceMargin;
+const tick = BTCUSDT.tickSize;
+const decimals = tickDecimals(tick);
+const date = snapshotDate(BTCUSDT);
+const limit = formatNumber(tier.riskLimitValue);
+const mmrPct = formatPercent(mmr);
+const price = (n: number) => formatNumber(roundToTick(n, tick), decimals);
+
+// Starting state, also what a reader without JavaScript sees.
+const defaults = { side: 'long' as Side, entry: 68000, lev: 20 };
+const start = liquidationPrice({ side: defaults.side, entryPrice: defaults.entry, leverage: defaults.lev, mmr });
+if (!start.ok) throw new Error('Default calculator state is invalid');
+const startPct = formatPercent(start.distance);
+
+// Two worked examples, computed with the same library the calculator uses.
+function example(side: Side, entry: number, lev: number) {
+  const r = liquidationPrice({ side, entryPrice: entry, leverage: lev, mmr });
+  if (!r.ok) throw new Error('Worked example is invalid');
+  const factor = side === 'long' ? 1 - 1 / lev + mmr : 1 + 1 / lev - mmr;
+  const signs = side === 'long' ? ['−', '+'] : ['+', '−'];
+  const vars = { entry: formatNumber(entry), lev, mmr: mmrPct, price: price(r.liquidationPrice), pct: formatPercent(r.distance) };
+  return {
+    setup: fmt(side === 'long' ? t.examples.setupLong : t.examples.setupShort, vars),
+    working: `${vars.entry} × (1 ${signs[0]} 1 ÷ ${lev} ${signs[1]} ${mmr}) = ${vars.entry} × ${factor.toFixed(4)} = ${vars.price}`,
+    result: fmt(side === 'long' ? t.examples.resultLong : t.examples.resultShort, vars),
+  };
+}
+const ex1 = { title: fmt(t.examples.first, { lev: 20 }), ...example('long', 68000, 20) };
+const ex2 = { title: fmt(t.examples.second, { lev: 50 }), ...example('short', 68000, 50) };
+
+const termVars = { mmr: mmrPct, limit, date };
+const mistakeVars = { pct: formatPercent(roomLeft(20, mmr)) };
+
+// Plain data for the browser script.
+const calcData = JSON.stringify({
+  tick,
+  maxLeverage: tier.maxLeverage,
+  tierLimit: tier.riskLimitValue,
+  defaults: { ...defaults, mmrPct: Number((mmr * 100).toFixed(4)) },
+  liveBusy: t.live.busy,
+  strings: t.ui,
+});
+
+const jsonLd = [
+  softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }),
+  breadcrumbLd(locale, [
+    { name: c.breadcrumb.home, path: '/' },
+    { name: c.nav.tools, path: '/tools/' },
+    { name: toolIndex[locale]['liquidation-price-calculator'].name, path: PATH },
+  ]),
+];
+---
+
+<Base locale={locale} path={PATH} title={t.title} description={t.description} surface="measure" jsonLd={jsonLd}>
+  <section class="measure" data-calc={calcData}>
+    <div class="wrap">
+      <h1 class="head">{t.title}</h1>
+      <p class="sub">{t.lede}</p>
+
+      <div class="sticky-scale">
+        <Scale id="calc-scale" size="s" room={start.room} label={fmt(t.ui.barLabel, { pct: startPct })} />
+        <div class="ends num">
+          <span id="calc-liq">{fmt(t.ui.liquidation, { price: price(start.liquidationPrice) })}</span>
+          <span id="calc-entry">{fmt(t.ui.entry, { price: formatNumber(defaults.entry) })}</span>
+        </div>
+      </div>
+
+      <form class="fields" id="calc-form" novalidate>
+        <Segmented
+          name="side"
+          label={t.fields.side}
+          value={defaults.side}
+          options={[
+            { value: 'long', label: t.fields.long },
+            { value: 'short', label: t.fields.short },
+          ]}
+        />
+        <Field id="entry" label={t.fields.entry} unit="USDT" value={defaults.entry} />
+        <Field id="lev" label={t.fields.leverage} unit={t.fields.leverageUnit} value={defaults.lev} />
+        <Field
+          id="mmr"
+          label={t.fields.mmr}
+          unit="%"
+          value={Number((mmr * 100).toFixed(4))}
+          hint={fmt(t.fields.mmrHint, { limit, date })}
+        />
+        <Field id="qty" label={t.fields.quantity} unit="BTC" hint={t.fields.quantityHint} />
+        <Field id="extra" label={t.fields.extra} unit="USDT" hint={t.fields.extraHint} />
+      </form>
+
+      <div class="acts">
+        <button class="btn quiet" type="button" id="calc-live">{t.live.button}</button>
+      </div>
+      <p class="status" id="calc-status" role="status"></p>
+      <noscript><p class="fine">{t.noscript}</p></noscript>
+    </div>
+  </section>
+
+  <Verdict
+    label={t.result.label}
+    figure={price(start.liquidationPrice)}
+    sentence={fmt(t.ui.long, { pct: startPct })}
+    figureId="calc-figure"
+    sentenceId="calc-sentence"
+  >
+    <p class="fine" id="calc-tier" hidden></p>
+    <Cta
+      locale={locale}
+      pageType="tool"
+      position="result"
+      primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+      secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+    />
+  </Verdict>
+
+  <section class="read">
+    <div class="wrap docs">
+      <nav class="toc" aria-label={t.title}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+        <a class="lnk" href={localePath(locale, '/tools/')}>{t.allTools}</a>
+      </nav>
+
+      <div class="prose">
+        <h2 id="how-it-is-calculated">{t.toc.formula}</h2>
+        <p>{t.formula.intro}</p>
+        <pre>{t.formula.long + '\n' + t.formula.short}</pre>
+        <p>{t.formula.extraIntro}</p>
+        <pre>{t.formula.extraLong + '\n' + t.formula.extraShort}</pre>
+        <ul>
+          {
+            t.formula.terms.map((item) => (
+              <li><strong>{item.term}</strong>{locale === 'en' ? ': ' : '：'}{fmt(item.text, termVars)}</li>
+            ))
+          }
+        </ul>
+        <p>{t.formula.why}</p>
+        <p>{t.formula.leftOut}</p>
+
+        <h2 id="worked-examples">{t.toc.examples}</h2>
+        {
+          [ex1, ex2].map((ex) => (
+            <>
+              <h3>{ex.title}</h3>
+              <p>{ex.setup}</p>
+              <pre>{ex.working}</pre>
+              <p>{ex.result}</p>
+            </>
+          ))
+        }
+
+        <h2 id="common-mistakes">{t.toc.mistakes}</h2>
+        {
+          t.mistakes.map((m) => (
+            <>
+              <h3>{m.title}</h3>
+              <p>{fmt(m.text, mistakeVars)}</p>
+            </>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import '../../../../scripts/liquidation-calculator.ts';
+  </script>
+</Base>

@@ -1,0 +1,407 @@
+---
+// One daily report: the body of /daily/<coin>/ and of /daily/<coin>/<date>/.
+// The underscore keeps this file out of the router.
+//
+// Everything shown is read from one src/data/market/<SYMBOL>/*.json file.
+// The sentences are templates from src/i18n/daily.ts chosen by
+// summarizeSide(); nothing here predicts or recommends.
+import Cta from '../../../components/Cta.astro';
+import Scale from '../../../components/Scale.astro';
+import Verdict from '../../../components/Verdict.astro';
+import { common } from '../../../i18n/common';
+import { localePath } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { daily } from '../../../i18n/daily';
+import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../lib/fmt';
+import { highestSurviving } from '../../../lib/market/compute';
+import type { Side, SurvivalRow } from '../../../lib/market/compute';
+import type { MarketReport } from '../../../lib/market/report';
+import {
+  beforeCjk,
+  calculatorQuery,
+  hourLabel,
+  plainNumber,
+  ratePercent,
+  signedPercent,
+  signedPoints,
+  summarizeSide,
+  utcMinute,
+} from '../../../lib/market/view';
+import type { Coin } from '../../../lib/market/view';
+
+interface Props {
+  locale: Locale;
+  coin: Coin;
+  report: MarketReport;
+  /** true on a dated archive page. */
+  archive?: boolean;
+  /** Dates of the other reports of this coin, newest first. */
+  otherDates?: string[];
+}
+
+const { locale, coin, report, archive = false, otherDates = [] } = Astro.props;
+const t = daily[locale].report;
+const d = daily[locale];
+const c = common[locale];
+const name = locale === 'en' ? d.coins[coin] : beforeCjk(d.coins[coin]);
+const { symbol, day, survival } = report;
+const mmr = report.instrument.tierOne.maintenanceMargin;
+
+const decimals = tickDecimals(report.instrument.tickSize);
+const price = (n: number) => formatNumber(n, decimals);
+const lev = (n: number) => fmt(d.lev, { n });
+const drop = formatPercent(day.adverseLong);
+const rise = formatPercent(day.adverseShort);
+
+// One line of text per side and leverage.
+const outcome = (row: SurvivalRow, side: Side) => {
+  const o = row[side];
+  if (!o.liquidated) return side === 'long' ? t.longSurvived : t.shortSurvived;
+  return fmt(side === 'long' ? t.longLiquidated : t.shortLiquidated, { hour: hourLabel(o.hourUtc ?? 0) });
+};
+
+// The verdict: highest leverage at which neither side was liquidated, and
+// one template sentence per side.
+const both = highestSurviving(survival, 'both');
+const sentence = (side: Side) => {
+  const s = summarizeSide(survival, side);
+  const templates = t[side];
+  if (s.kind === 'allSurvived') return fmt(templates.allSurvived, { min: s.min, max: s.max });
+  if (s.kind === 'mixed') return fmt(templates.mixed, { safe: s.safe, dead: s.dead, hour: hourLabel(s.hourUtc) });
+  return fmt(templates.allLiquidated, { min: s.min, max: s.max, hour: hourLabel(s.hourUtc) });
+};
+
+// The calculator opens with the day's close, this contract's maintenance
+// margin rate and the leverage from the verdict.
+const calculatorHref = localePath(
+  locale,
+  '/tools/liquidation-price-calculator/' +
+    calculatorQuery({ side: 'long', entry: day.close, leverage: both ?? survival[0].leverage, mmr }),
+);
+
+const f = report.funding;
+const oi = report.openInterest;
+const r = report.ratio;
+const oiValue = (value: number) => fmt(t.oi.value, { value: formatNumber(value), unit: oi.unit });
+const usdt = (value: number) => fmt(t.funding.usdt, { value: plainNumber(value) });
+---
+
+<section class="measure">
+  <div class="wrap">
+    <h1 class="head">{fmt(t.head, { name })}</h1>
+    <p class="sub">{fmt(t.lede, { date: report.reportDate, open: price(day.open), symbol, drop, rise })}</p>
+
+    <ol class="rungs" aria-label={t.barsLabel}>
+      {
+        survival.map((row) => (
+          <li>
+            <div class="rung-top">
+              <span class="num rung-lev">{lev(row.leverage)}</span>
+              <span>{fmt(t.room, { pct: formatPercent(row.room) })}</span>
+              <span class="rung-out">
+                <span>{outcome(row, 'long')}</span>
+                <span>{outcome(row, 'short')}</span>
+              </span>
+            </div>
+            <div class="bar">
+              <Scale
+                size="s"
+                room={row.room}
+                label={fmt(t.barLabel, { lev: lev(row.leverage), room: formatPercent(row.room), drop, rise })}
+              />
+              <span
+                class:list={['tick', 'drop', { past: row.long.liquidated }]}
+                style={`--at:${Math.min(1, day.adverseLong).toFixed(4)}`}
+                aria-hidden="true"
+              />
+              <span
+                class:list={['tick', 'rise', { past: row.short.liquidated }]}
+                style={`--at:${Math.min(1, day.adverseShort).toFixed(4)}`}
+                aria-hidden="true"
+              />
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="fine">{fmt(t.legend, { mmr: formatPercent(mmr) })}</p>
+  </div>
+</section>
+
+<Verdict
+  label={t.verdictLabel}
+  figure={both === null ? d.none : lev(both)}
+  sentence={sentence('long') + (locale === 'en' ? ' ' : '') + sentence('short')}
+>
+  <Cta
+    locale={locale}
+    pageType="daily"
+    position="result"
+    primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+    secondary={
+      // The calculator is built for BTCUSDT (its labels, tick size and unit).
+      // Other contracts get no prefilled link until it takes a symbol.
+      symbol === 'BTCUSDT' ? { label: t.calculator, href: calculatorHref } : undefined
+    }
+  />
+</Verdict>
+
+<section class="read">
+  <div class="wrap">
+    <h2 class="section-head">{t.history.head}</h2>
+    <div class="tw">
+      <table>
+        <caption>
+          {
+            fmt(t.history.caption, {
+              from: report.survival90.from,
+              to: report.survival90.to,
+              total: report.survival90.days,
+              mmr: formatPercent(mmr),
+            })
+          }
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">{t.history.leverage}</th>
+            <th scope="col">{t.history.long}</th>
+            <th scope="col">{t.history.short}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            report.survival90.rows.map((row) => (
+              <tr>
+                <th scope="row" class="num">{lev(row.leverage)}</th>
+                <td class="num">
+                  {fmt(t.history.cell, { days: row.long.days, total: report.survival90.days, share: formatPercent(row.long.share, 1) })}
+                </td>
+                <td class="num">
+                  {fmt(t.history.cell, { days: row.short.days, total: report.survival90.days, share: formatPercent(row.short.share, 1) })}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <a class="lnk" href={localePath(locale, '/data/liquidation/')}>{t.history.link}</a>
+  </div>
+</section>
+
+<section class="read">
+  <div class="wrap">
+    <h2 class="section-head">{t.numbersHead}</h2>
+    <div class="trio">
+      <div>
+        <h3>{t.funding.head}</h3>
+        <table>
+          <tbody>
+            <tr>
+              <th scope="row">{fmt(t.funding.latest, { time: utcMinute(f.latest.time) })}</th>
+              <td class="num">{ratePercent(f.latest.rate)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.funding.average}</th>
+              <td class="num">{ratePercent(f.average7d)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{fmt(t.funding.perDay, { notional: formatNumber(f.notional) })}</th>
+              <td class="num">{usdt(f.costPerDay)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.funding.per30}</th>
+              <td class="num">{usdt(f.costPer30Days)}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="fine">{fmt(t.funding.note, { notional: formatNumber(f.notional) })}</p>
+        <a class="lnk" href={localePath(locale, '/data/funding-rate/')}>{t.funding.link}</a>
+      </div>
+      <div>
+        <h3>{t.oi.head}</h3>
+        <table>
+          <tbody>
+            <tr>
+              <th scope="row">{fmt(t.oi.latest, { time: utcMinute(oi.latest.time) })}</th>
+              <td class="num">{oiValue(oi.latest.value)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.oi.weekAgo}</th>
+              <td class="num">{oiValue(oi.weekAgo.value)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.oi.change}</th>
+              <td class="num">{signedPercent(oi.change7d)}</td>
+            </tr>
+          </tbody>
+        </table>
+        <a class="lnk" href={localePath(locale, '/data/open-interest/')}>{t.oi.link}</a>
+      </div>
+      <div>
+        <h3>{t.ratio.head}</h3>
+        <table>
+          <tbody>
+            <tr>
+              <th scope="row">{t.ratio.long}</th>
+              <td class="num">{formatPercent(r.latest.buyRatio)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.ratio.short}</th>
+              <td class="num">{formatPercent(r.latest.sellRatio)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{fmt(t.ratio.ratio, { time: utcMinute(r.latest.time) })}</th>
+              <td class="num">{formatNumber(r.latest.longShort, 2)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.ratio.change}</th>
+              <td class="num">{fmt(t.ratio.points, { value: signedPoints(r.longShareChange7d) })}</td>
+            </tr>
+          </tbody>
+        </table>
+        <a class="lnk" href={localePath(locale, '/data/long-short-ratio/')}>{t.ratio.link}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="read">
+  <div class="wrap">
+    <p class="fine">{fmt(t.source, { time: utcMinute(report.fetchedAt) })}</p>
+    <p class="fine">{t.method}</p>
+    <nav class="more" aria-label={t.earlier}>
+      {
+        archive ? (
+          <a class="lnk" href={localePath(locale, `/daily/${coin}/`)}>
+            {fmt(t.latest, { name })}
+          </a>
+        ) : (
+          <a class="lnk" href={localePath(locale, `/daily/${coin}/${report.reportDate}/`)}>
+            {t.permalink}
+          </a>
+        )
+      }
+      <a class="lnk" href={localePath(locale, '/daily/')}>{t.all}</a>
+      {
+        otherDates.map((date) => (
+          <a class="lnk num" href={localePath(locale, `/daily/${coin}/${date}/`)}>
+            {date}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</section>
+
+<style>
+  /* The survival table as bars: one row per leverage. */
+  .rungs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+  }
+
+  .rung-top {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(0, auto) minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0 var(--space-md);
+    font-size: var(--text-sm);
+  }
+
+  .rung-lev {
+    font-size: var(--text-lg);
+  }
+
+  .rung-out {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0 var(--space-md);
+  }
+
+  /* Scale draws the bar; the two marks sit on top of it. The bar has a
+     border of --space-2xs, so positions are measured inside that border. */
+  .bar {
+    position: relative;
+    margin-top: var(--space-2xs);
+  }
+
+  .bar :global(.scale) {
+    height: var(--space-xl);
+    margin-top: 0;
+  }
+
+  .tick {
+    position: absolute;
+    left: calc(var(--space-2xs) + (100% - 2 * var(--space-2xs)) * var(--at, 0));
+    width: var(--line);
+    height: calc(50% - var(--space-2xs));
+    background: var(--color-ink);
+    transform: translateX(-50%);
+  }
+
+  /* Past the light part the mark is drawn in the light colour. */
+  .tick.past {
+    background: var(--color-paper);
+  }
+
+  .tick.drop {
+    top: var(--space-2xs);
+  }
+
+  .tick.rise {
+    bottom: var(--space-2xs);
+  }
+
+  /* Funding, open interest, ratio: three plain columns. */
+  .trio {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-xl);
+    margin-top: var(--space-lg);
+    align-items: start;
+  }
+
+  .trio h3 {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .trio th {
+    font-weight: 400;
+  }
+
+  .trio td {
+    white-space: nowrap;
+  }
+
+  .tw {
+    margin-top: var(--space-lg);
+  }
+
+  .more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-lg);
+    margin-top: var(--space-md);
+  }
+
+  @media (max-width: 760px) {
+    .rung-top {
+      grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    }
+
+    .rung-out {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+    }
+
+    .trio {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

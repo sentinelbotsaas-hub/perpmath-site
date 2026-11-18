@@ -1,0 +1,74 @@
+/* Hallmark · shape: stacked full-width bands, one job each (measure, state the result, read) · genre: modern-minimal · theme: custom, carried over from docs/plan-edu-site/wireframes.html · job: try · idea: "every quantity on the site is drawn at its true proportion" · vibe: "measured, blunt, one loud field, drawn to scale" · paper: oklch(97.5% 0.004 250) · accent: none as an accent, the coral field oklch(74% 0.14 28) is a surface · display: Rethink Sans · body: Rethink Sans · outlier: Azeret Mono for numbers and code only · hero: a headline with a live leverage number over a full-width bar whose light sliver is the room left · nav: wordmark, section links, language switcher · footer: links, risk warning, affiliate disclosure · imagery: none, the bars are the picture · signature: the to-scale bar · axes: light/grotesk-heavy/chromatic-coral · posture: three surfaces by job, the coral is a declared surface and never an accent · v2.0.0 */
+/* Hallmark · pre-emit critique: P5 H4 E4 S5 R4 V3 · weakest: V, the home page is three bands and a footer because the backtest and bot sections have no real content yet; left them out instead of filling them with placeholders */
+/* Hallmark · waive 37 · two loaded families, Rethink Sans and Azeret Mono; PingFang and the Microsoft faces are system fallbacks named in --font-cjk · the site is trilingual and Chinese glyphs must fall back to a system font, with a different one for Traditional and Simplified */
+/* Hallmark · dismissed 77 · the home page has four sections because the two planned ones, latest backtests and the open-source bot, have no real content yet and were left out instead of being filled with placeholders */
+/* Hallmark · dismissed 58 · the home, about and disclosure screens that reach 81 to 95 words are the ones the footer shares, and its risk warning and affiliate disclosure lines are required on every page */
+/* Hallmark · motion signature: none. The bar is a control that follows the input instantly; nothing on the site animates. */
+
+/* Design tokens. Every colour, font family and spacing value on the site is
+   declared here and used through var(). Do not write a literal colour,
+   font-family, padding, margin or gap anywhere else. */
+:root {
+  /* spacing, 4px scale */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  --section-gap: 120px;
+
+  /* sizes that are not spacing */
+  --tap: 48px; /* minimum height of anything you can click or tap */
+  --line: 2px; /* control borders */
+  --hairline: 1px; /* rules between rows */
+  --radius: 4px;
+  --container: 1200px;
+  --measure: 68ch; /* reading width */
+
+  /* type scale */
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5625rem;
+  --text-2xl: 1.953rem;
+  --text-section: clamp(2rem, 2.5vw + 1rem, 2.75rem);
+  --text-display: clamp(2.25rem, 4.6vw + 0.5rem, 4.5rem);
+  --text-figure: clamp(3rem, 7vw, 6rem);
+  --leading-body: 1.55;
+  --leading-display: 1.02;
+  --leading-figure: 1;
+
+  /* colour: three surfaces, one ink */
+  --color-paper: oklch(97.5% 0.004 250); /* white, to read */
+  --color-paper-2: oklch(74% 0.14 28); /* coral, to measure */
+  --color-ink: oklch(19% 0.015 250); /* ink, to state the result */
+  --color-muted: oklch(40% 0.015 250);
+  --color-rule: oklch(80% 0.01 250);
+  --color-focus: oklch(19% 0.015 250);
+  --color-focus-inv: oklch(97.5% 0.004 250);
+
+  /* state strengths (opacity only, no extra colours) */
+  --opacity-hover: 0.86;
+  --opacity-disabled: 0.45;
+
+  /* fonts. Latin comes from the two webfonts; Chinese falls back to system fonts. */
+  --font-cjk: "PingFang TC", "Microsoft JhengHei";
+  --font-display: "Rethink Sans", ui-sans-serif, var(--font-cjk), sans-serif;
+  --font-body: "Rethink Sans", ui-sans-serif, var(--font-cjk), sans-serif;
+  --font-outlier: "Azeret Mono", ui-monospace, monospace;
+}
+
+/* Simplified Chinese pages use the Mainland system fonts. */
+:root:lang(zh-Hans) {
+  --font-cjk: "PingFang SC", "Microsoft YaHei";
+}
+
+/* Chinese glyphs fill the whole em box, so display lines need more leading. */
+:root:lang(zh-Hant),
+:root:lang(zh-Hans) {
+  --leading-display: 1.2;
+  --leading-body: 1.7;
+}

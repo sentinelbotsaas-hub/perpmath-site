@@ -1,0 +1,60 @@
+---
+// /daily/btc/, /daily/eth/, /daily/sol/: the latest report at a fixed address.
+// Rebuilt every day from src/data/market/<SYMBOL>/latest.json.
+import { common } from '../../../../i18n/common';
+import { localeParam, locales } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { daily } from '../../../../i18n/daily';
+import Base from '../../../../layouts/Base.astro';
+import { fmt } from '../../../../lib/fmt';
+import { datedReports, latestReport } from '../../../../lib/market/store';
+import { COINS, beforeCjk } from '../../../../lib/market/view';
+import type { Coin, MarketSymbol } from '../../../../lib/market/view';
+import { breadcrumbLd } from '../../../../lib/seo';
+import Report from '../_Report.astro';
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    COINS.map(({ coin, symbol }) => ({
+      params: { locale: localeParam(locale), coin },
+      props: { locale, coin, symbol },
+    })),
+  );
+}
+
+interface Props {
+  locale: Locale;
+  coin: Coin;
+  symbol: MarketSymbol;
+}
+
+const { locale, coin, symbol } = Astro.props;
+const t = daily[locale];
+const c = common[locale];
+const report = latestReport(symbol);
+const name = locale === 'en' ? t.coins[coin] : beforeCjk(t.coins[coin]);
+const path = `/daily/${coin}/`;
+
+// Links to the other days on file, newest first. Fourteen is two weeks.
+const otherDates = datedReports(symbol)
+  .map((entry) => entry.date)
+  .filter((date) => date !== report.reportDate)
+  .slice(0, 14);
+
+const jsonLd = breadcrumbLd(locale, [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.daily, path: '/daily/' },
+  { name: fmt(t.report.head, { name }), path },
+]);
+---
+
+<Base
+  locale={locale}
+  path={path}
+  title={fmt(t.report.title, { name, symbol })}
+  description={fmt(t.report.description, { symbol })}
+  surface="measure"
+  jsonLd={jsonLd}
+>
+  <Report locale={locale} coin={coin} report={report} otherDates={otherDates} />
+</Base>

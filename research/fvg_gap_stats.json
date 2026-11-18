@@ -1,0 +1,75 @@
+{
+  "question": "What happened to each fair value gap on BTCUSDT 15m, by the engine's rules?",
+  "engine_repository": "https://github.com/sentinelbotsaas-hub/perpmath",
+  "rules": "src/perpmath/strategies/fvg.py, parameters from configs/fvg.json",
+  "params": {
+    "atr_period": 14,
+    "min_gap_atr": 0.5,
+    "max_wait_bars": 96,
+    "stop_buffer_atr": 0.1,
+    "r_multiple": 2.0
+  },
+  "data": {
+    "file": "BTCUSDT-15m.csv",
+    "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+    "bars": 35040,
+    "first_bar": "2025-11-18T11:30:00Z",
+    "last_bar": "2026-11-18T11:15:00Z"
+  },
+  "three_candle_gaps_any_size": {
+    "bullish": 3570,
+    "bearish": 3606,
+    "total": 7176,
+    "share_of_bars_pct": 20.48
+  },
+  "gaps_passing_size_filter": {
+    "bullish": 977,
+    "bearish": 953,
+    "total": 1930,
+    "share_of_all_gaps_pct": 26.9,
+    "per_day": 5.29
+  },
+  "outcome": {
+    "entered": 1607,
+    "failed": 169,
+    "expired": 154,
+    "open": 0
+  },
+  "outcome_by_side": {
+    "bullish": {
+      "entered": 823,
+      "failed": 92,
+      "expired": 62,
+      "open": 0
+    },
+    "bearish": {
+      "entered": 784,
+      "failed": 77,
+      "expired": 92,
+      "open": 0
+    }
+  },
+  "outcome_share_pct": {
+    "entered": 83.26,
+    "failed": 8.76,
+    "expired": 7.98,
+    "open": 0.0
+  },
+  "returned_within_max_wait": {
+    "gaps": 1776,
+    "share_pct": 92.02,
+    "of_those_entered_pct": 90.48,
+    "of_those_failed_pct": 9.52,
+    "median_bars_to_return": 2.0,
+    "returned_on_next_bar": 826,
+    "returned_on_next_bar_pct": 46.51,
+    "returned_within_4_bars_pct": 72.8,
+    "p90_bars_to_return": 19
+  },
+  "zone_height_pct_of_price": {
+    "median": 0.2182,
+    "mean": 0.287
+  },
+  "signal_bars": 1592,
+  "cross_check": "signal bars identical to perpmath.strategies.fvg.generate on the same file"
+}

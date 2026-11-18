@@ -1,0 +1,195 @@
+---
+// /data/liquidation/: what liquidation is, and on how many of the last 90
+// days each leverage would have been liquidated, for the three contracts.
+// There is no live liquidation feed behind this page and no heatmap on it;
+// the page says so in its first screen.
+import { localePath, localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { daily } from '../../../../i18n/daily';
+import { data } from '../../../../i18n/data';
+import { fmt, formatPercent } from '../../../../lib/fmt';
+import {
+  LEVERAGES,
+  adverseMoves,
+  highestSurviving,
+  roomAt,
+  survivalTable,
+  utcDayStart,
+} from '../../../../lib/market/compute';
+import type { MarketReport } from '../../../../lib/market/report';
+import { latestReports } from '../../../../lib/market/store';
+import { signedPercent } from '../../../../lib/market/view';
+import ContractTable from '../_ContractTable.astro';
+import DataShell from '../_DataShell.astro';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = data[locale];
+const p = t.liquidation;
+const d = daily[locale];
+const entries = latestReports();
+const first = entries[0].report;
+const lev = (n: number | null) => (n === null ? d.none : fmt(d.lev, { n }));
+
+const dayRows = entries.map(({ coin, symbol, report }) => ({
+  coin,
+  symbol,
+  cells: [
+    formatPercent(report.instrument.tierOne.maintenanceMargin),
+    formatPercent(report.day.adverseLong),
+    formatPercent(report.day.adverseShort),
+    lev(highestSurviving(report.survival, 'long')),
+    lev(highestSurviving(report.survival, 'short')),
+  ],
+}));
+
+// 90-day statistic: one small table per contract, a row per leverage.
+const statCell = (report: MarketReport, leverage: number, side: 'long' | 'short') => {
+  const row = report.survival90.rows.find((r) => r.leverage === leverage);
+  if (!row) return p.notOffered;
+  return fmt(p.statsCell, { days: row[side].days, share: formatPercent(row[side].share, 1) });
+};
+
+// 30 days, newest first: the highest leverage that survived both ways, with
+// that day's largest drop and rise.
+const dates = first.history.daily.slice(-30).map((day) => day.date).reverse();
+const dayCell = (report: MarketReport, date: string) => {
+  const day = report.history.daily.find((row) => row.date === date);
+  if (!day) return '';
+  const candle = { start: utcDayStart(day.date), open: day.open, high: day.high, low: day.low, close: day.close };
+  const tier = report.instrument.tierOne;
+  const rows = survivalTable(candle, [], { mmr: tier.maintenanceMargin, maxLeverage: tier.maxLeverage });
+  const moves = adverseMoves(candle);
+  return fmt(p.historyCell, {
+    lev: lev(highestSurviving(rows, 'both')),
+    drop: signedPercent(-moves.long),
+    rise: signedPercent(moves.short),
+  });
+};
+
+const btcMmr = first.instrument.tierOne.maintenanceMargin;
+const vars = {
+  mmr: formatPercent(btcMmr),
+  room: formatPercent(roomAt(20, btcMmr)),
+  days: first.survival90.days,
+};
+---
+
+<DataShell
+  locale={locale}
+  slug="liquidation"
+  title={p.title}
+  description={p.description}
+  sub={p.sub}
+  definition={fmt(p.definition, vars)}
+  how={p.how}
+  read={p.read.map((line) => fmt(line, vars))}
+  reports={entries.map((e) => e.report)}
+  secondary={{ label: t.common.calculator, href: localePath(locale, '/tools/liquidation-price-calculator/') }}
+>
+  <p class="plain" slot="lead">{p.noFeed}</p>
+
+  <Fragment slot="now">
+    <ContractTable
+      locale={locale}
+      contractLabel={t.common.contract}
+      columns={[p.columns.mmr, p.columns.drop, p.columns.rise, p.columns.long, p.columns.short]}
+      rows={dayRows}
+    />
+
+    <h2 class="section-head next">{p.statsHead}</h2>
+    <div class="trio">
+      {
+        entries.map(({ symbol, report }) => (
+          <div>
+            <h3 class="num">{symbol}</h3>
+            <div class="tw">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">{p.leverage}</th>
+                  <th scope="col">{p.long}</th>
+                  <th scope="col">{p.short}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {LEVERAGES.map((leverage) => (
+                  <tr>
+                    <th scope="row" class="num">{lev(leverage)}</th>
+                    <td class="num">{statCell(report, leverage, 'long')}</td>
+                    <td class="num">{statCell(report, leverage, 'short')}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    <p class="fine">
+      {fmt(p.statsCaption, { days: first.survival90.days, from: first.survival90.from, to: first.survival90.to })}
+    </p>
+  </Fragment>
+
+  <div class="tw" slot="history">
+    <table>
+      <caption>{p.historyCaption}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{t.common.date}</th>
+          {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          dates.map((date) => (
+            <tr>
+              <th scope="row" class="num">{date}</th>
+              {entries.map(({ report }) => <td class="num">{dayCell(report, date)}</td>)}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <style>
+    .plain {
+      max-width: var(--measure);
+      margin-top: var(--space-md);
+    }
+
+    .next {
+      margin-top: var(--space-2xl);
+    }
+
+    /* One small table per contract, side by side where there is room. */
+    .trio {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-xl);
+      margin-top: var(--space-lg);
+    }
+
+    .trio h3 {
+      font-size: var(--text-lg);
+      font-weight: 400;
+    }
+
+    .trio td {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1000px) {
+      .trio {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</DataShell>

@@ -1,0 +1,43 @@
+---
+// 404. A static host serves one 404 file for every missing address, so this
+// page carries all three languages, one band each, and a small script hides
+// the two that do not match the address. Without scripting all three show.
+import { htmlLang, localePath, locales } from '../i18n/config';
+import { pages } from '../i18n/pages';
+import Base from '../layouts/Base.astro';
+
+const en = pages.en.notFound;
+---
+
+<Base locale="en" path="/404/" switcherPath="/" title={en.title} description={en.description} noindex>
+  {
+    locales.map((locale) => {
+      const t = pages[locale].notFound;
+      const Heading = locale === 'en' ? 'h1' : 'h2';
+      return (
+        <section class="read band" lang={htmlLang[locale]} data-404={locale}>
+          <div class="wrap">
+            <Heading class="head">{t.head}</Heading>
+            <p class="sub">{t.body}</p>
+            <div class="acts">
+              <a class="btn" href={localePath(locale, '/')}>{t.toHome}</a>
+              <a class="lnk" href={localePath(locale, '/tools/')}>{t.toTools}</a>
+            </div>
+          </div>
+        </section>
+      );
+    })
+  }
+  <script is:inline>
+    (function () {
+      var first = location.pathname.split('/')[1];
+      var current = first === 'zh-hant' || first === 'zh-hans' ? first : 'en';
+      var blocks = document.querySelectorAll('[data-404]');
+      for (var i = 0; i < blocks.length; i++) {
+        if (blocks[i].getAttribute('data-404') !== current) blocks[i].hidden = true;
+      }
+      var map = { en: 'en', 'zh-hant': 'zh-Hant', 'zh-hans': 'zh-Hans' };
+      document.documentElement.lang = map[current];
+    })();
+  </script>
+</Base>

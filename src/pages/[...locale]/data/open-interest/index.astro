@@ -1,0 +1,88 @@
+---
+// /data/open-interest/: contracts open at the close of the report day, the
+// 7-day change, plus 30 daily readings.
+import { localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { data } from '../../../../i18n/data';
+import { fmt, formatNumber } from '../../../../lib/fmt';
+import { latestReports } from '../../../../lib/market/store';
+import { signedPercent, utcMinute } from '../../../../lib/market/view';
+import ContractTable from '../_ContractTable.astro';
+import DataShell from '../_DataShell.astro';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = data[locale];
+const p = t.oi;
+const entries = latestReports();
+const first = entries[0].report;
+const amount = (value: number, unit: string) => fmt(p.value, { value: formatNumber(value), unit });
+
+const rows = entries.map(({ coin, symbol, report }) => ({
+  coin,
+  symbol,
+  cells: [
+    amount(report.openInterest.latest.value, report.openInterest.unit),
+    amount(report.openInterest.weekAgo.value, report.openInterest.unit),
+    signedPercent(report.openInterest.change7d),
+  ],
+}));
+
+// 30 readings, newest first, one column per contract.
+const times = first.history.openInterest.map((r) => r.time).reverse();
+const cellAt = (index: number, time: string) => {
+  const report = entries[index].report;
+  const reading = report.history.openInterest.find((r) => r.time === time);
+  return reading ? amount(reading.value, report.openInterest.unit) : '';
+};
+---
+
+<DataShell
+  locale={locale}
+  slug="open-interest"
+  title={p.title}
+  description={p.description}
+  sub={p.sub}
+  definition={p.definition}
+  how={p.how}
+  read={p.read}
+  reports={entries.map((e) => e.report)}
+  live={{ kind: 'oi', cell: t.live.oi }}
+>
+  <ContractTable
+    slot="now"
+    locale={locale}
+    contractLabel={t.common.contract}
+    columns={[p.columns.latest, p.columns.weekAgo, p.columns.change]}
+    rows={rows}
+    note={fmt(p.caption, { time: utcMinute(first.openInterest.latest.time) })}
+    liveLabel={t.common.now}
+  />
+
+  <div class="tw" slot="history">
+    <table>
+      <caption>{p.historyCaption}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{t.common.reading}</th>
+          {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          times.map((time) => (
+            <tr>
+              <th scope="row" class="num">{utcMinute(time)}</th>
+              {entries.map((_, i) => <td class="num">{cellAt(i, time)}</td>)}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</DataShell>

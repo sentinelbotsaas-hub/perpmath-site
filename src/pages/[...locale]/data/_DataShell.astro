@@ -1,0 +1,157 @@
+---
+// The frame the four data pages share: headline, the table for the report
+// day (slot "now"), definition, how it is calculated, how to read it, the
+// 30-day table (slot "history"), exits and the source line.
+// The underscore keeps this file out of the router.
+//
+//   <DataShell locale={locale} slug="funding-rate" ... live={{ kind: 'funding', cell: l.funding }}>
+//     <Fragment slot="now">   ... table ... </Fragment>
+//     <Fragment slot="history"> ... table ... </Fragment>
+//   </DataShell>
+//
+// With `live`, a button appears under the first table when scripting is on
+// (src/scripts/market-live.ts). Cells marked data-live-head / data-live-cell
+// in the "now" slot are the hidden column it fills.
+import Cta from '../../../components/Cta.astro';
+import { common } from '../../../i18n/common';
+import { localePath } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { data } from '../../../i18n/data';
+import Base from '../../../layouts/Base.astro';
+import { fmt } from '../../../lib/fmt';
+import type { MarketReport } from '../../../lib/market/report';
+import { utcMinute } from '../../../lib/market/view';
+import { breadcrumbLd } from '../../../lib/seo';
+
+type Slug = 'funding-rate' | 'long-short-ratio' | 'open-interest' | 'liquidation';
+
+interface Props {
+  locale: Locale;
+  slug: Slug;
+  title: string;
+  description: string;
+  sub: string;
+  /** Already filled in: no placeholders left. */
+  definition: string;
+  how: string[];
+  read: string[];
+  /** The latest reports, one per contract, in page order. */
+  reports: MarketReport[];
+  live?: { kind: 'funding' | 'oi' | 'ratio'; cell: string };
+  /** Second action next to the testnet button. Default: the daily reports. */
+  secondary?: { label: string; href: string };
+}
+
+const { locale, slug, title, description, sub, definition, how, read, reports, live, secondary } = Astro.props;
+const t = data[locale];
+const c = common[locale];
+const path = `/data/${slug}/`;
+const first = reports[0];
+
+const liveData = live
+  ? JSON.stringify({
+      kind: live.kind,
+      date: first.reportDate,
+      symbols: reports.map((r) => ({ symbol: r.symbol, unit: r.baseCoin })),
+      strings: { busy: t.live.busy, ok: t.live.ok, fail: t.live.fail, cell: live.cell },
+    })
+  : undefined;
+
+// The date must not break at its hyphens, so it gets its own element.
+const dayHead = t.common.dayHead.split('{date}');
+
+const jsonLd = breadcrumbLd(locale, [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.data, path: '/data/' },
+  { name: t.names[slug].name, path },
+]);
+---
+
+<Base locale={locale} path={path} title={title} description={description} jsonLd={jsonLd}>
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{t.names[slug].name}</h1>
+      <p class="sub">{sub}</p>
+      <slot name="lead" />
+    </div>
+  </section>
+
+  <section class="read" data-live={liveData}>
+    <div class="wrap">
+      <h2 class="section-head">
+        {dayHead[0]}<span class="keep">{first.reportDate}</span>{dayHead[1]}
+      </h2>
+      <slot name="now" />
+      {
+        live && (
+          <>
+            <div class="acts">
+              <button class="btn quiet" type="button" id="live-button" hidden>
+                {t.live.button}
+              </button>
+            </div>
+            <p class="status" id="live-status" role="status" />
+          </>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="read">
+    <div class="wrap">
+      <div class="prose">
+        <h2>{t.common.what}</h2>
+        <p>{definition}</p>
+        <h2>{t.common.how}</h2>
+        <ul>
+          {how.map((line) => <li>{line}</li>)}
+        </ul>
+        <h2>{t.common.read}</h2>
+        <ul>
+          {read.map((line) => <li>{line}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="read">
+    <div class="wrap">
+      <h2 class="section-head">{t.common.history}</h2>
+      <slot name="history" />
+    </div>
+  </section>
+
+  <section class="read">
+    <div class="wrap">
+      <Cta
+        locale={locale}
+        pageType="data"
+        position="end"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={secondary ?? { label: t.common.daily, href: localePath(locale, '/daily/') }}
+      />
+      <p class="fine">{fmt(t.common.source, { date: first.reportDate, time: utcMinute(first.fetchedAt) })}</p>
+    </div>
+  </section>
+
+  <script>
+    import '../../../scripts/market-live.ts';
+  </script>
+
+  <style>
+    /* Tables arrive through slots, so they are not in this file's scope. */
+    .wrap :global(.tw) {
+      margin-top: var(--space-lg);
+    }
+
+    /* Wide tables scroll sideways inside .tw instead of breaking a figure in two. */
+    .wrap :global(.tw td),
+    .wrap :global(.tw tbody th) {
+      white-space: nowrap;
+    }
+
+    .keep {
+      white-space: nowrap;
+    }
+  </style>
+</Base>

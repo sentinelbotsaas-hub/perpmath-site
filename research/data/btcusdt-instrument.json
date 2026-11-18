@@ -1,0 +1,7 @@
+{
+  "source": "https://api.bybit.com/v5/market/instruments-info?category=linear&symbol=BTCUSDT",
+  "fetched_at": "2026-11-18T12:06:46Z",
+  "fundingInterval_minutes": 480,
+  "upperFundingRate": "0.00333",
+  "lowerFundingRate": "-0.00333"
+}

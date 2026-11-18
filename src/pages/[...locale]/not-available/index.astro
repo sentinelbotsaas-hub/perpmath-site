@@ -1,0 +1,45 @@
+---
+// /not-available/: where /go/bybit/ sends visitors from gated regions (see
+// site.config.mjs and vercel.json). Not indexed.
+//
+// The redirect always lands on the English page because the exit link carries
+// no language. The small script below moves the visitor to the page in the
+// language they came from, using the referrer. Without scripting they stay on
+// the English page and can use the language switcher.
+import { localePath, localeStaticPaths } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { pages } from '../../../i18n/pages';
+import Base from '../../../layouts/Base.astro';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = pages[locale].notAvailable;
+
+const followReferrerLanguage = [
+  '(function(){try{',
+  'var r=document.referrer;if(!r)return;',
+  'var u=new URL(r);if(u.origin!==location.origin)return;',
+  "var p=u.pathname.split('/')[1];",
+  "if(p==='zh-hant'||p==='zh-hans')location.replace('/'+p+'/not-available/');",
+  '}catch(e){}})();',
+].join('');
+---
+
+<Base locale={locale} path="/not-available/" title={t.title} description={t.description} noindex>
+  {locale === 'en' && <script is:inline slot="head" set:html={followReferrerLanguage} />}
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{t.head}</h1>
+      <p class="sub">{t.body}</p>
+      <div class="acts">
+        <a class="btn" href={localePath(locale, '/tools/')}>{t.toTools}</a>
+        <a class="lnk" href={localePath(locale, '/disclosure/')}>{t.why}</a>
+      </div>
+    </div>
+  </section>
+</Base>

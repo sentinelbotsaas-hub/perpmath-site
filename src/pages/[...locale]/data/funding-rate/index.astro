@@ -1,0 +1,91 @@
+---
+// /data/funding-rate/: last settlement, 7-day average and what it costs a
+// long, for the three contracts, plus 30 days of daily sums.
+import { localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { data } from '../../../../i18n/data';
+import { fmt, formatNumber } from '../../../../lib/fmt';
+import { latestReports } from '../../../../lib/market/store';
+import { plainNumber, ratePercent } from '../../../../lib/market/view';
+import ContractTable from '../_ContractTable.astro';
+import DataShell from '../_DataShell.astro';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = data[locale];
+const p = t.funding;
+const entries = latestReports();
+const first = entries[0].report;
+const notional = formatNumber(first.funding.notional);
+const usdt = (value: number) => fmt(p.usdt, { value: plainNumber(value) });
+
+const rows = entries.map(({ coin, symbol, report }) => ({
+  coin,
+  symbol,
+  cells: [
+    fmt(p.latestCell, { rate: ratePercent(report.funding.latest.rate), time: report.funding.latest.time.slice(11, 16) }),
+    ratePercent(report.funding.average7d),
+    usdt(report.funding.costPerDay),
+    usdt(report.funding.costPer30Days),
+  ],
+}));
+
+// 30 days, newest first, one column per contract.
+const dates = first.history.funding.map((d) => d.date).reverse();
+const sumOn = (index: number, date: string) => entries[index].report.history.funding.find((d) => d.date === date)?.sum;
+
+const vars = { date: first.reportDate, notional, hours: first.instrument.fundingIntervalHours };
+---
+
+<DataShell
+  locale={locale}
+  slug="funding-rate"
+  title={p.title}
+  description={p.description}
+  sub={p.sub}
+  definition={fmt(p.definition, vars)}
+  how={p.how.map((line) => fmt(line, vars))}
+  read={p.read}
+  reports={entries.map((e) => e.report)}
+  live={{ kind: 'funding', cell: t.live.funding }}
+>
+  <ContractTable
+    slot="now"
+    locale={locale}
+    contractLabel={t.common.contract}
+    columns={[p.columns.latest, p.columns.average, p.columns.perDay, p.columns.per30]}
+    rows={rows}
+    note={fmt(p.caption, { notional })}
+    liveLabel={t.common.now}
+  />
+
+  <div class="tw" slot="history">
+    <table>
+      <caption>{p.historyCaption}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{t.common.date}</th>
+          {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          dates.map((date) => (
+            <tr>
+              <th scope="row" class="num">{date}</th>
+              {entries.map((_, i) => {
+                const sum = sumOn(i, date);
+                return <td class="num">{sum === undefined ? '' : ratePercent(sum)}</td>;
+              })}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</DataShell>

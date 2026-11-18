@@ -1,0 +1,50 @@
+---
+// /data/: the four data pages, each with the one question it answers.
+import { common } from '../../../i18n/common';
+import { localePath, localeStaticPaths } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { data } from '../../../i18n/data';
+import Base from '../../../layouts/Base.astro';
+import { breadcrumbLd } from '../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = data[locale];
+const c = common[locale];
+const slugs = ['funding-rate', 'long-short-ratio', 'open-interest', 'liquidation'] as const;
+
+const jsonLd = breadcrumbLd(locale, [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.data, path: '/data/' },
+]);
+---
+
+<Base locale={locale} path="/data/" title={t.index.title} description={t.index.description} jsonLd={jsonLd}>
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{t.index.head}</h1>
+      <p class="sub">{t.index.sub}</p>
+    </div>
+  </section>
+  <section class="read">
+    <div class="wrap">
+      <ol class="index">
+        {
+          slugs.map((slug) => (
+            <li>
+              <a class="name" href={localePath(locale, `/data/${slug}/`)}>
+                {t.names[slug].name}
+              </a>
+              <span class="question">{t.names[slug].question}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+</Base>

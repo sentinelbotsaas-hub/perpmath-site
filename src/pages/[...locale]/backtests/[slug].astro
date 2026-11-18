@@ -1,0 +1,603 @@
+---
+// /backtests/<slug>/: one published backtest. A page is generated for every
+// file in src/data/backtests/ (written by scripts/backtests-import.mjs) in
+// all three locales.
+//
+// Every figure on the page comes from that file: the metrics, the dates, the
+// costs, the parameter values inside the rule sentences, the equity curve.
+// Nothing is typed in by hand, and a result this page cannot describe (an
+// unknown strategy, parameter, exchange or timing rule) stops the build.
+//
+// There is no exchange link on this page. The actions are "run it yourself"
+// and "view the code".
+import Cta from '../../../components/Cta.astro';
+import Scale from '../../../components/Scale.astro';
+import { backtests } from '../../../i18n/backtests';
+import { common } from '../../../i18n/common';
+import { localeParam, localePath, locales } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import Base from '../../../layouts/Base.astro';
+import { PLOT_HEIGHT, PLOT_WIDTH, equityChart } from '../../../lib/backtests/chart';
+import { reproduceCommands, resultSourceUrl, strategySourceUrl } from '../../../lib/backtests/engine';
+import {
+  formatCount,
+  formatDay,
+  formatMoney,
+  formatParam,
+  formatPct,
+  formatRate,
+  formatSigned,
+  formatUtc,
+} from '../../../lib/backtests/format';
+import { backtestPath, results } from '../../../lib/backtests/load';
+import { SAMPLE_KEYS } from '../../../lib/backtests/types';
+import type { BacktestResult } from '../../../lib/backtests/types';
+import { lostInBothSamples, verdictOf } from '../../../lib/backtests/verdict';
+import { fmt } from '../../../lib/fmt';
+import { breadcrumbLd } from '../../../lib/seo';
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    results.map((result) => ({
+      params: { locale: localeParam(locale), slug: result.slug },
+      props: { locale, result },
+    })),
+  );
+}
+
+interface Props {
+  locale: Locale;
+  result: BacktestResult;
+}
+
+const { locale, result } = Astro.props;
+const t = backtests[locale];
+const d = t.detail;
+const c = common[locale];
+const PATH = backtestPath(result.slug);
+const stop = (message: string): never => {
+  throw new Error(`backtests/${result.slug}: ${message}`);
+};
+
+// --- what this page knows how to describe ---------------------------------
+const strategy =
+  t.strategies[result.strategy as keyof typeof t.strategies] ??
+  stop(`no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
+if (result.data.exchange !== 'bybit') stop(`the data strings say Bybit, the result says "${result.data.exchange}"`);
+const { timing } = result;
+if (timing.signal !== 'bar close' || timing.fill !== 'next bar open' || timing.same_bar_stop_and_target !== 'stop first') {
+  stop('the engine timing rules differ from the ones the "Fills" strings describe');
+}
+if (!timing.lookahead_check.passed) stop('the look-ahead check did not pass');
+
+// --- figures --------------------------------------------------------------
+const na = t.na;
+const sep = locale === 'en' ? ': ' : '：';
+const { symbol, interval } = result;
+const execution = result.config.execution;
+const name = strategy.name;
+
+const blocks = SAMPLE_KEYS.map((key) => {
+  const block = result[key];
+  const m = block.metrics;
+  const sample = t.samples[key];
+  const tStat = formatSigned(m.t_stat) ?? na;
+  return {
+    key,
+    sample,
+    // "2025-11-18 to" and "2026-07-30": two parts, so a phone can stack them
+    rangeLead: fmt(t.range, { from: formatDay(block.first_bar), to: '' }).trim(),
+    rangeEnd: formatDay(block.last_bar),
+    trades: formatCount(m.trades),
+    wins: formatCount(m.wins),
+    winRate: m.win_rate_pct,
+    winRateText: formatPct(m.win_rate_pct) ?? na,
+    avgR: formatSigned(m.avg_r) ?? na,
+    tStat,
+    totalReturn: formatPct(m.total_return_pct) ?? na,
+    maxDrawdown: formatPct(m.max_drawdown_pct) ?? na,
+    verdictLine: fmt(d.result.verdictLine, { verdict: t.verdict[verdictOf(m)], t: tStat, n: formatCount(m.trades) }),
+  };
+});
+const [inSample, outOfSample] = blocks;
+
+const head = fmt(lostInBothSamples(result) ? d.headLost : d.head, { name, symbol });
+const sub = fmt(d.sub, { symbol, interval, is: inSample.totalReturn, oos: outOfSample.totalReturn });
+const title = fmt(d.title, { name, symbol, interval });
+const description = fmt(d.description, {
+  name,
+  symbol,
+  interval,
+  isTrades: inSample.trades,
+  oosTrades: outOfSample.trades,
+});
+
+// --- the rules, with the parameter values of this run filled in -------------
+const paramValues = Object.fromEntries(
+  Object.entries(result.config.params).map(([key, value]) => [key, formatParam(value) ?? na]),
+);
+const rules = strategy.rules.map((rule) => {
+  const text = fmt(rule.text, paramValues);
+  if (/\{\w+\}/.test(text)) stop(`a rule mentions a parameter this result does not have: ${text}`);
+  return { head: rule.head, text };
+});
+const params = Object.entries(paramValues).map(([key, value]) => ({
+  key,
+  value,
+  label: t.params[key as keyof typeof t.params] ?? stop(`no label for parameter "${key}" in src/i18n/backtests.ts`),
+}));
+
+// --- equity chart -------------------------------------------------------------
+// Two SVGs, one inside the other. The inner one holds the lines in a fixed
+// 1000 x 400 box and is stretched to the plot area; its strokes keep their
+// width. The labels live in the outer one, placed by percentage, so they stay
+// at reading size on a phone.
+const chart = equityChart(result.in_sample.equity_curve, result.out_of_sample.equity_curve, result.split.oos_start);
+const PLOT_SHARE = 88; // percent of the SVG height; the rest holds the month labels
+const [isLine, oosLine] = chart.series;
+const chartId = `equity-${result.slug}`;
+const chartDesc = fmt(d.chart.desc, {
+  isFrom: formatDay(isLine.first.t),
+  isTo: formatDay(isLine.last.t),
+  isStart: formatMoney(isLine.first.equity),
+  isEnd: formatMoney(isLine.last.equity),
+  oosFrom: formatDay(oosLine.first.t),
+  oosTo: formatDay(oosLine.last.t),
+  oosStart: formatMoney(oosLine.first.equity),
+  oosEnd: formatMoney(oosLine.last.equity),
+  min: formatMoney(chart.minEquity),
+  max: formatMoney(chart.maxEquity),
+});
+const pct = (fraction: number) => `${(fraction * 100).toFixed(2)}%`;
+const plotY = (fraction: number) => `${(fraction * PLOT_SHARE).toFixed(2)}%`;
+
+// --- run it yourself ------------------------------------------------------------
+const commands = reproduceCommands(result);
+
+const jsonLd = breadcrumbLd(locale, [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: t.crumb, path: '/backtests/' },
+  { name, path: PATH },
+]);
+---
+
+<Base locale={locale} path={PATH} title={title} description={description} jsonLd={jsonLd}>
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{head}</h1>
+      <p class="sub">{sub}</p>
+      <Cta
+        locale={locale}
+        pageType="backtest"
+        position="hero"
+        primary={{ label: d.primary, href: '#run-it-yourself' }}
+        secondary={{ label: d.secondary, href: strategySourceUrl(result.strategy) }}
+      />
+    </div>
+  </section>
+
+  <section class="read curve">
+    <div class="wrap">
+      <h2 class="section-head">{d.chart.head}</h2>
+      <figure class="chart">
+        <svg class="equity" role="img" aria-labelledby={`${chartId}-title ${chartId}-desc`}>
+          <title id={`${chartId}-title`}>{fmt(d.chart.title, { name, symbol })}</title>
+          <desc id={`${chartId}-desc`}>{chartDesc}</desc>
+          <svg
+            x="0"
+            y="0"
+            width="100%"
+            height={`${PLOT_SHARE}%`}
+            viewBox={`0 0 ${PLOT_WIDTH} ${PLOT_HEIGHT}`}
+            preserveAspectRatio="none"
+          >
+            {
+              chart.yTicks.map((tick) => (
+                <line class="grid" x1="0" x2={PLOT_WIDTH} y1={tick.y * PLOT_HEIGHT} y2={tick.y * PLOT_HEIGHT} />
+              ))
+            }
+            {
+              chart.xTicks.map((tick) => (
+                <line class="tick" x1={tick.x * PLOT_WIDTH} x2={tick.x * PLOT_WIDTH} y1={PLOT_HEIGHT * 0.97} y2={PLOT_HEIGHT} />
+              ))
+            }
+            <line class="split" x1={chart.splitX * PLOT_WIDTH} x2={chart.splitX * PLOT_WIDTH} y1="0" y2={PLOT_HEIGHT} />
+            {chart.series.map((line) => <polyline class="line" points={line.points} />)}
+          </svg>
+          {
+            chart.yTicks.map((tick) => (
+              <text class="n" x="0" y={plotY(tick.y)} dy="-6">{formatMoney(tick.value)}</text>
+            ))
+          }
+          <text class="lab" x="0" y="0" dy="14">{d.chart.axis}</text>
+          <text class="lab" x={pct(chart.splitX)} y="0" dx="-8" dy="14" text-anchor="end">{t.samples.in_sample}</text>
+          <text class="lab" x="100%" y="0" dy="14" text-anchor="end">{t.samples.out_of_sample}</text>
+          {
+            chart.xTicks
+              .filter((tick) => tick.labelled)
+              .map((tick) => (
+                <text class="n" x={pct(tick.x)} y="97%" text-anchor="middle">{tick.label}</text>
+              ))
+          }
+        </svg>
+        <figcaption>{fmt(d.chart.caption, { capital: formatMoney(execution.initial_capital) })}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="verdict">
+    <div class="wrap">
+      <h2 class="section-head">{d.result.head}</h2>
+      <div class="returns">
+        {
+          blocks.map((b) => (
+            <div>
+              <p class="verdict-label">{d.result.totalReturn[b.key]}</p>
+              <p class="figure">{b.totalReturn}</p>
+              <p>{b.verdictLine}</p>
+            </div>
+          ))
+        }
+      </div>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">{t.columns.sample}</th>
+              <th scope="col">{t.columns.trades}</th>
+              <th scope="col">{t.columns.winRate}</th>
+              <th scope="col">{t.columns.avgR}</th>
+              <th scope="col">{t.columns.t}</th>
+              <th scope="col">{t.columns.totalReturn}</th>
+              <th scope="col">{t.columns.maxDrawdown}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              blocks.map((b) => (
+                <tr>
+                  <th scope="row">
+                    {b.sample}
+                    <span class="when">
+                      <span>{b.rangeLead}</span>{' '}<span>{b.rangeEnd}</span>
+                    </span>
+                  </th>
+                  <td class="num">{b.trades}</td>
+                  <td class="num">{b.winRateText}</td>
+                  <td class="num">{b.avgR}</td>
+                  <td class="num">{b.tStat}</td>
+                  <td class="num">{b.totalReturn}</td>
+                  <td class="num">{b.maxDrawdown}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="fine">
+        {fmt(d.result.computed, { version: result.package_version, date: formatUtc(result.generated_at) })}
+      </p>
+    </div>
+  </section>
+
+  <section class="measure">
+    <div class="wrap">
+      <h2 class="section-head">{d.winRate.head}</h2>
+      {
+        blocks.map((b) =>
+          b.winRate === null ? (
+            <p class="sub">{b.sample + sep + na}</p>
+          ) : (
+            <div class="rate">
+              <Scale
+                size="s"
+                room={b.winRate / 100}
+                label={fmt(d.winRate.barLabel, { sample: b.sample, pct: b.winRateText, wins: b.wins, trades: b.trades })}
+              />
+              <div class="ends">
+                <span>{fmt(d.winRate.line, { sample: b.sample, pct: b.winRateText, wins: b.wins, trades: b.trades })}</span>
+                <span>{fmt(d.winRate.full, { trades: b.trades })}</span>
+              </div>
+            </div>
+          ),
+        )
+      }
+      <p class="fine">{d.winRate.note}</p>
+    </div>
+  </section>
+
+  <section class="read">
+    <div class="wrap rows">
+      {
+        rules.map((rule, i) => (
+          <div id={i === 0 ? 'rules' : undefined}>
+            <h2>{rule.head}</h2>
+            <div class="prose">
+              <p>{rule.text}</p>
+            </div>
+          </div>
+        ))
+      }
+
+      <div id="parameters">
+        <h2>{d.params.head}</h2>
+        <div class="prose">
+          <dl class="kv">
+            {
+              params.map((p) => (
+                <>
+                  <dt>
+                    {p.label}
+                    <code class="num">{p.key}</code>
+                  </dt>
+                  <dd class="num">{p.value}</dd>
+                </>
+              ))
+            }
+          </dl>
+          <p>{d.params.note}</p>
+        </div>
+      </div>
+
+      <div id="costs">
+        <h2>{d.costs.head}</h2>
+        <div class="prose">
+          <dl class="kv">
+            <dt>{d.costs.fee}</dt>
+            <dd>{fmt(d.costs.feeValue, { rate: formatRate(result.costs.fee_rate_per_side) })}</dd>
+            <dt>{d.costs.slippage}</dt>
+            <dd>{fmt(d.costs.slippageValue, { rate: formatRate(result.costs.slippage_per_fill) })}</dd>
+            <dt>{d.costs.size}</dt>
+            <dd>{fmt(d.costs.sizeValue, { size: formatRate(execution.notional_fraction) })}</dd>
+            <dt>{d.costs.capital}</dt>
+            <dd class="num">{formatMoney(execution.initial_capital)}</dd>
+          </dl>
+          <p>{d.costs.note}</p>
+        </div>
+      </div>
+
+      <div id="fills">
+        <h2>{d.fills.head}</h2>
+        <div class="prose">
+          <dl class="kv">
+            <dt>{d.fills.signal}</dt>
+            <dd>{d.fills.signalValue}</dd>
+            <dt>{d.fills.fill}</dt>
+            <dd>{d.fills.fillValue}</dd>
+            <dt>{d.fills.both}</dt>
+            <dd>{d.fills.bothValue}</dd>
+            <dt>{d.fills.lookahead}</dt>
+            <dd>{fmt(d.fills.lookaheadValue, { runs: formatCount(timing.lookahead_check.shortened_runs) })}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div id="not-modelled">
+        <h2>{d.omitted.head}</h2>
+        <div class="prose">
+          <ul>
+            {!result.costs.funding_modelled && <li>{d.omitted.funding}</li>}
+            {d.omitted.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <div id="data">
+        <h2>{d.data.head}</h2>
+        <div class="prose">
+          <dl class="kv">
+            <dt>{d.data.market}</dt>
+            <dd>{fmt(d.data.marketValue, { symbol, interval })}</dd>
+            <dt>{d.data.first}</dt>
+            <dd class="num">{formatUtc(result.data.first_bar)}</dd>
+            <dt>{d.data.last}</dt>
+            <dd class="num">{formatUtc(result.data.last_bar)}</dd>
+            <dt>{d.data.bars}</dt>
+            <dd>
+              {
+                fmt(d.data.barsValue, {
+                  bars: formatCount(result.data.bars),
+                  missing: formatCount(result.data.missing_bars),
+                })
+              }
+            </dd>
+            <dt>{d.data.split}</dt>
+            <dd class="num">{formatUtc(result.split.oos_start)}</dd>
+            <dt>{d.data.hash}</dt>
+            <dd class="num hash">{result.data.file_sha256}</dd>
+            <dt>{d.data.resultHash}</dt>
+            <dd class="num hash">{result.source.sha256}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div id="run-it-yourself">
+        <h2>{d.run.head}</h2>
+        <div class="prose">
+          <pre>{commands.download + '\n' + commands.backtest}</pre>
+          <div class="more">
+            <a class="lnk" href={localePath(locale, '/bot/#quickstart')}>{d.run.install}</a>
+            <a class="lnk" href={resultSourceUrl(result)} rel="noopener">{d.run.full}</a>
+            <a class="lnk" href={localePath(locale, '/backtests/')}>{d.back}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<style>
+  /* Sections keep the site's full gap between them, also where two reading
+     bands meet and where the document rows follow the coral band. */
+  @media (min-width: 761px) {
+    .read + .read.curve {
+      padding-top: var(--space-2xl);
+    }
+
+    .rows > div:first-child {
+      padding-top: var(--space-2xl);
+    }
+  }
+
+  /* Equity chart: ink lines on the page surface, hairline grid, no fills. */
+  .chart {
+    margin-top: var(--space-lg);
+  }
+
+  .equity {
+    display: block;
+    width: 100%;
+    height: calc(var(--space-3xl) * 3.5);
+  }
+
+  .equity line,
+  .equity polyline {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .equity .grid {
+    stroke: var(--color-rule);
+    stroke-width: var(--hairline);
+  }
+
+  .equity .tick,
+  .equity .split {
+    stroke: var(--color-ink);
+    stroke-width: var(--hairline);
+  }
+
+  .equity .line {
+    stroke: var(--color-ink);
+    stroke-width: var(--line);
+    stroke-linejoin: round;
+  }
+
+  /* Labels sit on the plot; a paper-coloured edge keeps them readable where a
+     line passes behind them. */
+  .equity text {
+    fill: var(--color-ink);
+    font-size: var(--text-sm);
+    paint-order: stroke;
+    stroke: var(--color-paper);
+    stroke-width: var(--space-2xs);
+    stroke-linejoin: round;
+  }
+
+  .equity .n {
+    font-family: var(--font-outlier);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .equity .lab {
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+
+  .chart figcaption {
+    max-width: 60ch;
+    margin-top: var(--space-sm);
+    font-size: var(--text-sm);
+  }
+
+  /* The two total returns, side by side. */
+  .returns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-xl);
+    margin-top: var(--space-lg);
+  }
+
+  .returns .figure {
+    margin-top: var(--space-xs);
+  }
+
+  .returns p:last-child {
+    max-width: 36ch;
+    margin-top: var(--space-sm);
+  }
+
+  .tw {
+    margin-top: var(--space-xl);
+  }
+
+  /* The sample name stays in view while the figures scroll sideways. */
+  .verdict th:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--color-ink);
+  }
+
+  .verdict th,
+  .verdict td {
+    white-space: nowrap;
+    vertical-align: top;
+  }
+
+  .when {
+    display: block;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .when span {
+    white-space: nowrap;
+  }
+
+  /* Win rate bars. */
+  .rate + .rate {
+    margin-top: var(--space-lg);
+  }
+
+  .rate .ends {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Label and value pairs in the document rows. */
+  .kv {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-sm) var(--space-lg);
+  }
+
+  .kv dt {
+    font-weight: 700;
+  }
+
+  .kv dt code {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: 400;
+  }
+
+  .hash {
+    font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+  }
+
+  .more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-lg);
+  }
+
+  .rows .lnk {
+    white-space: normal;
+  }
+
+  @media (max-width: 760px) {
+    .equity {
+      height: calc(var(--space-3xl) * 2.5);
+    }
+
+    .returns {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+    }
+
+    /* Two lines for the dates, so the figures get the room. */
+    .when span {
+      display: block;
+    }
+  }
+</style>
+</Base>

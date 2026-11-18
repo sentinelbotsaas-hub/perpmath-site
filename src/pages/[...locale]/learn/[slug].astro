@@ -1,0 +1,110 @@
+---
+// /learn/<slug>/: one article. A page is generated for every Markdown file in
+// src/content/articles/<locale>/. hreflang lists only the locales in which
+// the same slug exists.
+import { render } from 'astro:content';
+import { common } from '../../../i18n/common';
+import { localeParam, localePath } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { pages } from '../../../i18n/pages';
+import Cta from '../../../components/Cta.astro';
+import Base from '../../../layouts/Base.astro';
+import { articlePath, getArticles } from '../../../lib/articles';
+import type { Article } from '../../../lib/articles';
+import { fmt } from '../../../lib/fmt';
+import { articleLd, breadcrumbLd } from '../../../lib/seo';
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles.map(({ locale, entry, availableLocales }) => ({
+    params: { locale: localeParam(locale), slug: entry.data.slug },
+    props: { locale, entry, availableLocales },
+  }));
+}
+
+interface Props {
+  locale: Locale;
+  entry: Article;
+  availableLocales: Locale[];
+}
+
+const { locale, entry, availableLocales } = Astro.props;
+const t = pages[locale].learn;
+const c = common[locale];
+const { data } = entry;
+const path = articlePath(data.slug);
+const { Content } = await render(entry);
+
+// End-of-article action (PLAN_06 section 5): a backtest write-up sends the
+// reader to run it themselves; a basics lesson to the calculator, then testnet.
+const isBacktest = data.category === 'Backtests' || data.category === '回測';
+
+const jsonLd = [
+  articleLd(locale, {
+    path,
+    title: data.title,
+    description: data.description,
+    date: data.date,
+    lastmod: data.lastmod,
+    keywords: data.keywords,
+  }),
+  breadcrumbLd(locale, [
+    { name: c.breadcrumb.home, path: '/' },
+    { name: c.nav.learn, path: '/learn/' },
+    { name: data.title, path },
+  ]),
+];
+---
+
+<Base
+  locale={locale}
+  path={path}
+  title={data.title}
+  description={data.description}
+  availableLocales={availableLocales}
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <article class="read">
+    <div class="wrap">
+      <h1 class="head">{data.title}</h1>
+      <p class="fine">
+        <time datetime={data.date}>{fmt(t.published, { date: data.date })}</time>
+        {
+          data.lastmod !== data.date && (
+            <>
+              {', '}
+              <time datetime={data.lastmod}>{fmt(t.updated, { date: data.lastmod })}</time>
+            </>
+          )
+        }
+      </p>
+      <div class="prose">
+        <p><strong>{t.summary}</strong>{locale === 'en' ? ': ' : '：'}{data.tldr}</p>
+        <Content />
+      </div>
+      {
+        isBacktest ? (
+          <Cta
+            locale={locale}
+            pageType="article"
+            position="end"
+            primary={{ label: t.ctaRun, href: localePath(locale, '/bot/') }}
+            secondary={{ label: t.ctaResults, href: localePath(locale, '/backtests/') }}
+          />
+        ) : (
+          <Cta
+            locale={locale}
+            pageType="article"
+            position="end"
+            primary={{ label: t.ctaCalc, href: localePath(locale, '/tools/liquidation-price-calculator/') }}
+            secondary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+          />
+        )
+      }
+      <div class="acts">
+        <a class="lnk" href={localePath(locale, '/learn/')}>{t.back}</a>
+      </div>
+    </div>
+  </article>
+</Base>

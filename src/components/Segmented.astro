@@ -1,0 +1,30 @@
+---
+// Two-way switch built from radio inputs (long or short). The chosen half is
+// filled with ink; the two sides are told apart by words and fill, never by
+// green and red.
+//
+//   <Segmented name="side" label="Side" value="long"
+//              options={[{ value: 'long', label: 'Long' }, { value: 'short', label: 'Short' }]} />
+interface Props {
+  name: string;
+  label: string;
+  value: string;
+  options: Array<{ value: string; label: string }>;
+}
+
+const { name, label, value, options } = Astro.props;
+---
+
+<div class="field" role="radiogroup" aria-labelledby={`${name}-label`}>
+  <span class="field-label" id={`${name}-label`}>{label}</span>
+  <span class="seg">
+    {
+      options.map((o) => (
+        <label>
+          <input type="radio" name={name} value={o.value} checked={o.value === value} />
+          <span>{o.label}</span>
+        </label>
+      ))
+    }
+  </span>
+</div>

@@ -1,0 +1,89 @@
+---
+// /data/long-short-ratio/: share of accounts net long and net short, the
+// ratio and its 7-day change, plus 30 daily readings.
+import { localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { data } from '../../../../i18n/data';
+import { fmt, formatNumber, formatPercent } from '../../../../lib/fmt';
+import { longShortRatio } from '../../../../lib/market/compute';
+import { latestReports } from '../../../../lib/market/store';
+import { signedPoints, utcMinute } from '../../../../lib/market/view';
+import ContractTable from '../_ContractTable.astro';
+import DataShell from '../_DataShell.astro';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = data[locale];
+const p = t.ratio;
+const entries = latestReports();
+const first = entries[0].report;
+
+const rows = entries.map(({ coin, symbol, report }) => ({
+  coin,
+  symbol,
+  cells: [
+    formatPercent(report.ratio.latest.buyRatio),
+    formatPercent(report.ratio.latest.sellRatio),
+    formatNumber(report.ratio.latest.longShort, 2),
+    fmt(p.points, { value: signedPoints(report.ratio.longShareChange7d) }),
+  ],
+}));
+
+// 30 readings, newest first, one column per contract.
+const times = first.history.ratio.map((r) => r.time).reverse();
+const cellAt = (index: number, time: string) => {
+  const reading = entries[index].report.history.ratio.find((r) => r.time === time);
+  if (!reading) return '';
+  return fmt(p.historyCell, { ratio: formatNumber(longShortRatio(reading), 2), long: formatPercent(reading.buyRatio) });
+};
+---
+
+<DataShell
+  locale={locale}
+  slug="long-short-ratio"
+  title={p.title}
+  description={p.description}
+  sub={p.sub}
+  definition={p.definition}
+  how={p.how}
+  read={p.read}
+  reports={entries.map((e) => e.report)}
+  live={{ kind: 'ratio', cell: t.live.ratio }}
+>
+  <ContractTable
+    slot="now"
+    locale={locale}
+    contractLabel={t.common.contract}
+    columns={[p.columns.long, p.columns.short, p.columns.ratio, p.columns.change]}
+    rows={rows}
+    note={fmt(p.caption, { time: utcMinute(first.ratio.latest.time) })}
+    liveLabel={t.common.now}
+  />
+
+  <div class="tw" slot="history">
+    <table>
+      <caption>{p.historyCaption}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{t.common.reading}</th>
+          {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          times.map((time) => (
+            <tr>
+              <th scope="row" class="num">{utcMinute(time)}</th>
+              {entries.map((_, i) => <td class="num">{cellAt(i, time)}</td>)}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</DataShell>

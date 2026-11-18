@@ -1,0 +1,81 @@
+---
+// /daily/: the three contracts with the headline numbers of the last complete
+// UTC day. Each row leads to that contract's report.
+import { common } from '../../../i18n/common';
+import { localePath, localeStaticPaths } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { daily } from '../../../i18n/daily';
+import Base from '../../../layouts/Base.astro';
+import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../lib/fmt';
+import { highestSurviving } from '../../../lib/market/compute';
+import { latestReports } from '../../../lib/market/store';
+import { ratePercent, utcMinute } from '../../../lib/market/view';
+import { breadcrumbLd } from '../../../lib/seo';
+import ContractTable from '../data/_ContractTable.astro';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = daily[locale];
+const c = common[locale];
+const reports = latestReports();
+const first = reports[0].report;
+
+const rows = reports.map(({ coin, symbol, report }) => {
+  const decimals = tickDecimals(report.instrument.tickSize);
+  const both = highestSurviving(report.survival, 'both');
+  return {
+    coin,
+    symbol,
+    cells: [
+      formatNumber(report.day.open, decimals),
+      formatNumber(report.day.close, decimals),
+      formatPercent(report.day.adverseLong),
+      formatPercent(report.day.adverseShort),
+      both === null ? t.none : fmt(t.lev, { n: both }),
+      ratePercent(report.funding.average7d),
+    ],
+  };
+});
+
+const jsonLd = breadcrumbLd(locale, [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.daily, path: '/daily/' },
+]);
+---
+
+<Base locale={locale} path="/daily/" title={t.index.title} description={t.index.description} jsonLd={jsonLd}>
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{t.index.head}</h1>
+      <p class="sub">{fmt(t.index.sub, { date: first.reportDate })}</p>
+    </div>
+  </section>
+  <section class="read">
+    <div class="wrap">
+      <ContractTable
+        locale={locale}
+        contractLabel={t.index.columns.contract}
+        columns={[
+          t.index.columns.open,
+          t.index.columns.close,
+          t.index.columns.drop,
+          t.index.columns.rise,
+          t.index.columns.survived,
+          t.index.columns.funding,
+        ]}
+        rows={rows}
+        note={t.index.caption}
+      />
+      <p class="fine">{fmt(t.report.source, { time: utcMinute(first.fetchedAt) })}</p>
+      <div class="acts">
+        <a class="lnk" href={localePath(locale, '/data/')}>{t.index.toData}</a>
+      </div>
+    </div>
+  </section>
+
+</Base>

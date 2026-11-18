@@ -1,0 +1,290 @@
+{
+  "symbol": "BTCUSDT",
+  "category": "linear",
+  "source": "https://api.bybit.com/v5/market/risk-limit?category=linear&symbol=BTCUSDT",
+  "tickSizeSource": "https://api.bybit.com/v5/market/instruments-info?category=linear&symbol=BTCUSDT",
+  "fetchedAt": "2026-11-18T11:25:50.334Z",
+  "tickSize": 0.1,
+  "tiers": [
+    {
+      "tier": 1,
+      "riskLimitValue": 300000,
+      "maintenanceMargin": 0.0033,
+      "initialMargin": 0.0066,
+      "maxLeverage": 150,
+      "mmDeduction": 0
+    },
+    {
+      "tier": 2,
+      "riskLimitValue": 2000000,
+      "maintenanceMargin": 0.005,
+      "initialMargin": 0.01,
+      "maxLeverage": 100,
+      "mmDeduction": 510
+    },
+    {
+      "tier": 3,
+      "riskLimitValue": 2600000,
+      "maintenanceMargin": 0.0056,
+      "initialMargin": 0.0111,
+      "maxLeverage": 90,
+      "mmDeduction": 1710
+    },
+    {
+      "tier": 4,
+      "riskLimitValue": 3200000,
+      "maintenanceMargin": 0.0063,
+      "initialMargin": 0.0125,
+      "maxLeverage": 80,
+      "mmDeduction": 3530
+    },
+    {
+      "tier": 5,
+      "riskLimitValue": 3800000,
+      "maintenanceMargin": 0.0067,
+      "initialMargin": 0.0133,
+      "maxLeverage": 75,
+      "mmDeduction": 4810
+    },
+    {
+      "tier": 6,
+      "riskLimitValue": 4400000,
+      "maintenanceMargin": 0.0071,
+      "initialMargin": 0.0143,
+      "maxLeverage": 70,
+      "mmDeduction": 6330
+    },
+    {
+      "tier": 7,
+      "riskLimitValue": 5000000,
+      "maintenanceMargin": 0.0077,
+      "initialMargin": 0.0154,
+      "maxLeverage": 65,
+      "mmDeduction": 8970
+    },
+    {
+      "tier": 8,
+      "riskLimitValue": 5600000,
+      "maintenanceMargin": 0.0091,
+      "initialMargin": 0.0182,
+      "maxLeverage": 55,
+      "mmDeduction": 15970
+    },
+    {
+      "tier": 9,
+      "riskLimitValue": 8500000,
+      "maintenanceMargin": 0.01,
+      "initialMargin": 0.02,
+      "maxLeverage": 50,
+      "mmDeduction": 21010
+    },
+    {
+      "tier": 10,
+      "riskLimitValue": 10000000,
+      "maintenanceMargin": 0.013,
+      "initialMargin": 0.0222,
+      "maxLeverage": 45,
+      "mmDeduction": 46510
+    },
+    {
+      "tier": 11,
+      "riskLimitValue": 14000000,
+      "maintenanceMargin": 0.015,
+      "initialMargin": 0.025,
+      "maxLeverage": 40,
+      "mmDeduction": 66510
+    },
+    {
+      "tier": 12,
+      "riskLimitValue": 20000000,
+      "maintenanceMargin": 0.016,
+      "initialMargin": 0.0286,
+      "maxLeverage": 35,
+      "mmDeduction": 80510
+    },
+    {
+      "tier": 13,
+      "riskLimitValue": 28000000,
+      "maintenanceMargin": 0.02,
+      "initialMargin": 0.0333,
+      "maxLeverage": 30,
+      "mmDeduction": 160510
+    },
+    {
+      "tier": 14,
+      "riskLimitValue": 38000000,
+      "maintenanceMargin": 0.025,
+      "initialMargin": 0.04,
+      "maxLeverage": 25,
+      "mmDeduction": 300510
+    },
+    {
+      "tier": 15,
+      "riskLimitValue": 50000000,
+      "maintenanceMargin": 0.029,
+      "initialMargin": 0.05,
+      "maxLeverage": 20,
+      "mmDeduction": 452510
+    },
+    {
+      "tier": 16,
+      "riskLimitValue": 55000000,
+      "maintenanceMargin": 0.03,
+      "initialMargin": 0.0526,
+      "maxLeverage": 19,
+      "mmDeduction": 502510
+    },
+    {
+      "tier": 17,
+      "riskLimitValue": 60000000,
+      "maintenanceMargin": 0.035,
+      "initialMargin": 0.0556,
+      "maxLeverage": 18,
+      "mmDeduction": 777510
+    },
+    {
+      "tier": 18,
+      "riskLimitValue": 65000000,
+      "maintenanceMargin": 0.036,
+      "initialMargin": 0.0588,
+      "maxLeverage": 17,
+      "mmDeduction": 837510
+    },
+    {
+      "tier": 19,
+      "riskLimitValue": 70000000,
+      "maintenanceMargin": 0.038,
+      "initialMargin": 0.0625,
+      "maxLeverage": 16,
+      "mmDeduction": 967510
+    },
+    {
+      "tier": 20,
+      "riskLimitValue": 75000000,
+      "maintenanceMargin": 0.04,
+      "initialMargin": 0.0667,
+      "maxLeverage": 15,
+      "mmDeduction": 1107510
+    },
+    {
+      "tier": 21,
+      "riskLimitValue": 80000000,
+      "maintenanceMargin": 0.045,
+      "initialMargin": 0.0714,
+      "maxLeverage": 14,
+      "mmDeduction": 1482510
+    },
+    {
+      "tier": 22,
+      "riskLimitValue": 85000000,
+      "maintenanceMargin": 0.05,
+      "initialMargin": 0.0769,
+      "maxLeverage": 13,
+      "mmDeduction": 1882510
+    },
+    {
+      "tier": 23,
+      "riskLimitValue": 90000000,
+      "maintenanceMargin": 0.055,
+      "initialMargin": 0.0833,
+      "maxLeverage": 12,
+      "mmDeduction": 2307510
+    },
+    {
+      "tier": 24,
+      "riskLimitValue": 95000000,
+      "maintenanceMargin": 0.06,
+      "initialMargin": 0.0909,
+      "maxLeverage": 11,
+      "mmDeduction": 2757510
+    },
+    {
+      "tier": 25,
+      "riskLimitValue": 100000000,
+      "maintenanceMargin": 0.065,
+      "initialMargin": 0.1,
+      "maxLeverage": 10,
+      "mmDeduction": 3232510
+    },
+    {
+      "tier": 26,
+      "riskLimitValue": 105000000,
+      "maintenanceMargin": 0.07,
+      "initialMargin": 0.1111,
+      "maxLeverage": 9,
+      "mmDeduction": 3732510
+    },
+    {
+      "tier": 27,
+      "riskLimitValue": 110000000,
+      "maintenanceMargin": 0.085,
+      "initialMargin": 0.125,
+      "maxLeverage": 8,
+      "mmDeduction": 5307510
+    },
+    {
+      "tier": 28,
+      "riskLimitValue": 115000000,
+      "maintenanceMargin": 0.095,
+      "initialMargin": 0.1429,
+      "maxLeverage": 7,
+      "mmDeduction": 6407510
+    },
+    {
+      "tier": 29,
+      "riskLimitValue": 120000000,
+      "maintenanceMargin": 0.1,
+      "initialMargin": 0.1667,
+      "maxLeverage": 6,
+      "mmDeduction": 6982510
+    },
+    {
+      "tier": 30,
+      "riskLimitValue": 150000000,
+      "maintenanceMargin": 0.12,
+      "initialMargin": 0.2,
+      "maxLeverage": 5,
+      "mmDeduction": 9382510
+    },
+    {
+      "tier": 31,
+      "riskLimitValue": 200000000,
+      "maintenanceMargin": 0.14,
+      "initialMargin": 0.25,
+      "maxLeverage": 4,
+      "mmDeduction": 12382510
+    },
+    {
+      "tier": 32,
+      "riskLimitValue": 250000000,
+      "maintenanceMargin": 0.18,
+      "initialMargin": 0.3333,
+      "maxLeverage": 3,
+      "mmDeduction": 20382510
+    },
+    {
+      "tier": 33,
+      "riskLimitValue": 400000000,
+      "maintenanceMargin": 0.3,
+      "initialMargin": 0.5,
+      "maxLeverage": 2,
+      "mmDeduction": 50382510
+    },
+    {
+      "tier": 34,
+      "riskLimitValue": 800000000,
+      "maintenanceMargin": 0.42,
+      "initialMargin": 0.6993,
+      "maxLeverage": 1.43,
+      "mmDeduction": 98382510
+    },
+    {
+      "tier": 35,
+      "riskLimitValue": 1200000000,
+      "maintenanceMargin": 0.6,
+      "initialMargin": 1,
+      "maxLeverage": 1,
+      "mmDeduction": 242382510
+    }
+  ]
+}

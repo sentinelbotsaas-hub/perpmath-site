@@ -1,0 +1,52 @@
+---
+// One labelled number input: label on top, the box, an optional hint, and a
+// line for the error message (hidden until a script fills it).
+//
+//   <Field id="entry" label="Entry price" unit="USDT" value="68000"
+//          inputmode="decimal" hint="..." />
+//
+// Rendered ids: the input is #<id>, the error line is #<id>-error, the hint is
+// #<id>-hint. To show an error from a script:
+//   input.setAttribute('aria-invalid', 'true'); error.textContent = '...'; error.hidden = false;
+// Error text says how to fix the value, not only that it is wrong.
+interface Props {
+  id: string;
+  label: string;
+  value?: string | number;
+  /** Short unit shown inside the box, after the number: USDT, x, %. */
+  unit?: string;
+  hint?: string;
+  inputmode?: 'decimal' | 'numeric';
+  min?: number | string;
+  max?: number | string;
+  step?: number | string;
+  placeholder?: string;
+  name?: string;
+}
+
+const { id, label, value = '', unit, hint, inputmode = 'decimal', min, max, step, placeholder, name = id } = Astro.props;
+const describedBy = [hint ? `${id}-hint` : null, `${id}-error`].filter(Boolean).join(' ');
+---
+
+<div class="field">
+  <label class="field-label" for={id}>{label}</label>
+  <span class="field-box">
+    <input
+      id={id}
+      name={name}
+      type="text"
+      inputmode={inputmode}
+      autocomplete="off"
+      spellcheck="false"
+      value={value}
+      placeholder={placeholder}
+      data-min={min}
+      data-max={max}
+      data-step={step}
+      aria-describedby={describedBy}
+    />
+    {unit && <span aria-hidden="true">{unit}</span>}
+  </span>
+  {hint && <span class="field-hint" id={`${id}-hint`}>{hint}</span>}
+  <span class="field-error" id={`${id}-error`} role="alert" hidden></span>
+</div>

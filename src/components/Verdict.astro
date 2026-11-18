@@ -1,0 +1,35 @@
+---
+// The ink surface that states a result: a label, one big figure, one plain
+// sentence. Anything in the slot (usually a <Cta>) goes underneath.
+//
+//   <Verdict label="Liquidation price" figure="64,824.4"
+//            sentence="Price only has to fall 4.67% for this position to be closed."
+//            figureId="out-price" sentenceId="out-sentence">
+//     <Cta ... />
+//   </Verdict>
+//
+// Give figureId / sentenceId when a script updates them. The result block is
+// a live region, so screen readers hear the new value.
+interface Props {
+  label: string;
+  figure: string;
+  sentence: string;
+  figureId?: string;
+  sentenceId?: string;
+  /** id of the section, for in-page links. */
+  id?: string;
+}
+
+const { label, figure, sentence, figureId, sentenceId, id } = Astro.props;
+---
+
+<section class="verdict" id={id}>
+  <div class="wrap">
+    <div aria-live="polite" aria-atomic="true">
+      <p class="verdict-label">{label}</p>
+      <p class="figure" id={figureId}>{figure}</p>
+      <p class="sub" id={sentenceId}>{sentence}</p>
+    </div>
+    <slot />
+  </div>
+</section>

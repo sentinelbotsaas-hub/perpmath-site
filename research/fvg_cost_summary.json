@@ -1,0 +1,256 @@
+{
+  "question": "How much of the published FVG backtest loss is fees and slippage?",
+  "engine": {
+    "package": "perpmath",
+    "version": "0.1.0",
+    "repository": "https://github.com/sentinelbotsaas-hub/perpmath"
+  },
+  "data": {
+    "exchange": "bybit",
+    "category": "linear",
+    "source": "https://api.bybit.com/v5/market/kline",
+    "first_bar": "2025-11-18T11:30:00Z",
+    "last_bar": "2026-11-18T11:15:00Z",
+    "bars": 35040,
+    "missing_bars": 0,
+    "file": "BTCUSDT-15m.csv",
+    "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+  },
+  "split": {
+    "oos_start": "2026-07-31T00:00:00Z"
+  },
+  "params": {
+    "atr_period": 14,
+    "min_gap_atr": 0.5,
+    "max_wait_bars": 96,
+    "stop_buffer_atr": 0.1,
+    "r_multiple": 2.0
+  },
+  "published_result_file": "perpmath-engine/results/fvg-btcusdt.json",
+  "published_result_sha256": "c166b12869d350c2bc62efc7452adeac826e105d9ff4c2e9d1244de3e29bfc5f",
+  "published_generated_at": "2026-11-18T11:40:45Z",
+  "rerun_generated_at": {
+    "zero_cost": "2026-11-18T12:08:06Z",
+    "fee_only": "2026-11-18T12:08:07Z"
+  },
+  "checks": "candle file sha256, strategy params and split date are identical in all three runs",
+  "costs": {
+    "published": {
+      "fee_rate_per_side": 0.00055,
+      "slippage_per_fill": 0.0002,
+      "funding_modelled": false
+    },
+    "fee_only": {
+      "fee_rate_per_side": 0.00055,
+      "slippage_per_fill": 0.0,
+      "funding_modelled": false
+    },
+    "zero_cost": {
+      "fee_rate_per_side": 0.0,
+      "slippage_per_fill": 0.0,
+      "funding_modelled": false
+    },
+    "round_trip_pct_published": 0.15
+  },
+  "runs": {
+    "in_sample": {
+      "first_bar": "2025-11-18T11:30:00Z",
+      "last_bar": "2026-07-30T23:45:00Z",
+      "published": {
+        "trades": 801,
+        "wins": 252,
+        "losses": 549,
+        "win_rate_pct": 31.4607,
+        "avg_r": -0.5692,
+        "avg_trade_return_pct": -0.1351,
+        "t_stat": -4.928,
+        "total_return_pct": -66.945,
+        "max_drawdown_pct": 66.9656,
+        "profit_factor": 0.6459,
+        "total_fees": 5417.0,
+        "final_equity": 3305.5,
+        "avg_bars_held": 11.43,
+        "exit_reasons": {
+          "stop": 546,
+          "target": 255
+        },
+        "insufficient_sample": false
+      },
+      "fee_only": {
+        "trades": 814,
+        "wins": 271,
+        "losses": 543,
+        "win_rate_pct": 33.2924,
+        "avg_r": -0.5036,
+        "avg_trade_return_pct": -0.1,
+        "t_stat": -3.7727,
+        "total_return_pct": -56.7089,
+        "max_drawdown_pct": 56.7445,
+        "profit_factor": 0.7119,
+        "total_fees": 6243.23,
+        "final_equity": 4329.11,
+        "avg_bars_held": 10.92,
+        "exit_reasons": {
+          "stop": 536,
+          "target": 278
+        },
+        "insufficient_sample": false
+      },
+      "zero_cost": {
+        "trades": 814,
+        "wins": 278,
+        "losses": 536,
+        "win_rate_pct": 34.1523,
+        "avg_r": 0.0246,
+        "avg_trade_return_pct": 0.01,
+        "t_stat": 0.3786,
+        "total_return_pct": 6.0342,
+        "max_drawdown_pct": 16.8835,
+        "profit_factor": 1.0258,
+        "total_fees": 0.0,
+        "final_equity": 10603.42,
+        "avg_bars_held": 10.92,
+        "exit_reasons": {
+          "stop": 536,
+          "target": 278
+        },
+        "insufficient_sample": false
+      },
+      "cost_share": {
+        "avg_trade_return_pct_published": -0.1351,
+        "avg_trade_return_pct_zero_cost": 0.01,
+        "difference_pct_points": 0.1451,
+        "share_of_average_loss_explained_by_costs_pct": 107.4
+      },
+      "gain_needed_to_recover_published_loss_pct": 202.5,
+      "break_even_win_rate_at_2r_before_costs_pct": 33.33
+    },
+    "out_of_sample": {
+      "first_bar": "2026-07-31T00:00:00Z",
+      "last_bar": "2026-11-18T11:15:00Z",
+      "published": {
+        "trades": 304,
+        "wins": 85,
+        "losses": 219,
+        "win_rate_pct": 27.9605,
+        "avg_r": -0.8264,
+        "avg_trade_return_pct": -0.1821,
+        "t_stat": -5.2277,
+        "total_return_pct": -42.8564,
+        "max_drawdown_pct": 43.1899,
+        "profit_factor": 0.4522,
+        "total_fees": 2620.8,
+        "final_equity": 5714.36,
+        "avg_bars_held": 17.53,
+        "exit_reasons": {
+          "end": 1,
+          "stop": 216,
+          "target": 87
+        },
+        "insufficient_sample": false
+      },
+      "fee_only": {
+        "trades": 316,
+        "wins": 96,
+        "losses": 220,
+        "win_rate_pct": 30.3797,
+        "avg_r": -0.8899,
+        "avg_trade_return_pct": -0.1418,
+        "t_stat": -4.3328,
+        "total_return_pct": -36.4831,
+        "max_drawdown_pct": 37.5493,
+        "profit_factor": 0.5082,
+        "total_fees": 2840.96,
+        "final_equity": 6351.69,
+        "avg_bars_held": 16.28,
+        "exit_reasons": {
+          "end": 1,
+          "stop": 216,
+          "target": 99
+        },
+        "insufficient_sample": false
+      },
+      "zero_cost": {
+        "trades": 316,
+        "wins": 100,
+        "losses": 216,
+        "win_rate_pct": 31.6456,
+        "avg_r": -0.0536,
+        "avg_trade_return_pct": -0.0318,
+        "t_stat": -0.9728,
+        "total_return_pct": -10.0523,
+        "max_drawdown_pct": 16.4935,
+        "profit_factor": 0.8473,
+        "total_fees": 0.0,
+        "final_equity": 8994.77,
+        "avg_bars_held": 16.28,
+        "exit_reasons": {
+          "end": 1,
+          "stop": 216,
+          "target": 99
+        },
+        "insufficient_sample": false
+      },
+      "cost_share": {
+        "avg_trade_return_pct_published": -0.1821,
+        "avg_trade_return_pct_zero_cost": -0.0318,
+        "difference_pct_points": 0.1503,
+        "share_of_average_loss_explained_by_costs_pct": 82.5
+      },
+      "gain_needed_to_recover_published_loss_pct": 75.0,
+      "break_even_win_rate_at_2r_before_costs_pct": 33.33
+    }
+  },
+  "published_by_side": {
+    "in_sample": {
+      "long": {
+        "trades": 378,
+        "win_rate_pct": 28.57,
+        "avg_trade_return_pct": -0.148,
+        "avg_r": -0.6478
+      },
+      "short": {
+        "trades": 423,
+        "win_rate_pct": 34.04,
+        "avg_trade_return_pct": -0.1236,
+        "avg_r": -0.4989
+      }
+    },
+    "out_of_sample": {
+      "long": {
+        "trades": 184,
+        "win_rate_pct": 27.72,
+        "avg_trade_return_pct": -0.1756,
+        "avg_r": -0.8539
+      },
+      "short": {
+        "trades": 120,
+        "win_rate_pct": 28.33,
+        "avg_trade_return_pct": -0.1921,
+        "avg_r": -0.7842
+      }
+    }
+  },
+  "published_stop_distance": {
+    "in_sample": {
+      "median_stop_distance_pct": 0.323,
+      "mean_stop_distance_pct": 0.4255,
+      "p25_stop_distance_pct": 0.2087,
+      "p75_stop_distance_pct": 0.5404,
+      "trades_with_stop_closer_than_round_trip_cost": 123,
+      "round_trip_cost_in_r_at_median_stop": 0.46
+    },
+    "out_of_sample": {
+      "median_stop_distance_pct": 0.2427,
+      "mean_stop_distance_pct": 0.3375,
+      "p25_stop_distance_pct": 0.145,
+      "p75_stop_distance_pct": 0.4386,
+      "trades_with_stop_closer_than_round_trip_cost": 79,
+      "round_trip_cost_in_r_at_median_stop": 0.62
+    }
+  },
+  "commands": [
+    "python -m perpmath backtest fvg --symbol BTCUSDT --interval 15m --config research/fvg-zero-cost.config.json --out research/fvg-btcusdt-zero-cost.json --data-dir <engine>/data",
+    "python -m perpmath backtest fvg --symbol BTCUSDT --interval 15m --config research/fvg-fee-only.config.json --out research/fvg-btcusdt-fee-only.json --data-dir <engine>/data"
+  ]
+}

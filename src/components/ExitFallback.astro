@@ -1,0 +1,39 @@
+---
+// Static page that sits at an exit address (/go/bybit/, /go/bybit-testnet/).
+//
+// On Vercel the redirect in vercel.json answers first and this page is never
+// seen. It exists so the address is not a 404 in `astro preview` or on a host
+// without the redirect rules. It deliberately has no link to Bybit: if the
+// region gate is not running, nobody is sent anywhere.
+import { htmlLang, localePath, locales } from '../i18n/config';
+import { pages } from '../i18n/pages';
+import Base from '../layouts/Base.astro';
+
+interface Props {
+  /** Locale-less path of this exit, e.g. "/go/bybit/". */
+  path: string;
+}
+
+const { path } = Astro.props;
+const en = pages.en.go;
+---
+
+<Base locale="en" path={path} switcherPath="/" title={en.title} description={en.description} noindex>
+  {
+    locales.map((locale) => {
+      const t = pages[locale].go;
+      const Heading = locale === 'en' ? 'h1' : 'h2';
+      return (
+        <section class="read band" lang={htmlLang[locale]}>
+          <div class="wrap">
+            <Heading class="head">{t.head}</Heading>
+            <p class="sub">{t.body}</p>
+            <div class="acts">
+              <a class="btn" href={localePath(locale, '/')}>{t.back}</a>
+            </div>
+          </div>
+        </section>
+      );
+    })
+  }
+</Base>

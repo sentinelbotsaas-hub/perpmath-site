@@ -1,0 +1,81 @@
+---
+// /tools/: every calculator, in two groups. The ones whose page exists are
+// links; the rest are listed as plain text under "Planned" and are never
+// links. Which group a tool is in is decided at build time by whether its page
+// exists (src/lib/tools.ts), so the counts on this page cannot go stale.
+import { common } from '../../../i18n/common';
+import { localeStaticPaths } from '../../../i18n/config';
+import type { Locale } from '../../../i18n/config';
+import { tools as strings } from '../../../i18n/tools';
+import Base from '../../../layouts/Base.astro';
+import { fmt } from '../../../lib/fmt';
+import { breadcrumbLd } from '../../../lib/seo';
+import { getTools } from '../../../lib/tools';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const c = common[locale];
+
+const all = getTools(locale);
+const ready = all.filter((tool) => tool.href);
+const planned = all.filter((tool) => !tool.href);
+const counts = { ready: ready.length, planned: planned.length };
+const description = fmt(t.description, { names: ready.map((tool) => tool.name).join(t.separator) });
+
+const jsonLd = breadcrumbLd(locale, [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+]);
+---
+
+<Base locale={locale} path="/tools/" title={t.title} description={description} jsonLd={jsonLd}>
+  <section class="read">
+    <div class="wrap">
+      <h1 class="head">{t.head}</h1>
+      <p class="sub">{fmt(planned.length > 0 ? t.sub : t.subAllReady, counts)}</p>
+    </div>
+  </section>
+
+  <section class="read band">
+    <div class="wrap">
+      <h2 class="section-head">{t.readyHead}</h2>
+      <ol class="index">
+        {
+          ready.map((tool) => (
+            <li>
+              <a class="name" href={tool.href}>
+                {tool.name}
+              </a>
+              <span class="question">{tool.question}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {
+    planned.length > 0 && (
+      <section class="read band">
+        <div class="wrap">
+          <h2 class="section-head">{t.plannedHead}</h2>
+          <p class="fine">{t.plannedNote}</p>
+          <ol class="index">
+            {planned.map((tool) => (
+              <li>
+                <span class="name">{tool.name}</span>
+                <span class="question">{tool.question}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+</Base>
