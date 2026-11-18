@@ -293,7 +293,7 @@ pre {
 }
 
 /* Code in articles is column-aligned: scroll it sideways, never rewrap it. */
-.prose pre {
+.prose pre:has(> code) {
   white-space: pre;
   overflow-x: auto;
   padding: var(--space-md);

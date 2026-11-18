@@ -5,7 +5,10 @@ import Scale from '../../components/Scale.astro';
 import ToolIndex from '../../components/ToolIndex.astro';
 import { localePath, localeStaticPaths } from '../../i18n/config';
 import type { Locale } from '../../i18n/config';
+import { backtests } from '../../i18n/backtests';
 import { home } from '../../i18n/home';
+import { results } from '../../lib/backtests/load';
+import { lostInBothSamples } from '../../lib/backtests/verdict';
 import Base from '../../layouts/Base.astro';
 import { liquidationPrice, roomLeft, roundToTick } from '../../lib/calc/liquidation';
 import { fmt, formatNumber, formatPercent } from '../../lib/fmt';
@@ -22,6 +25,9 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = home[locale];
+// Same headline as /backtests/, so the two can never disagree.
+const bt = backtests[locale].index;
+const backtestHead = fmt(results.every(lostInBothSamples) ? bt.headAllLost : bt.head, { n: results.length });
 
 // The hero example. Entry price is an illustration; the maintenance margin
 // rate is Bybit's tier 1 rate from the snapshot. The same numbers are
@@ -135,6 +141,17 @@ const heroData = JSON.stringify({
       <h2 class="head">{t.tools.head}</h2>
       <p class="sub">{t.tools.sub}</p>
       <ToolIndex locale={locale} />
+    </div>
+  </section>
+
+  <section class="read">
+    <div class="wrap">
+      <h2 class="head">{backtestHead}</h2>
+      <p class="sub">{bt.sub}</p>
+      <div class="acts">
+        <a class="lnk" href={localePath(locale, '/backtests/')}>{t.backtests.results}</a>
+        <a class="lnk" href={localePath(locale, '/bot/')}>{t.backtests.code}</a>
+      </div>
     </div>
   </section>
 

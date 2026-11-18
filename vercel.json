@@ -91,6 +91,12 @@
     },
     {
       "source": "/go/bybit/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country"
+        }
+      ],
       "missing": [
         {
           "type": "header",
@@ -217,6 +223,12 @@
     },
     {
       "source": "/go/bybit",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country"
+        }
+      ],
       "missing": [
         {
           "type": "header",
@@ -343,6 +355,12 @@
     },
     {
       "source": "/go/bybit-testnet/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country"
+        }
+      ],
       "missing": [
         {
           "type": "header",
@@ -469,6 +487,12 @@
     },
     {
       "source": "/go/bybit-testnet",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country"
+        }
+      ],
       "missing": [
         {
           "type": "header",

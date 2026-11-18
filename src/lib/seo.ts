@@ -85,6 +85,32 @@ export function articleLd(
   };
 }
 
+/** FAQPage from an article's Markdown: the "### question" blocks under its FAQ heading. */
+export function faqLd(markdown: string): JsonLd | undefined {
+  const section = markdown.split(/^## (?:FAQ|常見問題|常见问题)\s*$/m)[1];
+  if (!section) return undefined;
+  const plain = (s: string) =>
+    s
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/[`*]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  const mainEntity = section
+    .split(/^## /m)[0]
+    .split(/^### /m)
+    .slice(1)
+    .map((block) => {
+      const [question, ...answer] = block.split('\n');
+      return {
+        '@type': 'Question',
+        name: plain(question),
+        acceptedAnswer: { '@type': 'Answer', text: plain(answer.join('\n')) },
+      };
+    });
+  return mainEntity.length ? { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity } : undefined;
+}
+
 /** Safe to drop into a <script type="application/ld+json">. */
 export function serializeJsonLd(data: JsonLd | JsonLd[]): string {
   return JSON.stringify(data).replace(/</g, '\\u003c');

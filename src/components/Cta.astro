@@ -38,9 +38,11 @@ const t = common[locale];
 const tag = `${pageType}:${position}`;
 
 const EXIT_HREF = { bybit: GO_BYBIT, 'bybit-testnet': GO_BYBIT_TESTNET } as const;
+// "sponsored" is only true once the link pays.
+const EXIT_REL = AFFILIATE_ACTIVE ? 'sponsored nofollow noopener' : 'nofollow noopener';
 const resolve = (a: Action) =>
   'exit' in a
-    ? { label: a.label, href: EXIT_HREF[a.exit], rel: 'sponsored nofollow noopener', exit: a.exit }
+    ? { label: a.label, href: EXIT_HREF[a.exit], rel: EXIT_REL, exit: a.exit }
     : { label: a.label, href: a.href, rel: /^https?:/.test(a.href) ? 'noopener' : undefined, exit: undefined };
 
 const first = resolve(primary);
@@ -49,7 +51,10 @@ const hasAffiliate = first.exit === 'bybit' || second?.exit === 'bybit';
 // While AFFILIATE_ACTIVE is false the link earns nothing, and the line says so.
 const own = AFFILIATE_ACTIVE ? t.cta.disclosure : t.cta.disclosurePlain;
 const live = AFFILIATE_ACTIVE ? t.cta.disclosureLiveLink : t.cta.disclosureLiveLinkPlain;
-const line = disclosure ?? (hasAffiliate ? (first.exit === 'bybit' ? own : live) : undefined);
+const hasTestnet = first.exit === 'bybit-testnet' || second?.exit === 'bybit-testnet';
+const line =
+  disclosure ??
+  (hasAffiliate ? (first.exit === 'bybit' ? own : live) : hasTestnet ? t.cta.disclosureTestnet : undefined);
 ---
 
 <div class="cta">

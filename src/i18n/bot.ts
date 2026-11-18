@@ -9,7 +9,7 @@ export const bot = defineStrings({
   en: {
     title: 'perpmath: an open-source backtester for Bybit perpetuals',
     description:
-      'A small open-source Python backtester for crypto perpetual futures. Bybit public candles, fees and slippage on every fill, in-sample and out-of-sample results. Backtest only, MIT licensed.',
+      'An open-source Python backtester for crypto perpetuals: Bybit public candles, fees and slippage on every fill, in-sample and out-of-sample results.',
     head: 'Backtest a rule with honest costs.',
     sub: 'An open-source backtester for Bybit perpetuals; version {version} cannot place orders.',
     primary: 'Read the quickstart',

@@ -38,7 +38,7 @@ export const daily = defineStrings({
       title: '{name} ({symbol}) daily report: leverage survival table',
       datedTitle: '{name} ({symbol}) report for {date}',
       description:
-        'The last full UTC day of the {symbol} perpetual on Bybit in numbers: the largest move against longs and shorts, which leverage would have been liquidated, 90-day counts, funding, open interest and long/short ratio.',
+        'The last full UTC day of the {symbol} perpetual on Bybit: the largest move against longs and shorts, which leverage got liquidated, funding and open interest.',
       head: '{name} daily report',
       lede: '{date} UTC. From the open at {open}, {symbol} fell as much as {drop} and rose as much as {rise}.',
       barsLabel: 'Survival by leverage',

@@ -34,6 +34,9 @@ export function buildVercelConfig() {
       }
       redirects.push({
         source,
+        // The header must be present: a request with no country falls through
+        // to the static /go/ page instead of being sent to the exchange.
+        has: [{ type: 'header', key: HEADER }],
         missing: countries.map((country) => ({ type: 'header', key: HEADER, value: country })),
         destination: target,
         permanent: false,

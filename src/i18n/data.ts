@@ -11,7 +11,7 @@ import { defineStrings } from './strings';
 export const data = defineStrings({
   en: {
     index: {
-      title: 'Market data: funding, long/short ratio, open interest, liquidation',
+      title: 'Market data: funding, long/short ratio, open interest',
       description:
         'Four daily tables for BTCUSDT, ETHUSDT and SOLUSDT perpetuals on Bybit, each with a plain definition, the calculation behind it and 30 days of history.',
       head: 'Market data',
@@ -131,7 +131,7 @@ export const data = defineStrings({
       historyCaption: 'Daily readings stamped 00:00 UTC, in the base coin of each contract.',
     },
     liquidation: {
-      title: 'Liquidation: how often each leverage would have been liquidated',
+      title: 'Liquidation: how often each leverage got liquidated',
       description:
         'What liquidation is, and on how many of the last 90 days a 2x to 100x long or short in BTCUSDT, ETHUSDT or SOLUSDT would have been liquidated. Computed from Bybit candles.',
       sub: 'On how many days each leverage would have been closed out.',

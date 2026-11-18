@@ -62,7 +62,10 @@ const {
 } = Astro.props;
 
 const t = common[locale];
-const fullTitle = bareTitle ? title : `${title} | ${SITE_NAME}`;
+// Display width, CJK counted double. Past 60 the brand suffix is what goes.
+const width = (s: string) => [...s].reduce((n, ch) => n + (ch.charCodeAt(0) > 0x2e7f ? 2 : 1), 0);
+const suffixed = `${title} | ${SITE_NAME}`;
+const fullTitle = bareTitle || width(suffixed) > 60 ? title : suffixed;
 const canonical = absoluteUrl(locale, path);
 const hreflangs = noindex ? [] : alternates(path, availableLocales);
 const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];

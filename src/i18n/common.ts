@@ -40,6 +40,9 @@ export const common = defineStrings({
       // affiliate link second.
       disclosureLiveLink:
         'The live account link is an affiliate link. We may earn a commission at no cost to you. Leveraged trading can lose your entire margin.',
+      // Under a block whose only exit is the testnet.
+      disclosureTestnet:
+        'The testnet uses practice funds, not real money. On a live account, leveraged trading can lose your entire margin.',
       testnet: 'Try on Bybit testnet',
       liveAccount: 'Open a live account',
     },
@@ -78,6 +81,7 @@ export const common = defineStrings({
       disclosure: '這是聯盟連結，我們可能會收到佣金，你不會多付任何費用。槓桿交易可能讓你賠光全部保證金。',
       disclosureLiveLink:
         '「開立正式帳戶」是聯盟連結，我們可能會收到佣金，你不會多付任何費用。槓桿交易可能讓你賠光全部保證金。',
+      disclosureTestnet: '測試網用的是練習資金，不是真錢。換成正式帳戶，槓桿交易可能讓你賠光全部保證金。',
       testnet: '到 Bybit 測試網試一次',
       liveAccount: '開立正式帳戶',
     },

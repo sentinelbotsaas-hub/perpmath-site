@@ -36,6 +36,10 @@ export const home = defineStrings({
       head: 'Each calculator answers one question.',
       sub: 'Free, no account. What you type never leaves your browser.',
     },
+    backtests: {
+      results: 'See the backtests',
+      code: 'Run them yourself, open source',
+    },
   },
   'zh-hant': {
     title: 'perpmath：照比例畫出來的永續合約數學',
@@ -67,6 +71,10 @@ export const home = defineStrings({
     tools: {
       head: '每個計算機只回答一個問題。',
       sub: '免費、不用註冊，你輸入的數字不會離開你的瀏覽器。',
+    },
+    backtests: {
+      results: '看回測結果',
+      code: '用開源程式自己跑一次',
     },
   },
 });

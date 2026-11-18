@@ -18,7 +18,7 @@ describe('vercel.json', () => {
 
   it.each(['/go/bybit/', '/go/bybit', '/go/bybit-testnet/', '/go/bybit-testnet'])('gates %s', (source) => {
     const rules = forSource(source);
-    const gated = rules.filter((r) => r.has);
+    const gated = rules.filter((r) => !r.missing);
     const open = rules.filter((r) => r.missing);
 
     const countries = gated.map((r) => r.has![0].value).sort();
@@ -32,6 +32,9 @@ describe('vercel.json', () => {
 
     // Exactly one rule for everybody else, and it excludes every gated country.
     expect(open).toHaveLength(1);
+    // No country header at all must not reach the exchange: the open rule
+    // needs the header to exist (a `has` with a key and no value).
+    expect(open[0].has).toEqual([{ type: 'header', key: 'x-vercel-ip-country' }]);
     expect(open[0].missing!.map((m) => m.value).sort()).toEqual(expected);
     expect(open[0].permanent).toBe(false);
     expect(open[0].destination).toBe(source.includes('testnet') ? BYBIT_TESTNET_TARGET : BYBIT_TARGET);

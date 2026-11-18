@@ -12,7 +12,7 @@ import Base from '../../../layouts/Base.astro';
 import { articlePath, getArticles } from '../../../lib/articles';
 import type { Article } from '../../../lib/articles';
 import { fmt } from '../../../lib/fmt';
-import { articleLd, breadcrumbLd } from '../../../lib/seo';
+import { articleLd, breadcrumbLd, faqLd } from '../../../lib/seo';
 
 export async function getStaticPaths() {
   const articles = await getArticles();
@@ -53,6 +53,7 @@ const jsonLd = [
     { name: c.nav.learn, path: '/learn/' },
     { name: data.title, path },
   ]),
+  ...[faqLd(entry.body ?? '')].filter((ld) => ld !== undefined),
 ];
 ---
 
