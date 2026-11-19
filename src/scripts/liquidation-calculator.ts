@@ -1,8 +1,12 @@
 // Liquidation price calculator, browser side.
-// - reads the inputs, runs src/lib/calc/liquidation.ts, updates bar and result
+// - reads the inputs, runs src/lib/calc/liquidation.ts, updates the result
+//   panel, the risk ruler and the two figures under it
 // - state lives in the URL query (shareable) and in localStorage (try/catch)
 // - "Use live price" asks Bybit's public ticker endpoint for the last price
 // Imports only dependency-free modules; strings arrive as JSON in data-calc.
+// Everything below the call to liquidationPrice() is presentation.
+import { bindSliders, createResultView, initActions, parseNumber, revealAdvanced, setFlag, setMetric } from '../components/calc/calc-ui';
+import { updateRiskRuler } from '../components/ui/risk-ruler';
 import { liquidationPrice, roundToTick } from '../lib/calc/liquidation';
 import type { LiquidationIssue, Side } from '../lib/calc/liquidation';
 import { fmt, formatNumber, formatPercent, tickDecimals } from '../lib/fmt';
@@ -14,9 +18,7 @@ interface CalcData {
   defaults: { side: Side; entry: number; lev: number; mmrPct: number };
   liveBusy: string;
   strings: {
-    liquidation: string;
-    entry: string;
-    barLabel: string;
+    levText: string;
     long: string;
     short: string;
     unreachable: string;
@@ -34,13 +36,6 @@ const STORAGE_KEY = 'perpmath:liquidation:v1';
 const PARAMS = ['side', 'entry', 'lev', 'mmr', 'qty', 'extra'] as const;
 type Param = (typeof PARAMS)[number];
 type State = Record<Param, string>;
-
-/** "68,000" -> 68000. Empty or unreadable text -> NaN. */
-function parseNumber(text: string): number {
-  const cleaned = text.replace(/[,\s]/g, '');
-  if (cleaned === '') return Number.NaN;
-  return Number(cleaned);
-}
 
 function init(): void {
   const root = document.querySelector<HTMLElement>('[data-calc]');
@@ -66,15 +61,13 @@ function init(): void {
     extra: $<HTMLInputElement>('#extra'),
   };
   const sides = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="side"]'));
-  const bar = $('#calc-scale');
-  const outLiq = $('#calc-liq');
-  const outEntry = $('#calc-entry');
-  const outFigure = $('#calc-figure');
-  const outSentence = $('#calc-sentence');
-  const outTier = $('#calc-tier');
+  const ruler = $('#calc-ruler');
   const status = $('#calc-status');
   const liveButton = $<HTMLButtonElement>('#calc-live');
-  if (!inputs.entry || !inputs.lev || !inputs.mmr || !inputs.qty || !inputs.extra || !bar) return;
+  if (!inputs.entry || !inputs.lev || !inputs.mmr || !inputs.qty || !inputs.extra || !ruler) return;
+
+  const view = createResultView();
+  const syncSliders = bindSliders(form);
 
   // ---- state: URL first, then localStorage, then the server defaults ------
   function readState(): State {
@@ -172,14 +165,11 @@ function init(): void {
         }
       }
     }
+    // An error in a folded field has to be seen.
+    if (issues.length > 0) revealAdvanced('invalid');
   }
 
   // ---- render --------------------------------------------------------------
-  function setBar(room: number, label: string): void {
-    bar!.style.setProperty('--room', room.toFixed(4));
-    bar!.setAttribute('aria-label', label);
-  }
-
   function render(save: boolean): void {
     const state = readState();
     const entryPrice = parseNumber(state.entry);
@@ -198,41 +188,38 @@ function init(): void {
       maxLeverage: data.maxLeverage,
     });
 
-    if (outEntry && Number.isFinite(entryPrice) && entryPrice > 0) {
-      outEntry.textContent = fmt(s.entry, { price: formatNumber(entryPrice, Number.isInteger(entryPrice) ? 0 : decimals) });
-    }
-
     if (!result.ok) {
       showErrors(result.issues, leverage);
-      setBar(0, s.invalid);
-      if (outLiq) outLiq.textContent = fmt(s.liquidation, { price: s.noValue });
-      if (outFigure) outFigure.textContent = s.noValue;
-      if (outSentence) outSentence.textContent = s.invalid;
-      if (outTier) outTier.hidden = true;
+      view.show({ figure: s.noValue, sentence: s.invalid, state: 'invalid' });
+      updateRiskRuler(ruler!, { entry: Number.NaN, liquidation: Number.NaN, side: state.side as Side }, s.invalid);
+      setMetric('out-gap', null, s.noValue);
+      setMetric('out-share', null, s.noValue);
+      setFlag('calc-tier', null);
     } else {
       showErrors([], leverage);
       const pct = formatPercent(result.distance);
       if (result.reachable) {
-        const priceText = showPrice(result.liquidationPrice);
-        setBar(result.room, fmt(s.barLabel, { pct }));
-        if (outLiq) outLiq.textContent = fmt(s.liquidation, { price: priceText });
-        if (outFigure) outFigure.textContent = priceText;
-        if (outSentence) outSentence.textContent = fmt(result.side === 'long' ? s.long : s.short, { pct });
+        view.show({
+          figure: showPrice(result.liquidationPrice),
+          unit: 'USDT',
+          sentence: fmt(result.side === 'long' ? s.long : s.short, { pct }),
+          state: 'ready',
+        });
+        // The ruler draws the two prices; the liquidation price itself comes from the library.
+        const layout = updateRiskRuler(ruler!, { entry: entryPrice, liquidation: result.liquidationPrice, side: result.side });
+        setMetric('out-gap', layout && layout.ok ? formatNumber(layout.gap, decimals) : null, s.noValue);
+        setMetric('out-share', pct, s.noValue);
       } else {
-        setBar(1, s.unreachable);
-        if (outLiq) outLiq.textContent = fmt(s.liquidation, { price: s.noValue });
-        if (outFigure) outFigure.textContent = s.noValue;
-        if (outSentence) outSentence.textContent = s.unreachable;
+        view.show({ figure: s.noValue, sentence: s.unreachable, state: 'caution' });
+        updateRiskRuler(ruler!, { entry: entryPrice, liquidation: Number.NaN, side: result.side }, s.unreachable);
+        setMetric('out-gap', null, s.noValue);
+        setMetric('out-share', null, s.noValue);
       }
-      if (outTier) {
-        const value = quantity !== undefined && quantity > 0 ? quantity * entryPrice : 0;
-        if (value > data.tierLimit) {
-          outTier.textContent = fmt(s.tier, { value: formatNumber(value), limit: formatNumber(data.tierLimit) });
-          outTier.hidden = false;
-        } else {
-          outTier.hidden = true;
-        }
-      }
+      const value = quantity !== undefined && quantity > 0 ? quantity * entryPrice : 0;
+      setFlag(
+        'calc-tier',
+        value > data.tierLimit ? fmt(s.tier, { value: formatNumber(value), limit: formatNumber(data.tierLimit) }) : null,
+      );
     }
 
     if (save) saveState(state);
@@ -274,7 +261,21 @@ function init(): void {
   form.addEventListener('submit', (event) => event.preventDefault());
   liveButton?.addEventListener('click', () => void useLivePrice());
 
+  initActions({
+    view,
+    storageKey: STORAGE_KEY,
+    save: () => saveState(readState()),
+    reset: () => {
+      form.reset();
+      syncSliders();
+      if (status) status.textContent = '';
+      render(false);
+    },
+  });
+
   loadState();
+  syncSliders();
+  revealAdvanced();
   render(false);
 }
 

@@ -31,9 +31,8 @@ export const liquidation = defineStrings({
       busy: 'Fetching price',
     },
     ui: {
-      liquidation: 'Liquidation {price}',
-      entry: 'Entry {price} is the full width',
-      barLabel: '{pct} of the entry price is left before liquidation.',
+      // What the leverage slider says to a screen reader, and its two ends.
+      levText: '{value}x',
       long: 'Price only has to fall {pct} for this position to be closed.',
       short: 'Price only has to rise {pct} for this position to be closed.',
       unreachable: 'With this much extra margin, this long cannot be liquidated at any price above zero.',
@@ -54,7 +53,15 @@ export const liquidation = defineStrings({
     },
     result: {
       label: 'Liquidation price',
+      gap: 'Price has to move',
+      share: 'Share of the entry price',
     },
+    // Shown in the result panel. {mmr} and {limit} come from the risk-limit snapshot.
+    assumptions: [
+      'Simplified formula for isolated margin on the Bybit BTCUSDT perpetual.',
+      'The maintenance margin rate starts at the risk tier 1 rate of {mmr}, for positions up to {limit} USDT. Change it under Advanced settings.',
+      'The closing fee and funding are left out, and Bybit liquidates on the mark price, not the last trade.',
+    ],
     toc: {
       formula: 'How it is calculated',
       examples: 'Worked examples',
@@ -137,9 +144,7 @@ export const liquidation = defineStrings({
       busy: '正在抓價格',
     },
     ui: {
-      liquidation: '爆倉價 {price}',
-      entry: '整條代表進場價 {price}',
-      barLabel: '離爆倉還剩進場價的 {pct}。',
+      levText: '{value} 倍',
       long: '價格只要下跌 {pct}，這個倉位就會被強制平倉。',
       short: '價格只要上漲 {pct}，這個倉位就會被強制平倉。',
       unreachable: '追加了這麼多保證金之後，這張多單在價格大於零的範圍內不會被強制平倉。',
@@ -159,7 +164,14 @@ export const liquidation = defineStrings({
     },
     result: {
       label: '爆倉價',
+      gap: '價格要走的距離',
+      share: '佔進場價的比例',
     },
+    assumptions: [
+      '逐倉模式的簡化公式，適用 Bybit 的 BTCUSDT 永續合約。',
+      '維持保證金率預設是風險級距第 1 級的 {mmr}，適用倉位價值 {limit} USDT 以下，可以在進階參數裡修改。',
+      '沒有計入平倉手續費和資金費；Bybit 用標記價格判斷強制平倉，不是最新成交價。',
+    ],
     toc: {
       formula: '公式怎麼來的',
       examples: '例題',

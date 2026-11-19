@@ -1,0 +1,503 @@
+---
+// The workspace every calculator page shares: inputs on the left (about 40%),
+// the result panel on the right (about 60%). Below 960px it is one column,
+// inputs first and the result straight after them.
+//
+//   <CalculatorShell locale={locale} data={calcData} label={t.result.label}
+//                    figure="64,824.4" unit="USDT" sentence="...">
+//     <Fragment slot="inputs"> ...fields; they sit in <form id="calc-form">... </Fragment>
+//     <Fragment slot="after-inputs"> ...buttons and notes under the form... </Fragment>
+//     <Fragment slot="flags"> <ResultFlag id="calc-tier" /> </Fragment>
+//     <RiskRuler slot="viz" ... />
+//     <Fragment slot="metrics"> ... </Fragment>
+//     <Fragment slot="assumptions"> <li>...</li> </Fragment>
+//     <Cta slot="cta" ... />
+//   </CalculatorShell>
+//
+// What it gives a page:
+// - #calc-form, the form the page's script listens on, with a reset button
+//   (#calc-reset) above it;
+// - the result panel #calc-result with the label (#calc-label), the one big
+//   figure (#calc-figure, unit in #calc-unit) and the plain sentence
+//   (#calc-sentence). Only label and figure are a live region, so a screen
+//   reader hears the new result and nothing else. data-state on the panel is
+//   "ready", "caution" or "invalid" (see calc-ui.ts);
+// - the order inside the panel: figure, sentence, warnings, visualization,
+//   secondary figures, assumptions, copy buttons, and last the exits to the
+//   exchange. An exit never sits above the result;
+// - on phones, a strip under the header that repeats the figure while the
+//   inputs are being edited and jumps to the panel. It is sticky at the top,
+//   so it cannot cover the on-screen keyboard.
+//
+// With scripting off everything rendered here is the page's starting example;
+// the controls that need the script (reset, copy, sliders) are not shown.
+import { calc } from '../../i18n/tools';
+import type { Locale } from '../../i18n/config';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  locale: Locale;
+  /** JSON for the page's script, put on the shell as data-calc. */
+  data: string;
+  /** What the big figure is: "Liquidation price". */
+  label: string;
+  /** The starting figure, already formatted: the number only. */
+  figure: string;
+  /** Its unit: "USDT", "BTC", "x". */
+  unit?: string;
+  /** The unit is written against the number ("18x"). */
+  tightUnit?: boolean;
+  /** The starting result in one plain sentence. */
+  sentence: string;
+  state?: 'ready' | 'caution';
+}
+
+const { locale, data, label, figure, unit = '', tightUnit = false, sentence, state = 'ready' } = Astro.props;
+const t = calc[locale];
+const peek = unit ? `${figure}${tightUnit ? '' : ' '}${unit}` : figure;
+---
+
+<div class="calc-shell" data-calc={data} data-calc-ui={JSON.stringify(t.actions)}>
+  <a class="calc-peek" href="#calc-result">
+    <span class="calc-peek-label">{label}</span>
+    <span class="calc-peek-value num" data-calc-peek>{peek}</span>
+    <span class="calc-peek-go">
+      <span class="calc-peek-go-text">{t.peek}</span>
+      <Icon name="arrow-down" size={14} />
+    </span>
+  </a>
+
+  <section class="calc-inputs" aria-labelledby="calc-inputs-title">
+    <div class="calc-inputs-head">
+      <h2 class="h-card" id="calc-inputs-title">{t.inputs}</h2>
+      <Button variant="ghost" size="sm" icon="rotate-ccw" id="calc-reset" class="calc-js">{t.reset}</Button>
+    </div>
+    <form class="calc-fields" id="calc-form" novalidate>
+      <slot name="inputs" />
+    </form>
+    <slot name="after-inputs" />
+  </section>
+
+  <section class="calc-result" id="calc-result" aria-labelledby="calc-result-title" data-state={state}>
+    <h2 class="visually-hidden" id="calc-result-title">{t.result}</h2>
+    <div class="calc-primary">
+      <div aria-live="polite" aria-atomic="true">
+        <p class="result-label" id="calc-label">{label}</p>
+        <p class="result-value calc-figure">
+          <span class="num" id="calc-figure">{figure}</span><span class="calc-unit" id="calc-unit" data-tight={tightUnit ? '' : undefined}
+            >{unit}</span
+          >
+        </p>
+      </div>
+      <p class="calc-sentence">
+        <Icon name="circle-alert" size={18} class="calc-when-invalid" />
+        <Icon name="triangle-alert" size={18} class="calc-when-caution" />
+        <span id="calc-sentence">{sentence}</span>
+      </p>
+      <slot name="flags" />
+    </div>
+
+    {
+      Astro.slots.has('viz') && (
+        <div class="calc-block">
+          <slot name="viz" />
+        </div>
+      )
+    }
+    {
+      Astro.slots.has('metrics') && (
+        <div class="calc-block">
+          <slot name="metrics" />
+        </div>
+      )
+    }
+    {
+      Astro.slots.has('assumptions') && (
+        <div class="calc-block">
+          <h3 class="calc-block-title">{t.assumptions}</h3>
+          <slot name="assumptions" />
+        </div>
+      )
+    }
+
+    <div class="calc-block calc-tools calc-js">
+      <Button variant="secondary" size="sm" icon="copy" id="calc-copy">{t.copy}</Button>
+      <Button variant="ghost" size="sm" icon="link" id="calc-copy-link">{t.copyLink}</Button>
+      <p class="calc-action-status" id="calc-action-status" role="status"></p>
+    </div>
+
+    {
+      Astro.slots.has('cta') && (
+        <div class="calc-block calc-next">
+          <slot name="cta" />
+        </div>
+      )
+    }
+  </section>
+</div>
+
+<style is:global>
+  /* Global on purpose: the fields and the result parts arrive through slots
+     and from child components, which scoped styles cannot reach. Every class
+     is prefixed "calc-". Tokens only. */
+  .calc-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+    margin-top: var(--space-8);
+  }
+
+  /* Needs the script: hidden until the page is known to be scripted. */
+  html:not([data-js]) .calc-js {
+    display: none;
+  }
+
+  /* --- The strip on phones ------------------------------------------------ */
+  .calc-peek {
+    position: sticky;
+    top: var(--header-h);
+    z-index: var(--z-sticky);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--tap);
+    margin-inline: calc(var(--gutter) * -1);
+    padding: var(--space-2) var(--gutter);
+    background: var(--color-bg);
+    border-block: var(--hairline) solid var(--color-border);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .calc-peek[data-away] {
+    visibility: hidden;
+  }
+
+  .calc-peek-label {
+    color: var(--color-text-secondary);
+  }
+
+  .calc-peek-value {
+    font-size: var(--text-md);
+    font-weight: var(--weight-medium);
+    white-space: nowrap;
+  }
+
+  .calc-peek-go {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-left: auto;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-control);
+    text-underline-offset: 0.2em;
+  }
+
+  /* Narrow phones: the label and the figure need the whole line, so the link
+     text is kept for screen readers and only its arrow is drawn. */
+  @media (max-width: 480px) {
+    .calc-peek-go-text {
+      position: absolute;
+      width: var(--hairline);
+      height: var(--hairline);
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  /* --- Inputs -------------------------------------------------------------- */
+  .calc-inputs {
+    min-width: 0;
+    container-type: inline-size;
+  }
+
+  .calc-inputs-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: var(--control-h-sm);
+  }
+
+  .calc-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5) var(--space-4);
+    align-items: start;
+    margin-top: var(--space-4);
+  }
+
+  .calc-fields .calc-fields {
+    margin-top: var(--space-2);
+  }
+
+  /* A wide single column (tablets): two fields per row. */
+  @container (min-width: 560px) {
+    .calc-fields {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .calc-fields > .calc-wide,
+    .calc-fields > .accordion {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .calc-after {
+    margin-top: var(--space-5);
+  }
+
+  .calc-after .acts {
+    margin-top: 0;
+  }
+
+  /* What a button under the form just did ("price fetched at ..."). The line
+     keeps its height while empty, so nothing moves when the text arrives. */
+  .calc-status {
+    min-height: calc(var(--text-sm) * var(--leading-body));
+    margin-top: var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A number field with a slider under it and the two ends of the slider's
+     range printed below. */
+  .calc-slider {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .calc-slider .slider {
+    width: 100%;
+  }
+
+  .calc-slider-ends {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+  }
+
+  /* --- Result panel ---------------------------------------------------------- */
+  .calc-result {
+    min-width: 0;
+    background: var(--color-surface);
+    border: var(--hairline) solid var(--color-border);
+    border-radius: var(--radius-card);
+  }
+
+  .calc-primary,
+  .calc-block {
+    padding: var(--card-pad);
+  }
+
+  .calc-block {
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-figure {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    margin-top: var(--space-1);
+  }
+
+  .calc-unit {
+    margin-left: 0.35em;
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: var(--text-card);
+    font-weight: var(--weight-regular);
+    letter-spacing: 0;
+  }
+
+  .calc-unit[data-tight] {
+    margin-left: 0.1em;
+  }
+
+  .calc-unit:empty {
+    display: none;
+  }
+
+  /* No result: the placeholder is dimmed, and the sentence says what to fix. */
+  .calc-result[data-state="invalid"] .calc-figure {
+    color: var(--color-text-muted);
+  }
+
+  .calc-sentence {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    max-width: 62ch;
+    margin-top: var(--space-3);
+    color: var(--color-text);
+  }
+
+  .calc-sentence > .icon {
+    display: none;
+    margin-top: 0.2em;
+  }
+
+  .calc-result[data-state="invalid"] .calc-when-invalid {
+    display: block;
+    color: var(--color-negative);
+  }
+
+  .calc-result[data-state="caution"] .calc-when-caution {
+    display: block;
+    color: var(--color-warning);
+  }
+
+  /* A line of small print under the sentence. */
+  .calc-fine {
+    max-width: 68ch;
+    margin-top: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .calc-flag {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    max-width: 68ch;
+    margin-top: var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .calc-flag > .icon {
+    margin-top: 0.2em;
+    color: var(--color-warning);
+  }
+
+  .calc-block-title {
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0;
+  }
+
+  /* Secondary figures: a row of bare metrics, or a two-column table. */
+  .calc-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+    gap: var(--space-5) var(--space-6);
+  }
+
+  .calc-metrics .metric-value {
+    font-size: var(--text-xl);
+  }
+
+  .calc-kv th {
+    font-weight: var(--weight-regular);
+    color: var(--color-text-secondary);
+  }
+
+  .calc-kv td {
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+
+  .calc-kv tr:first-child :is(th, td) {
+    padding-top: 0;
+  }
+
+  /* One share of a whole under the figures (Meter), with its two ends named. */
+  .calc-share {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+  }
+
+  .calc-share-ends {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 var(--space-4);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .calc-share-ends .num {
+    color: var(--color-text);
+  }
+
+  .calc-assume {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    max-width: 72ch;
+    margin-top: var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .calc-assume + .freshness {
+    margin-top: var(--space-4);
+  }
+
+  .calc-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+  }
+
+  .calc-action-status {
+    flex: 1 1 12rem;
+    min-height: calc(var(--text-sm) * var(--leading-body));
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  /* The exits to the exchange come last and stay quiet: an outline button,
+     not the filled one. */
+  .calc-next .acts {
+    margin-top: 0;
+  }
+
+  .calc-next .btn {
+    background: none;
+    border-color: var(--color-border-control);
+    color: var(--color-text);
+  }
+
+  .calc-next .btn:hover {
+    background: var(--color-hover);
+    border-color: var(--color-text-secondary);
+  }
+
+  @media (min-width: 960px) {
+    .calc-shell {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: var(--space-10);
+      margin-top: var(--space-10);
+    }
+
+    .calc-peek {
+      display: none;
+    }
+  }
+
+  /* Both columns are pinned under the header; the grid row is as tall as the
+     longer one, so in effect the shorter one stays in view while the longer
+     one is read. Tall screens only: a pinned column has to fit on screen. */
+  @media (min-width: 960px) and (min-height: 860px) {
+    .calc-inputs,
+    .calc-result {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-6));
+    }
+  }
+</style>

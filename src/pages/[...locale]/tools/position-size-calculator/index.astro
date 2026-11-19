@@ -4,11 +4,27 @@
 // on this page is also correct with scripting off (it shows worked example 1).
 import Cta from '../../../../components/Cta.astro';
 import Field from '../../../../components/Field.astro';
-import Verdict from '../../../../components/Verdict.astro';
+import CalculatorShell from '../../../../components/calc/CalculatorShell.astro';
+import DocSection from '../../../../components/calc/DocSection.astro';
+import ExampleBlock from '../../../../components/calc/ExampleBlock.astro';
+import RelatedTools from '../../../../components/calc/RelatedTools.astro';
+import ResultFlag from '../../../../components/calc/ResultFlag.astro';
+import ScaleBars from '../../../../components/calc/ScaleBars.astro';
+import SliderField from '../../../../components/calc/SliderField.astro';
+import { splitFigure } from '../../../../components/calc/calc-ui';
+import { ASSUMED_FEE_PCT, POSITION_START } from '../../../../components/calc/starting-values';
+import Accordion from '../../../../components/ui/Accordion.astro';
+import DataFreshness from '../../../../components/ui/DataFreshness.astro';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import FormulaBlock from '../../../../components/ui/FormulaBlock.astro';
+import Meter from '../../../../components/ui/Meter.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../../components/ui/PageHeader.astro';
 import { common } from '../../../../i18n/common';
-import { localePath, localeStaticPaths } from '../../../../i18n/config';
+import { localeStaticPaths } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
 import { positionSize as strings } from '../../../../i18n/position-size';
+import { calc } from '../../../../i18n/tools';
 import Base from '../../../../layouts/Base.astro';
 import { floorTo, maxLeverage } from '../../../../lib/calc/leverage';
 import { roundToTick } from '../../../../lib/calc/liquidation';
@@ -16,8 +32,6 @@ import { positionSize } from '../../../../lib/calc/position-size';
 import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../../lib/fmt';
 import { BTCUSDT, snapshotDate, tierOne } from '../../../../lib/risk-limit';
 import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
-import { getTool } from '../../../../lib/tools';
-import Lanes from '../_parts/Lanes.astro';
 
 export const getStaticPaths = localeStaticPaths;
 
@@ -28,6 +42,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = strings[locale];
 const c = common[locale];
+const ui = calc[locale];
 const PATH = '/tools/position-size-calculator/';
 
 // Exchange parameters come from the snapshot, never from a constant here.
@@ -40,9 +55,9 @@ const date = snapshotDate(BTCUSDT);
 const limit = formatNumber(tier.riskLimitValue);
 const mmrPct = formatPercent(mmr);
 
-// The one assumption on this page: the fee per side, in percent. It is shown
-// next to its field as an assumption and the reader can change it.
-const ASSUMED_FEE_PCT = 0.055;
+// The one assumption on this page is the fee per side (ASSUMED_FEE_PCT, in
+// percent). It is shown next to its field as an assumption and the reader
+// can change it.
 const feePct = formatPercent(ASSUMED_FEE_PCT / 100, 3);
 
 const price = (n: number) => formatNumber(roundToTick(n, tick), decimals);
@@ -102,7 +117,7 @@ function example(title: string, s: ReturnType<typeof solve>) {
 }
 
 // Example 1 is also the starting state, and what a reader without JavaScript sees.
-const first = solve(10000, 1, 68000, 66400, 10);
+const first = solve(POSITION_START.account, POSITION_START.riskPct, POSITION_START.entry, POSITION_START.stop, POSITION_START.lev);
 const second = solve(4000, 2, 68000, 72000, 25);
 if (!first.r.stopBeforeLiquidation || second.r.stopBeforeLiquidation) throw new Error('Worked examples changed meaning');
 const ex1 = example(t.examples.first, first);
@@ -112,6 +127,7 @@ const start = first.r;
 const startStopPct = formatPercent(start.stopDistance);
 const startLiqPct = formatPercent(start.liquidationDistance);
 const usdt = (n: number) => fmt(t.ui.usdt, { value: money(n) });
+const startFigure = splitFigure(fmt(t.ui.figure, { qty: first.vars.qty }));
 
 const termVars = { fee: feePct };
 const checkVars = { mmr: mmrPct, date };
@@ -119,161 +135,194 @@ const checkVars = { mmr: mmrPct, date };
 // Plain data for the browser script.
 const calcData = JSON.stringify({ tick, maxLeverage: cap, tierLimit: tier.riskLimitValue, mmr, strings: t.ui });
 
-const leverageTool = getTool(locale, 'leverage-calculator');
-const liquidationTool = getTool(locale, 'liquidation-price-calculator');
-
-const jsonLd = [
-  softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }),
-  breadcrumbLd(locale, [
-    { name: c.breadcrumb.home, path: '/' },
-    { name: c.nav.tools, path: '/tools/' },
-    { name: t.title, path: PATH },
-  ]),
+// The same trail for the visible breadcrumb and for JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+  { name: t.title, path: PATH },
 ];
+const jsonLd = [softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }), breadcrumbLd(locale, trail)];
 ---
 
-<Base locale={locale} path={PATH} title={t.title} description={t.description} surface="measure" jsonLd={jsonLd}>
-  <section class="measure" data-calc={calcData}>
-    <div class="wrap">
-      <h1 class="head">{t.title}</h1>
-      <p class="sub">{t.lede}</p>
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+      <nav class="calc-jump" aria-label={ui.onThisPage}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+      </nav>
+    </PageHeader>
 
-      <div class="sticky-scale">
-        <Lanes
-          id="calc-scale"
-          top={start.stopDistance}
-          bottom={start.liquidationDistance}
-          label={fmt(t.ui.barLabel, { stop: startStopPct, lev: first.lev, liq: startLiqPct })}
-          topText={fmt(t.ui.stopLane, { pct: startStopPct })}
-          bottomText={fmt(t.ui.liqLane, { lev: first.lev, pct: startLiqPct })}
-          endText={fmt(t.ui.entry, { price: formatNumber(first.entry) })}
-        />
-      </div>
-
-      <form class="fields" id="calc-form" novalidate>
+    <CalculatorShell
+      locale={locale}
+      data={calcData}
+      label={t.result.label}
+      figure={startFigure.value}
+      unit={startFigure.unit}
+      tightUnit={startFigure.tight}
+      sentence={fmt(start.side === 'long' ? t.ui.long : t.ui.short, {
+        qty: first.vars.qty,
+        stop: first.vars.stop,
+        amount: first.vars.amount,
+        pct: first.vars.pct,
+        fee: first.vars.feeAmount,
+      })}
+    >
+      <Fragment slot="inputs">
         <Field id="account" label={t.fields.account} unit="USDT" value={first.account} />
         <Field id="risk" label={t.fields.risk} unit="%" value={first.riskPct} />
         <Field id="entry" label={t.fields.entry} unit="USDT" value={first.entry} />
         <Field id="stop" label={t.fields.stop} unit="USDT" value={first.stop} hint={t.fields.stopHint} />
-        <Field id="lev" label={t.fields.leverage} unit={t.fields.leverageUnit} value={first.lev} />
-        <Field id="fee" label={t.fields.fee} unit="%" value={ASSUMED_FEE_PCT} hint={fmt(t.fields.feeHint, { fee: feePct })} />
-      </form>
-      <p class="fine">{fmt(t.assumption, { mmr: mmrPct, limit, date })}</p>
-      <noscript><p class="fine">{t.noscript}</p></noscript>
-    </div>
-  </section>
+        <SliderField
+          id="lev"
+          class="calc-wide"
+          label={t.fields.leverage}
+          unit={t.fields.leverageUnit}
+          value={first.lev}
+          min={1}
+          max={cap}
+          sliderLabel={fmt(ui.slider, { label: t.fields.leverage })}
+          valueText={t.ui.levText}
+          minText={fmt(t.ui.levText, { value: 1 })}
+          maxText={fmt(t.ui.levText, { value: cap })}
+        />
+        <Accordion summary={ui.advanced} id="calc-advanced">
+          <div class="calc-fields">
+            <Field
+              id="fee"
+              class="calc-wide"
+              label={t.fields.fee}
+              unit="%"
+              value={ASSUMED_FEE_PCT}
+              hint={fmt(t.fields.feeHint, { fee: feePct })}
+            />
+          </div>
+        </Accordion>
+      </Fragment>
 
-  <Verdict
-    label={t.result.label}
-    figure={fmt(t.ui.figure, { qty: first.vars.qty })}
-    sentence={fmt(start.side === 'long' ? t.ui.long : t.ui.short, {
-      qty: first.vars.qty,
-      stop: first.vars.stop,
-      amount: first.vars.amount,
-      pct: first.vars.pct,
-      fee: first.vars.feeAmount,
-    })}
-    figureId="calc-figure"
-    sentenceId="calc-sentence"
-  >
-    <div class="tw results">
-      <table>
-        <caption class="visually-hidden">{t.result.caption}</caption>
-        <tbody>
-          <tr>
-            <th scope="row">{t.result.notional}</th>
-            <td class="num" id="out-notional">{usdt(start.notional)}</td>
-          </tr>
-          <tr>
-            <th scope="row">{t.result.margin}</th>
-            <td class="num" id="out-margin">{usdt(start.margin)}</td>
-          </tr>
-          <tr>
-            <th scope="row">{t.result.fee}</th>
-            <td class="num" id="out-fee">{usdt(start.roundTripFee)}</td>
-          </tr>
-          <tr>
-            <th scope="row">{t.result.loss}</th>
-            <td class="num" id="out-loss">{usdt(start.lossAtStop)}</td>
-          </tr>
-          <tr>
-            <th scope="row" id="out-liq-label">{fmt(t.ui.liqRow, { lev: first.lev })}</th>
-            <td class="num" id="out-liq">{price(start.liquidationPrice)}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="fine" id="calc-margin-note" hidden>{t.ui.marginNote}</p>
-    <p class="fine" id="calc-tier" hidden></p>
-    <Cta
-      locale={locale}
-      pageType="tool"
-      position="result"
-      primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
-      secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
-    />
-  </Verdict>
+      <Fragment slot="after-inputs">
+        <noscript><p class="fine">{t.noscript}</p></noscript>
+      </Fragment>
 
-  <section class="read">
-    <div class="wrap docs">
-      <nav class="toc" aria-label={t.title}>
-        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
-        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
-        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
-        {leverageTool.href && <a class="lnk" href={leverageTool.href}>{leverageTool.name}</a>}
-        {liquidationTool.href && <a class="lnk" href={liquidationTool.href}>{liquidationTool.name}</a>}
-        <a class="lnk" href={localePath(locale, '/tools/')}>{t.allTools}</a>
-      </nav>
+      <Fragment slot="flags">
+        <ResultFlag id="calc-margin-note" text={t.ui.marginNote} />
+        <ResultFlag id="calc-tier" />
+      </Fragment>
 
-      <div class="prose">
-        <h2 id="how-it-is-calculated">{t.toc.formula}</h2>
-        <p>{t.formula.intro}</p>
-        <pre>{t.formula.lines.join('\n')}</pre>
-        <ul>
-          {
-            t.formula.terms.map((item) => (
-              <li><strong>{item.term}</strong>{locale === 'en' ? ': ' : '：'}{fmt(item.text, termVars)}</li>
-            ))
-          }
+      <ScaleBars
+        slot="viz"
+        id="calc-bars"
+        a={start.stopDistance}
+        b={start.liquidationDistance}
+        aLabel={t.ui.stopBar}
+        aValue={startStopPct}
+        bLabel={fmt(t.ui.liqBar, { lev: first.lev })}
+        bValue={startLiqPct}
+        bTone="negative"
+        caption={(layout) => fmt(t.ui.barLabel, { max: layout.maxLabel, stop: startStopPct, lev: first.lev, liq: startLiqPct })}
+      />
+
+      <Fragment slot="metrics">
+        <table class="calc-kv">
+          <caption class="visually-hidden">{t.result.caption}</caption>
+          <tbody>
+            <tr>
+              <th scope="row">{t.result.notional}</th>
+              <td class="num" id="out-notional">{usdt(start.notional)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.margin}</th>
+              <td class="num" id="out-margin">{usdt(start.margin)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.fee}</th>
+              <td class="num" id="out-fee">{usdt(start.roundTripFee)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.loss}</th>
+              <td class="num" id="out-loss">{usdt(start.lossAtStop)}</td>
+            </tr>
+            <tr>
+              <th scope="row" id="out-liq-label">{fmt(t.ui.liqRow, { lev: first.lev })}</th>
+              <td class="num" id="out-liq">{price(start.liquidationPrice)}</td>
+            </tr>
+          </tbody>
+        </table>
+        {/* The margin as a share of the account: the bar's full width is the account. */}
+        <div class="calc-share">
+          <div class="calc-share-ends" aria-hidden="true">
+            <span>{t.result.margin} <span class="num" id="out-margin-share">{usdt(start.margin)}</span></span>
+            <span>{t.fields.account} <span class="num" id="out-account">{usdt(first.account)}</span></span>
+          </div>
+          <Meter
+            id="calc-margin-meter"
+            size="tall"
+            value={start.margin / first.account}
+            label={fmt(t.ui.marginMeter, { margin: money(start.margin), account: money(first.account) })}
+          />
+        </div>
+      </Fragment>
+
+      <Fragment slot="assumptions">
+        <ul class="calc-assume">
+          <li>{fmt(t.assumption, { mmr: mmrPct, limit, date })}</li>
+          {t.assumptions.map((line) => <li>{fmt(line, { fee: feePct })}</li>)}
+          <li>{c.ui.estimate}</li>
         </ul>
-        <p>{fmt(t.formula.check, checkVars)}</p>
-        <p>{t.formula.leftOut}</p>
+        <DataFreshness locale={locale} date={date} source={ui.source} />
+      </Fragment>
 
-        <h2 id="worked-examples">{t.toc.examples}</h2>
-        {
-          [ex1, ex2].map((ex) => (
-            <>
-              <h3>{ex.title}</h3>
-              <p>{ex.setup}</p>
-              <pre>{ex.working}</pre>
-              <p>{ex.result}</p>
-            </>
-          ))
-        }
+      <Cta
+        slot="cta"
+        locale={locale}
+        pageType="tool"
+        position="result"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+      />
+    </CalculatorShell>
+  </PageContainer>
 
-        <h2 id="common-mistakes">{t.toc.mistakes}</h2>
-        {
-          t.mistakes.map((m) => (
-            <>
-              <h3>{m.title}</h3>
-              <p>{fmt(m.text, first.vars)}</p>
-            </>
-          ))
-        }
-      </div>
+  <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+    <p>{t.formula.intro}</p>
+    <FormulaBlock formula={t.formula.lines.join('\n')} />
+    <dl class="calc-terms">
+      {
+        t.formula.terms.map((item) => (
+          <div>
+            <dt>{item.term}</dt>
+            <dd>{fmt(item.text, termVars)}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p>{fmt(t.formula.check, checkVars)}</p>
+    <Disclaimer locale={locale} kind="info" title={ui.leftOut}>
+      <p>{t.formula.leftOut}</p>
+    </Disclaimer>
+  </DocSection>
+
+  <DocSection id="worked-examples" title={t.toc.examples}>
+    <div class="calc-pair">
+      {[ex1, ex2].map((ex) => <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />)}
     </div>
-  </section>
+  </DocSection>
 
-  <style>
-    .results {
-      max-width: var(--measure);
-      margin-top: var(--space-lg);
-    }
+  <DocSection id="common-mistakes" title={t.toc.mistakes}>
+    <ul class="calc-mistakes">
+      {
+        t.mistakes.map((m) => (
+          <li>
+            <h3>{m.title}</h3>
+            <p>{fmt(m.text, first.vars)}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </DocSection>
 
-    .results th {
-      font-weight: 400;
-    }
-  </style>
+  <RelatedTools locale={locale} current="position-size-calculator" allLabel={t.allTools} />
 
   <script>
     import '../../../../scripts/position-size-calculator.ts';

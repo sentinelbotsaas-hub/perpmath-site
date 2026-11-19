@@ -6,18 +6,30 @@
 import Cta from '../../../../components/Cta.astro';
 import Field from '../../../../components/Field.astro';
 import Segmented from '../../../../components/Segmented.astro';
-import Verdict from '../../../../components/Verdict.astro';
+import CalculatorShell from '../../../../components/calc/CalculatorShell.astro';
+import DocSection from '../../../../components/calc/DocSection.astro';
+import ExampleBlock from '../../../../components/calc/ExampleBlock.astro';
+import Metric from '../../../../components/calc/Metric.astro';
+import RelatedTools from '../../../../components/calc/RelatedTools.astro';
+import ScaleBars from '../../../../components/calc/ScaleBars.astro';
+import SliderField from '../../../../components/calc/SliderField.astro';
+import { splitFigure } from '../../../../components/calc/calc-ui';
+import { DRAWDOWN_START } from '../../../../components/calc/starting-values';
+import DataTable from '../../../../components/ui/DataTable.astro';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import FormulaBlock from '../../../../components/ui/FormulaBlock.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../../components/ui/PageHeader.astro';
 import { common } from '../../../../i18n/common';
-import { localePath, localeStaticPaths } from '../../../../i18n/config';
+import { localeStaticPaths } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
 import { drawdown as strings } from '../../../../i18n/drawdown';
+import { calc } from '../../../../i18n/tools';
 import Base from '../../../../layouts/Base.astro';
 import { MAX_STREAK, MIN_REMAINING, capitalAfterStreak, drawdown } from '../../../../lib/calc/drawdown';
 import type { DrawdownInput } from '../../../../lib/calc/drawdown';
 import { fmt, formatNumber } from '../../../../lib/fmt';
 import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
-import { getTool } from '../../../../lib/tools';
-import Lanes from '../_parts/Lanes.astro';
 
 export const getStaticPaths = localeStaticPaths;
 
@@ -28,6 +40,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = strings[locale];
 const c = common[locale];
+const ui = calc[locale];
 const PATH = '/tools/drawdown-calculator/';
 
 /** 0.2239 -> "22.39%", 9 -> "900.00%". */
@@ -42,11 +55,15 @@ function solve(input: DrawdownInput) {
 }
 
 // Starting state, also what a reader without JavaScript sees.
-const defaults = { mode: 'drawdown', dd: 50, n: 10, risk: 2 };
+const defaults = DRAWDOWN_START;
 const start = solve({ mode: 'drawdown', drawdown: defaults.dd / 100 });
 const startLost = percent(start.drawdown);
 const startNeeded = percent(start.recoveryGain);
 const startScale = percent(start.scaleMax);
+const startFigure = splitFigure(fmt(t.ui.figure, { pct: startNeeded }));
+
+// The slider covers the whole-number drawdowns the formula accepts.
+const SLIDER = { min: 1, max: 99 };
 
 // Two worked examples, computed with the same library the calculator uses.
 const one = solve({ mode: 'drawdown', drawdown: 0.3 });
@@ -98,50 +115,58 @@ const mistakeVars = {
 // Plain data for the browser script.
 const calcData = JSON.stringify({ maxStreak: MAX_STREAK, minRemaining: MIN_REMAINING, strings: t.ui });
 
-const positionTool = getTool(locale, 'position-size-calculator');
-
-const jsonLd = [
-  softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }),
-  breadcrumbLd(locale, [
-    { name: c.breadcrumb.home, path: '/' },
-    { name: c.nav.tools, path: '/tools/' },
-    { name: t.title, path: PATH },
-  ]),
+// The same trail for the visible breadcrumb and for JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+  { name: t.title, path: PATH },
 ];
+const jsonLd = [softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }), breadcrumbLd(locale, trail)];
 ---
 
-<Base locale={locale} path={PATH} title={t.title} description={t.description} surface="measure" jsonLd={jsonLd}>
-  <section class="measure" data-calc={calcData}>
-    <div class="wrap">
-      <h1 class="head">{t.title}</h1>
-      <p class="sub">{t.lede}</p>
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+      <nav class="calc-jump" aria-label={ui.onThisPage}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+      </nav>
+    </PageHeader>
 
-      <div class="sticky-scale">
-        <Lanes
-          id="calc-scale"
-          top={start.lostShare}
-          bottom={start.neededShare}
-          label={fmt(t.ui.barLabel, { scale: startScale, lost: startLost, needed: startNeeded })}
-          topText={fmt(t.ui.lostLane, { pct: startLost })}
-          bottomText={fmt(t.ui.neededLane, { pct: startNeeded })}
-          endText={fmt(t.ui.scale, { pct: startScale })}
+    <CalculatorShell
+      locale={locale}
+      data={calcData}
+      label={t.result.label}
+      figure={startFigure.value}
+      unit={startFigure.unit}
+      tightUnit={startFigure.tight}
+      sentence={fmt(t.ui.drawdown, { lost: startLost, remaining: percent(start.remaining), needed: startNeeded })}
+    >
+      <Fragment slot="inputs">
+        <Segmented
+          name="mode"
+          class="calc-wide"
+          label={t.fields.mode}
+          value={defaults.mode}
+          options={[
+            { value: 'drawdown', label: t.fields.modeDrawdown },
+            { value: 'streak', label: t.fields.modeStreak },
+          ]}
         />
-      </div>
-
-      <form class="fields" id="calc-form" novalidate>
-        <div class="mode">
-          <Segmented
-            name="mode"
-            label={t.fields.mode}
-            value={defaults.mode}
-            options={[
-              { value: 'drawdown', label: t.fields.modeDrawdown },
-              { value: 'streak', label: t.fields.modeStreak },
-            ]}
+        <div class="calc-wide" data-mode="drawdown">
+          <SliderField
+            id="dd"
+            label={t.fields.drawdown}
+            unit="%"
+            value={defaults.dd}
+            min={SLIDER.min}
+            max={SLIDER.max}
+            sliderLabel={fmt(ui.slider, { label: t.fields.drawdown })}
+            valueText={t.ui.ddText}
+            minText={fmt(t.ui.ddText, { value: SLIDER.min })}
+            maxText={fmt(t.ui.ddText, { value: SLIDER.max })}
           />
-        </div>
-        <div data-mode="drawdown">
-          <Field id="dd" label={t.fields.drawdown} unit="%" value={defaults.dd} />
         </div>
         <div data-mode="streak" hidden>
           <Field id="n" label={t.fields.losses} unit={t.fields.lossesUnit} value={defaults.n} inputmode="numeric" />
@@ -149,106 +174,109 @@ const jsonLd = [
         <div data-mode="streak" hidden>
           <Field id="risk" label={t.fields.risk} unit="%" value={defaults.risk} hint={t.fields.riskHint} />
         </div>
-      </form>
-      <noscript><p class="fine">{t.noscript}</p></noscript>
-    </div>
-  </section>
+      </Fragment>
 
-  <Verdict
-    label={t.result.label}
-    figure={fmt(t.ui.figure, { pct: startNeeded })}
-    sentence={fmt(t.ui.drawdown, { lost: startLost, remaining: percent(start.remaining), needed: startNeeded })}
-    figureId="calc-figure"
-    sentenceId="calc-sentence"
-  >
-    <Cta
-      locale={locale}
-      pageType="tool"
-      position="result"
-      primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
-      secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
-    />
-  </Verdict>
+      <Fragment slot="after-inputs">
+        <noscript><p class="fine">{t.noscript}</p></noscript>
+      </Fragment>
 
-  <section class="read">
-    <div class="wrap docs">
-      <nav class="toc" aria-label={t.title}>
-        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
-        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
-        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
-        {positionTool.href && <a class="lnk" href={positionTool.href}>{positionTool.name}</a>}
-        <a class="lnk" href={localePath(locale, '/tools/')}>{t.allTools}</a>
-      </nav>
+      <ScaleBars
+        slot="viz"
+        id="calc-bars"
+        a={start.drawdown}
+        b={start.recoveryGain}
+        max={start.scaleMax}
+        aLabel={t.ui.lostBar}
+        aValue={startLost}
+        aTone="negative"
+        bLabel={t.ui.neededBar}
+        bValue={startNeeded}
+        caption={() => fmt(t.ui.barLabel, { scale: startScale, lost: startLost, needed: startNeeded })}
+      />
 
-      <div class="prose">
-        <h2 id="how-it-is-calculated">{t.toc.formula}</h2>
-        <p>{t.formula.intro}</p>
-        <pre>{t.formula.recover}</pre>
-        <p>{t.formula.why}</p>
-        <table>
-          <caption>{t.formula.tableCaption}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{t.formula.tableLost}</th>
-              <th scope="col">{t.formula.tableLeft}</th>
-              <th scope="col">{t.formula.tableNeeded}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              rows.map((row) => (
-                <tr>
-                  <td class="num">{percent(row.drawdown)}</td>
-                  <td class="num">{percent(row.remaining)}</td>
-                  <td class="num">{percent(row.recoveryGain)}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-        <p>{t.formula.streakIntro}</p>
-        <pre>{t.formula.streak + '\n' + t.formula.streakDrawdown}</pre>
-        <ul>
-          {
-            t.formula.terms.map((item) => (
-              <li><strong>{item.term}</strong>{locale === 'en' ? ': ' : '：'}{item.text}</li>
-            ))
-          }
-        </ul>
-        <p>{t.formula.leftOut}</p>
-
-        <h2 id="worked-examples">{t.toc.examples}</h2>
-        {
-          [ex1, ex2].map((ex) => (
-            <>
-              <h3>{ex.title}</h3>
-              <p>{ex.setup}</p>
-              <pre>{ex.working}</pre>
-              <p>{ex.result}</p>
-            </>
-          ))
-        }
-
-        <h2 id="common-mistakes">{t.toc.mistakes}</h2>
-        {
-          t.mistakes.map((m) => (
-            <>
-              <h3>{m.title}</h3>
-              <p>{fmt(m.text, mistakeVars)}</p>
-            </>
-          ))
-        }
+      <div slot="metrics" class="calc-metrics">
+        <Metric label={t.result.lost} value={startLost} valueId="out-lost" />
+        <Metric label={t.result.remaining} value={percent(start.remaining)} valueId="out-remaining" />
       </div>
-    </div>
-  </section>
 
-  <style>
-    /* The switch gets a row to itself, so both labels fit on one line at phone width. */
-    .mode {
-      grid-column: 1 / -1;
-      max-width: calc(var(--space-3xl) * 4);
-    }
-  </style>
+      <Fragment slot="assumptions">
+        <ul class="calc-assume">
+          {t.assumptions.map((line) => <li>{line}</li>)}
+        </ul>
+      </Fragment>
+
+      <Cta
+        slot="cta"
+        locale={locale}
+        pageType="tool"
+        position="result"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+      />
+    </CalculatorShell>
+  </PageContainer>
+
+  <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+    <p>{t.formula.intro}</p>
+    <FormulaBlock formula={t.formula.recover} />
+    <p>{t.formula.why}</p>
+    <DataTable locale={locale} label={t.result.label} caption={t.formula.tableCaption}>
+      <thead>
+        <tr>
+          <th scope="col">{t.formula.tableLost}</th>
+          <th scope="col">{t.formula.tableLeft}</th>
+          <th scope="col">{t.formula.tableNeeded}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr>
+              <td class="num">{percent(row.drawdown)}</td>
+              <td class="num">{percent(row.remaining)}</td>
+              <td class="num">{percent(row.recoveryGain)}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </DataTable>
+    <p>{t.formula.streakIntro}</p>
+    <FormulaBlock formula={t.formula.streak + '\n' + t.formula.streakDrawdown} />
+    <dl class="calc-terms">
+      {
+        t.formula.terms.map((item) => (
+          <div>
+            <dt>{item.term}</dt>
+            <dd>{item.text}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <Disclaimer locale={locale} kind="info" title={ui.leftOut}>
+      <p>{t.formula.leftOut}</p>
+    </Disclaimer>
+  </DocSection>
+
+  <DocSection id="worked-examples" title={t.toc.examples}>
+    <div class="calc-pair">
+      {[ex1, ex2].map((ex) => <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />)}
+    </div>
+  </DocSection>
+
+  <DocSection id="common-mistakes" title={t.toc.mistakes}>
+    <ul class="calc-mistakes">
+      {
+        t.mistakes.map((m) => (
+          <li>
+            <h3>{m.title}</h3>
+            <p>{fmt(m.text, mistakeVars)}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </DocSection>
+
+  <RelatedTools locale={locale} current="drawdown-calculator" allLabel={t.allTools} />
 
   <script>
     import '../../../../scripts/drawdown-calculator.ts';

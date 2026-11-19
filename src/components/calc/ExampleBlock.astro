@@ -1,0 +1,28 @@
+---
+// One worked example: what is given, the sum, and what comes out. The numbers
+// are computed by the page with the same library the calculator uses.
+//
+//   <div class="calc-pair">
+//     <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />
+//   </div>
+import FormulaBlock from '../ui/FormulaBlock.astro';
+
+interface Props {
+  title: string;
+  /** The given values, in a sentence. */
+  setup: string;
+  /** The sum, one step per line. */
+  working: string;
+  /** The outcome, in a sentence. */
+  result: string;
+}
+
+const { title, setup, working, result } = Astro.props;
+---
+
+<article class="calc-example">
+  <h3>{title}</h3>
+  <p>{setup}</p>
+  <FormulaBlock formula={working} />
+  <p class="calc-example-result">{result}</p>
+</article>

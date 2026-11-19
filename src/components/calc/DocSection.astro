@@ -1,0 +1,171 @@
+---
+// One of the reading sections under a calculator: the formula, the worked
+// examples, the common mistakes. The heading sits in a narrow left column and
+// the text in a wider right one; on a phone they stack.
+//
+//   <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+//     <p>...</p>
+//     <FormulaBlock ... />
+//   </DocSection>
+//
+// Everything in it is plain HTML in the page: nothing here needs the script.
+interface Props {
+  /** id of the heading: the target of the in-page links, so keep existing ids. */
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+---
+
+<section class="section calc-doc" aria-labelledby={id}>
+  <div class="wrap calc-doc-grid">
+    <h2 class="h-section" id={id}>{title}</h2>
+    <div class="calc-doc-body">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  /* Reading sections follow each other closely and are ruled apart. */
+  .section.calc-doc {
+    padding-block: var(--space-16);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-doc-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6) var(--space-10);
+    align-items: start;
+  }
+
+  .calc-doc-body {
+    min-width: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .calc-doc-body > * + * {
+    margin-top: var(--space-5);
+  }
+
+  .calc-doc-body > :is(p, .note, .formula, .table-scroll, .table-caption) {
+    max-width: var(--measure);
+  }
+
+  .calc-doc-body :is(h3, strong, dt, th) {
+    color: var(--color-text);
+  }
+
+  /* Terms of a formula: the word, then what it means. */
+  .calc-terms {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: var(--measure);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-terms > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1) var(--space-6);
+    padding-block: var(--space-3);
+    border-bottom: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-terms dt {
+    font-weight: var(--weight-medium);
+  }
+
+  .calc-terms dd {
+    font-size: var(--text-sm);
+  }
+
+  /* Two worked examples side by side; mistakes in two columns. */
+  .calc-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
+  }
+
+  .calc-example {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    align-content: start;
+    min-width: 0;
+  }
+
+  .calc-example .formula-body {
+    font-size: var(--text-sm);
+  }
+
+  .calc-example-result {
+    color: var(--color-text);
+  }
+
+  .calc-mistakes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 var(--space-10);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-mistakes > li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    align-content: start;
+    padding-block: var(--space-5);
+    border-bottom: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-mistakes p {
+    max-width: 60ch;
+    font-size: var(--text-sm);
+  }
+
+  /* The in-page links under the page title. */
+  .calc-jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-5);
+    margin-top: var(--space-4);
+  }
+
+  .calc-jump .lnk {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+  }
+
+  .calc-jump .lnk:hover {
+    color: var(--color-text);
+  }
+
+  @media (min-width: 620px) {
+    .calc-terms > div {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    }
+  }
+
+  @media (min-width: 760px) {
+    .calc-pair,
+    .calc-mistakes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 960px) {
+    .calc-doc-grid {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 5fr);
+    }
+
+    /* The heading stays in view while its section is read. */
+    .calc-doc-grid > h2 {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-6));
+    }
+  }
+</style>

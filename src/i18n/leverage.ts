@@ -23,11 +23,11 @@ export const leverage = defineStrings({
       mmrHint: 'Risk tier 1, positions up to {limit} USDT. Bybit data from {date}.',
     },
     ui: {
-      stopLane: 'Stop: {pct} from entry',
-      liqLane: 'Liquidation at {lev}x: {pct} from entry',
-      entry: 'Entry {price} is the full width',
+      stopBar: 'Stop distance',
+      liqBar: 'Liquidation distance at {lev}x',
       barLabel:
-        'Two bars on one scale, where the full width is the entry price. The stop is {stop} away. At {lev}x the liquidation price is {liq} away.',
+        'Two bars on one scale that starts at 0. The full width is {max} of the entry price. The stop is {stop} from the entry. At {lev}x the liquidation price is {liq} from the entry.',
+      liqRow: 'Liquidation price at {lev}x',
       figure: '{lev}x',
       ok: 'At {lev}x your stop at {stop} is hit before the liquidation price of {liq}.',
       capped:
@@ -47,7 +47,14 @@ export const leverage = defineStrings({
     },
     result: {
       label: 'Maximum leverage',
+      limit: 'Limit before rounding down',
     },
+    // Shown in the result panel. {mmr} and {limit} come from the risk-limit snapshot.
+    assumptions: [
+      'Simplified formula for isolated margin on the Bybit BTCUSDT perpetual, with no margin added after opening.',
+      'The maintenance margin rate starts at the risk tier 1 rate of {mmr}, for positions up to {limit} USDT. Change it under Advanced settings.',
+      'A stop is an order, not a guarantee: in a fast market it can fill at a worse price than the stop.',
+    ],
     toc: {
       formula: 'How it is calculated',
       examples: 'Worked examples',
@@ -125,10 +132,10 @@ export const leverage = defineStrings({
       mmrHint: '風險級距第 1 級，適用倉位價值 {limit} USDT 以下。Bybit 資料日期 {date}。',
     },
     ui: {
-      stopLane: '停損：離進場價 {pct}',
-      liqLane: '{lev} 倍的爆倉價：離進場價 {pct}',
-      entry: '整條代表進場價 {price}',
-      barLabel: '同一個比例尺上的兩條橫條，整條代表進場價。停損離進場價 {stop}；{lev} 倍時，爆倉價離進場價 {liq}。',
+      stopBar: '停損距離',
+      liqBar: '{lev} 倍的爆倉距離',
+      barLabel: '兩條橫條用同一個從 0 開始的比例尺，整條代表進場價的 {max}。停損離進場價 {stop}；{lev} 倍時，爆倉價離進場價 {liq}。',
+      liqRow: '{lev} 倍的爆倉價',
       figure: '{lev} 倍',
       ok: '開 {lev} 倍時，價格會先碰到你設在 {stop} 的停損，之後才是爆倉價 {liq}。',
       capped: '你的停損夠近，Bybit 在風險級距第 1 級允許的槓桿（最高 {lev} 倍）都能讓停損比爆倉先觸發。',
@@ -146,7 +153,13 @@ export const leverage = defineStrings({
     },
     result: {
       label: '最高槓桿',
+      limit: '取整數之前的上限',
     },
+    assumptions: [
+      '逐倉模式的簡化公式，適用 Bybit 的 BTCUSDT 永續合約，沒有計入開倉後追加的保證金。',
+      '維持保證金率預設是風險級距第 1 級的 {mmr}，適用倉位價值 {limit} USDT 以下，可以在進階參數裡修改。',
+      '停損是一張委託單，不是保證：行情劇烈時，成交價可能比停損價更差。',
+    ],
     toc: {
       formula: '公式怎麼來的',
       examples: '例題',

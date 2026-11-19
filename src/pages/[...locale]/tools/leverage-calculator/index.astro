@@ -5,11 +5,25 @@
 import Cta from '../../../../components/Cta.astro';
 import Field from '../../../../components/Field.astro';
 import Segmented from '../../../../components/Segmented.astro';
-import Verdict from '../../../../components/Verdict.astro';
+import CalculatorShell from '../../../../components/calc/CalculatorShell.astro';
+import DocSection from '../../../../components/calc/DocSection.astro';
+import ExampleBlock from '../../../../components/calc/ExampleBlock.astro';
+import Metric from '../../../../components/calc/Metric.astro';
+import RelatedTools from '../../../../components/calc/RelatedTools.astro';
+import ScaleBars from '../../../../components/calc/ScaleBars.astro';
+import { splitFigure } from '../../../../components/calc/calc-ui';
+import { LEVERAGE_START } from '../../../../components/calc/starting-values';
+import Accordion from '../../../../components/ui/Accordion.astro';
+import DataFreshness from '../../../../components/ui/DataFreshness.astro';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import FormulaBlock from '../../../../components/ui/FormulaBlock.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../../components/ui/PageHeader.astro';
 import { common } from '../../../../i18n/common';
-import { localePath, localeStaticPaths } from '../../../../i18n/config';
+import { localeStaticPaths } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
 import { leverage } from '../../../../i18n/leverage';
+import { calc } from '../../../../i18n/tools';
 import Base from '../../../../layouts/Base.astro';
 import { maxLeverage } from '../../../../lib/calc/leverage';
 import { liquidationPrice, roundToTick } from '../../../../lib/calc/liquidation';
@@ -17,8 +31,6 @@ import type { Side } from '../../../../lib/calc/liquidation';
 import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../../lib/fmt';
 import { BTCUSDT, snapshotDate, tierOne } from '../../../../lib/risk-limit';
 import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
-import { getTool } from '../../../../lib/tools';
-import Lanes from '../_parts/Lanes.astro';
 
 export const getStaticPaths = localeStaticPaths;
 
@@ -29,6 +41,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = leverage[locale];
 const c = common[locale];
+const ui = calc[locale];
 const PATH = '/tools/leverage-calculator/';
 
 // Exchange parameters come from the snapshot, never from a constant here.
@@ -77,7 +90,7 @@ function example(title: string, s: ReturnType<typeof solve>) {
 }
 
 // Example 1 is also the starting state, and what a reader without JavaScript sees.
-const first = solve('long', 68000, 64600);
+const first = solve(LEVERAGE_START.side, LEVERAGE_START.entry, LEVERAGE_START.stop);
 const second = solve('short', 68000, 69360);
 const ex1 = example(t.examples.first, first);
 const ex2 = example(t.examples.second, second);
@@ -86,6 +99,7 @@ const start = first.r;
 const startStopPct = formatPercent(start.stopDistance);
 const startLiqPct = formatPercent(start.liquidationDistance);
 const startLev = start.maxWholeLeverage;
+const startFigure = splitFigure(fmt(t.ui.figure, { lev: startLev }));
 
 const termVars = { mmr: mmrPct, limit, date };
 const mistakeVars = {
@@ -98,40 +112,38 @@ const mistakeVars = {
 // Plain data for the browser script.
 const calcData = JSON.stringify({ tick, maxLeverage: cap, strings: t.ui });
 
-const liquidationTool = getTool(locale, 'liquidation-price-calculator');
-const positionTool = getTool(locale, 'position-size-calculator');
-
-const jsonLd = [
-  softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }),
-  breadcrumbLd(locale, [
-    { name: c.breadcrumb.home, path: '/' },
-    { name: c.nav.tools, path: '/tools/' },
-    { name: t.title, path: PATH },
-  ]),
+// The same trail for the visible breadcrumb and for JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+  { name: t.title, path: PATH },
 ];
+const jsonLd = [softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }), breadcrumbLd(locale, trail)];
 ---
 
-<Base locale={locale} path={PATH} title={t.title} description={t.description} surface="measure" jsonLd={jsonLd}>
-  <section class="measure" data-calc={calcData}>
-    <div class="wrap">
-      <h1 class="head">{t.title}</h1>
-      <p class="sub">{t.lede}</p>
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+      <nav class="calc-jump" aria-label={ui.onThisPage}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+      </nav>
+    </PageHeader>
 
-      <div class="sticky-scale">
-        <Lanes
-          id="calc-scale"
-          top={start.stopDistance}
-          bottom={start.liquidationDistance}
-          label={fmt(t.ui.barLabel, { stop: startStopPct, lev: startLev, liq: startLiqPct })}
-          topText={fmt(t.ui.stopLane, { pct: startStopPct })}
-          bottomText={fmt(t.ui.liqLane, { lev: startLev, pct: startLiqPct })}
-          endText={fmt(t.ui.entry, { price: formatNumber(first.entry) })}
-        />
-      </div>
-
-      <form class="fields" id="calc-form" novalidate>
+    <CalculatorShell
+      locale={locale}
+      data={calcData}
+      label={t.result.label}
+      figure={startFigure.value}
+      unit={startFigure.unit}
+      tightUnit={startFigure.tight}
+      sentence={fmt(t.ui.ok, { lev: startLev, stop: typed(first.stop), liq: price(start.liquidationPrice) })}
+    >
+      <Fragment slot="inputs">
         <Segmented
           name="side"
+          class="calc-wide"
           label={t.fields.side}
           value={first.side}
           options={[
@@ -141,87 +153,111 @@ const jsonLd = [
         />
         <Field id="entry" label={t.fields.entry} unit="USDT" value={first.entry} />
         <Field id="stop" label={t.fields.stop} unit="USDT" value={first.stop} />
-        <Field
-          id="mmr"
-          label={t.fields.mmr}
-          unit="%"
-          value={Number((mmr * 100).toFixed(4))}
-          hint={fmt(t.fields.mmrHint, { limit, date })}
+        <Accordion summary={ui.advanced} id="calc-advanced">
+          <div class="calc-fields">
+            <Field
+              id="mmr"
+              class="calc-wide"
+              label={t.fields.mmr}
+              unit="%"
+              value={Number((mmr * 100).toFixed(4))}
+              hint={fmt(t.fields.mmrHint, { limit, date })}
+            />
+          </div>
+        </Accordion>
+      </Fragment>
+
+      <Fragment slot="after-inputs">
+        <noscript><p class="fine">{fmt(t.noscript, { pct: startStopPct })}</p></noscript>
+      </Fragment>
+
+      <p slot="flags" class="calc-fine" id="calc-note">
+        {fmt(t.ui.limit, { stop: startStopPct, mmr: mmrPct, limit: start.limit.toFixed(2) })}
+      </p>
+
+      <ScaleBars
+        slot="viz"
+        id="calc-bars"
+        a={start.stopDistance}
+        b={start.liquidationDistance}
+        aLabel={t.ui.stopBar}
+        aValue={startStopPct}
+        bLabel={fmt(t.ui.liqBar, { lev: startLev })}
+        bValue={startLiqPct}
+        bTone="negative"
+        caption={(layout) => fmt(t.ui.barLabel, { max: layout.maxLabel, stop: startStopPct, lev: startLev, liq: startLiqPct })}
+      />
+
+      <div slot="metrics" class="calc-metrics">
+        <Metric
+          label={fmt(t.ui.liqRow, { lev: startLev })}
+          labelId="out-liq-label"
+          value={price(start.liquidationPrice)}
+          unit="USDT"
+          valueId="out-liq"
         />
-      </form>
-      <noscript><p class="fine">{fmt(t.noscript, { pct: startStopPct })}</p></noscript>
-    </div>
-  </section>
-
-  <Verdict
-    label={t.result.label}
-    figure={fmt(t.ui.figure, { lev: startLev })}
-    sentence={fmt(t.ui.ok, { lev: startLev, stop: typed(first.stop), liq: price(start.liquidationPrice) })}
-    figureId="calc-figure"
-    sentenceId="calc-sentence"
-  >
-    <p class="fine" id="calc-note">
-      {fmt(t.ui.limit, { stop: startStopPct, mmr: mmrPct, limit: start.limit.toFixed(2) })}
-    </p>
-    <Cta
-      locale={locale}
-      pageType="tool"
-      position="result"
-      primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
-      secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
-    />
-  </Verdict>
-
-  <section class="read">
-    <div class="wrap docs">
-      <nav class="toc" aria-label={t.title}>
-        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
-        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
-        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
-        {liquidationTool.href && <a class="lnk" href={liquidationTool.href}>{liquidationTool.name}</a>}
-        {positionTool.href && <a class="lnk" href={positionTool.href}>{positionTool.name}</a>}
-        <a class="lnk" href={localePath(locale, '/tools/')}>{t.allTools}</a>
-      </nav>
-
-      <div class="prose">
-        <h2 id="how-it-is-calculated">{t.toc.formula}</h2>
-        <p>{t.formula.intro}</p>
-        <pre>{t.formula.distance + '\n' + t.formula.limit}</pre>
-        <ul>
-          {
-            t.formula.terms.map((item) => (
-              <li><strong>{item.term}</strong>{locale === 'en' ? ': ' : '：'}{fmt(item.text, termVars)}</li>
-            ))
-          }
-        </ul>
-        <p>{t.formula.why}</p>
-        <p>{fmt(t.formula.whole, { max: cap })}</p>
-        <p>{t.formula.leftOut}</p>
-
-        <h2 id="worked-examples">{t.toc.examples}</h2>
-        {
-          [ex1, ex2].map((ex) => (
-            <>
-              <h3>{ex.title}</h3>
-              <p>{ex.setup}</p>
-              <pre>{ex.working}</pre>
-              <p>{ex.result}</p>
-            </>
-          ))
-        }
-
-        <h2 id="common-mistakes">{t.toc.mistakes}</h2>
-        {
-          t.mistakes.map((m) => (
-            <>
-              <h3>{m.title}</h3>
-              <p>{fmt(m.text, mistakeVars)}</p>
-            </>
-          ))
-        }
+        <Metric label={t.result.limit} value={fmt(t.ui.figure, { lev: start.limit.toFixed(2) })} valueId="out-limit" />
       </div>
+
+      <Fragment slot="assumptions">
+        <ul class="calc-assume">
+          {t.assumptions.map((line) => <li>{fmt(line, { mmr: mmrPct, limit })}</li>)}
+          <li>{c.ui.estimate}</li>
+        </ul>
+        <DataFreshness locale={locale} date={date} source={ui.source} />
+      </Fragment>
+
+      <Cta
+        slot="cta"
+        locale={locale}
+        pageType="tool"
+        position="result"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+      />
+    </CalculatorShell>
+  </PageContainer>
+
+  <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+    <p>{t.formula.intro}</p>
+    <FormulaBlock formula={t.formula.distance + '\n' + t.formula.limit} />
+    <dl class="calc-terms">
+      {
+        t.formula.terms.map((item) => (
+          <div>
+            <dt>{item.term}</dt>
+            <dd>{fmt(item.text, termVars)}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p>{t.formula.why}</p>
+    <p>{fmt(t.formula.whole, { max: cap })}</p>
+    <Disclaimer locale={locale} kind="info" title={ui.leftOut}>
+      <p>{t.formula.leftOut}</p>
+    </Disclaimer>
+  </DocSection>
+
+  <DocSection id="worked-examples" title={t.toc.examples}>
+    <div class="calc-pair">
+      {[ex1, ex2].map((ex) => <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />)}
     </div>
-  </section>
+  </DocSection>
+
+  <DocSection id="common-mistakes" title={t.toc.mistakes}>
+    <ul class="calc-mistakes">
+      {
+        t.mistakes.map((m) => (
+          <li>
+            <h3>{m.title}</h3>
+            <p>{fmt(m.text, mistakeVars)}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </DocSection>
+
+  <RelatedTools locale={locale} current="leverage-calculator" allLabel={t.allTools} />
 
   <script>
     import '../../../../scripts/leverage-calculator.ts';

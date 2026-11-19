@@ -1,14 +1,36 @@
 ---
-// /tools/: every calculator, in two groups. The ones whose page exists are
-// links; the rest are listed as plain text under "Planned" and are never
-// links. Which group a tool is in is decided at build time by whether its page
-// exists (src/lib/tools.ts), so the counts on this page cannot go stale.
+// /tools/: the directory of calculators. The ones whose page exists come
+// first, as cards, grouped by what they are for. The rest are listed under
+// "In development" as plain text: no link, no date, no page of their own.
+// Which side a tool is on is decided at build time by whether its page exists
+// (src/lib/tools.ts), so the counts on this page cannot go stale.
+//
+// Each card carries one worked result. It is computed here by the calc
+// library from the values the calculator itself opens with.
+import {
+  ASSUMED_FEE_PCT,
+  DRAWDOWN_START,
+  LEVERAGE_START,
+  LIQUIDATION_START,
+  POSITION_START,
+} from '../../../components/calc/starting-values';
+import { splitFigure } from '../../../components/calc/calc-ui';
+import { TOOL_GROUP, TOOL_GROUPS, TOOL_ICON } from '../../../components/calc/tool-meta';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import ToolCard from '../../../components/ui/ToolCard.astro';
 import { common } from '../../../i18n/common';
 import { localeStaticPaths } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
+import type { ToolSlug } from '../../../i18n/tool-index';
 import { tools as strings } from '../../../i18n/tools';
 import Base from '../../../layouts/Base.astro';
-import { fmt } from '../../../lib/fmt';
+import { drawdown } from '../../../lib/calc/drawdown';
+import { floorTo, maxLeverage } from '../../../lib/calc/leverage';
+import { liquidationPrice, roundToTick } from '../../../lib/calc/liquidation';
+import { positionSize } from '../../../lib/calc/position-size';
+import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../lib/fmt';
+import { BTCUSDT, tierOne } from '../../../lib/risk-limit';
 import { breadcrumbLd } from '../../../lib/seo';
 import { getTools } from '../../../lib/tools';
 
@@ -28,54 +50,293 @@ const planned = all.filter((tool) => !tool.href);
 const counts = { ready: ready.length, planned: planned.length };
 const description = fmt(t.description, { names: ready.map((tool) => tool.name).join(t.separator) });
 
-const jsonLd = breadcrumbLd(locale, [
+// A group is shown only when one of its calculators exists.
+const groups = TOOL_GROUPS.map((id) => ({
+  id,
+  ...t.groups[id],
+  tools: ready.filter((tool) => TOOL_GROUP[tool.slug] === id),
+})).filter((group) => group.tools.length > 0);
+// A ready calculator nobody has put in a group yet still has to be listed.
+const ungrouped = ready.filter((tool) => !TOOL_GROUP[tool.slug]);
+
+// ---- one worked result per card, from the calc library ----------------------
+const tier = tierOne(BTCUSDT);
+const mmr = tier.maintenanceMargin;
+const cap = tier.maxLeverage;
+const tick = BTCUSDT.tickSize;
+const price = (n: number) => formatNumber(roundToTick(n, tick), tickDecimals(tick));
+const percent = (fraction: number) => `${formatNumber(fraction * 100, 2)}%`;
+
+function worked(slug: ToolSlug): Record<string, string | number> | null {
+  if (slug === 'liquidation-price-calculator') {
+    const s = LIQUIDATION_START;
+    const r = liquidationPrice({ side: s.side, entryPrice: s.entry, leverage: s.lev, mmr });
+    return r.ok ? { lev: s.lev, entry: formatNumber(s.entry), price: price(r.liquidationPrice) } : null;
+  }
+  if (slug === 'leverage-calculator') {
+    const s = LEVERAGE_START;
+    const r = maxLeverage({ side: s.side, entryPrice: s.entry, stopPrice: s.stop, mmr, maxLeverage: cap });
+    return r.ok && r.feasible ? { entry: formatNumber(s.entry), stop: formatNumber(s.stop), lev: r.maxWholeLeverage } : null;
+  }
+  if (slug === 'position-size-calculator') {
+    const s = POSITION_START;
+    const r = positionSize({
+      accountSize: s.account,
+      riskFraction: s.riskPct / 100,
+      entryPrice: s.entry,
+      stopPrice: s.stop,
+      leverage: s.lev,
+      feeRate: ASSUMED_FEE_PCT / 100,
+      mmr,
+      maxLeverage: cap,
+    });
+    return r.ok
+      ? {
+          account: formatNumber(s.account),
+          risk: formatPercent(s.riskPct / 100),
+          pct: formatPercent(r.stopDistance),
+          qty: formatNumber(floorTo(r.quantity, 4), 4),
+        }
+      : null;
+  }
+  if (slug === 'drawdown-calculator') {
+    const r = drawdown({ mode: 'drawdown', drawdown: DRAWDOWN_START.dd / 100 });
+    return r.ok ? { lost: percent(r.drawdown), needed: percent(r.recoveryGain) } : null;
+  }
+  return null;
+}
+
+function cardExample(slug: ToolSlug) {
+  const copy = (t.examples as Record<string, { setup: string; label: string; value: string } | undefined>)[slug];
+  const vars = worked(slug);
+  if (!copy || !vars) return null;
+  // The unit is split off so that only the number is set in the number face.
+  return { setup: fmt(copy.setup, vars), label: copy.label, ...splitFigure(fmt(copy.value, vars)) };
+}
+
+const trail = [
   { name: c.breadcrumb.home, path: '/' },
   { name: c.nav.tools, path: '/tools/' },
-]);
+];
+const jsonLd = breadcrumbLd(locale, trail);
 ---
 
 <Base locale={locale} path="/tools/" title={t.title} description={description} jsonLd={jsonLd}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{t.head}</h1>
-      <p class="sub">{fmt(planned.length > 0 ? t.sub : t.subAllReady, counts)}</p>
-    </div>
-  </section>
+  <PageContainer lead class="calc-dir-top">
+    <PageHeader
+      locale={locale}
+      title={t.head}
+      lede={fmt(planned.length > 0 ? t.sub : t.subAllReady, counts)}
+      breadcrumb={trail}
+    />
+  </PageContainer>
 
-  <section class="read band">
-    <div class="wrap">
-      <h2 class="section-head">{t.readyHead}</h2>
-      <ol class="index">
-        {
-          ready.map((tool) => (
-            <li>
-              <a class="name" href={tool.href}>
-                {tool.name}
-              </a>
-              <span class="question">{tool.question}</span>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
+  {/* One band for everything that works: a row per group, its name on the left. */}
+  <section class="section calc-dir" aria-label={c.nav.tools}>
+    {
+      groups.map((group) => (
+        <div class="wrap calc-dir-grid calc-dir-row">
+          <div class="calc-dir-head">
+            <h2 class="h-section" id={`tools-${group.id}`}>
+              {group.name}
+            </h2>
+            <p>{group.desc}</p>
+          </div>
+          <div class="cards cols-2">
+            {group.tools.map((tool) => {
+              const eg = cardExample(tool.slug);
+              return (
+                <ToolCard locale={locale} href={tool.href} icon={TOOL_ICON[tool.slug]} title={tool.name} desc={tool.question}>
+                  {eg && (
+                    <div class="calc-eg">
+                      <p class="calc-eg-setup">
+                        <span class="tag">{t.exampleTag}</span>
+                        <span>{eg.setup}</span>
+                      </p>
+                      <p class="calc-eg-result">
+                        <span>{eg.label}</span>
+                        <span class="calc-eg-value">
+                          <span class="num">{eg.value}</span>
+                          {eg.unit && <span class="calc-eg-unit" data-tight={eg.tight ? '' : undefined}>{eg.unit}</span>}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                </ToolCard>
+              );
+            })}
+          </div>
+        </div>
+      ))
+    }
+    {
+      ungrouped.length > 0 && (
+        <div class="wrap calc-dir-row">
+          <div class="cards cols-4">
+            {ungrouped.map((tool) => (
+              <ToolCard locale={locale} href={tool.href} icon={TOOL_ICON[tool.slug]} title={tool.name} desc={tool.question} />
+            ))}
+          </div>
+        </div>
+      )
+    }
   </section>
 
   {
     planned.length > 0 && (
-      <section class="read band">
-        <div class="wrap">
-          <h2 class="section-head">{t.plannedHead}</h2>
-          <p class="fine">{t.plannedNote}</p>
-          <ol class="index">
+      <section class="section band calc-dir-planned" aria-labelledby="tools-planned">
+        <div class="wrap calc-dir-grid">
+          <div class="calc-dir-head">
+            <h2 class="h-section" id="tools-planned">
+              {t.plannedHead}
+            </h2>
+            <p>{t.plannedNote}</p>
+          </div>
+          <ul class="calc-plan">
             {planned.map((tool) => (
               <li>
-                <span class="name">{tool.name}</span>
-                <span class="question">{tool.question}</span>
+                <p class="calc-plan-name">{tool.name}</p>
+                <p class="calc-plan-question">{tool.question}</p>
               </li>
             ))}
-          </ol>
+          </ul>
         </div>
       </section>
     )
   }
 </Base>
+
+<style is:global>
+  /* The page header sits close to the first group. */
+  .section.calc-dir-top {
+    padding-bottom: var(--space-12);
+  }
+
+  .section.calc-dir {
+    padding-block: var(--space-12);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  /* Groups inside the band are a step apart, without a rule between them. */
+  .calc-dir-row + .calc-dir-row {
+    margin-top: var(--space-12);
+  }
+
+  .section.calc-dir-planned {
+    padding-block: var(--space-12);
+    border-bottom: 0;
+  }
+
+  /* The group's name on the left, its tools on the right. */
+  .calc-dir-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6) var(--space-10);
+    align-items: start;
+  }
+
+  .calc-dir-head p {
+    max-width: 44ch;
+    margin-top: var(--space-2);
+    color: var(--color-text-secondary);
+  }
+
+  /* One worked result on a card: what was given, then what came out. */
+  .calc-eg {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+    border-top: var(--hairline) solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+
+  .calc-eg-setup {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    line-height: var(--space-6);
+  }
+
+  .calc-eg-setup .tag {
+    margin-right: var(--space-2);
+    vertical-align: top;
+  }
+
+  .calc-eg-result {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 var(--space-4);
+    color: var(--color-text-secondary);
+  }
+
+  .calc-eg-value {
+    display: inline-flex;
+    align-items: baseline;
+    white-space: nowrap;
+  }
+
+  .calc-eg-value .num {
+    color: var(--color-text);
+    font-size: var(--text-card);
+    font-weight: var(--weight-medium);
+  }
+
+  .calc-eg-unit {
+    margin-left: 0.35em;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .calc-eg-unit[data-tight] {
+    margin-left: 0.1em;
+  }
+
+  /* Tools that are not built: a plain list, visibly not clickable. */
+  .calc-plan {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 var(--space-10);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-plan > li {
+    padding-block: var(--space-4);
+    border-bottom: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-plan-name {
+    color: var(--color-text-secondary);
+    font-weight: var(--weight-medium);
+  }
+
+  .calc-plan-question {
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  @media (min-width: 700px) {
+    .calc-plan {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 960px) {
+    .calc-dir-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    }
+
+    .section.calc-dir-top,
+    .section.calc-dir,
+    .section.calc-dir-planned {
+      padding-bottom: var(--space-16);
+    }
+
+    .section.calc-dir,
+    .section.calc-dir-planned {
+      padding-top: var(--space-16);
+    }
+  }
+</style>

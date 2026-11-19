@@ -1,9 +1,12 @@
 // Position size calculator, browser side.
-// - reads the inputs, runs src/lib/calc/position-size.ts, updates the two-lane
-//   bar (stop distance above, liquidation distance below), the result and the
-//   table under it
+// - reads the inputs, runs src/lib/calc/position-size.ts, updates the result
+//   panel, the two bars (stop distance, liquidation distance), the table
+//   under them and the margin meter
 // - state lives in the URL query (shareable) and in localStorage (try/catch)
 // Imports only dependency-free modules; strings arrive as JSON in data-calc.
+// Everything below the call to positionSize() is presentation.
+import { bindSliders, createResultView, initActions, parseNumber, revealAdvanced, setFlag } from '../components/calc/calc-ui';
+import { updateScaleBars } from '../components/calc/scale-bars';
 import { floorTo, maxLeverage } from '../lib/calc/leverage';
 import { roundToTick } from '../lib/calc/liquidation';
 import { positionSize } from '../lib/calc/position-size';
@@ -17,10 +20,11 @@ interface CalcData {
   /** Maintenance margin rate from the risk-limit snapshot, as a fraction. */
   mmr: number;
   strings: {
-    stopLane: string;
-    liqLane: string;
-    entry: string;
+    stopBar: string;
+    liqBar: string;
     barLabel: string;
+    levText: string;
+    marginMeter: string;
     figure: string;
     long: string;
     short: string;
@@ -40,13 +44,6 @@ const STORAGE_KEY = 'perpmath:position-size:v1';
 const PARAMS = ['account', 'risk', 'entry', 'stop', 'lev', 'fee'] as const;
 type Param = (typeof PARAMS)[number];
 type State = Record<Param, string>;
-
-/** "68,000" -> 68000. Empty or unreadable text -> NaN. */
-function parseNumber(text: string): number {
-  const cleaned = text.replace(/[,\s]/g, '');
-  if (cleaned === '') return Number.NaN;
-  return Number(cleaned);
-}
 
 function init(): void {
   const root = document.querySelector<HTMLElement>('[data-calc]');
@@ -80,21 +77,20 @@ function init(): void {
     lev: $<HTMLInputElement>('#lev'),
     fee: $<HTMLInputElement>('#fee'),
   };
-  const bar = $('#calc-scale');
-  const outTop = $('#calc-scale-top');
-  const outBottom = $('#calc-scale-bottom');
-  const outEnd = $('#calc-scale-end');
-  const outFigure = $('#calc-figure');
-  const outSentence = $('#calc-sentence');
+  const bars = $('#calc-bars');
   const outNotional = $('#out-notional');
   const outMargin = $('#out-margin');
   const outFee = $('#out-fee');
   const outLoss = $('#out-loss');
   const outLiq = $('#out-liq');
   const outLiqLabel = $('#out-liq-label');
-  const outMarginNote = $('#calc-margin-note');
-  const outTier = $('#calc-tier');
-  if (PARAMS.some((key) => !inputs[key]) || !bar) return;
+  const outMarginShare = $('#out-margin-share');
+  const outAccount = $('#out-account');
+  const meter = $('#calc-margin-meter');
+  if (PARAMS.some((key) => !inputs[key]) || !bars) return;
+
+  const view = createResultView();
+  const syncSliders = bindSliders(form);
 
   // ---- state: URL first, then localStorage, then the server defaults ------
   function readState(): State {
@@ -183,19 +179,23 @@ function init(): void {
         }
       }
     }
+    // An error in a folded field has to be seen.
+    if (issues.length > 0) revealAdvanced('invalid');
   }
 
   // ---- render --------------------------------------------------------------
-  const clamp = (n: number) => Math.min(1, Math.max(0, n));
-
-  function setBar(top: number, bottom: number, label: string): void {
-    bar!.style.setProperty('--top', clamp(top).toFixed(4));
-    bar!.style.setProperty('--bottom', clamp(bottom).toFixed(4));
-    bar!.setAttribute('aria-label', label);
+  function setText(el: HTMLElement | null, text: string): void {
+    if (el && el.textContent !== text) el.textContent = text;
   }
 
-  function setText(el: HTMLElement | null, text: string): void {
-    if (el) el.textContent = text;
+  /** The margin as a share of the account: the meter's full width is the account. */
+  function setMeter(margin: number, account: number, fits: boolean): void {
+    if (!meter) return;
+    const drawable = Number.isFinite(margin) && Number.isFinite(account) && account > 0;
+    meter.style.setProperty('--value', drawable ? Math.min(1, Math.max(0, margin / account)).toFixed(4) : '0');
+    meter.setAttribute('aria-label', drawable ? fmt(s.marginMeter, { margin: money(margin), account: money(account) }) : s.invalid);
+    if (drawable && !fits) meter.dataset.tone = 'negative';
+    else delete meter.dataset.tone;
   }
 
   function render(save: boolean): void {
@@ -218,19 +218,20 @@ function init(): void {
       maxLeverage: data.maxLeverage,
     });
 
-    if (Number.isFinite(entryPrice) && entryPrice > 0) setText(outEnd, fmt(s.entry, { price: showTyped(entryPrice) }));
     if (Number.isFinite(leverage) && leverage > 0) setText(outLiqLabel, fmt(s.liqRow, { lev: leverage }));
 
     if (!result.ok) {
       showErrors(result.issues, leverage);
-      setBar(0, 0, s.invalid);
-      setText(outTop, fmt(s.stopLane, { pct: s.noValue }));
-      setText(outBottom, s.noValue);
-      setText(outFigure, s.noValue);
-      setText(outSentence, s.invalid);
-      for (const cell of [outNotional, outMargin, outFee, outLoss, outLiq]) setText(cell, s.noValue);
-      if (outMarginNote) outMarginNote.hidden = true;
-      if (outTier) outTier.hidden = true;
+      view.show({ figure: s.noValue, sentence: s.invalid, state: 'invalid' });
+      updateScaleBars(
+        bars!,
+        { a: Number.NaN, b: Number.NaN },
+        { aValue: s.noValue, bValue: s.noValue, caption: () => s.invalid },
+      );
+      for (const cell of [outNotional, outMargin, outFee, outLoss, outLiq, outMarginShare, outAccount]) setText(cell, s.noValue);
+      setMeter(Number.NaN, Number.NaN, true);
+      setFlag('calc-margin-note', null);
+      setFlag('calc-tier', null);
     } else {
       showErrors([], leverage);
       const stopPct = formatPercent(result.stopDistance);
@@ -239,30 +240,39 @@ function init(): void {
       const stopText = showTyped(stopPrice);
       const liqText = showPrice(result.liquidationPrice);
 
-      setBar(result.stopDistance, result.liquidationDistance, fmt(s.barLabel, { stop: stopPct, lev: leverage, liq: liqPct }));
-      setText(outTop, fmt(s.stopLane, { pct: stopPct }));
-      setText(outBottom, fmt(s.liqLane, { lev: leverage, pct: liqPct }));
-      setText(outFigure, fmt(s.figure, { qty }));
+      updateScaleBars(
+        bars!,
+        { a: result.stopDistance, b: result.liquidationDistance },
+        {
+          aValue: stopPct,
+          bLabel: fmt(s.liqBar, { lev: leverage }),
+          bValue: liqPct,
+          caption: (layout) => fmt(s.barLabel, { max: layout.maxLabel, stop: stopPct, lev: leverage, liq: liqPct }),
+        },
+      );
 
       if (result.stopBeforeLiquidation) {
-        setText(
-          outSentence,
-          fmt(result.side === 'long' ? s.long : s.short, {
+        view.showText({
+          text: fmt(s.figure, { qty }),
+          sentence: fmt(result.side === 'long' ? s.long : s.short, {
             qty,
             stop: stopText,
             amount: money(result.riskAmount),
             pct: formatPercent(riskFraction),
             fee: money(result.roundTripFee),
           }),
-        );
+          state: 'ready',
+        });
       } else {
         // Say it plainly, and say which leverage would put the stop first.
         const fix = maxLeverage({ side: result.side, entryPrice, stopPrice, mmr: data.mmr, maxLeverage: data.maxLeverage });
         const vars = { lev: leverage, liq: liqText, stop: stopText };
-        setText(
-          outSentence,
-          fix.ok && fix.feasible ? fmt(s.liquidated, { ...vars, max: fix.maxWholeLeverage }) : fmt(s.liquidatedNoFix, vars),
-        );
+        view.showText({
+          text: fmt(s.figure, { qty }),
+          sentence:
+            fix.ok && fix.feasible ? fmt(s.liquidated, { ...vars, max: fix.maxWholeLeverage }) : fmt(s.liquidatedNoFix, vars),
+          state: 'caution',
+        });
       }
 
       setText(outNotional, fmt(s.usdt, { value: money(result.notional) }));
@@ -271,16 +281,17 @@ function init(): void {
       // No loss "at the stop" to report when the stop is never reached.
       setText(outLoss, result.stopBeforeLiquidation ? fmt(s.usdt, { value: money(result.lossAtStop) }) : s.noValue);
       setText(outLiq, liqText);
+      setText(outMarginShare, fmt(s.usdt, { value: money(result.margin) }));
+      setText(outAccount, fmt(s.usdt, { value: money(accountSize) }));
+      setMeter(result.margin, accountSize, result.marginFits);
 
-      if (outMarginNote) outMarginNote.hidden = result.marginFits;
-      if (outTier) {
-        if (result.notional > data.tierLimit) {
-          outTier.textContent = fmt(s.tier, { value: formatNumber(result.notional), limit: formatNumber(data.tierLimit) });
-          outTier.hidden = false;
-        } else {
-          outTier.hidden = true;
-        }
-      }
+      setFlag('calc-margin-note', result.marginFits ? null : s.marginNote);
+      setFlag(
+        'calc-tier',
+        result.notional > data.tierLimit
+          ? fmt(s.tier, { value: formatNumber(result.notional), limit: formatNumber(data.tierLimit) })
+          : null,
+      );
     }
 
     if (save) saveState(state);
@@ -290,7 +301,20 @@ function init(): void {
   form.addEventListener('change', () => render(true));
   form.addEventListener('submit', (event) => event.preventDefault());
 
+  initActions({
+    view,
+    storageKey: STORAGE_KEY,
+    save: () => saveState(readState()),
+    reset: () => {
+      form.reset();
+      syncSliders();
+      render(false);
+    },
+  });
+
   loadState();
+  syncSliders();
+  revealAdvanced();
   render(false);
 }
 

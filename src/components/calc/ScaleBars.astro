@@ -1,0 +1,179 @@
+---
+// Two quantities as two bars on one zero-based scale: the stop distance next
+// to the liquidation distance, a loss next to the gain that undoes it.
+//
+//   <ScaleBars id="calc-bars" a={0.05} b={0.0523}
+//              aLabel="Stop distance" aValue="5.00%"
+//              bLabel="Liquidation distance at 18x" bValue="5.23%" bTone="negative"
+//              caption={(layout) => `... the full width is ${layout.maxLabel} of the entry price ...`} />
+//
+// Both bars start at 0 and share one linear axis, so their lengths compare at
+// the true ratio of the two numbers. The axis usually does not end at 100%:
+// the ticks under the bars carry the unit, and the caption has to say what
+// the full width stands for (it gets the layout for that). Pass `max` when
+// the calc library already decides the scale.
+//
+// The picture is hidden from screen readers; the caption says the same in
+// words. The two bars are told apart by their labels, not only by colour.
+// To redraw from a script: updateScaleBars() in scale-bars.ts.
+import { barsTicksHtml, layoutScaleBars } from './scale-bars';
+import type { BarsLayout } from './scale-bars';
+
+interface Props {
+  id: string;
+  /** The two values, as fractions (0.05 = 5%). */
+  a: number;
+  b: number;
+  /** What the full width stands for, as a fraction. Left out: a nice value above the longer bar. */
+  max?: number;
+  aLabel: string;
+  aValue: string;
+  bLabel: string;
+  bValue: string;
+  aTone?: 'negative' | 'warning' | 'accent';
+  bTone?: 'negative' | 'warning' | 'accent';
+  /** The sentence under the bars; also their text alternative. */
+  caption: (layout: BarsLayout) => string;
+  class?: string;
+}
+
+const { id, a, b, max, aLabel, aValue, bLabel, bValue, aTone, bTone, caption, class: className } = Astro.props;
+const layout = layoutScaleBars({ a, b, max });
+const rows = [
+  { key: 'a', label: aLabel, value: aValue, share: layout.aShare, tone: aTone },
+  { key: 'b', label: bLabel, value: bValue, share: layout.bShare, tone: bTone },
+];
+---
+
+<figure class:list={['calc-bars', className]} id={id} data-state={layout.ok ? 'ready' : 'empty'}>
+  <div class="calc-bars-plot" aria-hidden="true">
+    {
+      rows.map((row) => (
+        <div class="calc-bar" data-tone={row.tone}>
+          <div class="calc-bar-head">
+            <span class="calc-bar-label">
+              <span class="calc-bar-key" />
+              <span data-bars={`${row.key}-label`}>{row.label}</span>
+            </span>
+            <span class="num" data-bars={`${row.key}-value`}>
+              {row.value}
+            </span>
+          </div>
+          <div class="calc-bar-track">
+            <span class="calc-bar-fill" data-bars={`${row.key}-fill`} style={`--value:${row.share.toFixed(4)}`} />
+          </div>
+        </div>
+      ))
+    }
+    <div class="calc-bars-axis" data-bars="ticks" data-max={layout.ok ? String(layout.max) : ''} set:html={barsTicksHtml(layout)} />
+  </div>
+  <figcaption class="calc-bars-caption" data-bars="caption">{caption(layout)}</figcaption>
+</figure>
+
+<style is:global>
+  .calc-bars {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    min-width: 0;
+    margin: 0;
+  }
+
+  .calc-bars-plot {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    /* The tick-label layers are moved sideways by a transform: keep them from
+       widening the page. */
+    padding-inline: var(--space-1);
+    overflow-x: clip;
+  }
+
+  .calc-bar-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 var(--space-4);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .calc-bar-head .num {
+    color: var(--color-text);
+    font-weight: var(--weight-medium);
+  }
+
+  .calc-bar-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  /* The same block as the bar, next to its name. */
+  .calc-bar-key {
+    flex: none;
+    width: var(--space-2);
+    height: var(--space-2);
+    background: var(--tone, var(--color-text));
+  }
+
+  .calc-bar-track {
+    position: relative;
+    height: var(--space-4);
+    margin-top: var(--space-2);
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .calc-bar-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--tone, var(--color-text));
+    transform-origin: left center;
+    transform: scaleX(var(--value, 0));
+  }
+
+  .calc-bars-axis {
+    position: relative;
+    height: var(--space-8);
+    border-top: var(--hairline) solid var(--color-text-muted);
+  }
+
+  .calc-bars-tick {
+    position: absolute;
+    top: 0;
+    left: calc(var(--at) * 100%);
+    width: var(--hairline);
+    height: var(--space-2);
+    background: var(--color-text-muted);
+  }
+
+  /* A full-width layer moved by a transform; the label is pulled back by the
+     same share of its own width, so it stays over its tick and inside the box. */
+  .calc-bars-ticklabel {
+    position: absolute;
+    inset: 0;
+    transform: translateX(calc(var(--at) * 100%));
+    pointer-events: none;
+  }
+
+  .calc-bars-ticklabel > span {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translateX(calc(var(--at) * -100%));
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  .calc-bars-caption {
+    max-width: 72ch;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+</style>

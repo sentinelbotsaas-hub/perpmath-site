@@ -1,0 +1,75 @@
+---
+// "Related calculators" at the foot of a calculator page: the other
+// calculators that exist, and a link to the full list. A calculator that is
+// not built yet never shows up here.
+//
+//   <RelatedTools locale={locale} current="leverage-calculator" allLabel={t.allTools} />
+//
+// Each entry is one link: the icon and the name on one line, the question the
+// calculator answers under it.
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import type { ToolSlug } from '../../i18n/tool-index';
+import { calc } from '../../i18n/tools';
+import { getTools } from '../../lib/tools';
+import Card from '../ui/Card.astro';
+import Icon from '../ui/Icon.astro';
+import PageContainer from '../ui/PageContainer.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import { TOOL_ICON } from './tool-meta';
+
+interface Props {
+  locale: Locale;
+  /** The calculator this page is; it is left out of the list. */
+  current: ToolSlug;
+  /** Text of the link to /tools/. */
+  allLabel: string;
+}
+
+const { locale, current, allLabel } = Astro.props;
+const others = getTools(locale).filter((tool) => tool.href && tool.slug !== current);
+---
+
+<PageContainer snug class="calc-related" aria-labelledby="related-tools">
+  <SectionHeader title={calc[locale].related} id="related-tools" href={localePath(locale, '/tools/')} linkLabel={allLabel} />
+  <div class="cards cols-3">
+    {
+      others.map((tool) => (
+        <Card href={tool.href ?? undefined} class="calc-related-item">
+          <span class="calc-related-name">
+            <Icon name={TOOL_ICON[tool.slug]} size={18} />
+            <h3 class="card-title">{tool.name}</h3>
+            <Icon name="arrow-up-right" size={16} class="calc-related-go" />
+          </span>
+          <p class="card-desc">{tool.question}</p>
+        </Card>
+      ))
+    }
+  </div>
+</PageContainer>
+
+<style is:global>
+  .section.calc-related {
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-related-name {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-text-secondary);
+  }
+
+  .calc-related-name .card-title {
+    color: var(--color-text);
+  }
+
+  .calc-related-go {
+    margin-left: auto;
+    color: var(--color-text-muted);
+  }
+
+  a.calc-related-item:hover .calc-related-go {
+    color: var(--color-text);
+  }
+</style>

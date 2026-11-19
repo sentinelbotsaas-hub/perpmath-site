@@ -10,12 +10,14 @@ interface Props {
   label: string;
   value: string;
   options: Array<{ value: string; label: string }>;
+  /** Extra class on the wrapper, e.g. "calc-wide" to span the form's columns. */
+  class?: string;
 }
 
-const { name, label, value, options } = Astro.props;
+const { name, label, value, options, class: className } = Astro.props;
 ---
 
-<div class="field" role="radiogroup" aria-labelledby={`${name}-label`}>
+<div class:list={['field', className]} role="radiogroup" aria-labelledby={`${name}-label`}>
   <span class="field-label" id={`${name}-label`}>{label}</span>
   <span class="seg">
     {
