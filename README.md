@@ -54,7 +54,7 @@ src/
 
 Every link that leaves for Bybit goes through `/go/bybit/` (live site, affiliate) or `/go/bybit-testnet/` (testnet). `vercel.json` redirects those two addresses: visitors from the gated countries go to `/not-available/`, everyone else goes to the target.
 
-- Targets and the country list live in `site.config.mjs`. `BYBIT_TARGET` is a placeholder until the affiliate link exists.
+- Targets and the country list live in `site.config.mjs`. `BYBIT_TARGET` is the affiliate link; `AFFILIATE_ACTIVE` switches every disclosure line with it.
 - Taiwan is controlled by `GATE_TW` in the same file. It is on.
 - After changing `site.config.mjs`, run `npm run gen:vercel` and commit `vercel.json`. A test fails if they differ.
 - The redirects only run on Vercel. Locally the two addresses show a static fallback page with no outbound link.

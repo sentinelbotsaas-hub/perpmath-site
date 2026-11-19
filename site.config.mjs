@@ -5,9 +5,9 @@
 // before the build runs, so the generated file is checked in. A test fails if
 // the two drift apart.)
 
-// Placeholder: replace with affiliate link.
-// Until the Bybit affiliate link exists this sends people to the Bybit home page.
-export const BYBIT_TARGET = 'https://www.bybit.com/';
+// Bybit affiliate link (partner id 155603, supplied by the owner 2026-11-19).
+// It redirects to bybit.com/sign-up with the affiliate id attached.
+export const BYBIT_TARGET = 'https://partner.bybit.com/b/155603';
 
 // === AFFILIATE SWITCH ====================================================
 // false = BYBIT_TARGET is a plain link and the site earns nothing from it.
@@ -15,7 +15,7 @@ export const BYBIT_TARGET = 'https://www.bybit.com/';
 // true  = BYBIT_TARGET is a real affiliate link. Flip this in the same commit
 //         that replaces BYBIT_TARGET, never before: the pages would then claim
 //         a commission that does not exist.
-export const AFFILIATE_ACTIVE = false;
+export const AFFILIATE_ACTIVE = true;
 // =========================================================================
 
 // Bybit's testnet. Not an affiliate link; gated the same way as the live exit.
