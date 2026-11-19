@@ -1,0 +1,70 @@
+{
+  "_readme": "Read from the site owner's own Bybit Card dashboard on 2026-11-19 (logged-in pages, so not reproducible by a reader). De-identified: no card numbers, transaction ids or merchant names. Account-specific values are marked as such.",
+  "read_on": "2026-11-19",
+  "pages": [
+    "https://www.bybit.com/zh-TW/cards/dashboard/",
+    "https://www.bybit.com/zh-TW/pay-rewards/",
+    "https://www.bybit.com/zh-TW/pay-rewards/promo/rewards-details/"
+  ],
+  "tiers_logged_in_dialog": [
+    { "tier": "Base", "monthly_spend_usd": null, "cashback_pct": 2, "monthly_cap_usd": 5, "vip": null },
+    { "tier": "Beta", "monthly_spend_usd": 500, "cashback_pct": 2, "monthly_cap_usd": 50, "vip": "VIP 1 & VIP 2" },
+    { "tier": "Alpha", "monthly_spend_usd": 3500, "cashback_pct": 4, "monthly_cap_usd": 150, "vip": "VIP 3" },
+    { "tier": "Apex", "monthly_spend_usd": 9500, "cashback_pct": 6, "monthly_cap_usd": 250, "vip": "VIP 4 & PRO 1" },
+    { "tier": "Omega", "monthly_spend_usd": 12500, "cashback_pct": 8, "monthly_cap_usd": 400, "vip": "VIP 5 & PRO 2" },
+    { "tier": "Infinite", "monthly_spend_usd": 25000, "cashback_pct": 10, "monthly_cap_usd": 600, "vip": "Supreme VIP & PRO 3-6" }
+  ],
+  "tier_discrepancy": "The public rules page lists the Infinite spend threshold as 25,500 USD; the logged-in tier dialog and the progress bar show 25,000 USD.",
+  "rules_page": {
+    "points_per_usd": { "Base": 10, "Beta": 10, "Alpha": 20, "Apex": 30, "Omega": 40, "Infinite": 50 },
+    "cashback_usdt_per_point": 0.002,
+    "points_available_after_days": 4,
+    "notes": [
+      "This month's spend sets next month's tier.",
+      "Only spend paid with crypto earns cashback; fiat payments do not.",
+      "The programme is not open to EEA users."
+    ]
+  },
+  "owner_account": {
+    "current_tier": "Infinite",
+    "current_tier_note": "Reached through the previous month's card spend meeting the Infinite threshold (owner's statement, 2026-11-19), not through VIP level. Shown as expiring in about 11 days; the page says next month's tier will be a lower one.",
+    "cards": ["virtual", "physical"],
+    "atm_limits_usd": { "single": 3000, "daily": 3000, "monthly": 10000, "yearly": 100000, "note": "Limits shown for this account; other accounts may differ." }
+  },
+  "sample_transactions": [
+    {
+      "date": "2026-11-18",
+      "where": "Department store, Taichung, Taiwan, paid with Apple Pay",
+      "local_amount_twd": 2961.0,
+      "transaction_amount_usd": 89.99,
+      "foreign_transaction_fee_pct": 2,
+      "foreign_transaction_fee_usd": 1.8,
+      "total_charged_usd": 91.79,
+      "points_earned": 4590,
+      "derived": {
+        "cashback_usdt": 9.18,
+        "cashback_on_total_pct": 10.0,
+        "network_rate_twd_per_usd": 32.904,
+        "net_cost_usd": 82.61,
+        "net_saving_vs_network_rate_pct": 8.2
+      }
+    },
+    {
+      "date": "2026-11-18",
+      "where": "Restaurant, Taichung, Taiwan",
+      "local_amount_twd": 1188.0,
+      "transaction_amount_usd": 36.07,
+      "foreign_transaction_fee_pct": 2,
+      "foreign_transaction_fee_usd": 0.72,
+      "total_charged_usd": 36.79,
+      "points_earned": 1840,
+      "derived": {
+        "cashback_usdt": 3.68,
+        "cashback_on_total_pct": 10.0,
+        "network_rate_twd_per_usd": 32.936,
+        "net_cost_usd": 33.11,
+        "net_saving_vs_network_rate_pct": 8.2
+      }
+    }
+  ]
+}

@@ -1,0 +1,342 @@
+{
+  "question": "What does the Bybit Card (Asia Pacific program) pay back and cost, per Bybit's own public pages?",
+  "article": "zh-hant/bybit-card-cashback-fees",
+  "checked_on": "2026-11-19",
+  "fetched_at": "2026-11-19T08:34:33Z",
+  "method": "Public pages only, read without logging in. Help-center articles were downloaded as HTML and the article body plus its last_updated field were read from the page's embedded data; the card landing page, the rewards page and the Asia Pacific terms are rendered in the browser and were read there. Nothing here comes from an account, an app screen or a card statement.",
+  "sources": {
+    "fees_zh_tw": {
+      "url": "https://www.bybit.com/zh-TW/help-center/article/Fees-and-Spending-Limits-Bybit-Card",
+      "page_last_updated": "2026-11-06 06:05:26",
+      "note": "Same numbers as the English page https://www.bybit.com/en/help-center/article/Fees-and-Spending-Limits-Bybit-Card (same last_updated)."
+    },
+    "rewards_intro_zh_tw": {
+      "url": "https://www.bybit.com/zh-TW/help-center/article/Introduction-to-Bybit-Card-Rewards",
+      "page_last_updated": "2026-10-30 06:16:36",
+      "english_url": "https://www.bybit.com/en/help-center/article/Introduction-to-Bybit-Card-Rewards",
+      "english_last_updated": "2026-11-08 16:57:54",
+      "note": "https://www.bybit.com/en/help-center/article/FAQ-Bybit-Card-Rewards-Program redirects to the English page. Tier table identical in both languages."
+    },
+    "rewards_faq_zh_tw": {
+      "url": "https://www.bybit.com/zh-TW/help-center/article/FAQ-Bybit-Card-Rewards",
+      "page_last_updated": "2026-10-30 06:44:59",
+      "english_url": "https://www.bybit.com/en/help-center/article/FAQ-Bybit-Card-Rewards",
+      "english_last_updated": "2026-11-08 19:32:30"
+    },
+    "rewards_page": {
+      "url": "https://www.bybit.com/zh-TW/pay-rewards/promo/rewards-details/",
+      "english_url": "https://www.bybit.com/en/pay-rewards/promo/rewards-details/",
+      "page_last_updated": "no date shown on the page"
+    },
+    "general_faq_zh_tw": {
+      "url": "https://www.bybit.com/zh-TW/help-center/article/FAQ-Bybit-Card-General-Inquiries",
+      "page_last_updated": "2026-09-03 01:47:45",
+      "english_url": "https://www.bybit.com/en/help-center/article/FAQ-Bybit-Card-General-Inquiries"
+    },
+    "how_to_apply": {
+      "url": "https://www.bybit.com/en/help-center/article/How-to-Apply-for-Bybit-Card",
+      "page_last_updated": "2026-06-10 14:21:56",
+      "note": "https://www.bybit.com/en/help-center/article/How-to-Get-Started-with-Bybit-Card redirects here."
+    },
+    "introduction": {
+      "url": "https://www.bybit.com/en/help-center/article/Introduction-to-Bybit-Card",
+      "page_last_updated": "2026-06-10 14:53:29"
+    },
+    "how_transactions_work": {
+      "url": "https://www.bybit.com/en/help-center/article/How-Bybit-Card-Transactions-Work",
+      "page_last_updated": "2026-10-05 14:21:21"
+    },
+    "terms_asia_pacific": {
+      "url": "https://www.bybit.com/en/legal/bybit-card/Bybit-Cardholder-Terms-Conditions-Asia-Pacific",
+      "page_last_updated": "2026-01-16 16:05:57",
+      "document_last_updated": "June 16, 2025",
+      "help_center_pointer": "https://www.bybit.com/en/help-center/article/Bybit-Cardholder-Terms-Conditions-Asia-Pacific (last_updated 2026-10-20 07:56:18, only links to the legal page)"
+    },
+    "card_landing_page": {
+      "url": "https://www.bybit.com/en/cards/",
+      "zh_tw_url": "https://www.bybit.com/zh-TW/cards/",
+      "page_last_updated": "no date shown on the page",
+      "note": "Read in a browser on a Taiwan connection; the FAQ tab shown was 'Rest of the World' (zh-TW: 全球). A plain HTTP request without a browser is redirected to the home page."
+    },
+    "wiki_countries": {
+      "url": "https://www.bybit.com/zh-TW/wiki/article/bybit-card-countries-availability-2026/",
+      "page_date": "Oct 23, 2026",
+      "content_note": "Page carries the label '本文由 AI 生成，請獨立核實重要資訊' and '本資訊最後驗證於 2026 年 6 月'."
+    },
+    "learn_guide": {
+      "url": "https://www.bybit.com/en/learn/bybit-guide/what-is-bybit-card",
+      "page_date": "Oct 12, 2026"
+    },
+    "vip_program": {
+      "url": "https://www.bybit.com/en/help-center/article/Introduction-to-Bybit-VIP-Program",
+      "page_last_updated": "2026-10-23 02:08:33"
+    },
+    "taiwan_vasp_association_warning": {
+      "url": "https://twvasp.org.tw/portfolio-item/bybit/",
+      "published": "2026-06-11"
+    },
+    "taiwan_sfb_vasp_register": {
+      "url": "https://www.sfb.gov.tw/ch/home.jsp?id=1053&parentpath=0%2C8",
+      "page_last_updated": "2026-10-28"
+    }
+  },
+  "taiwan_eligibility": {
+    "verdict": "No Bybit page read on 2026-11-19 states in a sentence that residents of Taiwan can or cannot apply. The sources below are everything found.",
+    "help_center_regions": {
+      "source": "general_faq_zh_tw",
+      "regions_listed": ["Argentina", "AIFC", "Georgia", "Kazakhstan", "Australia", "Mexico", "Brazil", "Peru", "Asia Pacific"],
+      "asia_pacific_address_requirement": "Valid residential address and/or Proof of Residence in limited countries within Asia Pacific.",
+      "asia_pacific_address_requirement_zh_tw": "亞太地區部分國家/地區的有效居住地址和/或居住證明。",
+      "countries_named_for_asia_pacific": "none"
+    },
+    "how_to_apply": {
+      "source": "how_to_apply",
+      "quote": "Bybit Card is currently only available in limited countries. If your selected country of residence is not within the supported countries, we will register your interest now and inform you when Bybit Card is coming to your country."
+    },
+    "terms_asia_pacific_2_3_b": {
+      "source": "terms_asia_pacific",
+      "quote": "Reside in a jurisdiction eligible for card issuance as determined by the Company and its Partners."
+    },
+    "card_landing_page_visible_text": {
+      "source": "card_landing_page",
+      "eligibility_faq": "To apply for the Bybit Card, you must complete Identity Verification Lv. 1. You may also need proof of address from an eligible country or region, issued within the last 3 months. Please note that Bybit reserves the right to decline any application at its discretion based on its internal risk evaluation.",
+      "footnote": "This is only available for users in certain countries at this time. This product is not meant for European Economic Area customers. All European Economic Area customer participation is strictly prohibited.",
+      "taiwan_in_visible_text": false
+    },
+    "card_landing_page_structured_data": {
+      "source": "card_landing_page",
+      "what": "schema.org FinancialProduct 'Bybit Card', property areaServed, 75 countries. Not visible on the page.",
+      "taiwan_listed": true,
+      "area_served": ["United Kingdom", "Switzerland", "Turkey", "Ukraine", "Kazakhstan", "Georgia", "Armenia", "Azerbaijan", "Serbia", "Bosnia and Herzegovina", "Montenegro", "North Macedonia", "Albania", "Moldova", "Uzbekistan", "Kyrgyzstan", "Tajikistan", "United Arab Emirates", "Saudi Arabia", "Bahrain", "Kuwait", "Qatar", "Oman", "Jordan", "Israel", "Lebanon", "Egypt", "Morocco", "Tunisia", "Algeria", "Singapore", "Hong Kong", "Taiwan", "Japan", "South Korea", "Thailand", "Vietnam", "Malaysia", "Philippines", "Indonesia", "India", "Bangladesh", "Sri Lanka", "Nepal", "Pakistan", "Mongolia", "Cambodia", "Australia", "New Zealand", "Canada", "Mexico", "Brazil", "Argentina", "Colombia", "Chile", "Peru", "Ecuador", "Bolivia", "Paraguay", "Uruguay", "Costa Rica", "Panama", "Guatemala", "Dominican Republic", "Trinidad and Tobago", "South Africa", "Nigeria", "Kenya", "Ghana", "Tanzania", "Uganda", "Ethiopia", "Cameroon", "Ivory Coast", "Senegal"],
+      "caveat": "The same list contains India, although the page's own strings say 'Bybit Card Unavailable for India Residents', and Singapore, Japan, South Korea and Canada, which the Bybit wiki page says are not supported. It reads as marketing metadata, not as an eligibility list."
+    },
+    "card_landing_page_config": {
+      "source": "card_landing_page",
+      "what": "The configuration the landing page loads lists Taiwan (TWN) among 'countriesNeedTax', the countries where a tax ID is needed for card delivery. Seen in the response the page itself loaded; it was truncated in the reader and the Asia Pacific product block was not seen.",
+      "countries_need_tax": ["CYP", "EST", "FIN", "PRT", "SVK", "SVN", "ESP", "CHL", "BRA", "ARG", "ZAF", "SAU", "IDN", "CHN", "TWN", "HKG", "TUR", "PRY"],
+      "card_product_regions": ["KAZ", "ASIA", "AUS", "ARG", "BRA", "GEO", "MEX", "PER", "COL"]
+    },
+    "wiki_countries": {
+      "source": "wiki_countries",
+      "taiwan_listed": false,
+      "quote": "未列於上方的國家目前不支援 Bybit Card 發行。其中包括美國、加拿大、中國、日本、韓國、新加坡及澳洲。",
+      "caveat": "The list on this page is the EEA, the United Kingdom, the United Arab Emirates and Turkey. It says Australia is not supported and does not mention Argentina, Brazil, Mexico, Peru, Georgia, Kazakhstan or Asia Pacific, all of which the help center lists as card regions. It also says the card is a Mastercard everywhere and that cashback is paid in BIT."
+    },
+    "taiwan_regulator": {
+      "source": "taiwan_vasp_association_warning",
+      "published": "2026-06-11",
+      "reported_by": "證期局證券商管理組",
+      "quote": "經查「BYBIT(https://www.bybit.com/)」未向金管會完成洗錢防制登記，不得於我國境內提供虛擬資產服務或向國人進行廣告等招攬業務行為。",
+      "advice_quote": "金管會建議民眾拒絕「BYBIT(https://www.bybit.com/)」於我國境內提供之虛擬資產服務業務，並避免匯款至其提供之帳戶。",
+      "sfb_register": "The Securities and Futures Bureau page (updated 2026-10-28) lists 11 businesses that completed registration; Bybit is not among them. The page states: 未向中央目的事業主管機關完成洗錢防制登記者，不得提供虛擬資產服務。"
+    }
+  },
+  "asia_pacific_card": {
+    "card_type": "Visa credit card (general FAQ); the terms call it a credit card arranged by Bybit Technologies Limited through licensed third-party partners, backed by a fully funded Bybit account",
+    "card_currency": "USD",
+    "supported_cryptos": ["BTC", "ETH", "XRP", "USDT", "USDC", "GRAM"],
+    "validity_years": 3,
+    "wallets": { "apple_pay": false, "google_pay": true, "samsung_pay": false, "source": "general_faq_zh_tw" },
+    "management_fees": {
+      "source": "fees_zh_tw",
+      "virtual_card_issuance": "None (until further notice)",
+      "physical_card_issuance_or_replacement": "5 USDT; no fee for VIPs",
+      "annual_fee": "None",
+      "inactivity_fee": "None",
+      "cancellation_fee": "None"
+    },
+    "transaction_fees": {
+      "source": "fees_zh_tw",
+      "foreign_exchange_fee_pct": 2,
+      "foreign_exchange_fee_basis": "On top of Mastercard's / Visa's foreign exchange rate. Applies to transactions performed in a currency other than the currency the card is denominated in.",
+      "crypto_conversion_fee_pct": 0.9,
+      "crypto_conversion_fee_basis": "On top of Bybit's One-Click Sell exchange rate. Applies to all transactions funded with non-fiat assets in the Funding Account. Minimum conversion amount 1 USD.",
+      "fx_padding_pct": 0,
+      "atm_withdrawal_fee_pct": 2,
+      "atm_free_amount_per_month_usd": 100,
+      "money_send": "Not supported"
+    },
+    "terms_fees": {
+      "source": "terms_asia_pacific",
+      "crypto_conversion_fee": "0.9%",
+      "card_issuance_fee": "Free for virtual cards; physical card fees quoted based on delivery location",
+      "atm_withdrawal_fee": "First USD 100 per calendar month is free; 2% thereafter",
+      "foreign_currency_conversion_fee": "2%",
+      "monthly_maintenance_fee": "None"
+    },
+    "spending_limits_usd": {
+      "source": "fees_zh_tw",
+      "note": "Virtual and physical cards each have their own limit.",
+      "tier_1": { "daily": 10000, "monthly": 50000, "annual": 150000 },
+      "tier_2": { "daily": 50000, "monthly": 150000, "annual": 500000 },
+      "tier_3": { "daily": 100000, "monthly": 350000, "annual": 900000 },
+      "per_transaction_base_row": 10000,
+      "upgrade": "Non-VIP applicants can request Tier 1 to Tier 2; VIP applicants Tier 2 to Tier 3. Review may take up to 7 business days."
+    },
+    "atm_limits": {
+      "fees_page": {
+        "source": "fees_zh_tw",
+        "level_1": "no ATM allowance (shown as '-')",
+        "level_2": { "withdrawals_per_24h": 3, "usd_per_24h": 3000, "withdrawals_per_month": 30, "usd_per_month": 10000, "withdrawals_per_year": 360, "usd_per_year": 75000 },
+        "level_3": { "withdrawals_per_24h": 3, "usd_per_24h": 3000, "withdrawals_per_month": 30, "usd_per_month": 10000, "withdrawals_per_year": 360, "usd_per_year": 100000 },
+        "note": "ATM withdrawals are restricted in Mainland China."
+      },
+      "terms": {
+        "source": "terms_asia_pacific",
+        "lite": "N/A",
+        "base": { "single_usd": 2000, "daily_usd": 5000, "monthly_usd": 15000 },
+        "advanced": { "single_usd": 2000, "daily_usd": 5000, "monthly_usd": 25000 }
+      }
+    },
+    "physical_card": {
+      "source": "general_faq_zh_tw",
+      "requirement": "A virtual card first; address verification; only users from Tier 2 and above are eligible for the physical Asia Pacific card. Rolled out in phases, with a waitlist.",
+      "atm": "Physical card: ATMs that show the Visa logo. Virtual card: only where the ATM supports contactless (NFC) withdrawals.",
+      "contactless": "A chip-and-PIN transaction is required before the first contactless payment."
+    },
+    "payment_order": {
+      "sources": ["introduction", "how_transactions_work", "general_faq_zh_tw"],
+      "rule": "Fiat in the card's currency in the Funding Account is deducted first. If it is not enough, crypto is sold in the cardholder's priority order at the One-Click Sell rate plus the crypto conversion fee.",
+      "default_crypto_priority": ["USDT", "USDC", "GRAM", "BTC", "ETH", "XRP"],
+      "customisable": true,
+      "funding": "The card has no balance of its own; it draws on the Funding Account and the Flexible Easy Earn balance.",
+      "authorisation_hold": "Frozen at authorisation, deducted when the merchant completes the transaction, which can take up to 32 days.",
+      "both_fees_on_one_transaction": "Scenario 3 of the transactions article: a 1,260 EUR purchase on a USD card is charged the foreign exchange fee, and the part paid from USDT is converted at the One-Click Sell rate plus the crypto conversion fee. No worked figure is given for how the two fees stack."
+    }
+  },
+  "rewards": {
+    "sources": ["rewards_intro_zh_tw", "rewards_faq_zh_tw", "rewards_page"],
+    "crypto_only_rule": "From October 5, 2026, 10:00 UTC, only transactions funded with cryptocurrency qualify for Rewards Points or cashback. Eligibility follows the date the merchant posts (settles) the transaction.",
+    "formula": "Points = spend in USD x multiplier (1 USD or 1 EUR = 1 base point). Cashback (USDT) = points x 0.002. Auto cashback needs at least 50 points.",
+    "cashback_basis": "Rewards page FAQ: 返現基於每筆交易的實際結算金額計算。 Rewards FAQ: fees and charges are not eligible for points. Neither page says whether the 2% foreign exchange fee is inside the amount that earns points.",
+    "pending_period": "Help center: 4 calendar days. Rewards page FAQ: usually within 3 calendar days; the same page's step diagram says 4 days.",
+    "tiers": [
+      { "tier": "Tier 1 (Base)", "vip": "-", "monthly_min_spend_usd": 0, "multiplier": 10, "rate_pct": 2, "monthly_point_cap": 2500, "monthly_cap_usd": 5 },
+      { "tier": "Tier 2 (Beta)", "vip": "VIP 1 & 2", "monthly_min_spend_usd": 500, "multiplier": 10, "rate_pct": 2, "monthly_point_cap": 25000, "monthly_cap_usd": 50 },
+      { "tier": "Tier 3 (Alpha)", "vip": "VIP 3", "monthly_min_spend_usd": 3500, "multiplier": 20, "rate_pct": 4, "monthly_point_cap": 75000, "monthly_cap_usd": 150 },
+      { "tier": "Tier 4 (Apex)", "vip": "VIP 4 & PRO 1", "monthly_min_spend_usd": 9500, "multiplier": 30, "rate_pct": 6, "monthly_point_cap": 125000, "monthly_cap_usd": 250 },
+      { "tier": "Tier 5 (Omega)", "vip": "VIP 5 & PRO 2", "monthly_min_spend_usd": 12500, "multiplier": 40, "rate_pct": 8, "monthly_point_cap": 200000, "monthly_cap_usd": 400 },
+      { "tier": "Tier 6 (Infinite)", "vip": "Supreme VIP, PRO 3, PRO 4 & PRO 5", "monthly_min_spend_usd": { "help_center": 25000, "rewards_page": 25500 }, "multiplier": 50, "rate_pct": 10, "monthly_point_cap": 300000, "monthly_cap_usd": 600 }
+    ],
+    "tier_timing": "A tier unlocked by spending takes effect the calendar day after the qualifying transaction is confirmed and lasts until the end of the following calendar month. VIP users start at the tier of their VIP level and do not drop below it. Card and Bybit Pay spending are added together.",
+    "cap_rule": "After the monthly point cap is reached no further points are earned that calendar month until the tier is upgraded. The cap is not restored after a refund.",
+    "not_eligible": [
+      "Fees and charges",
+      "Cancelled, voided, refunded or reversed amounts",
+      "ATM withdrawals",
+      "MCC 6011, 6012, 6540, 6555, 6211, 7995",
+      "MCC 6051, 4829, 7299 (personal transfers through e-wallets) and top-ups such as Ricarica Hype",
+      "Third-party card transaction reassignment (e.g. Curve)"
+    ],
+    "pay_later_incentive": "Extra 1% with its own monthly cap (5 / 50 / 150 / 250 / 400 / 500 USD by tier), crypto-funded transactions only.",
+    "merchant_rebate": "100% rebate in points on listed subscriptions bought on the merchant's own site, for VIPs and non-VIP Tier 3 and above, inside the monthly point cap.",
+    "eea": "The rewards page terms say the program is not open to users in the European Economic Area."
+  },
+  "ten_percent": {
+    "tier": "Tier 6 (Infinite)",
+    "by_vip": "Supreme VIP, PRO 3, PRO 4 or PRO 5",
+    "supreme_vip_requirement": "30-day trading volume of at least 100M USD spot, or 500M USD derivatives, or 100M USD options (API volume at most 20%), or 10M USD structured products. Source: vip_program.",
+    "by_spending_usd": { "help_center": 25000, "rewards_page": 25500 },
+    "monthly_cap_usd": 600,
+    "spend_that_fills_cap_usd": 6000,
+    "promotions_seen": {
+      "card_landing_page": "New user welcome package, for cardholders from 11 Nov 2026 10:00 UTC: spend 1 USDT get 1 USDT back, then tasks worth up to 26 USDT.",
+      "wiki_banner": "新 Bybit 卡用戶在首 30 天於餐飲、旅遊、時尚等消費可享 10% 回饋，最高 120 USDT (banner on wiki_countries; terms page not found)."
+    }
+  },
+  "contradictions": [
+    {
+      "item": "Tier 6 monthly spending threshold",
+      "a": { "value": "25,000 USD", "source": "rewards_intro_zh_tw (and the English page)" },
+      "b": { "value": "25,500 USD", "source": "rewards_page (zh-TW and English)" }
+    },
+    {
+      "item": "Foreign exchange fee",
+      "a": { "value": "2% for Asia Pacific", "source": "fees_zh_tw and terms_asia_pacific" },
+      "b": { "value": "1% on top of Mastercard's exchange rate", "source": "card_landing_page, FAQ tab 'Rest of the World'" }
+    },
+    {
+      "item": "What the crypto conversion fee is added to",
+      "a": { "value": "0.9% on top of Bybit's One-Click Sell exchange rate", "source": "fees_zh_tw" },
+      "b": { "value": "0.9% on top of Spot trading fees", "source": "card_landing_page FAQ" }
+    },
+    {
+      "item": "Asia Pacific ATM limits",
+      "a": { "value": "3,000 USD per 24 hours, 10,000 USD per month", "source": "fees_zh_tw" },
+      "b": { "value": "2,000 USD single, 5,000 USD daily, 15,000 USD (Base) or 25,000 USD (Advanced) monthly", "source": "terms_asia_pacific" }
+    },
+    {
+      "item": "Physical card fee, Asia Pacific",
+      "a": { "value": "5 USDT", "source": "fees_zh_tw" },
+      "b": { "value": "quoted based on delivery location", "source": "terms_asia_pacific" }
+    },
+    {
+      "item": "When points become available",
+      "a": { "value": "4 calendar days", "source": "rewards_intro_zh_tw, rewards_faq_zh_tw" },
+      "b": { "value": "usually within 3 calendar days", "source": "rewards_page FAQ" }
+    },
+    {
+      "item": "What decides the cashback rate",
+      "a": { "value": "VIP level or monthly spending", "source": "rewards_intro_zh_tw, rewards_page" },
+      "b": { "value": "the amount of BIT tokens held", "source": "card_landing_page structured FAQ (not visible on the page), wiki_countries" }
+    },
+    {
+      "item": "Card network and wallets, Asia Pacific",
+      "a": { "value": "Visa; Google Pay only", "source": "general_faq_zh_tw" },
+      "b": { "value": "'1% on top of Mastercard's exchange rate'; Apple Pay: Yes", "source": "card_landing_page FAQ tab 'Rest of the World'" }
+    },
+    {
+      "item": "Countries",
+      "a": { "value": "Nine card regions, Asia Pacific without country names", "source": "general_faq_zh_tw" },
+      "b": { "value": "EEA, UK, UAE, Turkey; Australia not supported", "source": "wiki_countries" },
+      "c": { "value": "75 countries including Taiwan", "source": "card_landing_page structured data" }
+    }
+  ],
+  "not_found": [
+    "A sentence on any Bybit page saying residents of Taiwan can or cannot apply",
+    "The list of countries inside the Asia Pacific card region",
+    "The One-Click Sell rate for USDT to USD on any given day (needs an account)",
+    "How the 2% foreign exchange fee and the 0.9% crypto conversion fee stack on one transaction (added or compounded)",
+    "Whether points are calculated on the amount before or after the foreign exchange fee",
+    "Whether fiat-funded spending still counts toward the monthly spending threshold for tiers",
+    "Terms of the '10% for 30 days, up to 120 USDT' new-user offer shown as a banner on the wiki page",
+    "The physical card fee for delivery to Taiwan specifically"
+  ],
+  "derived": {
+    "assumptions": "Asia Pacific card, crypto-funded. Costs: crypto conversion 0.9% on every purchase; foreign exchange 2% on purchases not in USD; the two fees added (2.9%), with the compounded figure (2.918%) noted. Cashback counted on the purchase amount before fees. The One-Click Sell rate and the card network's rate are not included.",
+    "per_tier": [
+      { "tier": "Tier 1", "rate_pct": 2, "cap_usd": 5, "spend_that_fills_cap_usd": 250, "net_usd_purchase_pct": 1.1, "net_non_usd_pct": -0.9 },
+      { "tier": "Tier 2", "rate_pct": 2, "cap_usd": 50, "spend_that_fills_cap_usd": 2500, "net_usd_purchase_pct": 1.1, "net_non_usd_pct": -0.9 },
+      { "tier": "Tier 3", "rate_pct": 4, "cap_usd": 150, "spend_that_fills_cap_usd": 3750, "net_usd_purchase_pct": 3.1, "net_non_usd_pct": 1.1 },
+      { "tier": "Tier 4", "rate_pct": 6, "cap_usd": 250, "spend_that_fills_cap_usd": 4166.67, "net_usd_purchase_pct": 5.1, "net_non_usd_pct": 3.1 },
+      { "tier": "Tier 5", "rate_pct": 8, "cap_usd": 400, "spend_that_fills_cap_usd": 5000, "net_usd_purchase_pct": 7.1, "net_non_usd_pct": 5.1 },
+      { "tier": "Tier 6", "rate_pct": 10, "cap_usd": 600, "spend_that_fills_cap_usd": 6000, "net_usd_purchase_pct": 9.1, "net_non_usd_pct": 7.1 }
+    ],
+    "at_spending_threshold": [
+      { "tier": "Tier 2", "threshold_usd": 500, "max_cashback_usd": 10, "ceiling_rate_pct": 2.0, "net_usd_purchase_pct": 1.1, "net_non_usd_pct": -0.9 },
+      { "tier": "Tier 3", "threshold_usd": 3500, "max_cashback_usd": 140, "ceiling_rate_pct": 4.0, "net_usd_purchase_pct": 3.1, "net_non_usd_pct": 1.1 },
+      { "tier": "Tier 4", "threshold_usd": 9500, "max_cashback_usd": 250, "ceiling_rate_pct": 2.632, "net_usd_purchase_pct": 1.732, "net_non_usd_pct": -0.268 },
+      { "tier": "Tier 5", "threshold_usd": 12500, "max_cashback_usd": 400, "ceiling_rate_pct": 3.2, "net_usd_purchase_pct": 2.3, "net_non_usd_pct": 0.3 },
+      { "tier": "Tier 6 (help center)", "threshold_usd": 25000, "max_cashback_usd": 600, "ceiling_rate_pct": 2.4, "net_usd_purchase_pct": 1.5, "net_non_usd_pct": -0.5 },
+      { "tier": "Tier 6 (rewards page)", "threshold_usd": 25500, "max_cashback_usd": 600, "ceiling_rate_pct": 2.353, "net_usd_purchase_pct": 1.453, "net_non_usd_pct": -0.547 }
+    ],
+    "examples": [
+      { "label": "Tier 1, 400 USD", "cashback_usd": 5, "conversion_fee_usd": 3.6, "fx_fee_usd": 8, "net_usd_purchase_usd": 1.4, "net_usd_purchase_pct": 0.35, "net_non_usd_usd": -6.6, "net_non_usd_pct": -1.65 },
+      { "label": "Tier 2, 1,000 USD", "cashback_usd": 20, "conversion_fee_usd": 9, "fx_fee_usd": 20, "net_usd_purchase_usd": 11, "net_usd_purchase_pct": 1.1, "net_non_usd_usd": -9, "net_non_usd_pct": -0.9 },
+      { "label": "Tier 6, 6,000 USD", "cashback_usd": 600, "conversion_fee_usd": 54, "fx_fee_usd": 120, "net_usd_purchase_usd": 546, "net_usd_purchase_pct": 9.1, "net_non_usd_usd": 426, "net_non_usd_pct": 7.1 },
+      { "label": "Tier 6, 10,000 USD", "cashback_usd": 600, "conversion_fee_usd": 90, "fx_fee_usd": 200, "net_usd_purchase_usd": 510, "net_usd_purchase_pct": 5.1, "net_non_usd_usd": 310, "net_non_usd_pct": 3.1 },
+      { "label": "Tier 6, 25,000 USD", "cashback_usd": 600, "conversion_fee_usd": 225, "fx_fee_usd": 500, "net_usd_purchase_usd": 375, "net_usd_purchase_pct": 1.5, "net_non_usd_usd": -125, "net_non_usd_pct": -0.5 },
+      { "label": "Tier 6, 25,500 USD", "cashback_usd": 600, "conversion_fee_usd": 229.5, "fx_fee_usd": 510, "net_usd_purchase_usd": 370.5, "net_usd_purchase_pct": 1.453, "net_non_usd_usd": -139.5, "net_non_usd_pct": -0.547 }
+    ],
+    "non_usd_spend_where_net_turns_negative_usd": { "Tier 3": 5172.41, "Tier 4": 8620.69, "Tier 5": 13793.1, "Tier 6": 20689.66 },
+    "atm_first_withdrawal_of_month_non_usd": [
+      { "withdraw_usd_equiv": 100, "atm_fee": 0, "fx_fee": 2, "conversion_fee": 0.9, "total": 2.9, "total_pct": 2.9 },
+      { "withdraw_usd_equiv": 300, "atm_fee": 4, "fx_fee": 6, "conversion_fee": 2.7, "total": 12.7, "total_pct": 4.233 },
+      { "withdraw_usd_equiv": 500, "atm_fee": 8, "fx_fee": 10, "conversion_fee": 4.5, "total": 22.5, "total_pct": 4.5 },
+      { "withdraw_usd_equiv": 1000, "atm_fee": 18, "fx_fee": 20, "conversion_fee": 9, "total": 47, "total_pct": 4.7 },
+      { "withdraw_usd_equiv": 3000, "atm_fee": 58, "fx_fee": 60, "conversion_fee": 27, "total": 145, "total_pct": 4.833 }
+    ],
+    "atm_after_free_amount_used_pct": 4.9,
+    "atm_month_10000_usd": { "atm_fee": 198, "fx_fee": 200, "conversion_fee": 90, "total": 488, "total_pct": 4.88 }
+  }
+}
