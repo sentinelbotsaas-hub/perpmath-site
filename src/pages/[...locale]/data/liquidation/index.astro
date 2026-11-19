@@ -3,6 +3,14 @@
 // days each leverage would have been liquidated, for the three contracts.
 // There is no live liquidation feed behind this page and no heatmap on it;
 // the page says so in its first screen.
+import ContractTable from '../../../../components/market/ContractTable.astro';
+import RangePanels from '../../../../components/market/RangePanels.astro';
+import StatsTable from '../../../../components/market/StatsTable.astro';
+import { leverageFigure } from '../../../../components/market/format';
+import DataTable from '../../../../components/ui/DataTable.astro';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import MetricCard from '../../../../components/ui/MetricCard.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
 import { localePath, localeStaticPaths } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
 import { daily } from '../../../../i18n/daily';
@@ -19,7 +27,6 @@ import {
 import type { MarketReport } from '../../../../lib/market/report';
 import { latestReports } from '../../../../lib/market/store';
 import { signedPercent } from '../../../../lib/market/view';
-import ContractTable from '../_ContractTable.astro';
 import DataShell from '../_DataShell.astro';
 
 export const getStaticPaths = localeStaticPaths;
@@ -51,8 +58,20 @@ const dayRows = entries.map(({ coin, symbol, report }) => ({
 // 90-day statistic: one small table per contract, a row per leverage.
 const statCell = (report: MarketReport, leverage: number, side: 'long' | 'short') => {
   const row = report.survival90.rows.find((r) => r.leverage === leverage);
-  if (!row) return p.notOffered;
-  return fmt(p.statsCell, { days: row[side].days, share: formatPercent(row[side].share, 1) });
+  if (!row) return undefined;
+  const share = formatPercent(row[side].share, 1);
+  return {
+    text: fmt(p.statsCell, { days: row[side].days, share }),
+    share: row[side].share,
+    label: fmt(p.statsMeter, {
+      symbol: report.symbol,
+      lev: lev(leverage),
+      side: side === 'long' ? p.sideLong : p.sideShort,
+      days: row[side].days,
+      total: report.survival90.days,
+      share,
+    }),
+  };
 };
 
 // 30 days, newest first: the highest leverage that survived both ways, with
@@ -86,110 +105,138 @@ const vars = {
   title={p.title}
   description={p.description}
   sub={p.sub}
+  metricHead={p.metricHead}
   definition={fmt(p.definition, vars)}
   how={p.how}
   read={p.read.map((line) => fmt(line, vars))}
   reports={entries.map((e) => e.report)}
   secondary={{ label: t.common.calculator, href: localePath(locale, '/tools/liquidation-price-calculator/') }}
 >
-  <p class="plain" slot="lead">{p.noFeed}</p>
+  <div class="mk-nofeed" slot="lead">
+    <Disclaimer locale={locale} kind="info">
+      <p>{p.noFeed}</p>
+    </Disclaimer>
+  </div>
 
-  <Fragment slot="now">
-    <ContractTable
-      locale={locale}
-      contractLabel={t.common.contract}
-      columns={[p.columns.mmr, p.columns.drop, p.columns.rise, p.columns.long, p.columns.short]}
-      rows={dayRows}
-    />
+  <Fragment slot="metrics">
+    {
+      entries.map(({ coin, symbol, report }) => {
+        const figure = leverageFigure(d.lev, highestSurviving(report.survival, 'both'), d.none);
+        return (
+          <MetricCard
+            label={`${d.coins[coin]} ${symbol}`}
+            value={figure.value}
+            unit={figure.unit}
+            note={fmt(p.metricNote, { drop: formatPercent(report.day.adverseLong), rise: formatPercent(report.day.adverseShort) })}
+          />
+        );
+      })
+    }
+  </Fragment>
 
-    <h2 class="section-head next">{p.statsHead}</h2>
-    <div class="trio">
+  <ContractTable
+    slot="now"
+    locale={locale}
+    label={fmt(t.common.dayTable, { name: t.names.liquidation.name })}
+    contractLabel={t.common.contract}
+    columns={[p.columns.mmr, p.columns.drop, p.columns.rise, p.columns.long, p.columns.short]}
+    rows={dayRows}
+  />
+
+  <PageContainer slot="sections" flush aria-labelledby="stats-head">
+    <div class="section-header">
+      <div>
+        <h2 class="h-section" id="stats-head">{p.statsHead}</h2>
+        <p>{fmt(p.statsCaption, { days: first.survival90.days, from: first.survival90.from, to: first.survival90.to })}</p>
+      </div>
+    </div>
+    <div class="mk-trio">
       {
         entries.map(({ symbol, report }) => (
           <div>
-            <h3 class="num">{symbol}</h3>
-            <div class="tw">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">{p.leverage}</th>
-                  <th scope="col">{p.long}</th>
-                  <th scope="col">{p.short}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {LEVERAGES.map((leverage) => (
-                  <tr>
-                    <th scope="row" class="num">{lev(leverage)}</th>
-                    <td class="num">{statCell(report, leverage, 'long')}</td>
-                    <td class="num">{statCell(report, leverage, 'short')}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            </div>
+            <h3 class="h-card num">{symbol}</h3>
+            <StatsTable
+              locale={locale}
+              label={fmt(p.statsTable, { symbol })}
+              columns={[p.leverage, p.long, p.short]}
+              rows={LEVERAGES.map((leverage) => ({
+                leverage: lev(leverage),
+                long: statCell(report, leverage, 'long'),
+                short: statCell(report, leverage, 'short'),
+              }))}
+              missing={p.notOffered}
+            />
           </div>
         ))
       }
     </div>
-    <p class="fine">
-      {fmt(p.statsCaption, { days: first.survival90.days, from: first.survival90.from, to: first.survival90.to })}
-    </p>
-  </Fragment>
 
-  <div class="tw" slot="history">
-    <table>
-      <caption>{p.historyCaption}</caption>
-      <thead>
-        <tr>
-          <th scope="col">{t.common.date}</th>
-          {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
-        </tr>
-      </thead>
-      <tbody>
-        {
-          dates.map((date) => (
-            <tr>
-              <th scope="row" class="num">{date}</th>
-              {entries.map(({ report }) => <td class="num">{dayCell(report, date)}</td>)}
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
+    <div class="mk-range-head">
+      <h3 class="h-card">{p.chartHead}</h3>
+      <p>{p.chartDesc}{locale === 'en' ? ' ' : ''}{p.chartShared}</p>
+    </div>
+    <RangePanels locale={locale} reports={entries.map((e) => e.report)} level={4} />
+  </PageContainer>
 
-  <style>
-    .plain {
-      max-width: var(--measure);
-      margin-top: var(--space-md);
-    }
-
-    .next {
-      margin-top: var(--space-2xl);
-    }
-
-    /* One small table per contract, side by side where there is room. */
-    .trio {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--space-xl);
-      margin-top: var(--space-lg);
-    }
-
-    .trio h3 {
-      font-size: var(--text-lg);
-      font-weight: 400;
-    }
-
-    .trio td {
-      white-space: nowrap;
-    }
-
-    @media (max-width: 1000px) {
-      .trio {
-        grid-template-columns: minmax(0, 1fr);
+  <DataTable
+    slot="history"
+    locale={locale}
+    label={fmt(t.common.historyTable, { name: t.names.liquidation.name })}
+    caption={p.historyCaption}
+    stickyFirst
+    hint
+  >
+    <thead>
+      <tr>
+        <th scope="col">{t.common.date}</th>
+        {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        dates.map((date) => (
+          <tr>
+            <th scope="row" class="num">{date}</th>
+            {entries.map(({ report }) => <td class="num">{dayCell(report, date)}</td>)}
+          </tr>
+        ))
       }
-    }
-  </style>
+    </tbody>
+  </DataTable>
 </DataShell>
+
+<style>
+  /* Small text: a narrower box keeps its lines under 75 characters in English. */
+  .mk-nofeed {
+    max-width: 34rem;
+    margin-top: var(--space-6);
+  }
+
+  /* One small table per contract, side by side where there is room. */
+  .mk-trio {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8) var(--space-10);
+  }
+
+  .mk-trio h3 {
+    margin-bottom: var(--space-2);
+    font-weight: var(--weight-medium);
+  }
+
+  @media (min-width: 1000px) {
+    .mk-trio {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .mk-range-head {
+    margin: var(--space-16) 0 var(--space-5);
+  }
+
+  .mk-range-head p {
+    max-width: 52ch;
+    margin-top: var(--space-2);
+    color: var(--color-text-secondary);
+  }
+</style>

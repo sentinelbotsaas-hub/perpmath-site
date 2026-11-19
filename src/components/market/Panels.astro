@@ -1,0 +1,48 @@
+---
+// A row of charts, one per contract: three side by side on a desktop, one
+// per row below that. Between a phone and a desktop a chart spans the whole
+// row, so its box gets a flatter shape there.
+//
+//   <Panels>
+//     <ChartContainer framed ...>...</ChartContainer>
+//     <ChartContainer framed ...>...</ChartContainer>
+//   </Panels>
+//
+// Do not pass ratio or minHeight to the containers: the shape is set here.
+---
+
+<div class="mk-panels">
+  <slot />
+</div>
+
+<style>
+  .mk-panels {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  /* The shape of each plot is set here, per width, and not with the
+     container's ratio and minHeight props: a min-height on a box that also
+     has an aspect-ratio becomes a min-width, and on a phone that pushes the
+     plot out of its card. */
+  .mk-panels :global(.chart-box-plot) {
+    --chart-ratio: 1 / 1;
+  }
+
+  @media (min-width: 600px) {
+    .mk-panels :global(.chart-box-plot) {
+      --chart-ratio: 16 / 7;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .mk-panels {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mk-panels :global(.chart-box-plot) {
+      --chart-ratio: 4 / 3;
+    }
+  }
+</style>

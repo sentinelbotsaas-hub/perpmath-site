@@ -1,0 +1,46 @@
+---
+// The warning a data or report page shows when its report day is no longer
+// the latest complete UTC day.
+//
+//   <StaleNotice locale={locale} reportDate={report.reportDate} />
+//
+// A report for day D is built during day D+1, and the next one during D+2.
+// So once day D+2 is over (48 hours after D ended) and the page still says D,
+// at least one report is missing. Two things can be late:
+//   - the build: it ran after that moment. The notice is rendered visible.
+//   - the reader: the page was built in time but is read later. The notice is
+//     in the HTML, hidden, and src/scripts/market-stale.ts shows it.
+// With scripting off only the first case is caught, which is why the report
+// day and the fetch time are printed in the page header as well.
+import Disclaimer from '../ui/Disclaimer.astro';
+import { common } from '../../i18n/common';
+import type { Locale } from '../../i18n/config';
+import { data } from '../../i18n/data';
+import { fmt } from '../../lib/fmt';
+import { isStale, staleAfter } from './freshness';
+
+interface Props {
+  locale: Locale;
+  reportDate: string;
+}
+
+const { locale, reportDate } = Astro.props;
+const lateBuild = isStale(reportDate, Date.now());
+---
+
+<div class="mk-stale" data-stale-after={new Date(staleAfter(reportDate)).toISOString()} hidden={!lateBuild}>
+  <Disclaimer locale={locale} kind="warning" title={common[locale].ui.stale}>
+    <p>{fmt(data[locale].common.staleBody, { date: reportDate })}</p>
+  </Disclaimer>
+</div>
+
+<script>
+  import '../../scripts/market-stale.ts';
+</script>
+
+<style>
+  .mk-stale {
+    max-width: 34rem;
+    margin-top: var(--space-6);
+  }
+</style>

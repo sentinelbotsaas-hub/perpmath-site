@@ -1,0 +1,161 @@
+---
+// "Fetch current values from Bybit": a block of its own under the report-day
+// table. A live value never goes into that table; it is shown here with the
+// word "Live" and the time it was fetched.
+//
+//   <LivePanel locale={locale} kind="funding" reportDate={first.reportDate}
+//              symbols={[{ symbol: 'BTCUSDT', unit: 'BTC', name: 'Bitcoin' }]} />
+//
+// The whole block is hidden in the HTML and shown by
+// src/scripts/market-live.ts, so with scripting off the page simply has no
+// button. The script moves the block between four states by setting
+// data-state: idle (the button only), loading, ready, empty, error.
+import Button from '../ui/Button.astro';
+import DataTable from '../ui/DataTable.astro';
+import EmptyState from '../ui/EmptyState.astro';
+import ErrorState from '../ui/ErrorState.astro';
+import Skeleton from '../ui/Skeleton.astro';
+import type { Locale } from '../../i18n/config';
+import { data } from '../../i18n/data';
+import { fmt } from '../../lib/fmt';
+
+type Kind = 'funding' | 'oi' | 'ratio';
+
+interface Props {
+  locale: Locale;
+  kind: Kind;
+  /** Report day, for the failure message. */
+  reportDate: string;
+  symbols: Array<{ symbol: string; unit: string; name: string }>;
+}
+
+const { locale, kind, reportDate, symbols } = Astro.props;
+const t = data[locale];
+const l = t.live;
+
+// Everything the script needs, as JSON: it imports no strings file.
+const payload = JSON.stringify({
+  kind,
+  symbols: symbols.map(({ symbol, unit }) => ({ symbol, unit })),
+  strings: { button: l.button, again: l.again, busy: l.busy, ok: l.ok, cell: l[kind], rowEmpty: l.rowEmpty },
+});
+---
+
+<div class="mk-live" data-live={payload} data-state="idle" hidden>
+  <div class="mk-live-head">
+    <div>
+      <h3 class="h-card">{l.head}</h3>
+      <p class="mk-live-intro">{l.intro}</p>
+    </div>
+    <Button variant="secondary" icon="refresh-cw" id="live-button" data-live-button>{l.button}</Button>
+  </div>
+
+  <div class="mk-live-body" data-live-block="loading" role="status" hidden>
+    <span class="visually-hidden">{l.busy}</span>
+    {symbols.map(() => <Skeleton height="2.75rem" />)}
+  </div>
+
+  <div class="mk-live-body" data-live-block="ready" hidden>
+    <p class="mk-live-stamp">
+      <span class="tag">{l.tag}</span>
+      <span role="status" data-live-status></span>
+    </p>
+    <DataTable locale={locale} label={l.table} caption={l.notes[kind]}>
+      <thead>
+        <tr>
+          <th scope="col">{t.common.contract}</th>
+          <th scope="col">{l.value}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          symbols.map(({ symbol, name }) => (
+            <tr>
+              <th scope="row">
+                {name} <span class="num mk-live-symbol">{symbol}</span>
+              </th>
+              <td class="num" data-live-value={symbol} />
+            </tr>
+          ))
+        }
+      </tbody>
+    </DataTable>
+  </div>
+
+  <div class="mk-live-body" data-live-block="empty" hidden>
+    <EmptyState title={l.emptyTitle} body={l.emptyBody} icon="database" />
+  </div>
+
+  <div class="mk-live-body" data-live-block="error" hidden>
+    <ErrorState title={l.failTitle} body={fmt(l.fail, { date: reportDate })}>
+      <Button variant="secondary" size="sm" data-live-retry>{l.retry}</Button>
+    </ErrorState>
+  </div>
+</div>
+
+<style>
+  .mk-live {
+    margin-top: var(--space-8);
+    padding: var(--card-pad);
+    background: var(--color-surface);
+    border: var(--hairline) solid var(--color-border);
+    border-radius: var(--radius-card);
+  }
+
+  .mk-live-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-8);
+  }
+
+  .mk-live-head > div {
+    flex: 1 1 28rem;
+    min-width: 0;
+  }
+
+  .mk-live-intro {
+    max-width: 68ch;
+    margin-top: var(--space-2);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .mk-live-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .mk-live-stamp {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* "Live" must not be missed: the one place this block uses the accent. */
+  .mk-live-stamp .tag {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .mk-live-symbol {
+    margin-left: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-regular);
+  }
+
+  /* The table sits on the block's surface, not on the page. */
+  .mk-live :global(.data-table) {
+    --table-bg: var(--color-surface);
+  }
+</style>

@@ -1,10 +1,26 @@
 ---
-// /data/: the four data pages, each with the one question it answers.
+// /data/: the four data pages, each with the one question it answers and its
+// headline figure for the report day, one per contract.
+import StaleNotice from '../../../components/market/StaleNotice.astro';
+import { isStale } from '../../../components/market/freshness';
+import Card from '../../../components/ui/Card.astro';
+import DataFreshness from '../../../components/ui/DataFreshness.astro';
+import Icon from '../../../components/ui/Icon.astro';
+import type { IconName } from '../../../components/ui/Icon.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import SectionHeader from '../../../components/ui/SectionHeader.astro';
 import { common } from '../../../i18n/common';
 import { localePath, localeStaticPaths } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
+import { daily } from '../../../i18n/daily';
 import { data } from '../../../i18n/data';
 import Base from '../../../layouts/Base.astro';
+import { fmt, formatNumber } from '../../../lib/fmt';
+import { highestSurviving } from '../../../lib/market/compute';
+import type { MarketReport } from '../../../lib/market/report';
+import { latestReports } from '../../../lib/market/store';
+import { ratePercent, utcMinute } from '../../../lib/market/view';
 import { breadcrumbLd } from '../../../lib/seo';
 
 export const getStaticPaths = localeStaticPaths;
@@ -16,35 +32,197 @@ interface Props {
 const { locale } = Astro.props;
 const t = data[locale];
 const c = common[locale];
-const slugs = ['funding-rate', 'long-short-ratio', 'open-interest', 'liquidation'] as const;
+const d = daily[locale];
+const entries = latestReports();
+const first = entries[0].report;
+const stale = isStale(first.reportDate, Date.now());
 
-const jsonLd = breadcrumbLd(locale, [
+// The same figures the four pages lead with.
+const sets: Array<{ slug: keyof typeof t.names; icon: IconName; figure: (report: MarketReport) => string }> = [
+  { slug: 'funding-rate', icon: 'percent', figure: (r) => ratePercent(r.funding.average7d) },
+  { slug: 'long-short-ratio', icon: 'scale', figure: (r) => formatNumber(r.ratio.latest.longShort, 2) },
+  {
+    slug: 'open-interest',
+    icon: 'layers',
+    figure: (r) => fmt(t.oi.value, { value: formatNumber(r.openInterest.latest.value), unit: r.openInterest.unit }),
+  },
+  {
+    slug: 'liquidation',
+    icon: 'activity',
+    figure: (r) => {
+      const both = highestSurviving(r.survival, 'both');
+      return both === null ? d.none : fmt(d.lev, { n: both });
+    },
+  },
+];
+
+const trail = [
   { name: c.breadcrumb.home, path: '/' },
   { name: c.nav.data, path: '/data/' },
-]);
+];
+const jsonLd = breadcrumbLd(locale, trail);
 ---
 
 <Base locale={locale} path="/data/" title={t.index.title} description={t.index.description} jsonLd={jsonLd}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{t.index.head}</h1>
-      <p class="sub">{t.index.sub}</p>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.index.head} lede={t.index.sub} breadcrumb={trail}>
+      <DataFreshness
+        slot="meta"
+        locale={locale}
+        date={first.reportDate}
+        time={first.fetchedAt}
+        timeLabel={fmt(t.common.fetched, { time: utcMinute(first.fetchedAt) })}
+        source={t.common.sourceName}
+        stale={stale}
+      />
+      <StaleNotice locale={locale} reportDate={first.reportDate} />
+    </PageHeader>
+
+    <div class="cards cols-2 mk-sets">
+      {
+        sets.map(({ slug, icon, figure }) => (
+          <Card href={localePath(locale, `/data/${slug}/`)}>
+            <div class="mk-set-top">
+              <span class="card-icon">
+                <Icon name={icon} size={20} />
+              </span>
+              <div>
+                <h2 class="card-title">{t.names[slug].name}</h2>
+                <p class="card-desc">{t.names[slug].question}</p>
+              </div>
+            </div>
+            <dl
+              class="mk-set-figures"
+              aria-label={fmt(t.index.cardLabel, { name: t.names[slug].name, figure: t.index.figures[slug], date: first.reportDate })}
+            >
+              {entries.map(({ symbol, report }) => (
+                <div>
+                  <dt class="num">{symbol}</dt>
+                  <dd class="num">{figure(report)}</dd>
+                </div>
+              ))}
+            </dl>
+            <div class="card-foot">
+              <span>{t.index.figures[slug]}</span>
+              <span class="mk-set-open">
+                {t.index.open}
+                <Icon name="arrow-right" size={16} />
+              </span>
+            </div>
+          </Card>
+        ))
+      }
     </div>
-  </section>
-  <section class="read">
-    <div class="wrap">
-      <ol class="index">
-        {
-          slugs.map((slug) => (
-            <li>
-              <a class="name" href={localePath(locale, `/data/${slug}/`)}>
-                {t.names[slug].name}
-              </a>
-              <span class="question">{t.names[slug].question}</span>
-            </li>
-          ))
-        }
-      </ol>
+  </PageContainer>
+
+  <PageContainer band>
+    <div class="mk-about">
+      <div class="prose">
+        <h2>{t.index.howHead}</h2>
+        <ul>
+          {t.index.how.map((line) => <li>{line}</li>)}
+        </ul>
+      </div>
+      <div>
+        <SectionHeader
+          level={3}
+          title={t.index.dailyHead}
+          desc={t.index.dailySub}
+          href={localePath(locale, '/daily/')}
+          linkLabel={t.common.daily}
+        />
+      </div>
     </div>
-  </section>
+  </PageContainer>
 </Base>
+
+<style>
+  .mk-sets {
+    margin-top: var(--space-12);
+  }
+
+  .mk-set-top {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .mk-set-top > div {
+    min-width: 0;
+  }
+
+  .mk-set-top .card-desc {
+    margin-top: var(--space-1);
+  }
+
+  /* One figure per contract: a row each, the contract on the left. A figure
+     is never broken in two. */
+  .mk-set-figures {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    margin: var(--space-2) 0 0;
+    padding-top: var(--space-4);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .mk-set-figures > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 var(--space-3);
+    min-width: 0;
+  }
+
+  .mk-set-figures dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .mk-set-figures dd {
+    font-size: var(--text-card);
+    font-weight: var(--weight-medium);
+    white-space: nowrap;
+  }
+
+  /* Wide cards: the three contracts side by side, the figure under its name. */
+  @media (min-width: 1100px) {
+    .mk-set-figures {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mk-set-figures > div {
+      display: block;
+    }
+
+    .mk-set-figures dd {
+      margin-top: var(--space-1);
+    }
+  }
+
+  .mk-set-open {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-left: auto;
+  }
+
+  .mk-about {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
+  }
+
+  .mk-about h2 {
+    font-size: var(--text-xl);
+    line-height: var(--leading-tight);
+  }
+
+  @media (min-width: 1000px) {
+    .mk-about {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+  }
+
+</style>

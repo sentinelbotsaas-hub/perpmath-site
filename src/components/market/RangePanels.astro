@@ -1,0 +1,204 @@
+---
+// "Largest drop and rise, day by day" for one contract or for several side
+// by side, with a switch between the last 30 and the last 90 days. Both
+// periods are drawn at build time; the switch is two radio buttons and one
+// CSS rule, so it works with scripting off. Without :has() support the switch
+// is not shown and the 90-day charts stay.
+//
+//   <RangePanels locale={locale} reports={[btc, eth, sol]} />
+//
+// The daily candles are report.history.daily (90 of them, the same 90 behind
+// report.survival90). Drop and rise come from adverseMoves(); the dashed lines
+// are the room of each leverage the contract offers (survival90.rows[].room).
+// Charts shown together share one vertical axis.
+import ChartContainer from '../ui/ChartContainer.astro';
+import DataFreshness from '../ui/DataFreshness.astro';
+import RangeChart from './RangeChart.astro';
+import { extremes, tightAxis } from './chart';
+import { isStale } from './freshness';
+import type { Locale } from '../../i18n/config';
+import { daily } from '../../i18n/daily';
+import { data } from '../../i18n/data';
+import { fmt, formatPercent } from '../../lib/fmt';
+import { adverseMoves, utcDayStart } from '../../lib/market/compute';
+import type { MarketReport } from '../../lib/market/report';
+import { signedPercent } from '../../lib/market/view';
+
+interface Props {
+  locale: Locale;
+  reports: MarketReport[];
+  /** Heading level of each chart's title. Default 3. */
+  level?: 3 | 4;
+}
+
+const { locale, reports, level = 3 } = Astro.props;
+const t = data[locale];
+const p = t.liquidation;
+const lev = (n: number) => fmt(daily[locale].lev, { n });
+const PERIODS = [30, 90] as const;
+const DEFAULT = 90;
+
+const movesOf = (report: MarketReport) =>
+  report.history.daily.map((day) => {
+    const moves = adverseMoves({ start: utcDayStart(day.date), open: day.open, high: day.high, low: day.low, close: day.close });
+    return { date: day.date, drop: moves.long, rise: moves.short };
+  });
+const series = reports.map((report) => ({ report, days: movesOf(report) }));
+
+const views = PERIODS.filter((period) => series.every((s) => s.days.length >= period)).map((period) => {
+  const panels = series.map(({ report, days }) => ({ report, days: days.slice(-period) }));
+  const all = panels.flatMap((panel) => panel.days);
+  const axis = tightAxis(-Math.max(...all.map((d) => d.drop)) * 100, Math.max(...all.map((d) => d.rise)) * 100, 7);
+  return { period, axis, panels };
+});
+const single = reports.length === 1;
+---
+
+<div class="mk-range">
+  {
+    views.length > 1 && (
+      <fieldset class="mk-range-pick">
+        <legend>{p.rangeLabel}</legend>
+        <div class="seg">
+          {views.map(({ period }) => (
+            <label>
+              <input type="radio" name="mk-range" value={period} checked={period === DEFAULT} />
+              <span>{fmt(p.range, { days: period })}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )
+  }
+  {
+    views.map(({ period, axis, panels }) => (
+      <div class:list={['mk-range-view', { 'mk-one': single }]} data-range={period}>
+        {panels.map(({ report, days }) => {
+          const lines = report.survival90.rows
+            .slice()
+            .sort((a, b) => a.leverage - b.leverage)
+            .map((row) => ({ room: row.room, label: lev(row.leverage), leverage: row.leverage }));
+          const inside = lines.filter((line) => line.room * 100 < axis.max || -line.room * 100 > axis.min);
+          const worst = extremes(days.map((d) => d.drop)).max;
+          const best = extremes(days.map((d) => d.rise)).max;
+          return (
+            <ChartContainer
+              locale={locale}
+              framed
+              level={level}
+              class="mk-range-box"
+              title={report.symbol}
+              desc={fmt(p.chartLines, {
+                list: inside
+                  .slice()
+                  .reverse()
+                  .map((line) => line.label)
+                  .join(locale === 'en' ? ', ' : '、'),
+              })}
+            >
+              <RangeChart
+                days={days}
+                axis={axis}
+                lines={lines}
+                title={(day) => fmt(p.dayTitle, { date: day.date, drop: signedPercent(-day.drop), rise: signedPercent(day.rise) })}
+                yCaption={p.axisValue}
+                xCaption={t.common.axisDate}
+                label={fmt(p.chartAlt, {
+                  symbol: report.symbol,
+                  from: days[0].date,
+                  to: days[days.length - 1].date,
+                  drop: formatPercent(days[worst].drop),
+                  dropDate: days[worst].date,
+                  rise: formatPercent(days[best].rise),
+                  riseDate: days[best].date,
+                })}
+              />
+              <DataFreshness
+                slot="footer"
+                locale={locale}
+                date={report.reportDate}
+                source={t.common.sourceName}
+                stale={isStale(report.reportDate, Date.now())}
+              />
+            </ChartContainer>
+          );
+        })}
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .mk-range-pick {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    margin: 0 0 var(--space-5);
+    padding: 0;
+    border: 0;
+  }
+
+  .mk-range-pick legend {
+    float: left;
+    padding: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .mk-range-pick .seg {
+    min-width: 12rem;
+    font-size: var(--text-sm);
+  }
+
+  .mk-range-view {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  /* The shape of each plot, per width (see the note in Panels.astro). */
+  .mk-range-view :global(.chart-box-plot) {
+    --chart-ratio: 1 / 1;
+  }
+
+  @media (min-width: 600px) {
+    .mk-range-view :global(.chart-box-plot) {
+      --chart-ratio: 16 / 7;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .mk-range-view:not(.mk-one) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    /* Ninety thin bars: a square plot gives them the height to be read. */
+    .mk-range-view:not(.mk-one) :global(.chart-box-plot) {
+      --chart-ratio: 1 / 1;
+    }
+
+    .mk-range-view.mk-one :global(.chart-box-plot) {
+      --chart-ratio: 16 / 6;
+    }
+  }
+
+  /* The 90-day view is the one in the HTML that shows by default. */
+  .mk-range-view[data-range='30'] {
+    display: none;
+  }
+
+  .mk-range:has(input[value='30']:checked) .mk-range-view[data-range='30'] {
+    display: grid;
+  }
+
+  .mk-range:has(input[value='30']:checked) .mk-range-view[data-range='90'] {
+    display: none;
+  }
+
+  @supports not selector(:has(*)) {
+    .mk-range-pick {
+      display: none;
+    }
+  }
+</style>

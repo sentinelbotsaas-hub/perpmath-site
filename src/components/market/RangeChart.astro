@@ -1,0 +1,105 @@
+---
+// Day by day: how far price fell below and rose above the day's open, with a
+// dashed line at the room of each leverage. A bar that reaches a line is a
+// day on which that leverage would have been liquidated. Goes inside
+// <ChartContainer>.
+//
+//   <RangeChart days={days} axis={axis} lines={lines} title={(d) => '...'}
+//               yCaption="Distance from the day's open, %" xCaption="Date, UTC" label="..." />
+//
+// days:  oldest first; drop and rise are fractions of the open (0.0447),
+//        from adverseMoves() in src/lib/market/compute.ts.
+// axis:  in percent, must include zero. Share one axis between charts that
+//        are meant to be compared.
+// lines: room as a fraction, with the label printed beside the line. Lines
+//        outside the axis are not drawn. Order them by importance: when two
+//        labels would touch, the earlier one is printed.
+import Plot from './Plot.astro';
+import { share, spacedLabels, yOf } from './chart';
+import type { Axis } from './chart';
+import { signedNumber } from '../../lib/market/view';
+
+interface Day {
+  date: string;
+  drop: number;
+  rise: number;
+}
+
+interface Props {
+  days: Day[];
+  axis: Axis;
+  lines: Array<{ room: number; label: string }>;
+  title: (day: Day) => string;
+  yCaption: string;
+  xCaption: string;
+  label: string;
+}
+
+const { days, axis, lines, title, yCaption, xCaption, label } = Astro.props;
+const count = days.length;
+const slot = 100 / count;
+const zero = yOf(0, axis);
+
+// Each leverage has a line above zero (shorts) and one below (longs).
+const drawn = lines.flatMap((line) => {
+  const pct = line.room * 100;
+  return [pct, -pct].filter((value) => value < axis.max && value > axis.min).map((value) => ({ value, label: line.label }));
+});
+// 0.075 of the axis is one line of label text on the shortest plot (about 200px).
+const printed = spacedLabels(
+  drawn.map((line) => share(line.value, axis)),
+  0.075,
+);
+const marks = drawn.filter((_, i) => printed[i]).map((line) => ({ share: share(line.value, axis), label: line.label }));
+---
+
+<Plot
+  label={label}
+  yCaption={yCaption}
+  yTicks={axis.ticks.map((value) => ({ share: share(value, axis), label: `${signedNumber(value, axis.decimals)}%` }))}
+  xCaption={xCaption}
+  xTicks={[
+    { share: 0, label: days[0].date, align: 'start' },
+    { share: 1, label: days[count - 1].date, align: 'end' },
+  ]}
+  marks={marks}
+>
+  {
+    days.map((day, i) => {
+      const top = yOf(day.rise * 100, axis);
+      const bottom = yOf(-day.drop * 100, axis);
+      return <rect class="mk-bar" x={(i * slot + slot * 0.15).toFixed(3)} y={top} width={(slot * 0.7).toFixed(3)} height={(bottom - top).toFixed(3)} />;
+    })
+  }
+  <line class="stroke-muted" x1="0" x2="100" y1={zero} y2={zero} stroke-width="1" />
+  {
+    drawn.map((line) => (
+      <line class="mk-room" x1="0" x2="100" y1={yOf(line.value, axis)} y2={yOf(line.value, axis)} stroke-width="1" stroke-dasharray="4 3" />
+    ))
+  }
+  {
+    days.map((day, i) => (
+      <rect class="mk-hit" x={(i * slot).toFixed(3)} y="0" width={slot.toFixed(3)} height="100">
+        <title>{title(day)}</title>
+      </rect>
+    ))
+  }
+</Plot>
+
+<style>
+  .mk-bar {
+    fill: var(--color-text-secondary);
+  }
+
+  .mk-room {
+    stroke: var(--color-negative);
+  }
+
+  .mk-hit {
+    fill: transparent;
+  }
+
+  .mk-hit:hover {
+    fill: var(--color-hover);
+  }
+</style>

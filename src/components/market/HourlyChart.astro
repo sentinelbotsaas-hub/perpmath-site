@@ -1,0 +1,152 @@
+---
+// The report day hour by hour: 24 bars from each hour's low to its high, a
+// line through the hourly closes, and a dashed line at the liquidation price
+// of each leverage for a position entered at the daily open. Goes inside
+// <ChartContainer>.
+//
+//   <HourlyChart locale={locale} report={report} />
+//
+// A liquidation line is the daily open moved by the room of that leverage
+// (open x (1 - room) for a long, open x (1 + room) for a short): the same
+// test src/lib/market/compute.ts applies to the hourly candles, so the hour
+// in which a bar first reaches a line is the hour in the survival table.
+// Drawn are every line that was reached and, on each side, the nearest one
+// that was not (unless it is far from the day's range); the rest lie outside
+// the chart, and the text under the title says so.
+import Plot from './Plot.astro';
+import { linePoints, share, spacedLabels, tightAxis, yOf } from './chart';
+import type { Locale } from '../../i18n/config';
+import { daily } from '../../i18n/daily';
+import { fmt, formatNumber, tickDecimals } from '../../lib/fmt';
+import type { MarketReport } from '../../lib/market/report';
+import { hourLabel } from '../../lib/market/view';
+
+interface Props {
+  locale: Locale;
+  report: MarketReport;
+}
+
+const { locale, report } = Astro.props;
+const d = daily[locale];
+const t = d.report;
+const { hourly, day, survival, symbol } = report;
+const price = (n: number) => formatNumber(n, tickDecimals(report.instrument.tickSize));
+const lev = (n: number) => fmt(d.lev, { n });
+
+// Rows are ordered by leverage, so room shrinks down the list: the nearest
+// line that was not reached is the last surviving row. It is drawn when
+// nothing on that side was reached, or when it lies within one and a half
+// times the day's move; farther away it would only squeeze the candles.
+const side = (which: 'long' | 'short') => {
+  const move = which === 'long' ? day.adverseLong : day.adverseShort;
+  const reached = survival.filter((row) => row[which].liquidated);
+  const nearest = survival
+    .filter((row) => !row[which].liquidated)
+    .slice(-1)
+    .filter((row) => reached.length === 0 || row.room <= move * 1.5);
+  return [...reached, ...nearest].map((row) => ({
+    value: which === 'long' ? day.open * (1 - row.room) : day.open * (1 + row.room),
+    label: fmt(which === 'long' ? t.lineLong : t.lineShort, { lev: lev(row.leverage) }),
+    reached: row[which].liquidated,
+  }));
+};
+const lines = [...side('long'), ...side('short')];
+
+const axis = tightAxis(Math.min(day.low, ...lines.map((l) => l.value)), Math.max(day.high, ...lines.map((l) => l.value)), 6);
+const slot = 100 / hourly.length;
+
+// Labels beside the plot: the open first, then reached lines, then the rest.
+const labelled = [
+  { value: day.open, label: t.hourlyOpen, tone: undefined },
+  ...lines
+    .slice()
+    .sort((a, b) => Number(b.reached) - Number(a.reached))
+    .map((line) => ({ value: line.value, label: line.label, tone: 'negative' as const })),
+];
+const printed = spacedLabels(
+  labelled.map((item) => share(item.value, axis)),
+  0.075,
+);
+const marks = labelled.filter((_, i) => printed[i]).map((item) => ({ share: share(item.value, axis), label: item.label, tone: item.tone }));
+
+// Hours in which the table records a liquidation.
+const hitHours = new Set(survival.flatMap((row) => [row.long.hourUtc, row.short.hourUtc]).filter((hour) => hour !== null));
+const open = yOf(day.open, axis);
+---
+
+<Plot
+  label={fmt(t.hourlyAlt, { symbol, date: report.reportDate, open: price(day.open), high: price(day.high), low: price(day.low), close: price(day.close) })}
+  yCaption={t.hourlyAxisY}
+  yTicks={axis.ticks.map((value) => ({ share: share(value, axis), label: formatNumber(value, axis.decimals) }))}
+  xCaption={t.hourlyAxisX}
+  xTicks={[0, 6, 12, 18, 24].map((hour) => ({
+    share: hour / 24,
+    label: hourLabel(hour),
+    align: hour === 0 ? ('start' as const) : hour === 24 ? ('end' as const) : ('center' as const),
+    minor: hour === 6 || hour === 18,
+  }))}
+  marks={marks}
+>
+  <line class="stroke-muted" x1="0" x2="100" y1={open} y2={open} stroke-width="1" />
+  {
+    hourly.map((candle, i) => {
+      const top = yOf(candle.high, axis);
+      const bottom = yOf(candle.low, axis);
+      return (
+        <rect
+          class:list={['mk-bar', { 'is-hit': hitHours.has(candle.hour) }]}
+          x={(i * slot + slot * 0.2).toFixed(3)}
+          y={top}
+          width={(slot * 0.6).toFixed(3)}
+          height={Math.max(bottom - top, 0.4).toFixed(3)}
+        />
+      );
+    })
+  }
+  <polyline class="stroke-text" points={linePoints(hourly.map((candle) => candle.close), axis)} fill="none" stroke-width="1.5" stroke-linejoin="round" />
+  {
+    lines.map((line) => (
+      <line class="mk-liq" x1="0" x2="100" y1={yOf(line.value, axis)} y2={yOf(line.value, axis)} stroke-width="1" stroke-dasharray="4 3" />
+    ))
+  }
+  {
+    hourly.map((candle, i) => (
+      <rect class="mk-hit" x={(i * slot).toFixed(3)} y="0" width={slot.toFixed(3)} height="100">
+        <title>
+          {
+            fmt(t.hourTitle, {
+              hour: hourLabel(candle.hour),
+              open: price(candle.open),
+              high: price(candle.high),
+              low: price(candle.low),
+              close: price(candle.close),
+            })
+          }
+        </title>
+      </rect>
+    ))
+  }
+</Plot>
+
+<style>
+  .mk-bar {
+    fill: var(--color-border-control);
+  }
+
+  /* An hour in which a line was first reached. The table names the same hour. */
+  .mk-bar.is-hit {
+    fill: var(--color-negative);
+  }
+
+  .mk-liq {
+    stroke: var(--color-negative);
+  }
+
+  .mk-hit {
+    fill: transparent;
+  }
+
+  .mk-hit:hover {
+    fill: var(--color-hover);
+  }
+</style>

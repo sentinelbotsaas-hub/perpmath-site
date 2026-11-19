@@ -4,8 +4,9 @@
 // Definitions and reading notes are fixed text about how a quantity works.
 // Every figure ({mmr}, {room}, {date} ...) is filled in from
 // src/data/market/<SYMBOL>/latest.json. No forecasts, no direction calls.
-// `live` is handed to src/scripts/market-live.ts as JSON, so it holds
-// templates only.
+// `live` is for the "fetch current values" block
+// (src/components/market/LivePanel.astro). The templates the browser fills in
+// (ok, funding, oi, ratio) are handed to src/scripts/market-live.ts as JSON.
 import { defineStrings } from './strings';
 
 export const data = defineStrings({
@@ -16,6 +17,22 @@ export const data = defineStrings({
         'Four daily tables for BTCUSDT, ETHUSDT and SOLUSDT perpetuals on Bybit, each with a plain definition, the calculation behind it and 30 days of history.',
       head: 'Market data',
       sub: 'Four tables from Bybit’s public API, rebuilt once a day.',
+      figures: {
+        'funding-rate': '7-day average per settlement',
+        'long-short-ratio': 'Long ÷ short',
+        'open-interest': 'Open interest',
+        liquidation: 'Survived both ways up to',
+      },
+      open: 'Open the full table',
+      cardLabel: '{name}: {figure}, report day {date} UTC',
+      howHead: 'Where the numbers come from',
+      how: [
+        'Once a day the site reads Bybit’s public API, which needs no API key, and builds a report for the last complete UTC day.',
+        'Three contracts are covered: the BTCUSDT, ETHUSDT and SOLUSDT perpetuals.',
+        'Report-day figures do not change during the day. For the value at this moment, the funding, long/short and open-interest pages have a button that asks Bybit directly.',
+      ],
+      dailyHead: 'The same data as a daily report',
+      dailySub: 'One report per contract: the day’s largest move against longs and shorts, and which leverage would have been liquidated.',
     },
     names: {
       'funding-rate': { name: 'Funding rate', question: 'What does holding a position cost per day?' },
@@ -31,12 +48,22 @@ export const data = defineStrings({
       how: 'How it is calculated',
       read: 'How to read it',
       history: 'Last 30 days',
-      now: 'Now',
       dayHead: 'Report day, {date} UTC',
       source:
         'Report day {date} UTC, data fetched {time} UTC. Figures from Bybit’s public API; the exchange is the reference.',
       daily: 'Daily reports',
       calculator: 'Liquidation price calculator',
+      sourceName: 'Bybit public API',
+      sourceHead: 'Source and update time',
+      fetched: '{time} UTC',
+      dayTable: '{name}: figures for the report day',
+      historyTable: '{name}: last 30 days',
+      axisDate: 'Date, UTC',
+      notFromZero: 'The vertical axis does not start at zero.',
+      extremes: 'Highest in these {days} days: {max} on {maxDate}. Lowest: {min} on {minDate}.',
+      point: '{date}: {value}',
+      staleBody:
+        'The report day is {date} UTC and no later report has been built since. For current market values, check the exchange.',
     },
     live: {
       button: 'Fetch current values from Bybit',
@@ -46,6 +73,24 @@ export const data = defineStrings({
       funding: '{rate}, settles {time} UTC',
       oi: '{value} {unit}',
       ratio: '{long} long, ratio {ratio}',
+      head: 'Current values',
+      tag: 'Live',
+      intro:
+        'The table above holds the report-day figures and does not change. The button makes your browser ask Bybit’s public API for the value at this moment and shows it here, apart from the report-day table.',
+      again: 'Fetch again',
+      value: 'Current value',
+      table: 'Current values fetched from Bybit',
+      failTitle: 'Could not fetch current values',
+      retry: 'Try again',
+      emptyTitle: 'Bybit returned no value',
+      emptyBody:
+        'The request went through, but the response held no data for these contracts. The report-day table is unaffected.',
+      rowEmpty: 'No data',
+      notes: {
+        funding: 'This is the rate of the funding period in progress. It can still change before it settles.',
+        oi: 'Open interest at this moment, in the base coin of each contract.',
+        ratio: 'Account shares for the latest 5-minute period.',
+      },
     },
     funding: {
       title: 'Funding rate: BTC, ETH and SOL perpetuals on Bybit',
@@ -75,6 +120,12 @@ export const data = defineStrings({
         'The 30-day figure repeats the last seven days. It is arithmetic, not a forecast.',
       ],
       historyCaption: 'Settlement rates stamped on each UTC day, added up. Positive: longs paid shorts.',
+      metricHead: 'What a long pays per day on {notional} USDT of position, at the pace of the last 7 days.',
+      metricNote: '7-day average {average}, last settlement {latest}',
+      chartDesc:
+        'Settlement rates added up per UTC day. All three contracts share one vertical scale. A bar above zero: longs paid shorts.',
+      axisValue: 'Daily sum, %',
+      chartAlt: '{symbol}: bar chart of the daily funding sums from {from} to {to}.',
     },
     ratio: {
       title: 'Long/short ratio: BTC, ETH and SOL accounts on Bybit',
@@ -103,6 +154,16 @@ export const data = defineStrings({
       ],
       historyCell: '{ratio} ({long})',
       historyCaption: 'Long ÷ short, with the share of accounts net long in brackets.',
+      metricHead: 'Long ÷ short, from the readings stamped {time} UTC.',
+      metricNote: '{long} of accounts net long, 7-day change {change} points',
+      splitHead: 'Accounts on each side',
+      splitLabel: '{symbol}: {long} of accounts net long, {short} net short',
+      splitLong: 'Long {long}',
+      splitShort: 'Short {short}',
+      chartDesc:
+        'Share of accounts net long, daily readings stamped 00:00 UTC. All three contracts share one vertical scale.',
+      axisValue: 'Accounts net long, %',
+      chartAlt: '{symbol}: line chart of the share of accounts net long from {from} to {to}.',
     },
     oi: {
       title: 'Open interest: BTC, ETH and SOL perpetuals on Bybit',
@@ -129,6 +190,12 @@ export const data = defineStrings({
         'The number is in coins. Its value in USDT also moves with price, even when no contract is opened or closed.',
       ],
       historyCaption: 'Daily readings stamped 00:00 UTC, in the base coin of each contract.',
+      metricHead: 'Open interest, from the readings stamped {time} UTC.',
+      metricNote: '7-day change {change}',
+      chartDesc:
+        'Daily readings stamped 00:00 UTC. The three contracts are counted in different coins, so each chart has its own vertical scale.',
+      axisValue: 'Open interest, {unit}',
+      chartAlt: '{symbol}: line chart of open interest in {unit} from {from} to {to}.',
     },
     liquidation: {
       title: 'Liquidation: how often each leverage got liquidated',
@@ -167,6 +234,23 @@ export const data = defineStrings({
       historyCell: '{lev}, {drop} / {rise}',
       historyCaption:
         'Highest leverage at which both a long and a short survived the day, then the largest drop and the largest rise from the open.',
+      metricHead: 'Highest leverage at which both a long and a short survived the report day.',
+      metricNote: 'Largest drop {drop}, largest rise {rise}',
+      statsTable: '{symbol}: days liquidated, by leverage',
+      statsMeter: '{symbol} {lev} {side}: liquidated on {days} of {total} days, {share}',
+      sideLong: 'long',
+      sideShort: 'short',
+      chartHead: 'Largest drop and rise, day by day',
+      chartDesc:
+        'Each bar is one day: down from the open to the largest drop, up to the largest rise. A dashed line marks the room at one leverage, below zero for longs and above zero for shorts. A bar that reaches a line means that leverage would have been liquidated that day.',
+      chartShared: 'All three contracts share one vertical scale.',
+      chartLines: 'Dashed lines, from zero outward: {list}.',
+      axisValue: 'Distance from the day’s open, %',
+      chartAlt:
+        '{symbol}: largest drop and largest rise of each day from {from} to {to}. Largest drop {drop} on {dropDate}, largest rise {rise} on {riseDate}.',
+      dayTitle: '{date}: largest drop {drop}, largest rise {rise}',
+      rangeLabel: 'Chart period',
+      range: '{days} days',
     },
   },
   'zh-hant': {
@@ -176,6 +260,22 @@ export const data = defineStrings({
         'Bybit 的 BTCUSDT、ETHUSDT、SOLUSDT 永續合約，四張每天更新的數據表。每一頁都有白話定義、計算方式，以及過去 30 天的歷史數據。',
       head: '市場數據',
       sub: '四張表，資料來自 Bybit 公開 API，每天重建一次。',
+      figures: {
+        'funding-rate': '7 日平均（每次結算）',
+        'long-short-ratio': '多 ÷ 空',
+        'open-interest': '未平倉量',
+        liquidation: '多空都撐住的最高槓桿',
+      },
+      open: '看完整的表',
+      cardLabel: '{name}：{figure}，報告日 {date}（UTC）',
+      howHead: '這些數字怎麼來的',
+      how: [
+        '本站每天讀一次 Bybit 的公開 API（不需要 API 金鑰），算出最近一個完整 UTC 日的報告。',
+        '涵蓋三個合約：BTCUSDT、ETHUSDT、SOLUSDT 永續合約。',
+        '報告日的數字在當天不會再變。想看此刻的數值，資金費率、多空比、未平倉量這三頁各有一顆按鈕，會直接向 Bybit 詢問。',
+      ],
+      dailyHead: '同一批資料寫成的每日報告',
+      dailySub: '每個合約一份：當天多單與空單遇到的最大逆向幅度，以及哪些槓桿會爆倉。',
     },
     names: {
       'funding-rate': { name: '資金費率', question: '持倉一天要付多少錢？' },
@@ -191,11 +291,20 @@ export const data = defineStrings({
       how: '怎麼算的',
       read: '怎麼看',
       history: '過去 30 天',
-      now: '現在',
       dayHead: '報告日 {date}（UTC）',
       source: '報告日 {date}（UTC），資料抓取時間 {time}（UTC）。數字來自 Bybit 公開 API，一切以交易所為準。',
       daily: '每日報告',
       calculator: '爆倉價計算機',
+      sourceName: 'Bybit 公開 API',
+      sourceHead: '資料來源與更新時間',
+      fetched: '{time}（UTC）',
+      dayTable: '{name}：報告日的數字',
+      historyTable: '{name}：過去 30 天',
+      axisDate: '日期（UTC）',
+      notFromZero: '縱軸不是從 0 開始。',
+      extremes: '這 {days} 天裡最高是 {maxDate} 的 {max}，最低是 {minDate} 的 {min}。',
+      point: '{date}：{value}',
+      staleBody: '報告日是 {date}（UTC），之後還沒有產生新的報告。此刻的市場數值請以交易所為準。',
     },
     live: {
       button: '向 Bybit 抓取目前數值',
@@ -205,6 +314,23 @@ export const data = defineStrings({
       funding: '{rate}，{time}（UTC）結算',
       oi: '{value} {unit}',
       ratio: '多單 {long}，多空比 {ratio}',
+      head: '目前數值',
+      tag: '即時',
+      intro:
+        '上面那張表是報告日的數字，不會變動。按下按鈕後，你的瀏覽器會直接向 Bybit 的公開 API 詢問此刻的數值，顯示在這裡，不會混進報告日的表格。',
+      again: '重新抓取',
+      value: '目前數值',
+      table: '向 Bybit 抓到的目前數值',
+      failTitle: '抓不到目前數值',
+      retry: '再試一次',
+      emptyTitle: 'Bybit 沒有回傳數值',
+      emptyBody: '請求有成功，但回應裡沒有這三個合約的資料。報告日的表格不受影響。',
+      rowEmpty: '沒有資料',
+      notes: {
+        funding: '這是進行中這一期的資金費率，結算之前還會變動。',
+        oi: '此刻的未平倉量，單位是各合約的基礎幣。',
+        ratio: '最近一個 5 分鐘週期的帳戶比例。',
+      },
     },
     funding: {
       title: '資金費率：Bybit 的 BTC、ETH、SOL 永續合約',
@@ -233,6 +359,11 @@ export const data = defineStrings({
         '30 天的數字只是把最近七天重複計算，是算術，不是預測。',
       ],
       historyCaption: '每個 UTC 日內的結算費率加總。正數代表多單付給空單。',
+      metricHead: '持有 {notional} USDT 的多單，照最近 7 天的速度，每天付出多少。',
+      metricNote: '7 日平均 {average}，最近一次結算 {latest}',
+      chartDesc: '每個 UTC 日內的結算費率加總。三個合約用同一個縱軸。直條在 0 上方，代表多單付給空單。',
+      axisValue: '每日加總（%）',
+      chartAlt: '{symbol}：{from} 到 {to} 每日資金費率加總的長條圖。',
     },
     ratio: {
       title: '多空比：Bybit 的 BTC、ETH、SOL 帳戶多空比例',
@@ -261,6 +392,15 @@ export const data = defineStrings({
       ],
       historyCell: '{ratio}（{long}）',
       historyCaption: '多 ÷ 空，括號內是淨多單帳戶的比例。',
+      metricHead: '多 ÷ 空，取自時間標為 {time}（UTC）的讀數。',
+      metricNote: '淨多單帳戶 {long}，7 日變化 {change} 個百分點',
+      splitHead: '兩邊各有多少帳戶',
+      splitLabel: '{symbol}：淨多單帳戶 {long}，淨空單帳戶 {short}',
+      splitLong: '多 {long}',
+      splitShort: '空 {short}',
+      chartDesc: '淨多單帳戶的比例，每天 00:00（UTC）的讀數。三個合約用同一個縱軸。',
+      axisValue: '淨多單帳戶（%）',
+      chartAlt: '{symbol}：{from} 到 {to} 淨多單帳戶比例的折線圖。',
     },
     oi: {
       title: '未平倉量：Bybit 的 BTC、ETH、SOL 永續合約',
@@ -287,6 +427,11 @@ export const data = defineStrings({
         '單位是幣。換算成 USDT 的價值還會跟著價格變動，就算沒有任何合約開倉或平倉也一樣。',
       ],
       historyCaption: '每天 00:00（UTC）的讀數，單位是各合約的基礎幣。',
+      metricHead: '未平倉量，取自時間標為 {time}（UTC）的讀數。',
+      metricNote: '7 日變化 {change}',
+      chartDesc: '每天 00:00（UTC）的讀數。三個合約的計算單位不同，所以每張圖各用各的縱軸。',
+      axisValue: '未平倉量（{unit}）',
+      chartAlt: '{symbol}：{from} 到 {to} 未平倉量（{unit}）的折線圖。',
     },
     liquidation: {
       title: '爆倉：每種槓桿在過去有幾天會被強制平倉',
@@ -323,6 +468,23 @@ export const data = defineStrings({
       ],
       historyCell: '{lev}，{drop} / {rise}',
       historyCaption: '當天多單和空單都撐住的最高槓桿，後面是從開盤價算起的最大跌幅與最大漲幅。',
+      metricHead: '報告日當天，多單和空單都撐住的最高槓桿。',
+      metricNote: '最大跌幅 {drop}，最大漲幅 {rise}',
+      statsTable: '{symbol}：各槓桿的爆倉天數',
+      statsMeter: '{symbol} {lev}{side}：{total} 天中有 {days} 天會爆倉，{share}',
+      sideLong: '多單',
+      sideShort: '空單',
+      chartHead: '每天的最大跌幅與最大漲幅',
+      chartDesc:
+        '每一根直條是一天：從開盤價往下畫到最大跌幅，往上畫到最大漲幅。每條虛線是一種槓桿的空間，0 以下看多單，0 以上看空單。直條碰到虛線，那個槓桿當天就會爆倉。',
+      chartShared: '三個合約用同一個縱軸。',
+      chartLines: '虛線從 0 往外依序是：{list}。',
+      axisValue: '離當日開盤價的距離（%）',
+      chartAlt:
+        '{symbol}：{from} 到 {to} 每天的最大跌幅與最大漲幅。最大跌幅是 {dropDate} 的 {drop}，最大漲幅是 {riseDate} 的 {rise}。',
+      dayTitle: '{date}：最大跌幅 {drop}，最大漲幅 {rise}',
+      rangeLabel: '圖表期間',
+      range: '{days} 天',
     },
   },
 });
