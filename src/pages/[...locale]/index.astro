@@ -1,21 +1,28 @@
 ---
 // Home. One file serves /, /zh-hant/ and /zh-hans/.
-import Cta from '../../components/Cta.astro';
-import Scale from '../../components/Scale.astro';
-import ToolIndex from '../../components/ToolIndex.astro';
+//
+// Eight bands, one job each: the hero with the liquidation risk simulator,
+// five facts about the site, the calculators, why a loss and its recovery
+// differ, the backtests, the daily reports, the lessons, and how the site
+// works. Each band is a component in src/components/home/; the footer comes
+// from the layout. The <title>, description, JSON-LD, canonical and hreflang
+// are the same as before the redesign.
+import DrawdownDemo from '../../components/home/DrawdownDemo.astro';
+import HeroSimulator from '../../components/home/HeroSimulator.astro';
+import HomeTools from '../../components/home/HomeTools.astro';
+import LearnList from '../../components/home/LearnList.astro';
+import MarketReports from '../../components/home/MarketReports.astro';
+import ResearchPreview from '../../components/home/ResearchPreview.astro';
+import Transparency from '../../components/home/Transparency.astro';
+import TrustStrip from '../../components/home/TrustStrip.astro';
+import Button from '../../components/ui/Button.astro';
+import PageContainer from '../../components/ui/PageContainer.astro';
 import { localePath, localeStaticPaths } from '../../i18n/config';
 import type { Locale } from '../../i18n/config';
-import { backtests } from '../../i18n/backtests';
 import { home } from '../../i18n/home';
-import { results } from '../../lib/backtests/load';
-import { lostInBothSamples } from '../../lib/backtests/verdict';
 import Base from '../../layouts/Base.astro';
-import { liquidationPrice, roomLeft, roundToTick } from '../../lib/calc/liquidation';
-import { fmt, formatNumber, formatPercent } from '../../lib/fmt';
-import { BTCUSDT, snapshotDate, tierOne } from '../../lib/risk-limit';
 import { pageExists } from '../../lib/routes';
 import { webSiteLd } from '../../lib/seo';
-import { toolPath } from '../../lib/tools';
 
 export const getStaticPaths = localeStaticPaths;
 
@@ -25,137 +32,125 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = home[locale];
-// Same headline as /backtests/, so the two can never disagree.
-const bt = backtests[locale].index;
-const backtestHead = fmt(results.every(lostInBothSamples) ? bt.headAllLost : bt.head, { n: results.length });
-
-// The hero example. Entry price is an illustration; the maintenance margin
-// rate is Bybit's tier 1 rate from the snapshot. The same numbers are
-// recomputed in the browser by src/scripts/home-hero.ts when the slider moves.
-const ENTRY = 68000;
-const START_LEVERAGE = 20;
-const mmr = tierOne(BTCUSDT).maintenanceMargin;
-
-const room = roomLeft(START_LEVERAGE, mmr);
-const result = liquidationPrice({ side: 'long', entryPrice: ENTRY, leverage: START_LEVERAGE, mmr });
-const liq = result.ok ? roundToTick(result.liquidationPrice, 1) : 0;
-
-const lev = fmt(t.hero.levFormat, { n: START_LEVERAGE });
-const pct = formatPercent(room);
-const calculatorPath = toolPath('liquidation-price-calculator');
-const calculatorHref = localePath(locale, calculatorPath);
-const drawdownPath = toolPath('drawdown-calculator');
-
-// Everything the browser script needs, as plain data.
-const heroData = JSON.stringify({
-  entry: ENTRY,
-  mmr,
-  calculatorHref,
-  strings: {
-    head: t.hero.head,
-    levFormat: t.hero.levFormat,
-    barLabel: t.hero.barLabel,
-    liquidation: t.hero.liquidation,
-    sub: t.hero.sub,
-    sliderText: t.hero.sliderText,
-  },
-});
 ---
 
-<Base
-  locale={locale}
-  path="/"
-  title={t.title}
-  bareTitle
-  description={t.description}
-  surface="measure"
-  jsonLd={webSiteLd(locale, t.description)}
->
-  <section class="measure" data-hero={heroData}>
-    <div class="wrap">
-      <h1 class="head" id="hero-head">{fmt(t.hero.head, { lev })}</h1>
-      <Scale id="hero-scale" room={room} label={fmt(t.hero.barLabel, { pct })} />
-      <div class="ends num">
-        <span id="hero-liq">{fmt(t.hero.liquidation, { price: formatNumber(liq) })}</span>
-        <span>{fmt(t.hero.entry, { price: formatNumber(ENTRY) })}</span>
+<Base locale={locale} path="/" title={t.title} bareTitle description={t.description} jsonLd={webSiteLd(locale, t.description)}>
+  <section class="section lead hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        {/* The one eyebrow on the site: the owner's spec writes this line out. */}
+        <p class="hero-eyebrow" lang="en">{t.hero.eyebrow}</p>
+        <h1 class="h-hero">{t.hero.head}</h1>
+        <p class="lede">{t.hero.lede}</p>
+        <div class="acts hero-acts">
+          <Button href={localePath(locale, '/tools/')} data-cta="home:hero" data-cta-action="primary">
+            {t.hero.primary}
+          </Button>
+          {
+            pageExists('/backtests/') && (
+              <Button
+                variant="secondary"
+                href={localePath(locale, '/backtests/')}
+                data-cta="home:hero"
+                data-cta-action="secondary"
+              >
+                {t.hero.secondary}
+              </Button>
+            )
+          }
+        </div>
       </div>
-      <p class="sub" id="hero-sub">{fmt(t.hero.sub, { pct })}</p>
-      <div class="ctl">
-        <label class="field-label" for="hero-lev">{t.hero.leverage}</label>
-        <input
-          id="hero-lev"
-          type="range"
-          min="2"
-          max="100"
-          step="1"
-          value={START_LEVERAGE}
-          aria-valuetext={fmt(t.hero.sliderText, { lev, pct })}
-        />
-        <span class="field-box">
-          <input
-            id="hero-lev-n"
-            type="text"
-            inputmode="numeric"
-            autocomplete="off"
-            value={START_LEVERAGE}
-            aria-label={t.hero.leverageNumber}
-          />
-          <span aria-hidden="true">{t.hero.levUnit}</span>
-        </span>
-      </div>
-      <Cta
-        locale={locale}
-        pageType="home"
-        position="hero"
-        primary={{ label: t.hero.primary, href: `${calculatorHref}?lev=${START_LEVERAGE}` }}
-        secondary={{ label: t.hero.secondary, href: `${calculatorHref}#how-it-is-calculated` }}
-      />
-      <p class="fine">{fmt(t.hero.fine, { mmr: formatPercent(mmr), date: snapshotDate(BTCUSDT) })}</p>
+      <HeroSimulator locale={locale} />
     </div>
   </section>
 
-  <section class="verdict">
-    <div class="wrap">
-      <h2 class="head">{t.recover.head}</h2>
-      <div class="pair">
-        <div class="half">{t.recover.lost}</div>
-        <div>{t.recover.needed}</div>
-      </div>
-      <p class="sub">{t.recover.body}</p>
-      {
-        pageExists(drawdownPath) ? (
-          <div class="acts">
-            <a class="lnk" href={localePath(locale, drawdownPath)}>
-              {t.recover.link}
-            </a>
-          </div>
-        ) : (
-          <p class="fine">{t.recover.coming}</p>
-        )
-      }
-    </div>
-  </section>
+  <TrustStrip locale={locale} />
 
-  <section class="read">
-    <div class="wrap">
-      <h2 class="head">{t.tools.head}</h2>
-      <p class="sub">{t.tools.sub}</p>
-      <ToolIndex locale={locale} />
-    </div>
-  </section>
+  <PageContainer>
+    <HomeTools locale={locale} />
+  </PageContainer>
 
-  <section class="read">
-    <div class="wrap">
-      <h2 class="head">{backtestHead}</h2>
-      <p class="sub">{bt.sub}</p>
-      <div class="acts">
-        <a class="lnk" href={localePath(locale, '/backtests/')}>{t.backtests.results}</a>
-        <a class="lnk" href={localePath(locale, '/bot/')}>{t.backtests.code}</a>
-      </div>
-    </div>
-  </section>
+  <PageContainer band aria-labelledby="recover-head">
+    <DrawdownDemo locale={locale} />
+  </PageContainer>
+
+  <PageContainer aria-labelledby="research-head">
+    <ResearchPreview locale={locale} />
+  </PageContainer>
+
+  <PageContainer flush>
+    <MarketReports locale={locale} />
+  </PageContainer>
+
+  <PageContainer flush>
+    <LearnList locale={locale} />
+  </PageContainer>
+
+  <PageContainer band aria-labelledby="open-head">
+    <Transparency locale={locale} />
+  </PageContainer>
 
   <script>
     import '../../scripts/home-hero.ts';
+    import '../../scripts/home-drawdown.ts';
   </script>
+
+  <style>
+    /* The five facts under the hero belong to it: less room between the two. */
+    .section.hero {
+      padding-bottom: var(--space-12);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-10);
+      align-items: center;
+    }
+
+    /* A container, so the headline can be sized against its own column. */
+    .hero-copy {
+      min-width: 0;
+      container-type: inline-size;
+    }
+
+    .hero-eyebrow {
+      margin-bottom: var(--space-4);
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      letter-spacing: 0.08em;
+    }
+
+    /* The Chinese headline is two clauses of six and eight characters. It
+       breaks at the comma, and the size is capped so that the longer clause
+       always fits its column on one line. */
+    .hero-copy .h-hero {
+      font-size: min(var(--text-hero), 11.6cqi);
+      word-break: keep-all;
+    }
+
+    .hero-acts {
+      margin-top: var(--space-8);
+    }
+
+    @media (min-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .hero-grid {
+        gap: var(--space-16);
+      }
+    }
+
+    /* A phone: the two actions share the row when they fit, else each takes one. */
+    @media (max-width: 520px) {
+      .hero-acts :global(.btn) {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
 </Base>

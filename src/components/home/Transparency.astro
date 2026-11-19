@@ -1,0 +1,135 @@
+---
+// How the site works, in six short answers: where the data comes from, how
+// figures are calculated, how the research can be rerun, what is open
+// source, how the site is paid for, and what the risk is. Each answer links
+// to the page that says it in full. Nothing here is a claim the linked page
+// does not make: /about/, /disclosure/, /backtests/, /bot/ and the engine's
+// repository (the address is REPO_URL, the one /bot/ and /backtests/ use).
+import Icon from '../ui/Icon.astro';
+import { AFFILIATE_ACTIVE } from '../../../site.config.mjs';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import { home } from '../../i18n/home';
+import { REPO_URL } from '../../lib/backtests/engine';
+import { pageExists } from '../../lib/routes';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = home[locale].open;
+
+interface Link {
+  label: string;
+  /** A locale-less path of this site, or an absolute address. */
+  to: string;
+}
+
+const items: Array<{ title: string; body: string; links: Link[] }> = [
+  { title: t.sources.title, body: t.sources.body, links: [{ label: t.sources.link, to: '/data/' }] },
+  { title: t.method.title, body: t.method.body, links: [{ label: t.method.link, to: '/about/' }] },
+  { title: t.repro.title, body: t.repro.body, links: [{ label: t.repro.link, to: '/backtests/' }] },
+  {
+    title: t.code.title,
+    body: t.code.body,
+    links: [
+      { label: t.code.link, to: REPO_URL },
+      { label: t.code.link2, to: '/bot/' },
+    ],
+  },
+  {
+    title: t.money.title,
+    body: AFFILIATE_ACTIVE ? t.money.body : t.money.bodyPlain,
+    links: [{ label: t.money.link, to: '/disclosure/' }],
+  },
+  { title: t.risk.title, body: t.risk.body, links: [{ label: t.risk.link, to: '/about/' }] },
+];
+
+const external = (to: string) => /^https?:/.test(to);
+const resolved = items.map((item) => ({
+  ...item,
+  links: item.links
+    .filter((link) => external(link.to) || pageExists(link.to))
+    .map((link) => ({
+      label: link.label,
+      href: external(link.to) ? link.to : localePath(locale, link.to),
+      external: external(link.to),
+    })),
+}));
+---
+
+<h2 class="h-section" id="open-head">{t.head}</h2>
+
+<div class="op">
+  {
+    resolved.map((item) => (
+      <div class="op-item">
+        <h3 class="op-title">{item.title}</h3>
+        <p class="op-body">{item.body}</p>
+        <ul class="op-links">
+          {item.links.map((link) => (
+            <li>
+              <a class="lnk" href={link.href} rel={link.external ? 'noopener' : undefined}>
+                {link.label}
+                <Icon name={link.external ? 'external-link' : 'arrow-right'} size={16} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .op {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 var(--space-10);
+    margin-top: var(--space-8);
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  .op-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-block: var(--space-5) var(--space-3);
+    border-bottom: var(--hairline) solid var(--color-border);
+  }
+
+  .op-title {
+    font-size: var(--text-card);
+    letter-spacing: 0;
+  }
+
+  .op-body {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  /* The links sit on the bottom edge of each cell, so a row lines up. */
+  .op-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-5);
+    margin-top: auto;
+  }
+
+  .op-links .lnk {
+    font-size: var(--text-sm);
+  }
+
+  @media (min-width: 640px) {
+    .op {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .op {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

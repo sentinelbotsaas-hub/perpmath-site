@@ -1,0 +1,302 @@
+---
+// The calculators that exist, as cards, and the ones that do not, as a short
+// plain list underneath. The list of tools is the one /tools/ uses
+// (src/lib/tools.ts over src/i18n/tool-index.ts); a tool becomes a card here
+// the moment its page exists.
+//
+// Each card carries one labelled example. Every example figure is computed by
+// the calculator's own function in src/lib/calc/**, from the same inputs as
+// the first worked example on that calculator's page.
+import SectionHeader from '../ui/SectionHeader.astro';
+import ToolCard from '../ui/ToolCard.astro';
+import Icon from '../ui/Icon.astro';
+import type { IconName } from '../ui/Icon.astro';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import { home } from '../../i18n/home';
+import type { ToolSlug } from '../../i18n/tool-index';
+import { drawdown } from '../../lib/calc/drawdown';
+import { floorTo, maxLeverage } from '../../lib/calc/leverage';
+import { liquidationPrice, roundToTick } from '../../lib/calc/liquidation';
+import { positionSize } from '../../lib/calc/position-size';
+import { fmt, formatNumber, formatPercent, tickDecimals } from '../../lib/fmt';
+import { BTCUSDT, tierOne } from '../../lib/risk-limit';
+import { getTools } from '../../lib/tools';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = home[locale].tools;
+const tools = getTools(locale);
+const ready = tools.filter((tool) => tool.href);
+const planned = tools.filter((tool) => !tool.href);
+
+// Exchange parameters come from the snapshot, never from a constant here.
+const tier = tierOne(BTCUSDT);
+const mmr = tier.maintenanceMargin;
+const cap = tier.maxLeverage;
+const tick = BTCUSDT.tickSize;
+const price = (n: number) => formatNumber(roundToTick(n, tick), tickDecimals(tick));
+const invalid = (slug: string) => new Error(`home: the example for ${slug} is not a valid calculation`);
+
+interface Example {
+  icon: IconName;
+  given: string;
+  value: string;
+}
+
+// One example per calculator, keyed by slug. A calculator without an entry
+// here still gets its card, just without an example.
+const examples: Partial<Record<ToolSlug, () => Example>> = {
+  'liquidation-price-calculator': () => {
+    const input = { side: 'long' as const, entryPrice: 68000, leverage: 20 };
+    const r = liquidationPrice({ ...input, mmr });
+    if (!r.ok || !r.reachable) throw invalid('liquidation-price-calculator');
+    return {
+      icon: 'ruler',
+      given: fmt(t.examples['liquidation-price-calculator'].given, {
+        entry: formatNumber(input.entryPrice),
+        lev: input.leverage,
+      }),
+      value: price(r.liquidationPrice),
+    };
+  },
+  'leverage-calculator': () => {
+    const input = { side: 'long' as const, entryPrice: 68000, stopPrice: 64600 };
+    const r = maxLeverage({ ...input, mmr, maxLeverage: cap });
+    if (!r.ok || !r.feasible) throw invalid('leverage-calculator');
+    return {
+      icon: 'gauge',
+      given: fmt(t.examples['leverage-calculator'].given, {
+        entry: formatNumber(input.entryPrice),
+        stop: formatNumber(input.stopPrice),
+      }),
+      value: String(r.maxWholeLeverage),
+    };
+  },
+  'position-size-calculator': () => {
+    // Leverage and the fee rate do not change the quantity; they are the
+    // values of the first worked example on the calculator's page.
+    const input = { accountSize: 10000, riskFraction: 0.01, entryPrice: 68000, stopPrice: 66400, leverage: 10 };
+    const r = positionSize({ ...input, feeRate: 0.00055, mmr, maxLeverage: cap });
+    if (!r.ok) throw invalid('position-size-calculator');
+    return {
+      icon: 'scale',
+      given: fmt(t.examples['position-size-calculator'].given, {
+        account: formatNumber(input.accountSize),
+        risk: formatPercent(input.riskFraction, 0),
+        dist: formatPercent(r.stopDistance),
+      }),
+      value: formatNumber(floorTo(r.quantity, 4), 4),
+    };
+  },
+  'drawdown-calculator': () => {
+    const r = drawdown({ mode: 'drawdown', drawdown: 0.3 });
+    if (!r.ok) throw invalid('drawdown-calculator');
+    return {
+      icon: 'trending-down',
+      given: fmt(t.examples['drawdown-calculator'].given, { lost: formatPercent(r.drawdown, 0) }),
+      // The unit string carries the percent sign.
+      value: formatNumber(r.recoveryGain * 100, 2),
+    };
+  },
+};
+
+const cards = ready.map((tool) => {
+  const example = examples[tool.slug]?.();
+  const copy = t.examples[tool.slug as keyof typeof t.examples];
+  return { tool, example, copy };
+});
+---
+
+<SectionHeader
+  title={t.head}
+  desc={fmt(t.sub, { n: ready.length })}
+  href={localePath(locale, '/tools/')}
+  linkLabel={t.all}
+/>
+
+<div class="cards cols-4 ht-cards">
+  {
+    cards.map(({ tool, example, copy }) => (
+      <ToolCard
+        locale={locale}
+        href={tool.href}
+        icon={example?.icon ?? 'calculator'}
+        title={tool.name}
+        desc={tool.question}
+      >
+        {example && copy && (
+          <div class="ex">
+            <p class="ex-given">
+              <span class="tag">{t.example}</span>
+              <span>{example.given}</span>
+            </p>
+            <p class="ex-result">
+              <span class="ex-label">{copy.label}</span>
+              <span class="ex-value">
+                <span class="num">{example.value}</span>
+                <span class="ex-unit">{copy.unit}</span>
+              </span>
+            </p>
+          </div>
+        )}
+      </ToolCard>
+    ))
+  }
+</div>
+
+{
+  planned.length > 0 && (
+    <div class="roadmap">
+      <div class="roadmap-about">
+        <h3 class="roadmap-head">
+          <Icon name="hourglass" size={16} />
+          {t.roadmap}
+        </h3>
+        <p>{t.roadmapNote}</p>
+      </div>
+      <ul class="roadmap-list">
+        {planned.map((tool) => (
+          <li>{tool.name}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  /* The examples line up along the bottom of the row, whatever the length of
+     the text above them. */
+  .ht-cards :global(.card-viz) {
+    margin-top: auto;
+    padding-top: var(--space-2);
+  }
+
+  .ht-cards :global(.card-foot) {
+    margin-top: 0;
+  }
+
+  /* The labelled example at the foot of a card. */
+  .ex {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  /* The tag, then what was typed in. Two lines are reserved, so the result
+     lines of a row of cards sit at one height. */
+  .ex-given {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-2);
+    min-height: calc(var(--leading-body) * 2em);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .ex-given > span:last-child {
+    padding-top: var(--hairline);
+  }
+
+  /* The label over its figure: the same shape in every card, however long
+     the label is in a language. */
+  .ex-result {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+
+  .ex-label {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .ex-value {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    color: var(--color-text);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-medium);
+    white-space: nowrap;
+  }
+
+  .ex-unit {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-regular);
+  }
+
+  /* Not built yet: plain text under a rule, nothing that looks pressable. */
+  .roadmap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    gap: var(--space-4) var(--space-10);
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: var(--hairline) solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .roadmap-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-secondary);
+    font-size: var(--text-md);
+    letter-spacing: 0;
+  }
+
+  .roadmap-about p {
+    margin-top: var(--space-1);
+  }
+
+  .roadmap-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-8);
+    align-content: start;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .roadmap {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .roadmap-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* One card a row: the icon moves beside the name, and no height is
+     reserved for a second line of the example. */
+  @media (max-width: 599px) {
+    .ht-cards :global(.card) {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .ht-cards :global(.card > :not(.card-icon, .card-title)) {
+      grid-column: 1 / -1;
+    }
+
+    .ex-given {
+      min-height: 0;
+    }
+
+    /* With the row to itself, the figure goes to the right of its label. */
+    .ex-result {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: baseline;
+    }
+  }
+</style>
