@@ -1,8 +1,9 @@
 // Strings for /bot/, the page of the open-source backtester.
 //
-// Only what is true of the engine today: it backtests, it cannot trade, it is
-// free and MIT licensed, and nothing about it pays anyone. {version} and {n}
-// are filled in from the published results in src/data/backtests/.
+// Only what is true of the engine today: it backtests strategies and grids,
+// it places orders on the Bybit testnet only, it is free and MIT licensed, and
+// nothing about it pays anyone (broker_id is empty). {version} is the latest
+// release (src/lib/backtests/engine.ts); {n} comes from src/data/backtests/.
 import { defineStrings } from './strings';
 
 export const bot = defineStrings({
@@ -11,7 +12,7 @@ export const bot = defineStrings({
     description:
       'An open-source Python backtester for crypto perpetuals: Bybit public candles, fees and slippage on every fill, in-sample and out-of-sample results.',
     head: 'Backtest a rule with honest costs.',
-    sub: 'An open-source backtester for Bybit perpetuals; version {version} cannot place orders.',
+    sub: 'An open-source backtester for Bybit perpetuals. Version {version} adds a grid backtest and an order runner for the Bybit testnet only.',
     primary: 'Read the quickstart',
     secondary: 'View on GitHub',
     // The facts strip under the page head. Each value restates something the
@@ -37,11 +38,11 @@ export const bot = defineStrings({
     },
     does: {
       head: 'What it does',
-      body: 'Downloads public Bybit candles, runs a rule with fixed parameters, and reports in-sample and out-of-sample results after fees and slippage.',
+      body: 'Downloads public Bybit candles, runs a rule or a grid with fixed parameters, and reports in-sample and out-of-sample results after fees and slippage, and for grids after funding too.',
     },
     doesNot: {
       head: 'What it does not do',
-      body: 'Version {version} cannot trade live and never asks for an API key. It ships no profitable strategy and makes no return claims.',
+      body: 'It cannot trade with real money: version {version} refuses to connect to Bybit mainnet and only places orders on the testnet, with play money. The backtester needs no API key. It makes no return claims.',
     },
     funded: {
       head: 'How it is funded',
@@ -58,9 +59,9 @@ export const bot = defineStrings({
   'zh-hant': {
     title: 'perpmath：開源的 Bybit 永續合約回測工具',
     description:
-      '一個小型的開源 Python 回測工具，給加密貨幣永續合約用：抓 Bybit 公開 K 線，每筆成交都扣手續費與滑價，樣本內、樣本外分開報告。目前只能回測，採 MIT 授權。',
+      '一個小型的開源 Python 回測工具，給加密貨幣永續合約用：抓 Bybit 公開 K 線，每筆成交都扣手續費與滑價，樣本內、樣本外分開報告，也能回測網格。採 MIT 授權。',
     head: '回測一條規則，成本照實算。',
-    sub: '開源的 Bybit 永續合約回測工具；{version} 版還不能下單。',
+    sub: '開源的 Bybit 永續合約回測工具。{version} 版加上網格回測，以及只連 Bybit 測試網的下單程式。',
     primary: '看快速上手',
     secondary: '到 GitHub 看原始碼',
     facts: {
@@ -84,11 +85,11 @@ export const bot = defineStrings({
     },
     does: {
       head: '它做什麼',
-      body: '下載 Bybit 的公開 K 線，用固定參數跑一條規則，把樣本內和樣本外的結果分開報告，每筆成交都扣手續費與滑價。',
+      body: '下載 Bybit 的公開 K 線，用固定參數跑一條規則或一組網格，把樣本內和樣本外的結果分開報告。每筆成交都扣手續費與滑價，網格另外計入資金費。',
     },
     doesNot: {
       head: '它不做什麼',
-      body: '{version} 版不能實際下單交易，也不會跟你要 API 金鑰。它沒有附任何會賺錢的策略，也不對報酬做任何宣稱。',
+      body: '它不能用真錢交易：{version} 版會拒絕連 Bybit 正式網，只會在測試網用練習資金下單。回測不需要 API 金鑰。它不對報酬做任何宣稱。',
     },
     funded: {
       head: '它怎麼維持',

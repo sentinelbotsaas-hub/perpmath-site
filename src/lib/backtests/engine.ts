@@ -6,6 +6,9 @@ import { exclusiveEnd } from './format';
 import type { BacktestResult } from './types';
 
 export const REPO_URL = 'https://github.com/sentinelbotsaas-hub/perpmath';
+
+/** The latest release (pyproject.toml "version"). The published results may come from an older one. */
+export const ENGINE_VERSION = '0.2.0';
 const BRANCH = 'main';
 
 /** README, "Install". Python 3.10 or newer; the only dependency is NumPy. */
