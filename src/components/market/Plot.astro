@@ -1,0 +1,202 @@
+---
+// The axes of a market chart. Goes inside <ChartContainer> and fills its
+// plot box. The marks (bars, lines) are SVG passed in the default slot and
+// drawn in a 100 x 100 box that stretches with the frame; every label is
+// HTML at its real font size, placed by the same shares, so text never
+// shrinks or stretches with the chart.
+//
+//   <Plot label="BTCUSDT open interest, last 30 daily readings ..."
+//         yCaption="Open interest, BTC" yTicks={[{ share: 0, label: '60,000' }, ...]}
+//         xCaption="Date, UTC" xTicks={[{ share: 0, label: '2026-10-21', align: 'start' }, ...]}>
+//     <polyline points="..." class="stroke-accent" fill="none" stroke-width="2" />
+//   </Plot>
+//
+// share: 0 to 1, from the bottom for y and from the left for x.
+// marks: labels for horizontal lines, printed in a column right of the plot.
+// Slot "over": HTML laid over the plot (a dot on the last point).
+// `label` is the text alternative of the picture: say what it shows and its
+// range. The same figures must be in a table or a sentence next to the chart.
+interface Tick {
+  share: number;
+  label: string;
+}
+
+interface Props {
+  label: string;
+  yCaption: string;
+  yTicks: Tick[];
+  xCaption: string;
+  /** `minor` ticks are left out on a phone, where the plot is too narrow for them. */
+  xTicks: Array<Tick & { align?: 'start' | 'center' | 'end'; minor?: boolean }>;
+  marks?: Array<Tick & { tone?: 'negative' }>;
+}
+
+const { label, yCaption, yTicks, xCaption, xTicks, marks = [] } = Astro.props;
+const longest = (items: Tick[]) => items.reduce((a, b) => (b.label.length > a.length ? b.label : a), '');
+const pct = (share: number) => `${(share * 100).toFixed(3)}%`;
+---
+
+<div class="mk-plot">
+  <p class="mk-ycap" aria-hidden="true">{yCaption}</p>
+  <div class="mk-y" aria-hidden="true">
+    <span class="mk-sizer num">{longest(yTicks)}</span>
+    {yTicks.map((tick) => <span class="mk-tick num" style={`--at:${pct(1 - tick.share)}`}>{tick.label}</span>)}
+  </div>
+  <div class="mk-area">
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label={label}>
+      {
+        yTicks.map((tick) => (
+          <line class="stroke-grid" x1="0" x2="100" y1={(1 - tick.share) * 100} y2={(1 - tick.share) * 100} stroke-width="1" />
+        ))
+      }
+      <slot />
+    </svg>
+    <slot name="over" />
+  </div>
+  {
+    marks.length > 0 && (
+      <div class="mk-marks" aria-hidden="true">
+        <span class="mk-sizer">{longest(marks)}</span>
+        {
+          marks.map((mark) => (
+            <span class="mk-tick" data-tone={mark.tone} style={`--at:${pct(1 - mark.share)}`}>
+              {mark.label}
+            </span>
+          ))
+        }
+      </div>
+    )
+  }
+  <div class="mk-x" aria-hidden="true">
+    {
+      xTicks.map((tick) => (
+        <span class="num" data-align={tick.align ?? 'center'} data-minor={tick.minor ? '' : undefined} style={`--at:${pct(tick.share)}`}>
+          {tick.label}
+        </span>
+      ))
+    }
+  </div>
+  <p class="mk-xcap" aria-hidden="true">{xCaption}</p>
+</div>
+
+<style>
+  .mk-plot {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    column-gap: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+    line-height: var(--leading-tight);
+  }
+
+  .mk-ycap {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    padding-bottom: var(--space-3);
+  }
+
+  .mk-y,
+  .mk-marks {
+    position: relative;
+    grid-row: 2;
+  }
+
+  .mk-y {
+    grid-column: 1;
+    text-align: right;
+  }
+
+  .mk-marks {
+    grid-column: 3;
+  }
+
+  /* Gives the column the width of its longest label; takes no height. */
+  .mk-sizer {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    white-space: nowrap;
+  }
+
+  .mk-tick {
+    position: absolute;
+    top: var(--at);
+    transform: translateY(-50%);
+    white-space: nowrap;
+  }
+
+  .mk-y .mk-tick {
+    right: 0;
+  }
+
+  .mk-marks .mk-tick {
+    left: 0;
+    color: var(--color-text-secondary);
+  }
+
+  /* Same colour as the dashed line the label belongs to. */
+  .mk-marks [data-tone='negative'] {
+    color: var(--color-negative);
+  }
+
+  .mk-area {
+    position: relative;
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 0;
+  }
+
+  .mk-area > svg {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* The box is stretched, the strokes are not. */
+  .mk-area :global(svg *) {
+    vector-effect: non-scaling-stroke;
+  }
+
+  .mk-x {
+    position: relative;
+    grid-column: 2;
+    grid-row: 3;
+    height: calc(var(--space-3) + 1lh);
+  }
+
+  .mk-x > span {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--at);
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  .mk-x > [data-align='start'] {
+    transform: none;
+  }
+
+  .mk-x > [data-align='end'] {
+    transform: translateX(-100%);
+  }
+
+  @media (max-width: 599px) {
+    .mk-x > [data-minor] {
+      display: none;
+    }
+  }
+
+  .mk-xcap {
+    grid-column: 2;
+    grid-row: 4;
+    padding-top: var(--space-1);
+    text-align: center;
+  }
+</style>

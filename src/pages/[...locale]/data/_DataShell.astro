@@ -1,26 +1,41 @@
 ---
-// The frame the four data pages share: headline, the table for the report
-// day (slot "now"), definition, how it is calculated, how to read it, the
-// 30-day table (slot "history"), exits and the source line.
+// The frame the four data pages share. From the top:
+//   header        breadcrumb, the <h1>, one sentence, report day and fetch time
+//   report day    key figures (slot "metrics"), anything else for that day
+//                 (slot "day"), the table (slot "now"), the live block
+//   slot "sections"  whole extra sections (the liquidation page's 90 days)
+//   history       charts (slot "chart") and the 30-day table (slot "history")
+//   what it is, how it is calculated, how to read it
+//   source and update time, then the exits
 // The underscore keeps this file out of the router.
 //
-//   <DataShell locale={locale} slug="funding-rate" ... live={{ kind: 'funding', cell: l.funding }}>
-//     <Fragment slot="now">   ... table ... </Fragment>
-//     <Fragment slot="history"> ... table ... </Fragment>
+//   <DataShell locale={locale} slug="funding-rate" ... live="funding">
+//     <Fragment slot="metrics"> <MetricCard ... /> </Fragment>
+//     <ContractTable slot="now" ... />
+//     <Fragment slot="chart"> <ChartContainer ...> </Fragment>
+//     <DataTable slot="history" ...> ... </DataTable>
 //   </DataShell>
 //
-// With `live`, a button appears under the first table when scripting is on
-// (src/scripts/market-live.ts). Cells marked data-live-head / data-live-cell
-// in the "now" slot are the hidden column it fills.
+// Every figure a slot prints must come from the reports passed in. With
+// `live`, a block under the first table lets the reader fetch the current
+// values from Bybit (src/components/market/LivePanel.astro); those are shown
+// apart from the report-day figures and labelled as live.
 import Cta from '../../../components/Cta.astro';
+import LivePanel from '../../../components/market/LivePanel.astro';
+import StaleNotice from '../../../components/market/StaleNotice.astro';
+import { isStale } from '../../../components/market/freshness';
+import DataFreshness from '../../../components/ui/DataFreshness.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
 import { common } from '../../../i18n/common';
 import { localePath } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
+import { daily } from '../../../i18n/daily';
 import { data } from '../../../i18n/data';
 import Base from '../../../layouts/Base.astro';
 import { fmt } from '../../../lib/fmt';
 import type { MarketReport } from '../../../lib/market/report';
-import { utcMinute } from '../../../lib/market/view';
+import { COINS, utcMinute } from '../../../lib/market/view';
 import { breadcrumbLd } from '../../../lib/seo';
 
 type Slug = 'funding-rate' | 'long-short-ratio' | 'open-interest' | 'liquidation';
@@ -31,127 +46,208 @@ interface Props {
   title: string;
   description: string;
   sub: string;
+  /** One line under the report-day heading: what the key figures are. */
+  metricHead: string;
+  /** One or two sentences under the history heading: how to read the charts. */
+  chartDesc?: string;
   /** Already filled in: no placeholders left. */
   definition: string;
   how: string[];
   read: string[];
   /** The latest reports, one per contract, in page order. */
   reports: MarketReport[];
-  live?: { kind: 'funding' | 'oi' | 'ratio'; cell: string };
+  /** Which current value the live block fetches. Left out: no live block. */
+  live?: 'funding' | 'oi' | 'ratio';
   /** Second action next to the testnet button. Default: the daily reports. */
   secondary?: { label: string; href: string };
 }
 
-const { locale, slug, title, description, sub, definition, how, read, reports, live, secondary } = Astro.props;
+const { locale, slug, title, description, sub, metricHead, chartDesc, definition, how, read, reports, live, secondary } =
+  Astro.props;
 const t = data[locale];
 const c = common[locale];
 const path = `/data/${slug}/`;
 const first = reports[0];
-
-const liveData = live
-  ? JSON.stringify({
-      kind: live.kind,
-      date: first.reportDate,
-      symbols: reports.map((r) => ({ symbol: r.symbol, unit: r.baseCoin })),
-      strings: { busy: t.live.busy, ok: t.live.ok, fail: t.live.fail, cell: live.cell },
-    })
-  : undefined;
+const stale = isStale(first.reportDate, Date.now());
 
 // The date must not break at its hyphens, so it gets its own element.
 const dayHead = t.common.dayHead.split('{date}');
 
-const jsonLd = breadcrumbLd(locale, [
+const trail = [
   { name: c.breadcrumb.home, path: '/' },
   { name: c.nav.data, path: '/data/' },
   { name: t.names[slug].name, path },
-]);
+];
+const jsonLd = breadcrumbLd(locale, trail);
+
+const coinOf = (symbol: string) => COINS.find((entry) => entry.symbol === symbol)?.coin;
+const liveSymbols = reports.map((r) => {
+  const coin = coinOf(r.symbol);
+  return { symbol: r.symbol, unit: r.baseCoin, name: coin ? daily[locale].coins[coin] : r.baseCoin };
+});
 ---
 
 <Base locale={locale} path={path} title={title} description={description} jsonLd={jsonLd}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{t.names[slug].name}</h1>
-      <p class="sub">{sub}</p>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.names[slug].name} lede={sub} breadcrumb={trail}>
+      <DataFreshness
+        slot="meta"
+        locale={locale}
+        date={first.reportDate}
+        time={first.fetchedAt}
+        timeLabel={fmt(t.common.fetched, { time: utcMinute(first.fetchedAt) })}
+        source={t.common.sourceName}
+        stale={stale}
+      />
       <slot name="lead" />
-    </div>
-  </section>
+      <StaleNotice locale={locale} reportDate={first.reportDate} />
+    </PageHeader>
 
-  <section class="read" data-live={liveData}>
-    <div class="wrap">
-      <h2 class="section-head">
-        {dayHead[0]}<span class="keep">{first.reportDate}</span>{dayHead[1]}
-      </h2>
-      <slot name="now" />
-      {
-        live && (
-          <>
-            <div class="acts">
-              <button class="btn quiet" type="button" id="live-button" hidden>
-                {t.live.button}
-              </button>
-            </div>
-            <p class="status" id="live-status" role="status" />
-          </>
-        )
-      }
+    {/* Same band as the header: the report day is what the page opens on. */}
+    <div class="mk-day">
+      <div class="section-header">
+        <div>
+          <h2 class="h-section" id="day-head">
+            {dayHead[0]}<span class="mk-keep">{first.reportDate}</span>{dayHead[1]}
+          </h2>
+          <p>{metricHead}</p>
+        </div>
+      </div>
+      <div class="mk-metrics">
+        <slot name="metrics" />
+      </div>
+      <slot name="day" />
+      <div class="mk-table">
+        <slot name="now" />
+      </div>
+      {live && <LivePanel locale={locale} kind={live} reportDate={first.reportDate} symbols={liveSymbols} />}
     </div>
-  </section>
+  </PageContainer>
 
-  <section class="read">
-    <div class="wrap">
+  <slot name="sections" />
+
+  <PageContainer flush aria-labelledby="history-head">
+    <div class="section-header">
+      <div>
+        <h2 class="h-section" id="history-head">{t.common.history}</h2>
+        {chartDesc && <p>{chartDesc}</p>}
+      </div>
+    </div>
+    <slot name="chart" />
+    <div class="mk-table">
+      <slot name="history" />
+    </div>
+  </PageContainer>
+
+  <PageContainer band>
+    <div class="mk-explain">
       <div class="prose">
         <h2>{t.common.what}</h2>
         <p>{definition}</p>
+      </div>
+      <div class="prose">
         <h2>{t.common.how}</h2>
         <ul>
           {how.map((line) => <li>{line}</li>)}
         </ul>
+      </div>
+      <div class="prose">
         <h2>{t.common.read}</h2>
         <ul>
           {read.map((line) => <li>{line}</li>)}
         </ul>
       </div>
     </div>
-  </section>
+  </PageContainer>
 
-  <section class="read">
-    <div class="wrap">
-      <h2 class="section-head">{t.common.history}</h2>
-      <slot name="history" />
-    </div>
-  </section>
-
-  <section class="read">
-    <div class="wrap">
-      <Cta
+  <PageContainer snug aria-labelledby="source-head">
+    <h2 class="h-card" id="source-head">{t.common.sourceHead}</h2>
+    <div class="mk-source">
+      <DataFreshness
         locale={locale}
-        pageType="data"
-        position="end"
-        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
-        secondary={secondary ?? { label: t.common.daily, href: localePath(locale, '/daily/') }}
+        date={first.reportDate}
+        time={first.fetchedAt}
+        timeLabel={fmt(t.common.fetched, { time: utcMinute(first.fetchedAt) })}
+        source={t.common.sourceName}
+        stale={stale}
       />
       <p class="fine">{fmt(t.common.source, { date: first.reportDate, time: utcMinute(first.fetchedAt) })}</p>
     </div>
-  </section>
+    <Cta
+      locale={locale}
+      pageType="data"
+      position="end"
+      primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+      secondary={secondary ?? { label: t.common.daily, href: localePath(locale, '/daily/') }}
+    />
+  </PageContainer>
 
   <script>
     import '../../../scripts/market-live.ts';
   </script>
 
   <style>
-    /* Tables arrive through slots, so they are not in this file's scope. */
-    .wrap :global(.tw) {
-      margin-top: var(--space-lg);
-    }
-
-    /* Wide tables scroll sideways inside .tw instead of breaking a figure in two. */
-    .wrap :global(.tw td),
-    .wrap :global(.tw tbody th) {
+    .mk-keep {
       white-space: nowrap;
     }
 
-    .keep {
-      white-space: nowrap;
+    .mk-day {
+      margin-top: var(--space-16);
+    }
+
+    @media (max-width: 760px) {
+      .mk-day {
+        margin-top: var(--space-10);
+      }
+    }
+
+    /* One key figure per contract: three across as soon as they fit. */
+    .mk-metrics {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-4);
+    }
+
+    @media (min-width: 640px) {
+      .mk-metrics {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* A table that follows cards, a chart or another table in the same section. */
+    .mk-table {
+      margin-top: var(--space-8);
+    }
+
+    .mk-table:empty {
+      display: none;
+    }
+
+    /* Three short texts side by side where there is room for three columns. */
+    .mk-explain {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-10);
+    }
+
+    .mk-explain h2 {
+      font-size: var(--text-xl);
+      line-height: var(--leading-tight);
+    }
+
+    @media (min-width: 1000px) {
+      .mk-explain {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .mk-source {
+      margin-top: var(--space-3);
+    }
+
+    .mk-source .fine {
+      max-width: 54ch;
+      margin-top: var(--space-2);
     }
   </style>
 </Base>

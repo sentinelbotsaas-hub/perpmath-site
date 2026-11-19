@@ -1,17 +1,28 @@
 ---
-// /daily/: the three contracts with the headline numbers of the last complete
-// UTC day. Each row leads to that contract's report.
+// /daily/: the latest report of each contract as a card, the three contracts
+// side by side for the last complete UTC day, and the reports on file by day.
+import ContractTable from '../../../components/market/ContractTable.astro';
+import StaleNotice from '../../../components/market/StaleNotice.astro';
+import { leverageFigure } from '../../../components/market/format';
+import { isStale } from '../../../components/market/freshness';
+import Card from '../../../components/ui/Card.astro';
+import DataFreshness from '../../../components/ui/DataFreshness.astro';
+import DataTable from '../../../components/ui/DataTable.astro';
+import Icon from '../../../components/ui/Icon.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import SectionHeader from '../../../components/ui/SectionHeader.astro';
 import { common } from '../../../i18n/common';
 import { localePath, localeStaticPaths } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
 import { daily } from '../../../i18n/daily';
+import { data } from '../../../i18n/data';
 import Base from '../../../layouts/Base.astro';
 import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../lib/fmt';
 import { highestSurviving } from '../../../lib/market/compute';
-import { latestReports } from '../../../lib/market/store';
-import { ratePercent, utcMinute } from '../../../lib/market/view';
+import { datedReports, latestReports } from '../../../lib/market/store';
+import { beforeCjk, ratePercent, utcMinute } from '../../../lib/market/view';
 import { breadcrumbLd } from '../../../lib/seo';
-import ContractTable from '../data/_ContractTable.astro';
 
 export const getStaticPaths = localeStaticPaths;
 
@@ -22,12 +33,17 @@ interface Props {
 const { locale } = Astro.props;
 const t = daily[locale];
 const c = common[locale];
+const dt = data[locale];
 const reports = latestReports();
 const first = reports[0].report;
+const stale = isStale(first.reportDate, Date.now());
+const survived = (report: (typeof reports)[number]['report']) => {
+  const both = highestSurviving(report.survival, 'both');
+  return both === null ? t.none : fmt(t.lev, { n: both });
+};
 
 const rows = reports.map(({ coin, symbol, report }) => {
   const decimals = tickDecimals(report.instrument.tickSize);
-  const both = highestSurviving(report.survival, 'both');
   return {
     coin,
     symbol,
@@ -36,46 +52,178 @@ const rows = reports.map(({ coin, symbol, report }) => {
       formatNumber(report.day.close, decimals),
       formatPercent(report.day.adverseLong),
       formatPercent(report.day.adverseShort),
-      both === null ? t.none : fmt(t.lev, { n: both }),
+      survived(report),
       ratePercent(report.funding.average7d),
     ],
   };
 });
 
-const jsonLd = breadcrumbLd(locale, [
+// Every report day on file, newest first, and which contracts have it.
+const filed = reports.map(({ coin, symbol }) => ({ coin, symbol, dates: new Set(datedReports(symbol).map((entry) => entry.date)) }));
+const days = [...new Set(filed.flatMap((entry) => [...entry.dates]))].sort().reverse();
+
+const trail = [
   { name: c.breadcrumb.home, path: '/' },
   { name: c.nav.daily, path: '/daily/' },
-]);
+];
+const jsonLd = breadcrumbLd(locale, trail);
 ---
 
 <Base locale={locale} path="/daily/" title={t.index.title} description={t.index.description} jsonLd={jsonLd}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{t.index.head}</h1>
-      <p class="sub">{fmt(t.index.sub, { date: first.reportDate })}</p>
-    </div>
-  </section>
-  <section class="read">
-    <div class="wrap">
-      <ContractTable
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.index.head} lede={fmt(t.index.sub, { date: first.reportDate })} breadcrumb={trail}>
+      <DataFreshness
+        slot="meta"
         locale={locale}
-        contractLabel={t.index.columns.contract}
-        columns={[
-          t.index.columns.open,
-          t.index.columns.close,
-          t.index.columns.drop,
-          t.index.columns.rise,
-          t.index.columns.survived,
-          t.index.columns.funding,
-        ]}
-        rows={rows}
-        note={t.index.caption}
+        date={first.reportDate}
+        time={first.fetchedAt}
+        timeLabel={fmt(dt.common.fetched, { time: utcMinute(first.fetchedAt) })}
+        source={dt.common.sourceName}
+        stale={stale}
       />
-      <p class="fine">{fmt(t.report.source, { time: utcMinute(first.fetchedAt) })}</p>
-      <div class="acts">
-        <a class="lnk" href={localePath(locale, '/data/')}>{t.index.toData}</a>
+      <StaleNotice locale={locale} reportDate={first.reportDate} />
+    </PageHeader>
+
+    <SectionHeader
+      class="mk-latest"
+      id="latest-head"
+      title={t.index.latestHead}
+      desc={fmt(t.index.latestSub, { date: first.reportDate, time: utcMinute(first.fetchedAt) })}
+    />
+    <div class="cards mk-reports">
+      {
+        reports.map(({ coin, symbol, report }) => {
+          const figure = leverageFigure(t.lev, highestSurviving(report.survival, 'both'), t.none);
+          return (
+          <Card href={localePath(locale, `/daily/${coin}/`)}>
+            <div>
+              <h3 class="card-title">{fmt(t.report.head, { name: locale === 'en' ? t.coins[coin] : beforeCjk(t.coins[coin]) })}</h3>
+              <p class="card-meta">
+                <span class="num">{symbol}</span>
+                <time class="num" datetime={report.reportDate}>
+                  {report.reportDate}
+                </time>
+              </p>
+            </div>
+            <div class="metric">
+              <p class="metric-label">{t.index.columns.survived}</p>
+              <p class="metric-value">
+                <span>{figure.value}</span>
+                {figure.unit && <span class="metric-unit">{figure.unit}</span>}
+              </p>
+              <p class="metric-note">
+                {fmt(t.index.cardNote, { drop: formatPercent(report.day.adverseLong), rise: formatPercent(report.day.adverseShort) })}
+              </p>
+            </div>
+            <div class="card-foot">
+              <span>{t.index.read}</span>
+              <Icon name="arrow-right" size={16} />
+            </div>
+          </Card>
+          );
+        })
+      }
+    </div>
+  </PageContainer>
+
+  <PageContainer flush aria-labelledby="compare-head">
+    <SectionHeader id="compare-head" title={t.index.compareHead} />
+    <ContractTable
+      locale={locale}
+      label={t.index.compareTable}
+      contractLabel={t.index.columns.contract}
+      columns={[
+        t.index.columns.open,
+        t.index.columns.close,
+        t.index.columns.drop,
+        t.index.columns.rise,
+        t.index.columns.survived,
+        t.index.columns.funding,
+      ]}
+      rows={rows}
+      note={t.index.caption}
+    />
+    <p class="fine">{fmt(t.report.source, { time: utcMinute(first.fetchedAt) })}</p>
+  </PageContainer>
+
+  <PageContainer band>
+    <div class="mk-more">
+      <div>
+        <SectionHeader level={3} title={t.index.archiveHead} desc={t.index.archiveSub} />
+        <DataTable locale={locale} label={t.index.archiveTable} stickyFirst>
+          <thead>
+            <tr>
+              <th scope="col">{t.index.archiveDay}</th>
+              {filed.map(({ symbol }) => <th scope="col">{symbol}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {
+              days.map((day) => (
+                <tr>
+                  <th scope="row" class="num">
+                    {day}
+                  </th>
+                  {filed.map(({ coin, dates }) => (
+                    <td>
+                      {dates.has(day) && (
+                        <a class="lnk" href={localePath(locale, `/daily/${coin}/${day}/`)}>
+                          {t.coins[coin]}
+                        </a>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            }
+          </tbody>
+        </DataTable>
+      </div>
+      <div>
+        <SectionHeader
+          level={3}
+          title={dt.index.head}
+          desc={t.index.dataSub}
+          href={localePath(locale, '/data/')}
+          linkLabel={t.index.toData}
+        />
       </div>
     </div>
-  </section>
-
+  </PageContainer>
 </Base>
+
+<style>
+  :global(.section-header.mk-latest) {
+    margin-top: var(--space-16);
+  }
+
+  @media (max-width: 760px) {
+    :global(.section-header.mk-latest) {
+      margin-top: var(--space-10);
+    }
+  }
+
+  /* Three reports: one row as soon as three cards fit, never two and one. */
+  @media (min-width: 720px) {
+    .mk-reports {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .mk-more {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-12) var(--space-16);
+  }
+
+  @media (min-width: 1000px) {
+    .mk-more {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+  }
+
+  /* The table sits on the band's surface, not on the page. */
+  .mk-more :global(.data-table) {
+    --table-bg: var(--color-surface);
+  }
+</style>

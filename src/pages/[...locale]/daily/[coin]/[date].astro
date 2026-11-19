@@ -3,6 +3,7 @@
 // src/data/market/<SYMBOL>/. Archive pages are noindex, follow and are kept
 // out of the sitemap (NOT_IN_SITEMAP in astro.config.mjs): the page that is
 // meant to rank is the fixed address /daily/<coin>/.
+import { common } from '../../../../i18n/common';
 import { localeParam, locales } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
 import { daily } from '../../../../i18n/daily';
@@ -10,7 +11,7 @@ import Base from '../../../../layouts/Base.astro';
 import { fmt } from '../../../../lib/fmt';
 import type { MarketReport } from '../../../../lib/market/report';
 import { datedReports } from '../../../../lib/market/store';
-import { COINS } from '../../../../lib/market/view';
+import { COINS, beforeCjk } from '../../../../lib/market/view';
 import type { Coin } from '../../../../lib/market/view';
 import Report from '../_Report.astro';
 
@@ -34,7 +35,16 @@ interface Props {
 
 const { locale, coin, date, report } = Astro.props;
 const t = daily[locale];
+const c = common[locale];
 const name = t.coins[coin];
+
+// The visible trail only: archive pages are noindex and carry no JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.daily, path: '/daily/' },
+  { name: fmt(t.report.head, { name: locale === 'en' ? name : beforeCjk(name) }), path: `/daily/${coin}/` },
+  { name: date, path: `/daily/${coin}/${date}/` },
+];
 ---
 
 <Base
@@ -42,8 +52,7 @@ const name = t.coins[coin];
   path={`/daily/${coin}/${date}/`}
   title={fmt(t.report.datedTitle, { name, symbol: report.symbol, date })}
   description={fmt(t.report.description, { symbol: report.symbol })}
-  surface="measure"
   noindex
 >
-  <Report locale={locale} coin={coin} report={report} archive />
+  <Report locale={locale} coin={coin} report={report} trail={trail} archive />
 </Base>

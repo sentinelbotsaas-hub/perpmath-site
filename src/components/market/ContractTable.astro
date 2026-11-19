@@ -1,0 +1,67 @@
+---
+// A table with one row per contract (BTCUSDT, ETHUSDT, SOLUSDT): the coin
+// name links to its daily report, the other cells are figures.
+//
+//   <ContractTable locale={locale} label="Funding rate: figures for the report day"
+//     contractLabel="Contract" columns={['Open', 'Close']}
+//     rows={[{ coin: 'btc', symbol: 'BTCUSDT', cells: ['64,850.7', '64,919.9'] }]}
+//     note="Measured from the 00:00 UTC open." />
+//
+// On a phone the table scrolls sideways inside its own box and the contract
+// column stays in view.
+import DataTable from '../ui/DataTable.astro';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import { daily } from '../../i18n/daily';
+import type { Coin } from '../../lib/market/view';
+
+interface Props {
+  locale: Locale;
+  /** Names the scrolling region: what the table shows. */
+  label: string;
+  /** Header of the first column. */
+  contractLabel: string;
+  /** Headers of the figure columns, in order. */
+  columns: string[];
+  rows: Array<{ coin: Coin; symbol: string; cells: string[] }>;
+  /** One line under the table: units, sign convention, timestamp. */
+  note?: string;
+}
+
+const { locale, label, contractLabel, columns, rows, note } = Astro.props;
+---
+
+<DataTable locale={locale} label={label} caption={note} stickyFirst hint>
+  <thead>
+    <tr>
+      <th scope="col">{contractLabel}</th>
+      {columns.map((column) => <th scope="col">{column}</th>)}
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map((row) => (
+        <tr>
+          <th scope="row">
+            <a class="lnk" href={localePath(locale, `/daily/${row.coin}/`)}>
+              {daily[locale].coins[row.coin]}
+            </a>
+            <span class="num mk-symbol">{row.symbol}</span>
+          </th>
+          {row.cells.map((cell) => (
+            <td class="num">{cell}</td>
+          ))}
+        </tr>
+      ))
+    }
+  </tbody>
+</DataTable>
+
+<style>
+  .mk-symbol {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-regular);
+  }
+</style>

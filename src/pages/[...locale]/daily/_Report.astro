@@ -2,21 +2,44 @@
 // One daily report: the body of /daily/<coin>/ and of /daily/<coin>/<date>/.
 // The underscore keeps this file out of the router.
 //
+// Laid out as a research note: what was observed and when it was published,
+// the summary, key statistics, the leverage survival table, the day hour by
+// hour, the last 90 days, funding / open interest / accounts, source and
+// method, related reports.
+//
 // Everything shown is read from one src/data/market/<SYMBOL>/*.json file.
 // The sentences are templates from src/i18n/daily.ts chosen by
-// summarizeSide(); nothing here predicts or recommends.
+// summarizeSide(); nothing here predicts or recommends. An archive page says
+// at the top that its figures are old.
 import Cta from '../../../components/Cta.astro';
-import Scale from '../../../components/Scale.astro';
-import Verdict from '../../../components/Verdict.astro';
+import HourlyChart from '../../../components/market/HourlyChart.astro';
+import RangePanels from '../../../components/market/RangePanels.astro';
+import StaleNotice from '../../../components/market/StaleNotice.astro';
+import StatsTable from '../../../components/market/StatsTable.astro';
+import SurvivalTable from '../../../components/market/SurvivalTable.astro';
+import { leverageFigure } from '../../../components/market/format';
+import { isStale } from '../../../components/market/freshness';
+import Accordion from '../../../components/ui/Accordion.astro';
+import Card from '../../../components/ui/Card.astro';
+import ChartContainer from '../../../components/ui/ChartContainer.astro';
+import DataFreshness from '../../../components/ui/DataFreshness.astro';
+import DataTable from '../../../components/ui/DataTable.astro';
+import Disclaimer from '../../../components/ui/Disclaimer.astro';
+import MetricCard from '../../../components/ui/MetricCard.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
 import { common } from '../../../i18n/common';
 import { localePath } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
 import { daily } from '../../../i18n/daily';
+import { data } from '../../../i18n/data';
 import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../lib/fmt';
 import { highestSurviving } from '../../../lib/market/compute';
-import type { Side, SurvivalRow } from '../../../lib/market/compute';
+import type { Side } from '../../../lib/market/compute';
 import type { MarketReport } from '../../../lib/market/report';
+import { datedReports } from '../../../lib/market/store';
 import {
+  COINS,
   beforeCjk,
   calculatorQuery,
   hourLabel,
@@ -33,19 +56,24 @@ interface Props {
   locale: Locale;
   coin: Coin;
   report: MarketReport;
+  /** The visible trail. The same array the page gave breadcrumbLd(), when it has one. */
+  trail: Array<{ name: string; path: string }>;
   /** true on a dated archive page. */
   archive?: boolean;
   /** Dates of the other reports of this coin, newest first. */
   otherDates?: string[];
 }
 
-const { locale, coin, report, archive = false, otherDates = [] } = Astro.props;
+const { locale, coin, report, trail, archive = false, otherDates = [] } = Astro.props;
 const t = daily[locale].report;
 const d = daily[locale];
 const c = common[locale];
-const name = locale === 'en' ? d.coins[coin] : beforeCjk(d.coins[coin]);
+const dt = data[locale];
+const coinName = (which: Coin) => (locale === 'en' ? d.coins[which] : beforeCjk(d.coins[which]));
+const name = coinName(coin);
 const { symbol, day, survival } = report;
 const mmr = report.instrument.tierOne.maintenanceMargin;
+const stale = !archive && isStale(report.reportDate, Date.now());
 
 const decimals = tickDecimals(report.instrument.tickSize);
 const price = (n: number) => formatNumber(n, decimals);
@@ -53,16 +81,14 @@ const lev = (n: number) => fmt(d.lev, { n });
 const drop = formatPercent(day.adverseLong);
 const rise = formatPercent(day.adverseShort);
 
-// One line of text per side and leverage.
-const outcome = (row: SurvivalRow, side: Side) => {
-  const o = row[side];
-  if (!o.liquidated) return side === 'long' ? t.longSurvived : t.shortSurvived;
-  return fmt(side === 'long' ? t.longLiquidated : t.shortLiquidated, { hour: hourLabel(o.hourUtc ?? 0) });
-};
+// The date and the time are <time> elements: split the templates around them.
+const observed = t.meta.observedValue.split('{date}');
+const published = t.meta.publishedValue.split('{time}');
 
 // The verdict: highest leverage at which neither side was liquidated, and
 // one template sentence per side.
 const both = highestSurviving(survival, 'both');
+const figure = leverageFigure(d.lev, both, d.none);
 const sentence = (side: Side) => {
   const s = summarizeSide(survival, side);
   const templates = t[side];
@@ -84,55 +110,108 @@ const oi = report.openInterest;
 const r = report.ratio;
 const oiValue = (value: number) => fmt(t.oi.value, { value: formatNumber(value), unit: oi.unit });
 const usdt = (value: number) => fmt(t.funding.usdt, { value: plainNumber(value) });
+
+const statCell = (row: MarketReport['survival90']['rows'][number], side: Side) => {
+  const share = formatPercent(row[side].share, 1);
+  return {
+    text: fmt(t.history.cell, { days: row[side].days, total: report.survival90.days, share }),
+    share: row[side].share,
+    label: fmt(dt.liquidation.statsMeter, {
+      symbol,
+      lev: lev(row.leverage),
+      side: side === 'long' ? t.sideLong : t.sideShort,
+      days: row[side].days,
+      total: report.survival90.days,
+      share,
+    }),
+  };
+};
+
+// The other two contracts: the same day when this is an archive page and that
+// day is on file for them, otherwise their latest report.
+const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
+  const sameDay = archive && datedReports(entry.symbol).some((item) => item.date === report.reportDate);
+  return {
+    label: fmt(t.head, { name: coinName(entry.coin) }),
+    href: localePath(locale, sameDay ? `/daily/${entry.coin}/${report.reportDate}/` : `/daily/${entry.coin}/`),
+  };
+});
 ---
 
-<section class="measure">
-  <div class="wrap">
-    <h1 class="head">{fmt(t.head, { name })}</h1>
-    <p class="sub">{fmt(t.lede, { date: report.reportDate, open: price(day.open), symbol, drop, rise })}</p>
+<PageContainer lead>
+  <PageHeader
+    locale={locale}
+    title={fmt(t.head, { name })}
+    lede={fmt(t.lede, { date: report.reportDate, open: price(day.open), symbol, drop, rise })}
+    breadcrumb={trail}
+  >
+    <dl class="mk-meta" aria-label={t.meta.label}>
+      <div>
+        <dt>{t.meta.observed}</dt>
+        <dd>{observed[0]}<time class="num" datetime={report.reportDate}>{report.reportDate}</time>{observed[1]}</dd>
+      </div>
+      <div>
+        <dt>{t.meta.published}</dt>
+        <dd>{published[0]}<time class="num" datetime={report.fetchedAt}>{utcMinute(report.fetchedAt)}</time>{published[1]}</dd>
+      </div>
+      <div>
+        <dt>{t.meta.contract}</dt>
+        <dd>{fmt(t.meta.contractValue, { symbol })}</dd>
+      </div>
+      <div>
+        <dt>{t.meta.source}</dt>
+        <dd>{dt.common.sourceName}</dd>
+      </div>
+    </dl>
+    {
+      archive ? (
+        <div class="mk-notice">
+          <Disclaimer locale={locale} kind="warning" title={fmt(t.archiveTitle, { date: report.reportDate })}>
+            <p>{t.archiveBody}</p>
+            <p>
+              <a href={localePath(locale, `/daily/${coin}/`)}>{fmt(t.latest, { name })}</a>
+            </p>
+          </Disclaimer>
+        </div>
+      ) : (
+        <StaleNotice locale={locale} reportDate={report.reportDate} />
+      )
+    }
+  </PageHeader>
 
-    <ol class="rungs" aria-label={t.barsLabel}>
-      {
-        survival.map((row) => (
-          <li>
-            <div class="rung-top">
-              <span class="num rung-lev">{lev(row.leverage)}</span>
-              <span>{fmt(t.room, { pct: formatPercent(row.room) })}</span>
-              <span class="rung-out">
-                <span>{outcome(row, 'long')}</span>
-                <span>{outcome(row, 'short')}</span>
-              </span>
-            </div>
-            <div class="bar">
-              <Scale
-                size="s"
-                room={row.room}
-                label={fmt(t.barLabel, { lev: lev(row.leverage), room: formatPercent(row.room), drop, rise })}
-              />
-              <span
-                class:list={['tick', 'drop', { past: row.long.liquidated }]}
-                style={`--at:${Math.min(1, day.adverseLong).toFixed(4)}`}
-                aria-hidden="true"
-              />
-              <span
-                class:list={['tick', 'rise', { past: row.short.liquidated }]}
-                style={`--at:${Math.min(1, day.adverseShort).toFixed(4)}`}
-                aria-hidden="true"
-              />
-            </div>
-          </li>
-        ))
-      }
-    </ol>
-    <p class="fine">{fmt(t.legend, { mmr: formatPercent(mmr) })}</p>
+  <div class="mk-summary">
+    <div class="mk-summary-col">
+      <h2 class="h-card" id="summary-head">{t.summaryHead}</h2>
+      <Card>
+        <div>
+          <p class="result-label">{t.verdictLabel}</p>
+          <p class="result-value">{figure.value}{figure.unit && <span class="mk-unit">{figure.unit}</span>}</p>
+        </div>
+        <p class="mk-summary-text">{sentence('long') + (locale === 'en' ? ' ' : '') + sentence('short')}</p>
+      </Card>
+    </div>
+    <div class="mk-summary-col">
+      <h2 class="h-card">{t.statsHead}</h2>
+      <div class="cards cols-2">
+        <MetricCard label={t.stats.open} value={price(day.open)} unit="USDT" />
+        <MetricCard label={t.stats.close} value={price(day.close)} unit="USDT" />
+        <MetricCard label={t.stats.drop} value={drop} note={fmt(t.stats.low, { price: price(day.low) })} trend="down" />
+        <MetricCard label={t.stats.rise} value={rise} note={fmt(t.stats.high, { price: price(day.high) })} trend="up" />
+      </div>
+    </div>
   </div>
-</section>
+</PageContainer>
 
-<Verdict
-  label={t.verdictLabel}
-  figure={both === null ? d.none : lev(both)}
-  sentence={sentence('long') + (locale === 'en' ? ' ' : '') + sentence('short')}
->
+<PageContainer band id="survival" aria-labelledby="survival-head">
+  <div class="section-header">
+    <div>
+      <h2 class="h-section" id="survival-head">{t.survivalHead}</h2>
+      <p>{fmt(t.survivalSub, { open: price(day.open) })}</p>
+    </div>
+  </div>
+  <SurvivalTable locale={locale} report={report} />
+  <p class="fine">{fmt(t.legend, { mmr: formatPercent(mmr) })}</p>
+  <DataFreshness locale={locale} class="mk-fresh" date={report.reportDate} source={dt.common.sourceName} stale={stale} />
   <Cta
     locale={locale}
     pageType="daily"
@@ -144,264 +223,403 @@ const usdt = (value: number) => fmt(t.funding.usdt, { value: plainNumber(value) 
       symbol === 'BTCUSDT' ? { label: t.calculator, href: calculatorHref } : undefined
     }
   />
-</Verdict>
+</PageContainer>
 
-<section class="read">
-  <div class="wrap">
-    <h2 class="section-head">{t.history.head}</h2>
-    <div class="tw">
-      <table>
-        <caption>
-          {
-            fmt(t.history.caption, {
-              from: report.survival90.from,
-              to: report.survival90.to,
-              total: report.survival90.days,
-              mmr: formatPercent(mmr),
-            })
-          }
-        </caption>
+<PageContainer aria-label={t.hourlyHead}>
+  <div class="mk-hourly">
+    <ChartContainer
+      locale={locale}
+      framed
+      level={2}
+      id="hourly"
+      title={t.hourlyHead}
+      desc={`${t.hourlyDesc}${locale === 'en' ? ' ' : ''}${t.hourlyNote}`}
+    >
+      <HourlyChart locale={locale} report={report} />
+      <DataFreshness slot="footer" locale={locale} date={report.reportDate} source={dt.common.sourceName} stale={stale} />
+    </ChartContainer>
+  </div>
+  <div class="mk-hours">
+    <Accordion summary={t.hourlyTable}>
+      <DataTable
+        locale={locale}
+        label={fmt(t.hourlyTableLabel, { symbol, date: report.reportDate })}
+        stickyFirst
+        dense
+        hint
+      >
         <thead>
           <tr>
-            <th scope="col">{t.history.leverage}</th>
-            <th scope="col">{t.history.long}</th>
-            <th scope="col">{t.history.short}</th>
+            <th scope="col">{t.hourCol}</th>
+            <th scope="col">{t.openCol}</th>
+            <th scope="col">{t.highCol}</th>
+            <th scope="col">{t.lowCol}</th>
+            <th scope="col">{t.closeCol}</th>
           </tr>
         </thead>
         <tbody>
           {
-            report.survival90.rows.map((row) => (
+            report.hourly.map((candle) => (
               <tr>
-                <th scope="row" class="num">{lev(row.leverage)}</th>
-                <td class="num">
-                  {fmt(t.history.cell, { days: row.long.days, total: report.survival90.days, share: formatPercent(row.long.share, 1) })}
-                </td>
-                <td class="num">
-                  {fmt(t.history.cell, { days: row.short.days, total: report.survival90.days, share: formatPercent(row.short.share, 1) })}
-                </td>
+                <th scope="row" class="num">
+                  {hourLabel(candle.hour)}
+                </th>
+                <td class="num">{price(candle.open)}</td>
+                <td class="num">{price(candle.high)}</td>
+                <td class="num">{price(candle.low)}</td>
+                <td class="num">{price(candle.close)}</td>
               </tr>
             ))
           }
         </tbody>
-      </table>
+      </DataTable>
+    </Accordion>
+  </div>
+</PageContainer>
+
+<PageContainer band aria-labelledby="history-head">
+  <div class="section-header">
+    <div>
+      <h2 class="h-section" id="history-head">{t.history.head}</h2>
+      <p>
+        {
+          fmt(t.history.caption, {
+            from: report.survival90.from,
+            to: report.survival90.to,
+            total: report.survival90.days,
+            mmr: formatPercent(mmr),
+          })
+        }
+      </p>
     </div>
     <a class="lnk" href={localePath(locale, '/data/liquidation/')}>{t.history.link}</a>
   </div>
-</section>
+  <div class="mk-history">
+    <StatsTable
+      locale={locale}
+      label={fmt(dt.liquidation.statsTable, { symbol })}
+      columns={[t.history.leverage, t.history.long, t.history.short]}
+      rows={report.survival90.rows.map((row) => ({
+        leverage: lev(row.leverage),
+        long: statCell(row, 'long'),
+        short: statCell(row, 'short'),
+      }))}
+      missing={dt.liquidation.notOffered}
+    />
+  </div>
+  <div class="mk-range-head">
+    <h3 class="h-card">{dt.liquidation.chartHead}</h3>
+    <p>{dt.liquidation.chartDesc}</p>
+  </div>
+  <RangePanels locale={locale} reports={[report]} level={4} />
+</PageContainer>
 
-<section class="read">
-  <div class="wrap">
-    <h2 class="section-head">{t.numbersHead}</h2>
-    <div class="trio">
-      <div>
-        <h3>{t.funding.head}</h3>
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">{fmt(t.funding.latest, { time: utcMinute(f.latest.time) })}</th>
-              <td class="num">{ratePercent(f.latest.rate)}</td>
-            </tr>
-            <tr>
-              <th scope="row">{t.funding.average}</th>
-              <td class="num">{ratePercent(f.average7d)}</td>
-            </tr>
-            <tr>
-              <th scope="row">{fmt(t.funding.perDay, { notional: formatNumber(f.notional) })}</th>
-              <td class="num">{usdt(f.costPerDay)}</td>
-            </tr>
-            <tr>
-              <th scope="row">{t.funding.per30}</th>
-              <td class="num">{usdt(f.costPer30Days)}</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="fine">{fmt(t.funding.note, { notional: formatNumber(f.notional) })}</p>
-        <a class="lnk" href={localePath(locale, '/data/funding-rate/')}>{t.funding.link}</a>
-      </div>
-      <div>
-        <h3>{t.oi.head}</h3>
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">{fmt(t.oi.latest, { time: utcMinute(oi.latest.time) })}</th>
-              <td class="num">{oiValue(oi.latest.value)}</td>
-            </tr>
-            <tr>
-              <th scope="row">{t.oi.weekAgo}</th>
-              <td class="num">{oiValue(oi.weekAgo.value)}</td>
-            </tr>
-            <tr>
-              <th scope="row">{t.oi.change}</th>
-              <td class="num">{signedPercent(oi.change7d)}</td>
-            </tr>
-          </tbody>
-        </table>
-        <a class="lnk" href={localePath(locale, '/data/open-interest/')}>{t.oi.link}</a>
-      </div>
-      <div>
-        <h3>{t.ratio.head}</h3>
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">{t.ratio.long}</th>
-              <td class="num">{formatPercent(r.latest.buyRatio)}</td>
-            </tr>
-            <tr>
-              <th scope="row">{t.ratio.short}</th>
-              <td class="num">{formatPercent(r.latest.sellRatio)}</td>
-            </tr>
-            <tr>
-              <th scope="row">{fmt(t.ratio.ratio, { time: utcMinute(r.latest.time) })}</th>
-              <td class="num">{formatNumber(r.latest.longShort, 2)}</td>
-            </tr>
-            <tr>
-              <th scope="row">{t.ratio.change}</th>
-              <td class="num">{fmt(t.ratio.points, { value: signedPoints(r.longShareChange7d) })}</td>
-            </tr>
-          </tbody>
-        </table>
-        <a class="lnk" href={localePath(locale, '/data/long-short-ratio/')}>{t.ratio.link}</a>
-      </div>
+<PageContainer aria-labelledby="numbers-head">
+  <div class="section-header">
+    <div>
+      <h2 class="h-section" id="numbers-head">{t.numbersHead}</h2>
     </div>
   </div>
-</section>
+  <div class="cards cols-3 mk-numbers">
+    <Card>
+      <h3 class="card-title">{t.funding.head}</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th scope="row">{fmt(t.funding.latest, { time: utcMinute(f.latest.time) })}</th>
+            <td class="num">{ratePercent(f.latest.rate)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t.funding.average}</th>
+            <td class="num">{ratePercent(f.average7d)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{fmt(t.funding.perDay, { notional: formatNumber(f.notional) })}</th>
+            <td class="num">{usdt(f.costPerDay)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t.funding.per30}</th>
+            <td class="num">{usdt(f.costPer30Days)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="card-desc">{fmt(t.funding.note, { notional: formatNumber(f.notional) })}</p>
+      <a class="lnk" href={localePath(locale, '/data/funding-rate/')}>{t.funding.link}</a>
+    </Card>
+    <Card>
+      <h3 class="card-title">{t.oi.head}</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th scope="row">{fmt(t.oi.latest, { time: utcMinute(oi.latest.time) })}</th>
+            <td class="num">{oiValue(oi.latest.value)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t.oi.weekAgo}</th>
+            <td class="num">{oiValue(oi.weekAgo.value)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t.oi.change}</th>
+            <td class="num">{signedPercent(oi.change7d)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <a class="lnk" href={localePath(locale, '/data/open-interest/')}>{t.oi.link}</a>
+    </Card>
+    <Card>
+      <h3 class="card-title">{t.ratio.head}</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th scope="row">{t.ratio.long}</th>
+            <td class="num">{formatPercent(r.latest.buyRatio)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t.ratio.short}</th>
+            <td class="num">{formatPercent(r.latest.sellRatio)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{fmt(t.ratio.ratio, { time: utcMinute(r.latest.time) })}</th>
+            <td class="num">{formatNumber(r.latest.longShort, 2)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t.ratio.change}</th>
+            <td class="num">{fmt(t.ratio.points, { value: signedPoints(r.longShareChange7d) })}</td>
+          </tr>
+        </tbody>
+      </table>
+      <a class="lnk" href={localePath(locale, '/data/long-short-ratio/')}>{t.ratio.link}</a>
+    </Card>
+  </div>
+</PageContainer>
 
-<section class="read">
-  <div class="wrap">
-    <p class="fine">{fmt(t.source, { time: utcMinute(report.fetchedAt) })}</p>
-    <p class="fine">{t.method}</p>
-    <nav class="more" aria-label={t.earlier}>
-      {
-        archive ? (
-          <a class="lnk" href={localePath(locale, `/daily/${coin}/`)}>
-            {fmt(t.latest, { name })}
-          </a>
-        ) : (
-          <a class="lnk" href={localePath(locale, `/daily/${coin}/${report.reportDate}/`)}>
-            {t.permalink}
-          </a>
-        )
-      }
-      <a class="lnk" href={localePath(locale, '/daily/')}>{t.all}</a>
-      {
-        otherDates.map((date) => (
-          <a class="lnk num" href={localePath(locale, `/daily/${coin}/${date}/`)}>
-            {date}
-          </a>
-        ))
-      }
+<PageContainer band snug>
+  <div class="mk-foot">
+    <div>
+      <h2 class="h-card">{t.sourceHead}</h2>
+      <DataFreshness
+        locale={locale}
+        class="mk-fresh"
+        date={report.reportDate}
+        time={report.fetchedAt}
+        timeLabel={fmt(dt.common.fetched, { time: utcMinute(report.fetchedAt) })}
+        source={dt.common.sourceName}
+        stale={stale}
+      />
+      <p class="fine">{fmt(t.source, { time: utcMinute(report.fetchedAt) })}</p>
+      <p class="fine">{t.method}</p>
+    </div>
+    <nav aria-labelledby="related-reports">
+      <h2 class="h-card" id="related-reports">{t.related}</h2>
+      <p class="mk-foot-key">{t.thisCoin}</p>
+      <ul class="mk-links">
+        <li>
+          {
+            archive ? (
+              <a class="lnk" href={localePath(locale, `/daily/${coin}/`)}>
+                {fmt(t.latest, { name })}
+              </a>
+            ) : (
+              <a class="lnk" href={localePath(locale, `/daily/${coin}/${report.reportDate}/`)}>
+                {t.permalink}
+              </a>
+            )
+          }
+        </li>
+        {
+          otherDates.map((date) => (
+            <li>
+              <a class="lnk num" href={localePath(locale, `/daily/${coin}/${date}/`)}>
+                {date}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mk-foot-key">{t.otherCoins}</p>
+      <ul class="mk-links">
+        {
+          others.map((other) => (
+            <li>
+              <a class="lnk" href={other.href}>
+                {other.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a class="lnk" href={localePath(locale, '/daily/')}>{t.all}</a>
+        </li>
+      </ul>
     </nav>
   </div>
-</section>
+</PageContainer>
 
 <style>
-  /* The survival table as bars: one row per leverage. */
-  .rungs {
+  /* The byline of the report: what was observed, when it was published. */
+  .mk-meta {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-md);
-    margin-top: var(--space-lg);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-8);
+    width: 100%;
+    max-width: 60rem;
+    margin: var(--space-8) 0 0;
+    padding-top: var(--space-5);
+    border-top: var(--hairline) solid var(--color-border);
   }
 
-  .rung-top {
-    display: grid;
-    grid-template-columns: minmax(0, auto) minmax(0, auto) minmax(0, 1fr);
-    align-items: baseline;
-    gap: 0 var(--space-md);
+  .mk-meta dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .mk-meta dd {
+    margin-top: var(--space-1);
     font-size: var(--text-sm);
   }
 
-  .rung-lev {
-    font-size: var(--text-lg);
+  @media (min-width: 900px) {
+    .mk-meta {
+      grid-template-columns: repeat(4, auto);
+      justify-content: start;
+      gap: var(--space-4) var(--space-12);
+    }
   }
 
-  .rung-out {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0 var(--space-md);
+  .mk-notice {
+    max-width: 34rem;
+    margin-top: var(--space-6);
   }
 
-  /* Scale draws the bar; the two marks sit on top of it. The bar has a
-     border of --space-2xs, so positions are measured inside that border. */
-  .bar {
-    position: relative;
-    margin-top: var(--space-2xs);
+  /* Small print: keep its lines under 75 characters in English. */
+  .fine {
+    max-width: 54ch;
   }
 
-  .bar :global(.scale) {
-    height: var(--space-xl);
-    margin-top: 0;
-  }
-
-  .tick {
-    position: absolute;
-    left: calc(var(--space-2xs) + (100% - 2 * var(--space-2xs)) * var(--at, 0));
-    width: var(--line);
-    height: calc(50% - var(--space-2xs));
-    background: var(--color-ink);
-    transform: translateX(-50%);
-  }
-
-  /* Past the light part the mark is drawn in the light colour. */
-  .tick.past {
-    background: var(--color-paper);
-  }
-
-  .tick.drop {
-    top: var(--space-2xs);
-  }
-
-  .tick.rise {
-    bottom: var(--space-2xs);
-  }
-
-  /* Funding, open interest, ratio: three plain columns. */
-  .trio {
+  .mk-summary {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-xl);
-    margin-top: var(--space-lg);
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+    margin-top: var(--space-12);
   }
 
-  .trio h3 {
+  .mk-summary-text {
+    max-width: 60ch;
+    color: var(--color-text-secondary);
+  }
+
+  .mk-summary .result-value {
+    margin-top: var(--space-2);
+  }
+
+  /* The unit after the big figure, in the text face. */
+  .mk-unit {
+    margin-left: var(--space-2);
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
     font-size: var(--text-xl);
-    font-weight: 800;
-    line-height: 1.2;
+    font-weight: var(--weight-regular);
+    letter-spacing: 0;
   }
 
-  .trio th {
-    font-weight: 400;
+  /* A small heading, then what it names: the two columns line up row by row. */
+  .mk-summary-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: var(--space-4);
   }
 
-  .trio td {
+  @media (min-width: 1000px) {
+    .mk-summary {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+  }
+
+  :global(.mk-fresh) {
+    margin-top: var(--space-4);
+  }
+
+  /* The shape of the plot, per width (see the note in Panels.astro). */
+  .mk-hourly :global(.chart-box-plot) {
+    --chart-ratio: 1 / 1;
+  }
+
+  .mk-hourly :global(.chart-box-head p) {
+    max-width: 56ch;
+  }
+
+  @media (min-width: 600px) {
+    .mk-hourly :global(.chart-box-plot) {
+      --chart-ratio: 16 / 8;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .mk-hourly :global(.chart-box-plot) {
+      --chart-ratio: 16 / 6;
+    }
+  }
+
+  .mk-hours {
+    margin-top: var(--space-6);
+  }
+
+  .mk-history {
+    max-width: 52rem;
+  }
+
+  /* The table sits on the band's surface, not on the page. */
+  .mk-history :global(.data-table) {
+    --table-bg: var(--color-surface);
+  }
+
+  .mk-range-head {
+    margin: var(--space-12) 0 var(--space-5);
+  }
+
+  .mk-range-head p {
+    max-width: 52ch;
+    margin-top: var(--space-2);
+    color: var(--color-text-secondary);
+  }
+
+  /* Label and figure: the label wraps, the figure never does. */
+  .mk-numbers th {
+    font-weight: var(--weight-regular);
+    color: var(--color-text-secondary);
+  }
+
+  .mk-numbers td {
     white-space: nowrap;
   }
 
-  .tw {
-    margin-top: var(--space-lg);
+  .mk-numbers .lnk {
+    align-self: flex-start;
+    margin-top: auto;
   }
 
-  .more {
+  .mk-foot {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
+  }
+
+  @media (min-width: 900px) {
+    .mk-foot {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+  }
+
+  .mk-foot-key {
+    margin-top: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .mk-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 var(--space-lg);
-    margin-top: var(--space-md);
-  }
-
-  @media (max-width: 760px) {
-    .rung-top {
-      grid-template-columns: minmax(0, auto) minmax(0, 1fr);
-    }
-
-    .rung-out {
-      grid-column: 1 / -1;
-      justify-content: flex-start;
-    }
-
-    .trio {
-      grid-template-columns: minmax(0, 1fr);
-    }
+    gap: 0 var(--space-6);
   }
 </style>

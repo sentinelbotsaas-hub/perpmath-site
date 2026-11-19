@@ -1,0 +1,81 @@
+---
+// Days liquidated out of a run of days, by leverage, for longs and shorts.
+// Under each count a bar shows the same share at its true length: the whole
+// bar is every day in the run.
+//
+//   <StatsTable locale={locale} label="BTCUSDT: days liquidated, by leverage"
+//     columns={['Leverage', 'Long, days', 'Short, days']} caption="..."
+//     rows={[{ leverage: '20x', long: { text: '3 (3.3%)', share: 0.0333, label: '...' }, short: {...} }]}
+//     missing="Not offered" />
+//
+// A side left out of a row (leverage above the contract's limit) prints
+// `missing` and draws no bar. Counts and shares come from report.survival90.
+import DataTable from '../ui/DataTable.astro';
+import Meter from '../ui/Meter.astro';
+import type { Locale } from '../../i18n/config';
+
+interface Cell {
+  /** The printed count. */
+  text: string;
+  /** 0 to 1. */
+  share: number;
+  /** Text alternative of the bar: a full phrase with the figures in it. */
+  label: string;
+}
+
+interface Props {
+  locale: Locale;
+  label: string;
+  /** Leverage, long, short. */
+  columns: [string, string, string];
+  rows: Array<{ leverage: string; long?: Cell; short?: Cell }>;
+  missing: string;
+  caption?: string;
+}
+
+const { locale, label, columns, rows, missing, caption } = Astro.props;
+---
+
+<DataTable locale={locale} label={label} caption={caption} stickyFirst hint>
+  <thead>
+    <tr>
+      <th scope="col">{columns[0]}</th>
+      <th scope="col" class="mk-share">{columns[1]}</th>
+      <th scope="col" class="mk-share">{columns[2]}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map((row) => (
+        <tr>
+          <th scope="row" class="num">
+            {row.leverage}
+          </th>
+          {[row.long, row.short].map((cell) =>
+            cell ? (
+              <td class="mk-share">
+                <span class="num">{cell.text}</span>
+                <Meter value={cell.share} label={cell.label} />
+              </td>
+            ) : (
+              <td class="mk-share">{missing}</td>
+            ),
+          )}
+        </tr>
+      ))
+    }
+  </tbody>
+</DataTable>
+
+<style>
+  /* The count sits over the start of its bar, so both read from the left. */
+  .mk-share {
+    min-width: 9rem;
+    text-align: left;
+  }
+
+  .mk-share :global(.meter) {
+    margin-top: var(--space-2);
+    background: var(--color-border-hover);
+  }
+</style>

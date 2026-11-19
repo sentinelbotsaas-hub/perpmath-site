@@ -41,11 +41,12 @@ const otherDates = datedReports(symbol)
   .filter((date) => date !== report.reportDate)
   .slice(0, 14);
 
-const jsonLd = breadcrumbLd(locale, [
+const trail = [
   { name: c.breadcrumb.home, path: '/' },
   { name: c.nav.daily, path: '/daily/' },
   { name: fmt(t.report.head, { name }), path },
-]);
+];
+const jsonLd = breadcrumbLd(locale, trail);
 ---
 
 <Base
@@ -53,8 +54,7 @@ const jsonLd = breadcrumbLd(locale, [
   path={path}
   title={fmt(t.report.title, { name, symbol })}
   description={fmt(t.report.description, { symbol })}
-  surface="measure"
   jsonLd={jsonLd}
 >
-  <Report locale={locale} coin={coin} report={report} otherDates={otherDates} />
+  <Report locale={locale} coin={coin} report={report} trail={trail} otherDates={otherDates} />
 </Base>

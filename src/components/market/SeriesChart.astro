@@ -1,0 +1,99 @@
+---
+// One value per day, as bars from zero or as a line. Goes inside
+// <ChartContainer>. The values are the ones in the table next to it; this
+// component only places them.
+//
+//   <SeriesChart kind="bars" values={sums} titles={titles} axis={axis}
+//                tick={(n) => `${n.toFixed(2)}%`}
+//                yCaption="Daily sum, %" xCaption="Date, UTC"
+//                first="2026-10-20" last="2026-11-18" label="..." />
+//
+// values: oldest first, in the unit of the axis.
+// titles: one line per value, shown as the browser's tooltip on hover.
+// axis:   from chart.ts. Pass the same axis to several charts to make them
+//         comparable. A bar chart's axis must include zero.
+import Plot from './Plot.astro';
+import { linePoints, share, slotCentre, yOf } from './chart';
+import type { Axis } from './chart';
+
+interface Props {
+  kind: 'bars' | 'line';
+  values: number[];
+  titles: string[];
+  axis: Axis;
+  /** Prints a tick value. */
+  tick: (value: number) => string;
+  yCaption: string;
+  xCaption: string;
+  /** Labels of the first and the last slot (dates). */
+  first: string;
+  last: string;
+  label: string;
+}
+
+const { kind, values, titles, axis, tick, yCaption, xCaption, first, last, label } = Astro.props;
+const count = values.length;
+const slot = 100 / count;
+const zero = yOf(0, axis);
+const bars = values.map((value, i) => {
+  const y = yOf(value, axis);
+  return { x: i * slot + slot * 0.15, y: Math.min(y, zero), height: Math.abs(y - zero) };
+});
+const end = { x: slotCentre(count - 1, count), y: yOf(values[count - 1], axis) };
+---
+
+<Plot
+  label={label}
+  yCaption={yCaption}
+  yTicks={axis.ticks.map((value) => ({ share: share(value, axis), label: tick(value) }))}
+  xCaption={xCaption}
+  xTicks={[
+    { share: 0, label: first, align: 'start' },
+    { share: 1, label: last, align: 'end' },
+  ]}
+>
+  {
+    kind === 'bars' && (
+      <>
+        {bars.map((bar) => (
+          <rect class="mk-bar" x={bar.x.toFixed(3)} y={bar.y} width={(slot * 0.7).toFixed(3)} height={bar.height.toFixed(3)} />
+        ))}
+        <line class="stroke-muted" x1="0" x2="100" y1={zero} y2={zero} stroke-width="1" />
+      </>
+    )
+  }
+  {kind === 'line' && <polyline class="stroke-accent" points={linePoints(values, axis)} fill="none" stroke-width="2" stroke-linejoin="round" />}
+  {
+    values.map((_, i) => (
+      <rect class="mk-hit" x={(i * slot).toFixed(3)} y="0" width={slot.toFixed(3)} height="100">
+        <title>{titles[i]}</title>
+      </rect>
+    ))
+  }
+  {kind === 'line' && <span slot="over" class="mk-dot" style={`left:${end.x}%;top:${end.y}%`} />}
+</Plot>
+
+<style>
+  .mk-bar {
+    fill: var(--color-text-secondary);
+  }
+
+  .mk-hit {
+    fill: transparent;
+  }
+
+  .mk-hit:hover {
+    fill: var(--color-hover);
+  }
+
+  /* The latest reading. HTML, so it stays round when the plot stretches. */
+  .mk-dot {
+    position: absolute;
+    width: var(--space-2);
+    height: var(--space-2);
+    margin: calc(var(--space-1) * -1) 0 0 calc(var(--space-1) * -1);
+    background: var(--color-accent);
+    border-radius: var(--radius-pill);
+    pointer-events: none;
+  }
+</style>

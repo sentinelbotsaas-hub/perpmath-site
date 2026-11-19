@@ -1,14 +1,24 @@
 ---
 // /data/long-short-ratio/: share of accounts net long and net short, the
-// ratio and its 7-day change, plus 30 daily readings.
+// ratio and its 7-day change, plus 30 daily readings as lines and as a table.
+import ContractTable from '../../../../components/market/ContractTable.astro';
+import Panels from '../../../../components/market/Panels.astro';
+import SeriesChart from '../../../../components/market/SeriesChart.astro';
+import { extremes, tightAxis } from '../../../../components/market/chart';
+import { isStale } from '../../../../components/market/freshness';
+import ChartContainer from '../../../../components/ui/ChartContainer.astro';
+import DataFreshness from '../../../../components/ui/DataFreshness.astro';
+import DataTable from '../../../../components/ui/DataTable.astro';
+import Meter from '../../../../components/ui/Meter.astro';
+import MetricCard from '../../../../components/ui/MetricCard.astro';
 import { localeStaticPaths } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
+import { daily } from '../../../../i18n/daily';
 import { data } from '../../../../i18n/data';
 import { fmt, formatNumber, formatPercent } from '../../../../lib/fmt';
 import { longShortRatio } from '../../../../lib/market/compute';
 import { latestReports } from '../../../../lib/market/store';
-import { signedPoints, utcMinute } from '../../../../lib/market/view';
-import ContractTable from '../_ContractTable.astro';
+import { signedPoints, utcDay, utcMinute } from '../../../../lib/market/view';
 import DataShell from '../_DataShell.astro';
 
 export const getStaticPaths = localeStaticPaths;
@@ -41,6 +51,12 @@ const cellAt = (index: number, time: string) => {
   if (!reading) return '';
   return fmt(p.historyCell, { ratio: formatNumber(longShortRatio(reading), 2), long: formatPercent(reading.buyRatio) });
 };
+
+// The charts: the share of accounts net long, oldest first, in percent, on one axis.
+const series = entries.map(({ symbol, report }) => ({ symbol, report, readings: report.history.ratio }));
+const shares = series.flatMap((s) => s.readings.map((r) => r.buyRatio * 100));
+const axis = tightAxis(Math.min(...shares), Math.max(...shares), 6);
+const tick = (value: number) => `${value.toFixed(axis.decimals)}%`;
 ---
 
 <DataShell
@@ -49,41 +65,174 @@ const cellAt = (index: number, time: string) => {
   title={p.title}
   description={p.description}
   sub={p.sub}
+  metricHead={fmt(p.metricHead, { time: utcMinute(first.ratio.latest.time) })}
+  chartDesc={`${p.chartDesc}${locale === 'en' ? ' ' : ''}${t.common.notFromZero}`}
   definition={p.definition}
   how={p.how}
   read={p.read}
   reports={entries.map((e) => e.report)}
-  live={{ kind: 'ratio', cell: t.live.ratio }}
+  live="ratio"
 >
+  <Fragment slot="metrics">
+    {
+      entries.map(({ coin, symbol, report }) => (
+        <MetricCard
+          label={`${daily[locale].coins[coin]} ${symbol}`}
+          value={formatNumber(report.ratio.latest.longShort, 2)}
+          note={fmt(p.metricNote, {
+            long: formatPercent(report.ratio.latest.buyRatio),
+            change: signedPoints(report.ratio.longShareChange7d),
+          })}
+          trend={report.ratio.longShareChange7d > 0 ? 'up' : report.ratio.longShareChange7d < 0 ? 'down' : undefined}
+        />
+      ))
+    }
+  </Fragment>
+
+  <div class="mk-split" slot="day">
+    <h3 class="h-card">{p.splitHead}</h3>
+    <ul>
+      {
+        entries.map(({ symbol, report }) => {
+          const long = formatPercent(report.ratio.latest.buyRatio);
+          const short = formatPercent(report.ratio.latest.sellRatio);
+          return (
+            <li>
+              <span class="num mk-split-name">{symbol}</span>
+              <span class="mk-split-ends">
+                <span>{fmt(p.splitLong, { long })}</span>
+                <span>{fmt(p.splitShort, { short })}</span>
+              </span>
+              <Meter value={report.ratio.latest.buyRatio} label={fmt(p.splitLabel, { symbol, long, short })} size="tall" />
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+
   <ContractTable
     slot="now"
     locale={locale}
+    label={fmt(t.common.dayTable, { name: t.names['long-short-ratio'].name })}
     contractLabel={t.common.contract}
     columns={[p.columns.long, p.columns.short, p.columns.ratio, p.columns.change]}
     rows={rows}
     note={fmt(p.caption, { time: utcMinute(first.ratio.latest.time) })}
-    liveLabel={t.common.now}
   />
 
-  <div class="tw" slot="history">
-    <table>
-      <caption>{p.historyCaption}</caption>
-      <thead>
-        <tr>
-          <th scope="col">{t.common.reading}</th>
-          {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
-        </tr>
-      </thead>
-      <tbody>
-        {
-          times.map((time) => (
-            <tr>
-              <th scope="row" class="num">{utcMinute(time)}</th>
-              {entries.map((_, i) => <td class="num">{cellAt(i, time)}</td>)}
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
+  <Panels slot="chart">
+    {
+      series.map(({ symbol, report, readings }) => {
+        const values = readings.map((r) => r.buyRatio * 100);
+        const at = extremes(values);
+        return (
+          <ChartContainer
+            locale={locale}
+            framed
+            title={symbol}
+            desc={fmt(t.common.extremes, {
+              days: readings.length,
+              max: formatPercent(readings[at.max].buyRatio),
+              maxDate: utcDay(readings[at.max].time),
+              min: formatPercent(readings[at.min].buyRatio),
+              minDate: utcDay(readings[at.min].time),
+            })}
+          >
+            <SeriesChart
+              kind="line"
+              values={values}
+              titles={readings.map((r) => fmt(t.common.point, { date: utcMinute(r.time), value: formatPercent(r.buyRatio) }))}
+              axis={axis}
+              tick={tick}
+              yCaption={p.axisValue}
+              xCaption={t.common.axisDate}
+              first={utcDay(readings[0].time)}
+              last={utcDay(readings[readings.length - 1].time)}
+              label={fmt(p.chartAlt, { symbol, from: utcDay(readings[0].time), to: utcDay(readings[readings.length - 1].time) })}
+            />
+            <DataFreshness
+              slot="footer"
+              locale={locale}
+              date={report.reportDate}
+              source={t.common.sourceName}
+              stale={isStale(report.reportDate, Date.now())}
+            />
+          </ChartContainer>
+        );
+      })
+    }
+  </Panels>
+
+  <DataTable
+    slot="history"
+    locale={locale}
+    label={fmt(t.common.historyTable, { name: t.names['long-short-ratio'].name })}
+    caption={p.historyCaption}
+    stickyFirst
+    hint
+  >
+    <thead>
+      <tr>
+        <th scope="col">{t.common.reading}</th>
+        {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        times.map((time) => (
+          <tr>
+            <th scope="row" class="num">{utcMinute(time)}</th>
+            {entries.map((_, i) => <td class="num">{cellAt(i, time)}</td>)}
+          </tr>
+        ))
+      }
+    </tbody>
+  </DataTable>
 </DataShell>
+
+<style>
+  .mk-split {
+    margin-top: var(--space-8);
+  }
+
+  .mk-split ul {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  /* Contract on the left, the two shares over the two ends of the bar. */
+  .mk-split li {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    align-items: end;
+    gap: var(--space-1) var(--space-4);
+  }
+
+  .mk-split-name {
+    grid-row: 1 / span 2;
+    align-self: center;
+    font-size: var(--text-sm);
+  }
+
+  .mk-split-ends {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 560px) {
+    .mk-split li {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mk-split-name {
+      grid-row: auto;
+    }
+  }
+</style>

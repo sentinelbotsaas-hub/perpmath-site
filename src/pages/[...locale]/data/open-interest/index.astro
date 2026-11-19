@@ -1,13 +1,22 @@
 ---
 // /data/open-interest/: contracts open at the close of the report day, the
-// 7-day change, plus 30 daily readings.
+// 7-day change, plus 30 daily readings as lines and as a table.
+import ContractTable from '../../../../components/market/ContractTable.astro';
+import Panels from '../../../../components/market/Panels.astro';
+import SeriesChart from '../../../../components/market/SeriesChart.astro';
+import { extremes, tightAxis } from '../../../../components/market/chart';
+import { isStale } from '../../../../components/market/freshness';
+import ChartContainer from '../../../../components/ui/ChartContainer.astro';
+import DataFreshness from '../../../../components/ui/DataFreshness.astro';
+import DataTable from '../../../../components/ui/DataTable.astro';
+import MetricCard from '../../../../components/ui/MetricCard.astro';
 import { localeStaticPaths } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
+import { daily } from '../../../../i18n/daily';
 import { data } from '../../../../i18n/data';
 import { fmt, formatNumber } from '../../../../lib/fmt';
 import { latestReports } from '../../../../lib/market/store';
-import { signedPercent, utcMinute } from '../../../../lib/market/view';
-import ContractTable from '../_ContractTable.astro';
+import { signedPercent, utcDay, utcMinute } from '../../../../lib/market/view';
 import DataShell from '../_DataShell.astro';
 
 export const getStaticPaths = localeStaticPaths;
@@ -48,41 +57,108 @@ const cellAt = (index: number, time: string) => {
   title={p.title}
   description={p.description}
   sub={p.sub}
+  metricHead={fmt(p.metricHead, { time: utcMinute(first.openInterest.latest.time) })}
+  chartDesc={`${p.chartDesc}${locale === 'en' ? ' ' : ''}${t.common.notFromZero}`}
   definition={p.definition}
   how={p.how}
   read={p.read}
   reports={entries.map((e) => e.report)}
-  live={{ kind: 'oi', cell: t.live.oi }}
+  live="oi"
 >
+  <Fragment slot="metrics">
+    {
+      entries.map(({ coin, symbol, report }) => (
+        <MetricCard
+          label={`${daily[locale].coins[coin]} ${symbol}`}
+          value={formatNumber(report.openInterest.latest.value)}
+          unit={report.openInterest.unit}
+          note={fmt(p.metricNote, { change: signedPercent(report.openInterest.change7d) })}
+          trend={report.openInterest.change7d > 0 ? 'up' : report.openInterest.change7d < 0 ? 'down' : undefined}
+        />
+      ))
+    }
+  </Fragment>
+
   <ContractTable
     slot="now"
     locale={locale}
+    label={fmt(t.common.dayTable, { name: t.names['open-interest'].name })}
     contractLabel={t.common.contract}
     columns={[p.columns.latest, p.columns.weekAgo, p.columns.change]}
     rows={rows}
     note={fmt(p.caption, { time: utcMinute(first.openInterest.latest.time) })}
-    liveLabel={t.common.now}
   />
 
-  <div class="tw" slot="history">
-    <table>
-      <caption>{p.historyCaption}</caption>
-      <thead>
-        <tr>
-          <th scope="col">{t.common.reading}</th>
-          {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
-        </tr>
-      </thead>
-      <tbody>
-        {
-          times.map((time) => (
-            <tr>
-              <th scope="row" class="num">{utcMinute(time)}</th>
-              {entries.map((_, i) => <td class="num">{cellAt(i, time)}</td>)}
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
+  <Panels slot="chart">
+    {
+      entries.map(({ symbol, report }) => {
+        // Each contract is counted in its own coin, so each chart has its own axis.
+        const readings = report.history.openInterest;
+        const unit = report.openInterest.unit;
+        const values = readings.map((r) => r.value);
+        const axis = tightAxis(Math.min(...values), Math.max(...values), 6);
+        const at = extremes(values);
+        return (
+          <ChartContainer
+            locale={locale}
+            framed
+            title={symbol}
+            desc={fmt(t.common.extremes, {
+              days: readings.length,
+              max: amount(readings[at.max].value, unit),
+              maxDate: utcDay(readings[at.max].time),
+              min: amount(readings[at.min].value, unit),
+              minDate: utcDay(readings[at.min].time),
+            })}
+          >
+            <SeriesChart
+              kind="line"
+              values={values}
+              titles={readings.map((r) => fmt(t.common.point, { date: utcMinute(r.time), value: amount(r.value, unit) }))}
+              axis={axis}
+              tick={(value) => formatNumber(value, axis.decimals)}
+              yCaption={fmt(p.axisValue, { unit })}
+              xCaption={t.common.axisDate}
+              first={utcDay(readings[0].time)}
+              last={utcDay(readings[readings.length - 1].time)}
+              label={fmt(p.chartAlt, { symbol, unit, from: utcDay(readings[0].time), to: utcDay(readings[readings.length - 1].time) })}
+            />
+            <DataFreshness
+              slot="footer"
+              locale={locale}
+              date={report.reportDate}
+              source={t.common.sourceName}
+              stale={isStale(report.reportDate, Date.now())}
+            />
+          </ChartContainer>
+        );
+      })
+    }
+  </Panels>
+
+  <DataTable
+    slot="history"
+    locale={locale}
+    label={fmt(t.common.historyTable, { name: t.names['open-interest'].name })}
+    caption={p.historyCaption}
+    stickyFirst
+    hint
+  >
+    <thead>
+      <tr>
+        <th scope="col">{t.common.reading}</th>
+        {entries.map(({ symbol }) => <th scope="col">{symbol}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        times.map((time) => (
+          <tr>
+            <th scope="row" class="num">{utcMinute(time)}</th>
+            {entries.map((_, i) => <td class="num">{cellAt(i, time)}</td>)}
+          </tr>
+        ))
+      }
+    </tbody>
+  </DataTable>
 </DataShell>
