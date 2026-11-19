@@ -1,8 +1,11 @@
 // Leverage calculator, browser side.
-// - reads the inputs, runs src/lib/calc/leverage.ts, updates the two-lane bar
-//   (stop distance above, liquidation distance below) and the result
+// - reads the inputs, runs src/lib/calc/leverage.ts, updates the result panel,
+//   the two bars (stop distance, liquidation distance) and the figures
 // - state lives in the URL query (shareable) and in localStorage (try/catch)
 // Imports only dependency-free modules; strings arrive as JSON in data-calc.
+// Everything below the call to maxLeverage() is presentation.
+import { createResultView, initActions, parseNumber, revealAdvanced, setMetric } from '../components/calc/calc-ui';
+import { updateScaleBars } from '../components/calc/scale-bars';
 import { maxLeverage } from '../lib/calc/leverage';
 import type { MaxLeverageIssue } from '../lib/calc/leverage';
 import type { Side } from '../lib/calc/liquidation';
@@ -13,10 +16,10 @@ interface CalcData {
   tick: number;
   maxLeverage: number;
   strings: {
-    stopLane: string;
-    liqLane: string;
-    entry: string;
+    stopBar: string;
+    liqBar: string;
     barLabel: string;
+    liqRow: string;
     figure: string;
     ok: string;
     capped: string;
@@ -39,13 +42,6 @@ const PARAMS = ['side', 'entry', 'stop', 'mmr'] as const;
 type Param = (typeof PARAMS)[number];
 type State = Record<Param, string>;
 type FieldKey = 'entry' | 'stop' | 'mmr';
-
-/** "68,000" -> 68000. Empty or unreadable text -> NaN. */
-function parseNumber(text: string): number {
-  const cleaned = text.replace(/[,\s]/g, '');
-  if (cleaned === '') return Number.NaN;
-  return Number(cleaned);
-}
 
 function init(): void {
   const root = document.querySelector<HTMLElement>('[data-calc]');
@@ -71,14 +67,12 @@ function init(): void {
     mmr: $<HTMLInputElement>('#mmr'),
   };
   const sides = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="side"]'));
-  const bar = $('#calc-scale');
-  const outTop = $('#calc-scale-top');
-  const outBottom = $('#calc-scale-bottom');
-  const outEnd = $('#calc-scale-end');
-  const outFigure = $('#calc-figure');
-  const outSentence = $('#calc-sentence');
+  const bars = $('#calc-bars');
   const outNote = $('#calc-note');
-  if (!inputs.entry || !inputs.stop || !inputs.mmr || !bar) return;
+  const outLiqLabel = $('#out-liq-label');
+  if (!inputs.entry || !inputs.stop || !inputs.mmr || !bars) return;
+
+  const view = createResultView();
 
   // ---- state: URL first, then localStorage, then the server defaults ------
   function readState(): State {
@@ -165,15 +159,13 @@ function init(): void {
         }
       }
     }
+    // An error in a folded field has to be seen.
+    if (issues.length > 0) revealAdvanced('invalid');
   }
 
   // ---- render --------------------------------------------------------------
-  const clamp = (n: number) => Math.min(1, Math.max(0, n));
-
-  function setBar(top: number, bottom: number, label: string): void {
-    bar!.style.setProperty('--top', clamp(top).toFixed(4));
-    bar!.style.setProperty('--bottom', clamp(bottom).toFixed(4));
-    bar!.setAttribute('aria-label', label);
+  function setText(el: HTMLElement | null, text: string): void {
+    if (el && el.textContent !== text) el.textContent = text;
   }
 
   function render(save: boolean): void {
@@ -185,22 +177,21 @@ function init(): void {
 
     const result = maxLeverage({ side, entryPrice, stopPrice, mmr, maxLeverage: data.maxLeverage });
 
-    if (outEnd && Number.isFinite(entryPrice) && entryPrice > 0) {
-      outEnd.textContent = fmt(s.entry, { price: showTyped(entryPrice) });
-    }
-
     if (!result.ok) {
       showErrors(result.issues, side);
-      setBar(0, 0, s.invalid);
-      if (outTop) outTop.textContent = fmt(s.stopLane, { pct: s.noValue });
-      if (outBottom) outBottom.textContent = s.noValue;
-      if (outFigure) outFigure.textContent = s.noValue;
-      if (outSentence) outSentence.textContent = s.invalid;
+      view.show({ figure: s.noValue, sentence: s.invalid, state: 'invalid' });
+      updateScaleBars(
+        bars!,
+        { a: Number.NaN, b: Number.NaN },
+        { aValue: s.noValue, bValue: s.noValue, caption: () => s.invalid },
+      );
       if (outNote) outNote.hidden = true;
+      setMetric('out-liq', null, s.noValue);
+      setMetric('out-limit', null, s.noValue);
     } else {
       showErrors([], side);
       const stopPct = formatPercent(result.stopDistance);
-      if (outTop) outTop.textContent = fmt(s.stopLane, { pct: stopPct });
+      setMetric('out-limit', fmt(s.figure, { lev: result.limit.toFixed(2) }), s.noValue);
       if (outNote) {
         outNote.textContent = fmt(s.limit, { stop: stopPct, mmr: formatPercent(mmr), limit: result.limit.toFixed(2) });
         outNote.hidden = false;
@@ -209,22 +200,42 @@ function init(): void {
       if (result.feasible) {
         const lev = result.maxWholeLeverage;
         const liqPct = formatPercent(result.liquidationDistance);
-        setBar(result.stopDistance, result.liquidationDistance, fmt(s.barLabel, { stop: stopPct, lev, liq: liqPct }));
-        if (outBottom) outBottom.textContent = fmt(s.liqLane, { lev, pct: liqPct });
-        if (outFigure) outFigure.textContent = fmt(s.figure, { lev });
-        if (outSentence) {
-          outSentence.textContent = result.cappedByExchange
+        updateScaleBars(
+          bars!,
+          { a: result.stopDistance, b: result.liquidationDistance },
+          {
+            aValue: stopPct,
+            bLabel: fmt(s.liqBar, { lev }),
+            bValue: liqPct,
+            caption: (layout) => fmt(s.barLabel, { max: layout.maxLabel, stop: stopPct, lev, liq: liqPct }),
+          },
+        );
+        setText(outLiqLabel, fmt(s.liqRow, { lev }));
+        setMetric('out-liq', showPrice(result.liquidationPrice), s.noValue);
+        view.showText({
+          text: fmt(s.figure, { lev }),
+          sentence: result.cappedByExchange
             ? fmt(s.capped, { lev })
-            : fmt(s.ok, { lev, stop: showTyped(stopPrice), liq: showPrice(result.liquidationPrice) });
-        }
+            : fmt(s.ok, { lev, stop: showTyped(stopPrice), liq: showPrice(result.liquidationPrice) }),
+          state: 'ready',
+        });
       } else {
-        // Even 1x fails: draw the 1x liquidation distance so the bar shows why.
+        // Even 1x fails: draw the 1x liquidation distance so the bars show why.
         const atOne = 1 - mmr;
         const liqPct = formatPercent(atOne);
-        setBar(result.stopDistance, atOne, fmt(s.barLabel, { stop: stopPct, lev: 1, liq: liqPct }));
-        if (outBottom) outBottom.textContent = fmt(s.liqLane, { lev: 1, pct: liqPct });
-        if (outFigure) outFigure.textContent = s.noValue;
-        if (outSentence) outSentence.textContent = s.infeasible;
+        updateScaleBars(
+          bars!,
+          { a: result.stopDistance, b: atOne },
+          {
+            aValue: stopPct,
+            bLabel: fmt(s.liqBar, { lev: 1 }),
+            bValue: liqPct,
+            caption: (layout) => fmt(s.barLabel, { max: layout.maxLabel, stop: stopPct, lev: 1, liq: liqPct }),
+          },
+        );
+        setText(outLiqLabel, fmt(s.liqRow, { lev: 1 }));
+        setMetric('out-liq', null, s.noValue);
+        view.show({ figure: s.noValue, sentence: s.infeasible, state: 'caution' });
       }
     }
 
@@ -235,7 +246,18 @@ function init(): void {
   form.addEventListener('change', () => render(true));
   form.addEventListener('submit', (event) => event.preventDefault());
 
+  initActions({
+    view,
+    storageKey: STORAGE_KEY,
+    save: () => saveState(readState()),
+    reset: () => {
+      form.reset();
+      render(false);
+    },
+  });
+
   loadState();
+  revealAdvanced();
   render(false);
 }
 

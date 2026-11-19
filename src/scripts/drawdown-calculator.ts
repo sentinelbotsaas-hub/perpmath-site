@@ -1,10 +1,13 @@
 // Drawdown calculator, browser side.
-// - reads the inputs, runs src/lib/calc/drawdown.ts, updates the two-lane bar
-//   (lost above, needed to recover below) and the result
+// - reads the inputs, runs src/lib/calc/drawdown.ts, updates the result panel,
+//   the two bars (lost, needed to recover) and the figures under them
 // - shows the fields of the chosen starting point only (a drawdown, or a
 //   losing streak)
 // - state lives in the URL query (shareable) and in localStorage (try/catch)
 // Imports only dependency-free modules; strings arrive as JSON in data-calc.
+// Everything below the call to drawdown() is presentation.
+import { bindSliders, createResultView, initActions, parseNumber, setMetric } from '../components/calc/calc-ui';
+import { updateScaleBars } from '../components/calc/scale-bars';
 import { drawdown } from '../lib/calc/drawdown';
 import type { DrawdownInput, DrawdownIssue } from '../lib/calc/drawdown';
 import { fmt, formatNumber } from '../lib/fmt';
@@ -14,9 +17,9 @@ interface CalcData {
   /** Smallest share of the balance that is still reported, as a fraction. */
   minRemaining: number;
   strings: {
-    lostLane: string;
-    neededLane: string;
-    scale: string;
+    lostBar: string;
+    neededBar: string;
+    ddText: string;
     barLabel: string;
     figure: string;
     drawdown: string;
@@ -33,13 +36,6 @@ type Param = (typeof PARAMS)[number];
 type State = Record<Param, string>;
 type FieldKey = 'dd' | 'n' | 'risk';
 type Mode = 'drawdown' | 'streak';
-
-/** "1,000" -> 1000. Empty or unreadable text -> NaN. */
-function parseNumber(text: string): number {
-  const cleaned = text.replace(/[,\s]/g, '');
-  if (cleaned === '') return Number.NaN;
-  return Number(cleaned);
-}
 
 /** 0.2239 -> "22.39%", 9 -> "900.00%", with thousands separators. */
 const percent = (fraction: number) => `${formatNumber(fraction * 100, 2)}%`;
@@ -65,13 +61,11 @@ function init(): void {
   };
   const modes = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="mode"]'));
   const groups = Array.from(form.querySelectorAll<HTMLElement>('[data-mode]'));
-  const bar = $('#calc-scale');
-  const outTop = $('#calc-scale-top');
-  const outBottom = $('#calc-scale-bottom');
-  const outEnd = $('#calc-scale-end');
-  const outFigure = $('#calc-figure');
-  const outSentence = $('#calc-sentence');
-  if (!inputs.dd || !inputs.n || !inputs.risk || !bar) return;
+  const bars = $('#calc-bars');
+  if (!inputs.dd || !inputs.n || !inputs.risk || !bars) return;
+
+  const view = createResultView();
+  const syncSliders = bindSliders(form);
 
   // ---- state: URL first, then localStorage, then the server defaults ------
   const currentMode = (): Mode => (modes.find((r) => r.checked)?.value === 'streak' ? 'streak' : 'drawdown');
@@ -169,18 +163,6 @@ function init(): void {
   }
 
   // ---- render --------------------------------------------------------------
-  const clamp = (n: number) => Math.min(1, Math.max(0, n));
-
-  function setBar(top: number, bottom: number, label: string): void {
-    bar!.style.setProperty('--top', clamp(top).toFixed(4));
-    bar!.style.setProperty('--bottom', clamp(bottom).toFixed(4));
-    bar!.setAttribute('aria-label', label);
-  }
-
-  function setText(el: HTMLElement | null, text: string): void {
-    if (el) el.textContent = text;
-  }
-
   function render(save: boolean): void {
     const state = readState();
     const mode = state.mode as Mode;
@@ -194,12 +176,14 @@ function init(): void {
 
     if (!result.ok) {
       showErrors(result.issues, mode);
-      setBar(0, 0, s.invalid);
-      setText(outTop, fmt(s.lostLane, { pct: s.noValue }));
-      setText(outBottom, fmt(s.neededLane, { pct: s.noValue }));
-      setText(outEnd, fmt(s.scale, { pct: s.noValue }));
-      setText(outFigure, s.noValue);
-      setText(outSentence, s.invalid);
+      view.show({ figure: s.noValue, sentence: s.invalid, state: 'invalid' });
+      updateScaleBars(
+        bars!,
+        { a: Number.NaN, b: Number.NaN },
+        { aValue: s.noValue, bValue: s.noValue, caption: () => s.invalid },
+      );
+      setMetric('out-lost', null, s.noValue);
+      setMetric('out-remaining', null, s.noValue);
     } else {
       showErrors([], mode);
       const lost = percent(result.drawdown);
@@ -207,17 +191,22 @@ function init(): void {
       const remaining = percent(result.remaining);
       const scale = percent(result.scaleMax);
 
-      setBar(result.lostShare, result.neededShare, fmt(s.barLabel, { scale, lost, needed }));
-      setText(outTop, fmt(s.lostLane, { pct: lost }));
-      setText(outBottom, fmt(s.neededLane, { pct: needed }));
-      setText(outEnd, fmt(s.scale, { pct: scale }));
-      setText(outFigure, fmt(s.figure, { pct: needed }));
-      setText(
-        outSentence,
-        mode === 'streak'
-          ? fmt(s.streak, { n: formatNumber(losses), risk: percent(riskPerTrade), remaining, lost, needed })
-          : fmt(s.drawdown, { lost, remaining, needed }),
+      // The library decides the scale: the full width is the larger of 100% and the gain needed.
+      updateScaleBars(
+        bars!,
+        { a: result.drawdown, b: result.recoveryGain, max: result.scaleMax },
+        { aValue: lost, bValue: needed, caption: () => fmt(s.barLabel, { scale, lost, needed }) },
       );
+      setMetric('out-lost', lost, s.noValue);
+      setMetric('out-remaining', remaining, s.noValue);
+      view.showText({
+        text: fmt(s.figure, { pct: needed }),
+        sentence:
+          mode === 'streak'
+            ? fmt(s.streak, { n: formatNumber(losses), risk: percent(riskPerTrade), remaining, lost, needed })
+            : fmt(s.drawdown, { lost, remaining, needed }),
+        state: 'ready',
+      });
     }
 
     if (save) saveState(state);
@@ -227,7 +216,19 @@ function init(): void {
   form.addEventListener('change', () => render(true));
   form.addEventListener('submit', (event) => event.preventDefault());
 
+  initActions({
+    view,
+    storageKey: STORAGE_KEY,
+    save: () => saveState(readState()),
+    reset: () => {
+      form.reset();
+      syncSliders();
+      render(false);
+    },
+  });
+
   loadState();
+  syncSliders();
   render(false);
 }
 

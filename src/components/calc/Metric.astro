@@ -1,0 +1,30 @@
+---
+// A secondary figure in the result panel: a label and a value, no frame (the
+// panel already has one). It is MetricCard's bare form with one addition: the
+// label can carry an id, for labels a script rewrites ("Liquidation price at 18x").
+//
+//   <div class="calc-metrics">
+//     <Metric label={t.result.gap} value="3,175.6" unit="USDT" valueId="out-gap" />
+//     <Metric label="Liquidation price at 18x" labelId="out-liq-label" value="64,446.7" valueId="out-liq" />
+//   </div>
+//
+// The value is text formatted with src/lib/fmt.ts from a result of the calc
+// library.
+interface Props {
+  label: string;
+  value: string;
+  unit?: string;
+  valueId?: string;
+  labelId?: string;
+}
+
+const { label, value, unit, valueId, labelId } = Astro.props;
+---
+
+<div class="metric">
+  <p class="metric-label" id={labelId}>{label}</p>
+  <p class="metric-value">
+    <span id={valueId}>{value}</span>
+    {unit && <span class="metric-unit">{unit}</span>}
+  </p>
+</div>

@@ -1,0 +1,92 @@
+---
+// A number field with a slider under it: leverage, a drawdown percentage.
+// The field is the value; the slider is a second way to set it. The two are
+// kept in step by bindSliders() in calc-ui.ts.
+//
+//   <SliderField id="lev" label={t.fields.leverage} unit={t.fields.leverageUnit}
+//                value={20} min={1} max={100} step={1}
+//                sliderLabel={fmt(c.slider, { label: t.fields.leverage })}
+//                valueText={t.ui.levText} minText="1x" maxText="100x" />
+//
+// The field keeps exactly what is typed (12.5 stays 12.5; the slider handle
+// goes to the nearest step). The two ends of the range are printed under the
+// slider, with their unit. Rendered ids: the field is #<id>, the slider is
+// #<id>-range, the error line is #<id>-error. With scripting off the slider
+// is not shown, because it could not move the result.
+interface Props {
+  id: string;
+  label: string;
+  value: number;
+  unit?: string;
+  min: number;
+  max: number;
+  step?: number;
+  /** Accessible name of the slider (the field owns the visible label). */
+  sliderLabel: string;
+  /** Template for the slider's aria-valuetext, with {value}: "{value}x". */
+  valueText: string;
+  /** The two ends of the range as printed text, unit included. */
+  minText: string;
+  maxText: string;
+  hint?: string;
+  inputmode?: 'decimal' | 'numeric';
+  class?: string;
+}
+
+const {
+  id,
+  label,
+  value,
+  unit,
+  min,
+  max,
+  step = 1,
+  sliderLabel,
+  valueText,
+  minText,
+  maxText,
+  hint,
+  inputmode = 'decimal',
+  class: className,
+} = Astro.props;
+const describedBy = [hint ? `${id}-hint` : null, `${id}-error`].filter(Boolean).join(' ');
+const start = Math.min(max, Math.max(min, Math.round(value)));
+---
+
+<div class:list={['field', className]}>
+  <label class="field-label" for={id}>{label}</label>
+  <span class="field-box">
+    <input
+      id={id}
+      name={id}
+      type="text"
+      inputmode={inputmode}
+      autocomplete="off"
+      spellcheck="false"
+      value={value}
+      aria-describedby={describedBy}
+    />
+    {unit && <span aria-hidden="true">{unit}</span>}
+  </span>
+  <div class="calc-slider calc-js">
+    <input
+      class="slider"
+      id={`${id}-range`}
+      type="range"
+      min={min}
+      max={max}
+      step={step}
+      value={start}
+      data-for={id}
+      data-value-text={valueText}
+      aria-label={sliderLabel}
+      aria-valuetext={valueText.replace('{value}', String(value))}
+    />
+    <div class="calc-slider-ends" aria-hidden="true">
+      <span>{minText}</span>
+      <span>{maxText}</span>
+    </div>
+  </div>
+  {hint && <span class="field-hint" id={`${id}-hint`}>{hint}</span>}
+  <span class="field-error" id={`${id}-error`} role="alert" hidden></span>
+</div>

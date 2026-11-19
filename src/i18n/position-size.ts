@@ -28,11 +28,12 @@ export const positionSize = defineStrings({
     assumption:
       'The liquidation check uses the risk tier 1 maintenance margin rate of {mmr}, for positions up to {limit} USDT (Bybit data from {date}).',
     ui: {
-      stopLane: 'Stop: {pct} from entry',
-      liqLane: 'Liquidation at {lev}x: {pct} from entry',
-      entry: 'Entry {price} is the full width',
+      stopBar: 'Stop distance',
+      liqBar: 'Liquidation distance at {lev}x',
       barLabel:
-        'Two bars on one scale, where the full width is the entry price. The stop is {stop} away. At {lev}x the liquidation price is {liq} away.',
+        'Two bars on one scale that starts at 0. The full width is {max} of the entry price. The stop is {stop} from the entry. At {lev}x the liquidation price is {liq} from the entry.',
+      levText: '{value}x',
+      marginMeter: 'Margin required: {margin} USDT, out of an account of {account} USDT.',
       figure: '{qty} BTC',
       long: 'Long {qty} BTC. If the stop at {stop} is hit you lose {amount} USDT, {pct} of the account, plus about {fee} USDT in fees.',
       short: 'Short {qty} BTC. If the stop at {stop} is hit you lose {amount} USDT, {pct} of the account, plus about {fee} USDT in fees.',
@@ -66,6 +67,11 @@ export const positionSize = defineStrings({
       fee: 'Estimated fee, in and out',
       loss: 'Loss at the stop, fees included',
     },
+    // Shown in the result panel, after `assumption` above. {fee} is the page's assumed rate.
+    assumptions: [
+      'The fee rate starts at an assumed taker rate of {fee} per side. Change it under Advanced settings.',
+      'The quantity is cut, never rounded up. Slippage at the stop and funding are left out.',
+    ],
     toc: {
       formula: 'How it is calculated',
       examples: 'Worked examples',
@@ -161,10 +167,11 @@ export const positionSize = defineStrings({
     assumption:
       '檢查爆倉時用的是風險級距第 1 級的維持保證金率 {mmr}，適用倉位價值 {limit} USDT 以下（Bybit 資料日期 {date}）。',
     ui: {
-      stopLane: '停損：離進場價 {pct}',
-      liqLane: '{lev} 倍的爆倉價：離進場價 {pct}',
-      entry: '整條代表進場價 {price}',
-      barLabel: '同一個比例尺上的兩條橫條，整條代表進場價。停損離進場價 {stop}；{lev} 倍時，爆倉價離進場價 {liq}。',
+      stopBar: '停損距離',
+      liqBar: '{lev} 倍的爆倉距離',
+      barLabel: '兩條橫條用同一個從 0 開始的比例尺，整條代表進場價的 {max}。停損離進場價 {stop}；{lev} 倍時，爆倉價離進場價 {liq}。',
+      levText: '{value} 倍',
+      marginMeter: '所需保證金 {margin} USDT，帳戶資金 {account} USDT。',
       figure: '{qty} BTC',
       long: '做多 {qty} BTC。價格碰到設在 {stop} 的停損時，你會賠 {amount} USDT，也就是帳戶的 {pct}，另外還有大約 {fee} USDT 的手續費。',
       short: '做空 {qty} BTC。價格碰到設在 {stop} 的停損時，你會賠 {amount} USDT，也就是帳戶的 {pct}，另外還有大約 {fee} USDT 的手續費。',
@@ -196,6 +203,10 @@ export const positionSize = defineStrings({
       fee: '預估手續費（進場加出場）',
       loss: '停損時的虧損（含手續費）',
     },
+    assumptions: [
+      '單邊手續費率預設是吃單的假設值 {fee}，可以在進階參數裡修改。',
+      '數量只捨去、不進位。沒有計入停損的滑價和資金費。',
+    ],
     toc: {
       formula: '公式怎麼來的',
       examples: '例題',

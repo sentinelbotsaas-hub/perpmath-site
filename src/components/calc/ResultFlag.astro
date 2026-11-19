@@ -1,0 +1,25 @@
+---
+// A warning line under the result sentence: "this position is above risk
+// tier 1", "the margin does not fit the account". It carries an icon, so it
+// does not depend on colour. Scripts show and hide it with setFlag() from
+// calc-ui.ts.
+//
+//   <ResultFlag id="calc-tier" />                        hidden until a script fills it
+//   <ResultFlag id="calc-margin-note" text={t.ui.marginNote} />
+interface Props {
+  id: string;
+  /** Text known at build time. Left out: the script writes it. */
+  text?: string;
+  /** Shown from the start. Default: hidden. */
+  show?: boolean;
+}
+
+import Icon from '../ui/Icon.astro';
+
+const { id, text = '', show = false } = Astro.props;
+---
+
+<p class="calc-flag" id={id} hidden={!show}>
+  <Icon name="triangle-alert" size={16} />
+  <span data-flag-text>{text}</span>
+</p>

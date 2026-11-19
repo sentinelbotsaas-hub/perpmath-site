@@ -22,13 +22,28 @@ interface Props {
   step?: number | string;
   placeholder?: string;
   name?: string;
+  /** Extra class on the wrapper, e.g. "calc-wide" to span the form's columns. */
+  class?: string;
 }
 
-const { id, label, value = '', unit, hint, inputmode = 'decimal', min, max, step, placeholder, name = id } = Astro.props;
+const {
+  id,
+  label,
+  value = '',
+  unit,
+  hint,
+  inputmode = 'decimal',
+  min,
+  max,
+  step,
+  placeholder,
+  name = id,
+  class: className,
+} = Astro.props;
 const describedBy = [hint ? `${id}-hint` : null, `${id}-error`].filter(Boolean).join(' ');
 ---
 
-<div class="field">
+<div class:list={['field', className]}>
   <label class="field-label" for={id}>{label}</label>
   <span class="field-box">
     <input

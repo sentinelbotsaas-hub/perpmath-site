@@ -24,9 +24,10 @@ export const drawdown = defineStrings({
       riskHint: 'Share of the balance lost on each losing trade.',
     },
     ui: {
-      lostLane: 'Lost: {pct}',
-      neededLane: 'Needed to recover: {pct}',
-      scale: 'The full width is {pct}',
+      lostBar: 'Lost',
+      neededBar: 'Gain needed to recover',
+      // What the drawdown slider says to a screen reader, and its two ends.
+      ddText: '{value}%',
       barLabel: 'Two bars on one scale, where the full width is {scale}. Lost: {lost}. Gain needed to recover: {needed}.',
       figure: '{pct}',
       drawdown: 'After a loss of {lost}, {remaining} of the capital is left, and it has to grow {needed} to be back where it started.',
@@ -44,7 +45,15 @@ export const drawdown = defineStrings({
     },
     result: {
       label: 'Gain needed to recover',
+      lost: 'Drawdown',
+      remaining: 'Capital left',
     },
+    // Shown in the result panel.
+    assumptions: [
+      'Losses and gains are percentages of the balance, so the result does not depend on the size of the account.',
+      'In a losing streak every trade loses exactly the risk per trade, taken from what is left at that moment.',
+      'Fees, funding and slippage are left out. They make the real loss a little larger.',
+    ],
     toc: {
       formula: 'How it is calculated',
       examples: 'Worked examples',
@@ -124,9 +133,9 @@ export const drawdown = defineStrings({
       riskHint: '每一筆虧損賠掉當時餘額的比例。',
     },
     ui: {
-      lostLane: '虧掉：{pct}',
-      neededLane: '回本要賺：{pct}',
-      scale: '整條代表 {pct}',
+      lostBar: '虧掉',
+      neededBar: '回本要賺',
+      ddText: '{value}%',
       barLabel: '同一個比例尺上的兩條橫條，整條代表 {scale}。虧掉 {lost}，回本要賺 {needed}。',
       figure: '{pct}',
       drawdown: '虧掉 {lost} 之後，資金剩下 {remaining}，要再賺 {needed} 才能回到原點。',
@@ -142,7 +151,14 @@ export const drawdown = defineStrings({
     },
     result: {
       label: '回本需要的報酬',
+      lost: '回撤',
+      remaining: '剩餘資金',
     },
+    assumptions: [
+      '虧損和報酬都是餘額的百分比，所以結果跟帳戶金額大小無關。',
+      '連續虧損時，假設每一筆都剛好賠掉單筆風險那麼多，從當時剩下的餘額裡扣。',
+      '沒有計入手續費、資金費和滑價，這些會讓實際虧損再大一點。',
+    ],
     toc: {
       formula: '公式怎麼來的',
       examples: '例題',
