@@ -1,0 +1,88 @@
+---
+// The newest daily report of each contract, as three typographic cards:
+// category, the report day, a headline and one sentence of figures.
+//
+// Everything is read from src/data/market/<SYMBOL>/latest.json through
+// src/lib/market/store.ts. The report day is the last complete UTC day at the
+// time the data was fetched, never "now": the section says which day it is,
+// prints when the data was fetched, and warns when the day is no longer the
+// latest one at build time.
+import ArticleCard from '../ui/ArticleCard.astro';
+import DataFreshness from '../ui/DataFreshness.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import { daily } from '../../i18n/daily';
+import { home } from '../../i18n/home';
+import { fmt, formatNumber, formatPercent, tickDecimals } from '../../lib/fmt';
+import { highestSurviving } from '../../lib/market/compute';
+import { latestReports } from '../../lib/market/store';
+import { beforeCjk, utcMinute } from '../../lib/market/view';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = home[locale].market;
+const d = daily[locale];
+const reports = latestReports();
+const first = reports[0].report;
+
+const cards = reports.map(({ coin, symbol, report }) => {
+  const decimals = tickDecimals(report.instrument.tickSize);
+  const both = highestSurviving(report.survival, 'both');
+  const name = locale === 'en' ? d.coins[coin] : beforeCjk(d.coins[coin]);
+  return {
+    href: localePath(locale, `/daily/${coin}/`),
+    title: fmt(d.report.head, { name }),
+    date: report.reportDate,
+    summary: fmt(t.summary, {
+      symbol,
+      open: formatNumber(report.day.open, decimals),
+      drop: formatPercent(report.day.adverseLong),
+      rise: formatPercent(report.day.adverseShort),
+    }),
+    survived: both === null ? t.survivedNone : fmt(t.survived, { lev: fmt(d.lev, { n: both }) }),
+  };
+});
+
+// A report day is current until the next UTC day has ended and been fetched.
+// Past two days after the report day, say that the data may be out of date.
+const DAY_MS = 86_400_000;
+const stale = Date.now() - Date.parse(`${first.reportDate}T00:00:00Z`) > 3 * DAY_MS;
+---
+
+<SectionHeader
+  title={t.head}
+  desc={fmt(t.sub, { date: first.reportDate })}
+  href={localePath(locale, '/daily/')}
+  linkLabel={t.all}
+/>
+
+<div class="cards cols-3">
+  {
+    cards.map((card) => (
+      <ArticleCard href={card.href} title={card.title} desc={card.summary} category={t.category} date={card.date}>
+        <span slot="foot">{card.survived}</span>
+      </ArticleCard>
+    ))
+  }
+</div>
+
+<div class="mk-fresh">
+  <DataFreshness
+    locale={locale}
+    date={first.reportDate}
+    time={first.fetchedAt}
+    timeLabel={fmt(t.updated, { time: utcMinute(first.fetchedAt) })}
+    source="Bybit"
+    stale={stale}
+  />
+</div>
+
+<style>
+  .mk-fresh {
+    margin-top: var(--space-5);
+  }
+</style>

@@ -1,0 +1,287 @@
+---
+// The backtests, in short: how many strategies were tested, over what data,
+// at what cost, and what each one did out of sample. Losing results are
+// shown exactly like any other; that is the point of the section.
+//
+// Every figure is read from src/data/backtests/*.json through
+// src/lib/backtests/load.ts, with the formatters and the verdict rule that
+// /backtests/ uses. Nothing is averaged or summed across strategies here:
+// the data holds one average R per strategy and sample, and that is what is
+// printed. A fact that is not the same in every result file (the data
+// period, the costs, the out-of-sample range) is left out instead of guessed.
+import Icon from '../ui/Icon.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import { backtests } from '../../i18n/backtests';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import { home } from '../../i18n/home';
+import { formatCount, formatDay, formatPct, formatRate, formatSigned } from '../../lib/backtests/format';
+import { backtestPath, results } from '../../lib/backtests/load';
+import { lostInBothSamples, verdictOf } from '../../lib/backtests/verdict';
+import { fmt } from '../../lib/fmt';
+import { pageExists } from '../../lib/routes';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = home[locale].research;
+const bt = backtests[locale];
+const x = bt.index;
+
+if (results.length === 0) throw new Error('home: src/data/backtests/ is empty. Run scripts/backtests-import.mjs.');
+
+// Same headline as /backtests/, so the two can never disagree.
+const head = fmt(results.every(lostInBothSamples) ? x.headAllLost : x.head, { n: formatCount(results.length) });
+const na = bt.na;
+
+/** The value all results share, or null when they differ. */
+function shared<T>(pick: (result: (typeof results)[number]) => T): T | null {
+  const first = pick(results[0]);
+  return results.every((result) => pick(result) === first) ? first : null;
+}
+
+const firstBar = shared((r) => r.data.first_bar);
+const lastBar = shared((r) => r.data.last_bar);
+const fee = shared((r) => r.costs.fee_rate_per_side);
+const slip = shared((r) => r.costs.slippage_per_fill);
+const oosFirst = shared((r) => r.out_of_sample.first_bar);
+const oosLast = shared((r) => r.out_of_sample.last_bar);
+
+const facts = [
+  firstBar && lastBar
+    ? { label: t.period, value: fmt(bt.range, { from: formatDay(firstBar), to: formatDay(lastBar) }) }
+    : null,
+  oosFirst && oosLast
+    ? { label: t.oosFrom, value: formatDay(oosFirst) }
+    : null,
+  fee !== null && slip !== null
+    ? { label: t.costs, value: fmt(t.costsValue, { fee: formatRate(fee), slip: formatRate(slip) }) }
+    : null,
+].filter((fact) => fact !== null);
+
+const method = `${x.sub}${locale === 'en' ? ' ' : ''}${results.every((r) => !r.costs.funding_modelled) ? x.caption : x.captionPlain}`;
+
+const rows = results.map((result) => {
+  const strategy = bt.strategies[result.strategy as keyof typeof bt.strategies];
+  if (!strategy) throw new Error(`home: no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
+  const m = result.out_of_sample.metrics;
+  const negative = (value: number | null) => value !== null && value < 0;
+  return {
+    name: strategy.short,
+    href: localePath(locale, backtestPath(result.slug)),
+    market: `${result.symbol} ${result.interval}`,
+    cells: [
+      { label: bt.columns.trades, value: formatCount(m.trades), number: true, negative: false },
+      { label: bt.columns.avgR, value: formatSigned(m.avg_r) ?? na, number: m.avg_r !== null, negative: negative(m.avg_r) },
+      {
+        label: bt.columns.totalReturn,
+        value: formatPct(m.total_return_pct) ?? na,
+        number: m.total_return_pct !== null,
+        negative: negative(m.total_return_pct),
+      },
+      { label: bt.columns.verdict, value: bt.verdict[verdictOf(m)], number: false, negative: false },
+    ],
+  };
+});
+---
+
+<SectionHeader title={head} desc={t.sub} id="research-head" />
+
+<div class="rs">
+  <div class="rs-about">
+    <p class="rs-method">{method}</p>
+    <dl class="rs-facts">
+      {
+        facts.map((fact) => (
+          <div>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  <div class="acts rs-acts">
+    <a class="btn secondary" href={localePath(locale, '/backtests/')}>{t.results}</a>
+    {
+      pageExists('/bot/') && (
+        <a class="lnk" href={localePath(locale, '/bot/')}>
+          {t.code}
+          <Icon name="arrow-right" size={16} />
+        </a>
+      )
+    }
+  </div>
+
+  <div class="rs-results">
+    <h3 class="rs-sample">{bt.samples.out_of_sample}</h3>
+    <ul class="rs-rows" aria-label={t.listLabel}>
+      {
+        rows.map((row) => (
+          <li>
+            <p class="rs-name">
+              <a class="lnk" href={row.href}>
+                {row.name}
+              </a>
+              <span class="num">{row.market}</span>
+            </p>
+            <dl class="rs-cells">
+              {row.cells.map((cell) => (
+                <div>
+                  <dt>{cell.label}</dt>
+                  <dd class:list={[{ num: cell.number, 'rs-neg': cell.negative }]}>{cell.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style>
+  /* A phone reads top to bottom: the method, the results, then where to go.
+     Side by side, the actions sit under the method. */
+  .rs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "about" "results" "acts";
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .rs-about {
+    grid-area: about;
+  }
+
+  .rs-results {
+    grid-area: results;
+  }
+
+  .rs-acts {
+    grid-area: acts;
+    margin-top: 0;
+  }
+
+  .rs-method {
+    max-width: 60ch;
+    color: var(--color-text-secondary);
+  }
+
+  .rs-facts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: var(--space-6);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .rs-facts > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-6);
+    padding-block: var(--space-3);
+    border-bottom: var(--hairline) solid var(--color-border);
+  }
+
+  .rs-facts dt {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .rs-facts dd {
+    font-variant-numeric: tabular-nums;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+  }
+
+  .rs-sample {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0;
+  }
+
+  .rs-rows {
+    margin-top: var(--space-3);
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  .rs-rows li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    padding-block: var(--space-4);
+    border-bottom: var(--hairline) solid var(--color-border);
+  }
+
+  .rs-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-3);
+  }
+
+  .rs-name .lnk {
+    font-size: var(--text-card);
+    font-weight: var(--weight-strong);
+  }
+
+  .rs-name .num {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .rs-cells {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-6);
+  }
+
+  .rs-cells > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .rs-cells dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .rs-cells dd {
+    font-size: var(--text-md);
+    font-weight: var(--weight-medium);
+  }
+
+  .rs-cells dd.num {
+    font-size: var(--text-card);
+  }
+
+  /* The minus sign is in the text; the colour repeats it. */
+  .rs-neg {
+    color: var(--color-negative);
+  }
+
+  @media (min-width: 620px) {
+    .rs-cells {
+      grid-template-columns: repeat(3, minmax(0, 0.8fr)) minmax(0, 1.4fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .rs {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+      grid-template-areas: "about results" "acts results";
+      grid-template-rows: auto 1fr;
+      gap: var(--space-6) var(--space-16);
+    }
+  }
+</style>

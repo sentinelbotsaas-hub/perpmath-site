@@ -1,0 +1,176 @@
+---
+// The newest lessons of this locale, each with the pages it goes with.
+//
+// The lessons are the content collection (src/lib/articles.ts); a locale with
+// one lesson shows one, and nothing is padded. "Goes with" is src/lib/related.ts
+// read the other way round: the calculators (first) and overview pages that
+// list this lesson as related reading. A lesson no page lists gets no links.
+import Icon from '../ui/Icon.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import { common } from '../../i18n/common';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import { toHans } from '../../i18n/hans';
+import { home } from '../../i18n/home';
+import { articlePath, getArticlesFor } from '../../lib/articles';
+import { RELATED } from '../../lib/related';
+import { pageExists } from '../../lib/routes';
+import { getTools } from '../../lib/tools';
+
+interface Props {
+  locale: Locale;
+}
+
+/** Lessons shown on the home page; the rest are one click away on /learn/. */
+const MAX_LESSONS = 4;
+/** Links per lesson. */
+const MAX_LINKS = 2;
+
+const { locale } = Astro.props;
+const t = home[locale].learn;
+const items = common[locale].nav.items;
+const articles = (await getArticlesFor(locale)).slice(0, MAX_LESSONS);
+
+// What a related page is called. Calculators by their own name, overview
+// pages by their menu label. A page without a name here is not linked.
+const names = new Map<string, string>([
+  ...getTools(locale).map((tool) => [tool.path, tool.name] as [string, string]),
+  ['/backtests/', items.backtests.label],
+  ['/bot/', items.bot.label],
+  ['/data/funding-rate/', items.fundingRate.label],
+  ['/data/open-interest/', items.openInterest.label],
+  ['/data/long-short-ratio/', items.longShortRatio.label],
+  ['/data/liquidation/', items.liquidation.label],
+]);
+
+function goesWith(slug: string): Array<{ href: string; label: string }> {
+  const paths = Object.keys(RELATED).filter(
+    (path) => RELATED[path].includes(slug) && names.has(path) && pageExists(path),
+  );
+  const tools = paths.filter((path) => path.startsWith('/tools/'));
+  const others = paths.filter((path) => !path.startsWith('/tools/'));
+  // One calculator and one other page when both exist; otherwise the first two.
+  const picked = tools.length > 0 && others.length > 0 ? [tools[0], others[0]] : [...tools, ...others];
+  return picked.slice(0, MAX_LINKS).map((path) => ({ href: localePath(locale, path), label: names.get(path) as string }));
+}
+
+// The generated Simplified articles keep the Traditional `category` (the
+// generator copies that field as it is), so it is converted here, the way
+// RelatedArticles.astro does.
+const category = (text: string) => (locale === 'zh-hans' ? toHans(text) : text);
+
+const lessons = articles.map(({ entry }) => ({
+  href: localePath(locale, articlePath(entry.data.slug)),
+  title: entry.data.title,
+  description: entry.data.description,
+  category: category(entry.data.category),
+  date: entry.data.date,
+  links: goesWith(entry.data.slug),
+}));
+---
+
+<SectionHeader title={t.head} href={localePath(locale, '/learn/')} linkLabel={t.all} />
+
+<ol class="ls">
+  {
+    lessons.map((lesson) => (
+      <li>
+        <p class="card-meta ls-meta">
+          <span>{lesson.category}</span>
+          <time class="num" datetime={lesson.date}>
+            {lesson.date}
+          </time>
+        </p>
+        <div class="ls-body">
+          <h3 class="ls-title">
+            <a href={lesson.href}>{lesson.title}</a>
+          </h3>
+          <p class="ls-desc">{lesson.description}</p>
+        </div>
+        {lesson.links.length > 0 && (
+          <div class="ls-with">
+            <p class="ls-with-label">{t.related}</p>
+            <ul>
+              {lesson.links.map((link) => (
+                <li>
+                  <a class="lnk" href={link.href}>
+                    {link.label}
+                    <Icon name="arrow-right" size={16} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .ls {
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  .ls > li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    padding-block: var(--space-6);
+    border-bottom: var(--hairline) solid var(--color-border);
+  }
+
+  .ls-title {
+    font-size: var(--text-xl);
+    line-height: var(--leading-tight);
+    letter-spacing: 0;
+  }
+
+  .ls-title a {
+    text-decoration: none;
+  }
+
+  .ls-title a:hover {
+    text-decoration: underline;
+  }
+
+  .ls-desc {
+    max-width: 68ch;
+    margin-top: var(--space-2);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .ls-with-label {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .ls-with ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-6);
+  }
+
+  .ls-with .lnk {
+    font-size: var(--text-sm);
+    white-space: normal;
+  }
+
+  @media (min-width: 960px) {
+    .ls > li {
+      grid-template-columns: 10rem minmax(0, 1fr) 16rem;
+      gap: var(--space-10);
+      align-items: start;
+    }
+
+    .ls-meta {
+      flex-direction: column;
+      padding-top: var(--space-1);
+    }
+
+    .ls-with ul {
+      flex-direction: column;
+    }
+  }
+</style>

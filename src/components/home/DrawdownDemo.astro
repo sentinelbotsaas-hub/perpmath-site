@@ -1,0 +1,312 @@
+---
+// Why a loss and its recovery are not the same size: a drawdown slider, the
+// balance before and after, and the gain needed to get back, with the loss
+// and the gain drawn as two bars on one scale.
+//
+// The arithmetic is src/lib/calc/drawdown.ts (gain = drawdown / (1 - drawdown)),
+// the same function the drawdown calculator uses; src/scripts/home-drawdown.ts
+// calls it again when the slider moves. At 100% that function reports that
+// nothing is left, and the panel says "total loss" instead of a percentage.
+//
+// Without JavaScript the panel shows the START_PERCENT case and says so; the
+// slider is hidden.
+import Icon from '../ui/Icon.astro';
+import Meter from '../ui/Meter.astro';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import { home } from '../../i18n/home';
+import { drawdown } from '../../lib/calc/drawdown';
+import { fmt, formatNumber } from '../../lib/fmt';
+import { pageExists } from '../../lib/routes';
+import { toolPath } from '../../lib/tools';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = home[locale].recover;
+
+// An example balance, labelled as one. The percentages do not depend on it.
+const START_BALANCE = 10000;
+const START_PERCENT = 50;
+
+const r = drawdown({ mode: 'drawdown', drawdown: START_PERCENT / 100 });
+if (!r.ok) throw new Error('home: the drawdown example is not a valid calculation');
+
+/** 0.5 -> "50.00%", 9 -> "900.00%". The drawdown calculator writes them the same way. */
+const percent = (fraction: number) => `${formatNumber(fraction * 100, 2)}%`;
+const lost = percent(r.drawdown);
+const needed = percent(r.recoveryGain);
+const drawdownPath = toolPath('drawdown-calculator');
+
+// Everything the browser script needs, as plain data.
+const data = JSON.stringify({
+  start: START_BALANCE,
+  strings: {
+    sliderText: t.sliderText,
+    sliderTextTotal: t.sliderTextTotal,
+    lostBar: t.lostBar,
+    neededBar: t.neededBar,
+    neededBarTotal: t.neededBarTotal,
+    scale: t.scale,
+    total: t.total,
+    totalNote: t.totalNote,
+  },
+});
+---
+
+<div class="dd" data-drawdown={data}>
+  <div class="dd-copy">
+    <h2 class="h-section" id="recover-head">{t.head}</h2>
+    <p class="lede">{t.body}</p>
+    <p class="dd-formula"><code>{t.formula}</code></p>
+  </div>
+
+  {
+    pageExists(drawdownPath) && (
+      <div class="dd-more">
+        <a class="lnk" href={localePath(locale, drawdownPath)}>
+          {t.link}
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+    )
+  }
+
+  <div class="dd-panel">
+    <div class="dd-control">
+      <label class="field-label" for="dd-range">{t.slider}</label>
+      <input
+        class="slider"
+        id="dd-range"
+        type="range"
+        min="1"
+        max="100"
+        step="1"
+        value={START_PERCENT}
+        aria-valuetext={fmt(t.sliderText, { lost, needed })}
+      />
+      <output class="dd-now num" id="dd-now" for="dd-range">{formatNumber(START_PERCENT)}%</output>
+    </div>
+    <p class="dd-fixed">{fmt(t.fixed, { lost: `${formatNumber(START_PERCENT)}%` })}</p>
+
+    <dl class="dd-figures">
+      {/* The unit sits with the label: a figure that changes length must not push anything. */}
+      <div>
+        <dt>{t.start} <span class="dd-unit">USDT</span></dt>
+        <dd><span class="num">{formatNumber(START_BALANCE)}</span></dd>
+      </div>
+      <div>
+        <dt>{t.left} <span class="dd-unit">USDT</span></dt>
+        <dd><span class="num" id="dd-left">{formatNumber(START_BALANCE * r.remaining)}</span></dd>
+      </div>
+      <div>
+        <dt>{t.needed}</dt>
+        <dd><span class="num" id="dd-needed">{needed}</span></dd>
+      </div>
+    </dl>
+
+    <div class="dd-lanes">
+      <div class="dd-lane">
+        <p>
+          <span>{t.lostLane}</span>
+          <span class="num" id="dd-lost-value">{lost}</span>
+        </p>
+        <Meter id="dd-lost-bar" size="tall" tone="negative" value={r.lostShare} label={fmt(t.lostBar, { lost })} />
+      </div>
+      <div class="dd-lane">
+        <p>
+          <span>{t.neededLane}</span>
+          <span class="num" id="dd-needed-value">{needed}</span>
+        </p>
+        <Meter id="dd-needed-bar" size="tall" value={r.neededShare} label={fmt(t.neededBar, { needed })} />
+      </div>
+      <p class="dd-scale" id="dd-scale">{fmt(t.scale, { max: percent(r.scaleMax) })}</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* A phone reads top to bottom: the claim, the panel that shows it, then the
+     way to the full calculator. Side by side, the link sits under the claim. */
+  .dd {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "copy" "panel" "more";
+    gap: var(--space-8);
+  }
+
+  .dd-copy {
+    grid-area: copy;
+  }
+
+  .dd-panel {
+    grid-area: panel;
+  }
+
+  .dd-more {
+    grid-area: more;
+  }
+
+  .dd-formula {
+    margin-top: var(--space-5);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .dd-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+    min-width: 0;
+  }
+
+  .dd-control {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .dd-control .slider {
+    width: 100%;
+    min-height: var(--control-h);
+  }
+
+  .dd-now {
+    min-width: 5ch;
+    color: var(--color-text);
+    font-size: var(--text-card);
+    font-weight: var(--weight-medium);
+    text-align: right;
+  }
+
+  /* Script off: no slider that does nothing, one line that says so. */
+  .dd-fixed {
+    display: none;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  :global(html:not([data-js])) .dd-control {
+    display: none;
+  }
+
+  :global(html:not([data-js])) .dd-fixed {
+    display: block;
+  }
+
+  .dd-figures {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-6);
+    padding-block: var(--space-5);
+    border-block: var(--hairline) solid var(--color-border);
+  }
+
+  /* A label may take two lines in one language; the figures still share a
+     baseline because each one sits on the bottom of its cell. */
+  .dd-figures > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .dd-figures dt {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  /* Every figure a script rewrites is a box of fixed position and width, so
+     a longer or shorter number moves nothing (no layout shift). */
+  .dd-figures dd {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-figure);
+    letter-spacing: -0.02em;
+  }
+
+  .dd-figures dd .num {
+    display: block;
+  }
+
+  .dd-unit {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .dd-lanes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .dd-lane {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .dd-lane p {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .dd-lane .num {
+    flex: 1 1 auto;
+    color: var(--color-text);
+    font-weight: var(--weight-medium);
+    text-align: right;
+  }
+
+  .dd-scale {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  @media (min-width: 960px) {
+    .dd {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+      grid-template-areas: "copy panel" "more panel";
+      gap: var(--space-4) var(--space-16);
+    }
+
+    .dd-copy {
+      align-self: end;
+    }
+
+    .dd-panel {
+      align-self: center;
+    }
+
+    .dd-more {
+      align-self: start;
+    }
+  }
+
+  /* A phone: the three figures stack as rows, label left and figure right. */
+  @media (max-width: 520px) {
+    .dd-figures {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-3);
+    }
+
+    .dd-figures > div {
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-rows: auto;
+      align-items: baseline;
+    }
+
+    .dd-figures dd {
+      font-size: var(--text-xl);
+      text-align: right;
+    }
+  }
+</style>

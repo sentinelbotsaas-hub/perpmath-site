@@ -1,0 +1,93 @@
+---
+// Five facts about the site, each one checked against the code:
+// - free, no registration: there is no payment and no account anywhere;
+// - calculators run in the browser: src/scripts/*-calculator.ts compute with
+//   src/lib/calc/** and post nothing;
+// - formulas shown: every calculator page prints its formula and examples;
+// - public data sources: src/data/** is fetched from Bybit's public API.
+// The note is there because two scripts (liquidation-calculator.ts and
+// market-live.ts) do call Bybit's public API when a button is pressed, so the
+// page must not say that nothing ever leaves the browser.
+// No user counts, volumes, testimonials or badges belong here.
+import Icon from '../ui/Icon.astro';
+import type { IconName } from '../ui/Icon.astro';
+import type { Locale } from '../../i18n/config';
+import { home } from '../../i18n/home';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = home[locale].trust;
+
+const facts: Array<{ icon: IconName; text: string }> = [
+  { icon: 'check', text: t.free },
+  { icon: 'check', text: t.noAccount },
+  { icon: 'monitor', text: t.local },
+  { icon: 'sigma', text: t.formulas },
+  { icon: 'database', text: t.sources },
+];
+---
+
+<div class="section band trust" role="region" aria-label={t.label}>
+  <div class="wrap">
+    <ul class="trust-list">
+      {
+        facts.map((fact) => (
+          <li>
+            <Icon name={fact.icon} size={18} />
+            <span>{fact.text}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="trust-note">{t.note}</p>
+  </div>
+</div>
+
+<style>
+  .trust {
+    padding-block: var(--space-8);
+  }
+
+  .trust-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-8);
+  }
+
+  .trust-list li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text);
+    font-weight: var(--weight-medium);
+  }
+
+  .trust-list :global(svg) {
+    color: var(--color-text-muted);
+  }
+
+  .trust-note {
+    margin-top: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  /* A phone: one fact a line, ruled. */
+  @media (max-width: 760px) {
+    .trust-list {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .trust-list li {
+      display: flex;
+      min-height: var(--tap);
+      border-bottom: var(--hairline) solid var(--color-border);
+    }
+  }
+</style>
