@@ -1,0 +1,61 @@
+---
+// One row of a document page (about, disclosure): the heading on the left,
+// the text on the right, a rule above. On a narrow screen the two stack.
+//
+//   <div class="doc-rows">
+//     <DocRow title={section.title}>
+//       {section.body.map((paragraph) => <p>{paragraph}</p>)}
+//     </DocRow>
+//   </div>
+//
+// The slot takes paragraphs and, at most, one .lnk after them. The text is
+// printed exactly as it is passed in.
+interface Props {
+  title: string;
+  id?: string;
+}
+
+const { title, id } = Astro.props;
+---
+
+<div class="doc-row" id={id}>
+  <h2>{title}</h2>
+  <div class="doc-row-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .doc-row {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--space-3) var(--space-10);
+    padding-block: var(--space-10);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .doc-row h2 {
+    font-size: var(--text-xl);
+    line-height: var(--leading-tight);
+  }
+
+  .doc-row-body {
+    max-width: var(--measure);
+    color: var(--color-text-secondary);
+  }
+
+  .doc-row-body :global(p + p) {
+    margin-top: var(--space-4);
+  }
+
+  .doc-row-body :global(.lnk) {
+    margin-top: var(--space-2);
+  }
+
+  @media (max-width: 760px) {
+    .doc-row {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: var(--space-8);
+    }
+  }
+</style>

@@ -1,8 +1,8 @@
 ---
 // Fallback for /go/bybit-testnet/. The real behaviour is the redirect in
-// vercel.json (generated from site.config.mjs).
-import ExitFallback from '../../../components/ExitFallback.astro';
+// vercel.json (generated from site.config.mjs). See ../_ExitPage.astro.
+import ExitPage from '../_ExitPage.astro';
 import { GO_BYBIT_TESTNET } from '../../../../site.config.mjs';
 ---
 
-<ExitFallback path={GO_BYBIT_TESTNET} />
+<ExitPage path={GO_BYBIT_TESTNET} />

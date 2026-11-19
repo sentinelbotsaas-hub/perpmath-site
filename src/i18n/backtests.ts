@@ -28,6 +28,10 @@ export const backtests = defineStrings({
       totalReturn: 'Total return',
       maxDrawdown: 'Max drawdown',
       verdict: 'Verdict',
+      // Head of the first column when the samples are the columns.
+      metric: 'Metric',
+      period: 'Period',
+      strategy: 'Strategy',
     },
     // One line per metric block, chosen by src/lib/backtests/verdict.ts.
     verdict: {
@@ -62,6 +66,21 @@ export const backtests = defineStrings({
       tBody: 'The average trade after costs, against zero. It assumes independent trades, which flatters it.',
       rHead: 'What R measures',
       rBody: 'A trade’s profit after costs, divided by what it would have lost at its stop before costs.',
+      // The four figures above the results. Every value is computed from
+      // src/data/backtests/*.json on the page; only the labels live here.
+      summary: {
+        label: 'All published backtests in four figures',
+        strategies: 'Strategies tested',
+        oosLost: 'Lost money out-of-sample',
+        oosLostNote: 'Out-of-sample total return below zero, after fees and slippage.',
+        trades: 'Trades in total',
+        tradesNote: '{is} in-sample, {oos} out-of-sample',
+        period: 'Data period',
+        days: 'days',
+      },
+      cardLabel: '{name}: in-sample and out-of-sample',
+      open: 'Rules, costs and equity curve',
+      readHead: 'How to read these numbers',
     },
     detail: {
       title: '{name} backtest on {symbol} {interval}',
@@ -78,6 +97,27 @@ export const backtests = defineStrings({
         title: 'Equity curve of {name} on {symbol}',
         desc: 'In-sample, {isFrom} to {isTo}: equity went from {isStart} to {isEnd}. Out-of-sample, {oosFrom} to {oosTo}: from {oosStart} to {oosEnd}. The lowest daily point was {min}, the highest {max}.',
         caption: 'Each sample starts again from {capital}. The value axis starts at 0.',
+      },
+      // Drawn from the same daily equity points as the chart above. {isDd},
+      // {oosDd} and the days are computed on the page; {is} and {oos} are the
+      // engine's own max drawdown from the result file.
+      drawdown: {
+        head: 'Drawdown, day by day',
+        axis: 'Drawdown',
+        title: 'Drawdown of {name} on {symbol}',
+        desc: 'From the daily equity points. In-sample, the deepest day was {isDd} below the earlier high, on {isDay}. Out-of-sample, {oosDd}, on {oosDay}.',
+        caption:
+          'How far equity sits below its earlier high, one point a day. The axis runs from 0 to −100%, to scale. The engine measures max drawdown trade by trade ({is} in-sample, {oos} out-of-sample), so it can be deeper than the lowest daily point.',
+      },
+      distribution: {
+        note: 'No histogram of trade returns is drawn here: the result file on this site keeps the daily equity points, not the list of trades. Every trade is in the full result on GitHub.',
+      },
+      compare: {
+        label: 'In-sample and out-of-sample, side by side',
+      },
+      sections: {
+        rules: 'The rules',
+        assumptions: 'Assumptions and limits',
       },
       result: {
         head: 'After fees and slippage',
@@ -244,6 +284,9 @@ export const backtests = defineStrings({
       totalReturn: '總報酬率',
       maxDrawdown: '最大回撤',
       verdict: '判讀',
+      metric: '指標',
+      period: '期間',
+      strategy: '策略',
     },
     verdict: {
       insufficient: '交易筆數太少',
@@ -277,6 +320,19 @@ export const backtests = defineStrings({
       tBody: '拿扣掉成本後的平均單筆報酬去跟零比。計算時假設每筆交易互相獨立，這會讓數字偏好看。',
       rHead: 'R 量的是什麼',
       rBody: '一筆交易扣掉成本後的損益，除以它剛好在停損出場、不計成本時會賠的金額。',
+      summary: {
+        label: '所有回測的四個數字',
+        strategies: '測過的策略',
+        oosLost: '樣本外賠錢',
+        oosLostNote: '樣本外總報酬率小於零的策略數，已扣手續費與滑價。',
+        trades: '合計交易筆數',
+        tradesNote: '樣本內 {is} 筆，樣本外 {oos} 筆',
+        period: '資料期間',
+        days: '天',
+      },
+      cardLabel: '{name}：樣本內與樣本外',
+      open: '看規則、成本與權益曲線',
+      readHead: '這些數字怎麼讀',
     },
     detail: {
       title: '{name}回測：{symbol} {interval}',
@@ -293,6 +349,24 @@ export const backtests = defineStrings({
         title: '{name}在 {symbol} 的權益曲線',
         desc: '樣本內（{isFrom} 至 {isTo}）：權益從 {isStart} 變成 {isEnd}。樣本外（{oosFrom} 至 {oosTo}）：從 {oosStart} 變成 {oosEnd}。每日最低點 {min}，最高點 {max}。',
         caption: '樣本內和樣本外各自從 {capital} 重新開始。縱軸從 0 起算。',
+      },
+      drawdown: {
+        head: '每日回撤',
+        axis: '回撤',
+        title: '{name}在 {symbol} 的回撤',
+        desc: '由每日權益點算出。樣本內最深的一天比先前高點低 {isDd}（{isDay}）；樣本外最深 {oosDd}（{oosDay}）。',
+        caption:
+          '每天一個點，量的是權益比先前最高點低多少。縱軸從 0 畫到 −100%，照比例畫。回測工具的最大回撤是逐筆交易量的（樣本內 {is}，樣本外 {oos}），所以可能比圖上每日的最低點更深。',
+      },
+      distribution: {
+        note: '這一頁沒有畫單筆報酬的分佈圖：本站的結果檔只留每日權益點，沒有留逐筆交易。每一筆交易都在 GitHub 上的完整結果裡。',
+      },
+      compare: {
+        label: '樣本內與樣本外對照',
+      },
+      sections: {
+        rules: '策略規則',
+        assumptions: '假設與限制',
       },
       result: {
         head: '扣掉手續費與滑價之後',

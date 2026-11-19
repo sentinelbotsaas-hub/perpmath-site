@@ -4,35 +4,40 @@
 // all three locales.
 //
 // Every figure on the page comes from that file: the metrics, the dates, the
-// costs, the parameter values inside the rule sentences, the equity curve.
-// Nothing is typed in by hand, and a result this page cannot describe (an
-// unknown strategy, parameter, exchange or timing rule) stops the build.
+// costs, the parameter values inside the rule sentences, the equity curve and
+// the drawdown drawn from it. Nothing is typed in by hand, and a result this
+// page cannot describe (an unknown strategy, parameter, exchange or timing
+// rule) stops the build.
+//
+// Outline: the result (both samples side by side), the charts, the rules and
+// their parameters, the assumptions and what is left out, how to rerun it.
+// The result file keeps daily equity points but no list of trades, so there
+// is an equity curve and a drawdown chart and no histogram of trade returns.
 //
 // There is no exchange link on this page. The actions are "run it yourself"
 // and "view the code".
 import Cta from '../../../components/Cta.astro';
-import Scale from '../../../components/Scale.astro';
+import EquityCharts from '../../../components/research/EquityCharts.astro';
+import SampleCompare from '../../../components/research/SampleCompare.astro';
+import { sampleViews, toneOf } from '../../../components/research/samples';
+import Card from '../../../components/ui/Card.astro';
+import FormulaBlock from '../../../components/ui/FormulaBlock.astro';
+import Icon from '../../../components/ui/Icon.astro';
+import Meter from '../../../components/ui/Meter.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import SectionHeader from '../../../components/ui/SectionHeader.astro';
 import { backtests } from '../../../i18n/backtests';
+import { bot } from '../../../i18n/bot';
 import { common } from '../../../i18n/common';
 import { localeParam, localePath, locales } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
 import Base from '../../../layouts/Base.astro';
-import { PLOT_HEIGHT, PLOT_WIDTH, equityChart } from '../../../lib/backtests/chart';
 import { reproduceCommands, resultSourceUrl, strategySourceUrl } from '../../../lib/backtests/engine';
-import {
-  formatCount,
-  formatDay,
-  formatMoney,
-  formatParam,
-  formatPct,
-  formatRate,
-  formatSigned,
-  formatUtc,
-} from '../../../lib/backtests/format';
+import { formatCount, formatDay, formatMoney, formatParam, formatRate, formatUtc } from '../../../lib/backtests/format';
 import { backtestPath, results } from '../../../lib/backtests/load';
-import { SAMPLE_KEYS } from '../../../lib/backtests/types';
 import type { BacktestResult } from '../../../lib/backtests/types';
-import { lostInBothSamples, verdictOf } from '../../../lib/backtests/verdict';
+import { lostInBothSamples } from '../../../lib/backtests/verdict';
 import { fmt } from '../../../lib/fmt';
 import { breadcrumbLd } from '../../../lib/seo';
 
@@ -77,28 +82,10 @@ const { symbol, interval } = result;
 const execution = result.config.execution;
 const name = strategy.name;
 
-const blocks = SAMPLE_KEYS.map((key) => {
-  const block = result[key];
-  const m = block.metrics;
-  const sample = t.samples[key];
-  const tStat = formatSigned(m.t_stat) ?? na;
-  return {
-    key,
-    sample,
-    // "2025-11-18 to" and "2026-07-30": two parts, so a phone can stack them
-    rangeLead: fmt(t.range, { from: formatDay(block.first_bar), to: '' }).trim(),
-    rangeEnd: formatDay(block.last_bar),
-    trades: formatCount(m.trades),
-    wins: formatCount(m.wins),
-    winRate: m.win_rate_pct,
-    winRateText: formatPct(m.win_rate_pct) ?? na,
-    avgR: formatSigned(m.avg_r) ?? na,
-    tStat,
-    totalReturn: formatPct(m.total_return_pct) ?? na,
-    maxDrawdown: formatPct(m.max_drawdown_pct) ?? na,
-    verdictLine: fmt(d.result.verdictLine, { verdict: t.verdict[verdictOf(m)], t: tStat, n: formatCount(m.trades) }),
-  };
-});
+const blocks = sampleViews(result, t).map((view) => ({
+  ...view,
+  verdictLine: fmt(d.result.verdictLine, { verdict: view.verdict, t: view.tStat, n: view.trades }),
+}));
 const [inSample, outOfSample] = blocks;
 
 const head = fmt(lostInBothSamples(result) ? d.headLost : d.head, { name, symbol });
@@ -127,45 +114,27 @@ const params = Object.entries(paramValues).map(([key, value]) => ({
   label: t.params[key as keyof typeof t.params] ?? stop(`no label for parameter "${key}" in src/i18n/backtests.ts`),
 }));
 
-// --- equity chart -------------------------------------------------------------
-// Two SVGs, one inside the other. The inner one holds the lines in a fixed
-// 1000 x 400 box and is stretched to the plot area; its strokes keep their
-// width. The labels live in the outer one, placed by percentage, so they stay
-// at reading size on a phone.
-const chart = equityChart(result.in_sample.equity_curve, result.out_of_sample.equity_curve, result.split.oos_start);
-const PLOT_SHARE = 88; // percent of the SVG height; the rest holds the month labels
-const [isLine, oosLine] = chart.series;
-const chartId = `equity-${result.slug}`;
-const chartDesc = fmt(d.chart.desc, {
-  isFrom: formatDay(isLine.first.t),
-  isTo: formatDay(isLine.last.t),
-  isStart: formatMoney(isLine.first.equity),
-  isEnd: formatMoney(isLine.last.equity),
-  oosFrom: formatDay(oosLine.first.t),
-  oosTo: formatDay(oosLine.last.t),
-  oosStart: formatMoney(oosLine.first.equity),
-  oosEnd: formatMoney(oosLine.last.equity),
-  min: formatMoney(chart.minEquity),
-  max: formatMoney(chart.maxEquity),
-});
-const pct = (fraction: number) => `${(fraction * 100).toFixed(2)}%`;
-const plotY = (fraction: number) => `${(fraction * PLOT_SHARE).toFixed(2)}%`;
-
 // --- run it yourself ------------------------------------------------------------
 const commands = reproduceCommands(result);
+const steps = bot[locale].quickstart;
+// A SHA-256 is 64 characters: when it has to wrap, it wraps in the middle.
+const halves = (hash: string) => [hash.slice(0, hash.length / 2), hash.slice(hash.length / 2)];
 
-const jsonLd = breadcrumbLd(locale, [
+const trail = [
   { name: c.breadcrumb.home, path: '/' },
   { name: t.crumb, path: '/backtests/' },
   { name, path: PATH },
-]);
+];
+const jsonLd = breadcrumbLd(locale, trail);
 ---
 
 <Base locale={locale} path={PATH} title={title} description={description} jsonLd={jsonLd}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{head}</h1>
-      <p class="sub">{sub}</p>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={head} lede={sub} breadcrumb={trail}>
+      <p slot="meta" class="bt-meta">
+        <span>{fmt(d.data.marketValue, { symbol, interval })}</span>
+        <span class="num">{fmt(t.range, { from: formatDay(result.data.first_bar), to: formatDay(result.data.last_bar) })}</span>
+      </p>
       <Cta
         locale={locale}
         pageType="backtest"
@@ -173,225 +142,196 @@ const jsonLd = breadcrumbLd(locale, [
         primary={{ label: d.primary, href: '#run-it-yourself' }}
         secondary={{ label: d.secondary, href: strategySourceUrl(result.strategy) }}
       />
-    </div>
-  </section>
+    </PageHeader>
+  </PageContainer>
 
-  <section class="read curve">
-    <div class="wrap">
-      <h2 class="section-head">{d.chart.head}</h2>
-      <figure class="chart">
-        <svg class="equity" role="img" aria-labelledby={`${chartId}-title ${chartId}-desc`}>
-          <title id={`${chartId}-title`}>{fmt(d.chart.title, { name, symbol })}</title>
-          <desc id={`${chartId}-desc`}>{chartDesc}</desc>
-          <svg
-            x="0"
-            y="0"
-            width="100%"
-            height={`${PLOT_SHARE}%`}
-            viewBox={`0 0 ${PLOT_WIDTH} ${PLOT_HEIGHT}`}
-            preserveAspectRatio="none"
-          >
-            {
-              chart.yTicks.map((tick) => (
-                <line class="grid" x1="0" x2={PLOT_WIDTH} y1={tick.y * PLOT_HEIGHT} y2={tick.y * PLOT_HEIGHT} />
-              ))
-            }
-            {
-              chart.xTicks.map((tick) => (
-                <line class="tick" x1={tick.x * PLOT_WIDTH} x2={tick.x * PLOT_WIDTH} y1={PLOT_HEIGHT * 0.97} y2={PLOT_HEIGHT} />
-              ))
-            }
-            <line class="split" x1={chart.splitX * PLOT_WIDTH} x2={chart.splitX * PLOT_WIDTH} y1="0" y2={PLOT_HEIGHT} />
-            {chart.series.map((line) => <polyline class="line" points={line.points} />)}
-          </svg>
-          {
-            chart.yTicks.map((tick) => (
-              <text class="n" x="0" y={plotY(tick.y)} dy="-6">{formatMoney(tick.value)}</text>
-            ))
-          }
-          <text class="lab" x="0" y="0" dy="14">{d.chart.axis}</text>
-          <text class="lab" x={pct(chart.splitX)} y="0" dx="-8" dy="14" text-anchor="end">{t.samples.in_sample}</text>
-          <text class="lab" x="100%" y="0" dy="14" text-anchor="end">{t.samples.out_of_sample}</text>
-          {
-            chart.xTicks
-              .filter((tick) => tick.labelled)
-              .map((tick) => (
-                <text class="n" x={pct(tick.x)} y="97%" text-anchor="middle">{tick.label}</text>
-              ))
-          }
-        </svg>
-        <figcaption>{fmt(d.chart.caption, { capital: formatMoney(execution.initial_capital) })}</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <section class="verdict">
-    <div class="wrap">
-      <h2 class="section-head">{d.result.head}</h2>
-      <div class="returns">
-        {
-          blocks.map((b) => (
-            <div>
-              <p class="verdict-label">{d.result.totalReturn[b.key]}</p>
-              <p class="figure">{b.totalReturn}</p>
-              <p>{b.verdictLine}</p>
-            </div>
-          ))
-        }
-      </div>
-      <div class="tw">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">{t.columns.sample}</th>
-              <th scope="col">{t.columns.trades}</th>
-              <th scope="col">{t.columns.winRate}</th>
-              <th scope="col">{t.columns.avgR}</th>
-              <th scope="col">{t.columns.t}</th>
-              <th scope="col">{t.columns.totalReturn}</th>
-              <th scope="col">{t.columns.maxDrawdown}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              blocks.map((b) => (
-                <tr>
-                  <th scope="row">
-                    {b.sample}
-                    <span class="when">
-                      <span>{b.rangeLead}</span>{' '}<span>{b.rangeEnd}</span>
-                    </span>
-                  </th>
-                  <td class="num">{b.trades}</td>
-                  <td class="num">{b.winRateText}</td>
-                  <td class="num">{b.avgR}</td>
-                  <td class="num">{b.tStat}</td>
-                  <td class="num">{b.totalReturn}</td>
-                  <td class="num">{b.maxDrawdown}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-      <p class="fine">
-        {fmt(d.result.computed, { version: result.package_version, date: formatUtc(result.generated_at) })}
-      </p>
-    </div>
-  </section>
-
-  <section class="measure">
-    <div class="wrap">
-      <h2 class="section-head">{d.winRate.head}</h2>
+  <PageContainer flush id="result">
+    <SectionHeader title={d.result.head} />
+    <div class="cards cols-2">
       {
-        blocks.map((b) =>
-          b.winRate === null ? (
-            <p class="sub">{b.sample + sep + na}</p>
-          ) : (
-            <div class="rate">
-              <Scale
-                size="s"
-                room={b.winRate / 100}
-                label={fmt(d.winRate.barLabel, { sample: b.sample, pct: b.winRateText, wins: b.wins, trades: b.trades })}
-              />
-              <div class="ends">
-                <span>{fmt(d.winRate.line, { sample: b.sample, pct: b.winRateText, wins: b.wins, trades: b.trades })}</span>
-                <span>{fmt(d.winRate.full, { trades: b.trades })}</span>
-              </div>
-            </div>
-          ),
-        )
-      }
-      <p class="fine">{d.winRate.note}</p>
-    </div>
-  </section>
-
-  <section class="read">
-    <div class="wrap rows">
-      {
-        rules.map((rule, i) => (
-          <div id={i === 0 ? 'rules' : undefined}>
-            <h2>{rule.head}</h2>
-            <div class="prose">
-              <p>{rule.text}</p>
-            </div>
-          </div>
+        blocks.map((b) => (
+          <Card class="bt-return" data-tone={toneOf(b.totalReturnSign)}>
+            <p class="result-label">{d.result.totalReturn[b.key]}</p>
+            <p class="result-value">{b.totalReturn}</p>
+            <p class="bt-return-note">{b.verdictLine}</p>
+          </Card>
         ))
       }
-
-      <div id="parameters">
-        <h2>{d.params.head}</h2>
-        <div class="prose">
-          <dl class="kv">
-            {
-              params.map((p) => (
-                <>
-                  <dt>
-                    {p.label}
-                    <code class="num">{p.key}</code>
-                  </dt>
-                  <dd class="num">{p.value}</dd>
-                </>
-              ))
-            }
-          </dl>
-          <p>{d.params.note}</p>
-        </div>
+    </div>
+    <div class="bt-result">
+      <div>
+        <SampleCompare
+          locale={locale}
+          label={d.compare.label}
+          views={blocks}
+          caption={fmt(d.result.computed, { version: result.package_version, date: formatUtc(result.generated_at) })}
+        />
       </div>
+      <div id="win-rate">
+        <h3 class="h-card">{d.winRate.head}</h3>
+        {
+          blocks.map((b) =>
+            b.winRate === null ? (
+              <p class="bt-rate-none">{b.sample + sep + na}</p>
+            ) : (
+              <div class="bt-rate">
+                <Meter
+                  size="tall"
+                  value={b.winRate / 100}
+                  label={fmt(d.winRate.barLabel, { sample: b.sample, pct: b.winRateText, wins: b.wins, trades: b.trades })}
+                />
+                <div class="bt-rate-ends">
+                  <span>{fmt(d.winRate.line, { sample: b.sample, pct: b.winRateText, wins: b.wins, trades: b.trades })}</span>
+                  <span>{fmt(d.winRate.full, { trades: b.trades })}</span>
+                </div>
+              </div>
+            ),
+          )
+        }
+        <p class="bt-small">{d.winRate.note}</p>
+      </div>
+    </div>
+  </PageContainer>
 
+  <PageContainer flush id="equity">
+    <SectionHeader title={d.chart.head} />
+    <EquityCharts locale={locale} result={result} name={name} />
+    {
+      result.source.trades_dropped && (
+        <p class="bt-small bt-after-charts">
+          {d.distribution.note}{' '}
+          <a href={resultSourceUrl(result)} rel="noopener">{d.run.full}</a>
+        </p>
+      )
+    }
+  </PageContainer>
+
+  <PageContainer band id="rules">
+    <SectionHeader title={d.sections.rules}>
+      <a slot="action" class="lnk" href={strategySourceUrl(result.strategy)} rel="noopener">
+        {d.secondary}
+        <Icon name="arrow-right" size={16} />
+      </a>
+    </SectionHeader>
+    <div class="bt-rules-wrap">
+      <ol class="bt-rules">
+        {
+          rules.map((rule, i) => (
+            <li>
+              <span class="num bt-step" aria-hidden="true">{i + 1}</span>
+              <h3 class="h-card">{rule.head}</h3>
+              <p>{rule.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div id="parameters" class="bt-params">
+        <h3 class="h-card">{d.params.head}</h3>
+        <dl class="bt-kv">
+          {
+            params.map((p) => (
+              <div>
+                <dt>
+                  {p.label}
+                  <code>{p.key}</code>
+                </dt>
+                <dd class="num">{p.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="bt-small">{d.params.note}</p>
+      </div>
+    </div>
+  </PageContainer>
+
+  <PageContainer id="assumptions">
+    <SectionHeader title={d.sections.assumptions} />
+    <div class="bt-assume">
       <div id="costs">
-        <h2>{d.costs.head}</h2>
-        <div class="prose">
-          <dl class="kv">
+        <h3 class="h-card">{d.costs.head}</h3>
+        <dl class="bt-kv">
+          <div>
             <dt>{d.costs.fee}</dt>
             <dd>{fmt(d.costs.feeValue, { rate: formatRate(result.costs.fee_rate_per_side) })}</dd>
+          </div>
+          <div>
             <dt>{d.costs.slippage}</dt>
             <dd>{fmt(d.costs.slippageValue, { rate: formatRate(result.costs.slippage_per_fill) })}</dd>
+          </div>
+          <div>
             <dt>{d.costs.size}</dt>
             <dd>{fmt(d.costs.sizeValue, { size: formatRate(execution.notional_fraction) })}</dd>
+          </div>
+          <div>
             <dt>{d.costs.capital}</dt>
             <dd class="num">{formatMoney(execution.initial_capital)}</dd>
-          </dl>
-          <p>{d.costs.note}</p>
-        </div>
+          </div>
+        </dl>
+        <p class="bt-small">{d.costs.note}</p>
       </div>
 
       <div id="fills">
-        <h2>{d.fills.head}</h2>
-        <div class="prose">
-          <dl class="kv">
+        <h3 class="h-card">{d.fills.head}</h3>
+        <dl class="bt-kv">
+          <div>
             <dt>{d.fills.signal}</dt>
             <dd>{d.fills.signalValue}</dd>
+          </div>
+          <div>
             <dt>{d.fills.fill}</dt>
             <dd>{d.fills.fillValue}</dd>
+          </div>
+          <div>
             <dt>{d.fills.both}</dt>
             <dd>{d.fills.bothValue}</dd>
+          </div>
+          <div>
             <dt>{d.fills.lookahead}</dt>
             <dd>{fmt(d.fills.lookaheadValue, { runs: formatCount(timing.lookahead_check.shortened_runs) })}</dd>
-          </dl>
-        </div>
+          </div>
+        </dl>
       </div>
 
       <div id="not-modelled">
-        <h2>{d.omitted.head}</h2>
-        <div class="prose">
-          <ul>
-            {!result.costs.funding_modelled && <li>{d.omitted.funding}</li>}
-            {d.omitted.items.map((item) => <li>{item}</li>)}
-          </ul>
+        <h3 class="h-card">{d.omitted.head}</h3>
+        <ul class="bt-omitted">
+          {!result.costs.funding_modelled && <li>{d.omitted.funding}</li>}
+          {d.omitted.items.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </PageContainer>
+
+  <PageContainer band id="run-it-yourself">
+    <SectionHeader title={d.run.head} />
+    <div class="bt-run">
+      <div class="bt-commands">
+        <FormulaBlock label={steps.download} formula={commands.download} />
+        <FormulaBlock label={steps.backtest} formula={commands.backtest} />
+        <div class="bt-more">
+          <a class="lnk" href={localePath(locale, '/bot/#quickstart')}>{d.run.install}</a>
+          <a class="lnk" href={resultSourceUrl(result)} rel="noopener">{d.run.full}</a>
+          <a class="lnk" href={localePath(locale, '/backtests/')}>{d.back}</a>
         </div>
       </div>
 
       <div id="data">
-        <h2>{d.data.head}</h2>
-        <div class="prose">
-          <dl class="kv">
+        <h3 class="h-card">{d.data.head}</h3>
+        <dl class="bt-kv">
+          <div>
             <dt>{d.data.market}</dt>
             <dd>{fmt(d.data.marketValue, { symbol, interval })}</dd>
+          </div>
+          <div>
             <dt>{d.data.first}</dt>
             <dd class="num">{formatUtc(result.data.first_bar)}</dd>
+          </div>
+          <div>
             <dt>{d.data.last}</dt>
             <dd class="num">{formatUtc(result.data.last_bar)}</dd>
+          </div>
+          <div>
             <dt>{d.data.bars}</dt>
             <dd>
               {
@@ -401,203 +341,243 @@ const jsonLd = breadcrumbLd(locale, [
                 })
               }
             </dd>
+          </div>
+          <div>
             <dt>{d.data.split}</dt>
             <dd class="num">{formatUtc(result.split.oos_start)}</dd>
-            <dt>{d.data.hash}</dt>
-            <dd class="num hash">{result.data.file_sha256}</dd>
-            <dt>{d.data.resultHash}</dt>
-            <dd class="num hash">{result.source.sha256}</dd>
-          </dl>
-        </div>
-      </div>
-
-      <div id="run-it-yourself">
-        <h2>{d.run.head}</h2>
-        <div class="prose">
-          <pre>{commands.download + '\n' + commands.backtest}</pre>
-          <div class="more">
-            <a class="lnk" href={localePath(locale, '/bot/#quickstart')}>{d.run.install}</a>
-            <a class="lnk" href={resultSourceUrl(result)} rel="noopener">{d.run.full}</a>
-            <a class="lnk" href={localePath(locale, '/backtests/')}>{d.back}</a>
           </div>
-        </div>
+          <div class="bt-hash">
+            <dt>{d.data.hash}</dt>
+            <dd class="num">{halves(result.data.file_sha256)[0]}<wbr />{halves(result.data.file_sha256)[1]}</dd>
+          </div>
+          <div class="bt-hash">
+            <dt>{d.data.resultHash}</dt>
+            <dd class="num">{halves(result.source.sha256)[0]}<wbr />{halves(result.source.sha256)[1]}</dd>
+          </div>
+        </dl>
       </div>
     </div>
-  </section>
+  </PageContainer>
+</Base>
 
 <style>
-  /* Sections keep the site's full gap between them, also where two reading
-     bands meet and where the document rows follow the coral band. */
-  @media (min-width: 761px) {
-    .read + .read.curve {
-      padding-top: var(--space-2xl);
-    }
-
-    .rows > div:first-child {
-      padding-top: var(--space-2xl);
-    }
-  }
-
-  /* Equity chart: ink lines on the page surface, hairline grid, no fills. */
-  .chart {
-    margin-top: var(--space-lg);
-  }
-
-  .equity {
-    display: block;
-    width: 100%;
-    height: calc(var(--space-3xl) * 3.5);
-  }
-
-  .equity line,
-  .equity polyline {
-    fill: none;
-    vector-effect: non-scaling-stroke;
-  }
-
-  .equity .grid {
-    stroke: var(--color-rule);
-    stroke-width: var(--hairline);
-  }
-
-  .equity .tick,
-  .equity .split {
-    stroke: var(--color-ink);
-    stroke-width: var(--hairline);
-  }
-
-  .equity .line {
-    stroke: var(--color-ink);
-    stroke-width: var(--line);
-    stroke-linejoin: round;
-  }
-
-  /* Labels sit on the plot; a paper-coloured edge keeps them readable where a
-     line passes behind them. */
-  .equity text {
-    fill: var(--color-ink);
+  /* Market and period under the lede: two facts, a gap between them. */
+  .bt-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+    color: var(--color-text-muted);
     font-size: var(--text-sm);
-    paint-order: stroke;
-    stroke: var(--color-paper);
-    stroke-width: var(--space-2xs);
-    stroke-linejoin: round;
   }
 
-  .equity .n {
-    font-family: var(--font-outlier);
+  /* The two total returns. The sign is printed; the colour repeats it. */
+  .bt-return .result-value {
+    color: var(--tone, var(--color-text));
+  }
+
+  .bt-return-note {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  /* The full comparison beside the win-rate bars. */
+  .bt-result {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-10);
+    align-items: start;
+    margin-top: var(--space-10);
+  }
+
+  .bt-rate {
+    margin-top: var(--space-5);
+  }
+
+  .bt-rate-ends {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 var(--space-4);
+    margin-top: var(--space-2);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
     font-variant-numeric: tabular-nums;
   }
 
-  .equity .lab {
-    font-family: var(--font-body);
-    font-weight: 700;
+  .bt-rate-ends span:last-child {
+    color: var(--color-text-muted);
   }
 
-  .chart figcaption {
-    max-width: 60ch;
-    margin-top: var(--space-sm);
+  .bt-rate-none {
+    margin-top: var(--space-5);
+    color: var(--color-text-secondary);
+  }
+
+  .bt-small {
+    max-width: 72ch;
+    margin-top: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .bt-small a {
+    color: var(--color-accent);
+  }
+
+  .bt-after-charts {
     font-size: var(--text-sm);
   }
 
-  /* The two total returns, side by side. */
-  .returns {
+  /* The rules, in the order the strategy applies them, and beside them the
+     parameter values those rules were run with. */
+  .bt-rules-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: var(--space-12) var(--space-16);
+    align-items: start;
+  }
+
+  .bt-rules {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-xl);
-    margin-top: var(--space-lg);
+    gap: var(--space-10);
   }
 
-  .returns .figure {
-    margin-top: var(--space-xs);
-  }
-
-  .returns p:last-child {
-    max-width: 36ch;
-    margin-top: var(--space-sm);
-  }
-
-  .tw {
-    margin-top: var(--space-xl);
-  }
-
-  /* The sample name stays in view while the figures scroll sideways. */
-  .verdict th:first-child {
-    position: sticky;
-    left: 0;
-    background: var(--color-ink);
-  }
-
-  .verdict th,
-  .verdict td {
-    white-space: nowrap;
-    vertical-align: top;
-  }
-
-  .when {
-    display: block;
-    font-weight: 400;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .when span {
-    white-space: nowrap;
-  }
-
-  /* Win rate bars. */
-  .rate + .rate {
-    margin-top: var(--space-lg);
-  }
-
-  .rate .ends {
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Label and value pairs in the document rows. */
-  .kv {
+  .bt-rules li {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--space-sm) var(--space-lg);
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--space-2);
+    padding-top: var(--space-4);
+    border-top: var(--hairline) solid var(--color-border-hover);
   }
 
-  .kv dt {
-    font-weight: 700;
+  .bt-step {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
   }
 
-  .kv dt code {
+  .bt-rules p {
+    color: var(--color-text-secondary);
+  }
+
+  .bt-params {
+    max-width: var(--measure);
+  }
+
+  /* A parameter's value is short: the label takes the room, the value sits at the end. */
+  .bt-params .bt-kv > div {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .bt-params .bt-kv dd {
+    text-align: right;
+  }
+
+  /* Label and value pairs: one pair a row, a rule under each. */
+  .bt-kv {
+    margin-top: var(--space-3);
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  .bt-kv > div {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-1) var(--space-5);
+    padding-block: var(--space-3);
+    border-bottom: var(--hairline) solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+
+  .bt-kv dt {
+    color: var(--color-text-secondary);
+  }
+
+  .bt-kv dt code {
     display: block;
-    font-size: var(--text-sm);
-    font-weight: 400;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
   }
 
-  .hash {
-    font-size: var(--text-sm);
+  .bt-kv dd {
+    color: var(--color-text);
     overflow-wrap: anywhere;
   }
 
-  .more {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 var(--space-lg);
+  /* A SHA-256 is 64 characters: give it the full row. */
+  .bt-kv > .bt-hash {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .rows .lnk {
+  .bt-hash dd {
+    color: var(--color-text-secondary);
+    font-size: var(--text-xs);
+  }
+
+  .bt-assume {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .bt-omitted {
+    margin-top: var(--space-3);
+    border-top: var(--hairline) solid var(--color-border-hover);
+    font-size: var(--text-sm);
+  }
+
+  .bt-omitted li {
+    padding-block: var(--space-3);
+    border-bottom: var(--hairline) solid var(--color-border);
+    color: var(--color-text);
+  }
+
+  .bt-run {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .bt-commands {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .bt-more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-6);
+  }
+
+  .bt-more .lnk {
     white-space: normal;
   }
 
-  @media (max-width: 760px) {
-    .equity {
-      height: calc(var(--space-3xl) * 2.5);
-    }
-
-    .returns {
+  @media (max-width: 1100px) {
+    .bt-rules-wrap {
       grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-lg);
+    }
+  }
+
+  @media (max-width: 960px) {
+    .bt-result,
+    .bt-run {
+      grid-template-columns: minmax(0, 1fr);
     }
 
-    /* Two lines for the dates, so the figures get the room. */
-    .when span {
-      display: block;
+    .bt-assume {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .bt-rules,
+    .bt-assume {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
     }
   }
 </style>
-</Base>

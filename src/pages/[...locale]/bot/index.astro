@@ -1,12 +1,23 @@
 ---
 // /bot/: the open-source backtester. What it is, the commands to a first
-// result, what it does and does not do, and how it is paid for.
+// result, what it does and does not do, how it is paid for, and what its
+// shipped strategies returned.
 //
 // The commands are the ones in the engine's README (src/lib/backtests/engine.ts,
-// checked against the README by a test). The version number and the count of
-// shipped results come from src/data/backtests/. There is no exchange link on
-// this page: version 0.1 cannot trade, so there is nothing to open an account for.
+// checked against the README by a test). The version number, the count of
+// shipped results and the table of returns come from src/data/backtests/.
+// There is no exchange link on this page: version 0.1 cannot trade, so there
+// is nothing to open an account for.
 import Cta from '../../../components/Cta.astro';
+import { sampleViews, toneOf } from '../../../components/research/samples';
+import DataTable from '../../../components/ui/DataTable.astro';
+import FormulaBlock from '../../../components/ui/FormulaBlock.astro';
+import Icon from '../../../components/ui/Icon.astro';
+import type { IconName } from '../../../components/ui/Icon.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import SectionHeader from '../../../components/ui/SectionHeader.astro';
+import { backtests } from '../../../i18n/backtests';
 import { bot } from '../../../i18n/bot';
 import { common } from '../../../i18n/common';
 import { localePath, localeStaticPaths } from '../../../i18n/config';
@@ -14,7 +25,7 @@ import type { Locale } from '../../../i18n/config';
 import Base from '../../../layouts/Base.astro';
 import { BACKTEST_COMMAND, DOWNLOAD_COMMAND, INSTALL_COMMANDS, REPO_URL } from '../../../lib/backtests/engine';
 import { formatCount } from '../../../lib/backtests/format';
-import { results } from '../../../lib/backtests/load';
+import { backtestPath, results } from '../../../lib/backtests/load';
 import { softwareSourceCodeLd } from '../../../lib/backtests/seo';
 import { lostInBothSamples } from '../../../lib/backtests/verdict';
 import { fmt } from '../../../lib/fmt';
@@ -28,6 +39,7 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = bot[locale];
+const b = backtests[locale];
 const c = common[locale];
 const PATH = '/bot/';
 
@@ -42,31 +54,47 @@ const version = results
 const n = formatCount(results.length);
 const resultsHead = fmt(results.every(lostInBothSamples) ? t.results.headAllLost : t.results.head, { n });
 
+const facts = [
+  { label: t.facts.version, value: version, num: true },
+  { label: t.facts.language, value: t.facts.languageValue },
+  { label: t.facts.dependency, value: t.facts.dependencyValue },
+  { label: t.facts.license, value: t.facts.licenseValue },
+];
 const steps = [
   { head: t.quickstart.install, code: INSTALL_COMMANDS.join('\n'), note: t.quickstart.installNote },
   { head: t.quickstart.download, code: DOWNLOAD_COMMAND, note: t.quickstart.downloadNote },
   { head: t.quickstart.backtest, code: BACKTEST_COMMAND, note: t.quickstart.backtestNote },
 ];
-const statements = [
-  { head: t.does.head, body: t.does.body },
-  { head: t.doesNot.head, body: fmt(t.doesNot.body, { version }) },
-  { head: t.funded.head, body: t.funded.body },
+const statements: Array<{ head: string; body: string; icon: IconName }> = [
+  { head: t.does.head, body: t.does.body, icon: 'check' },
+  { head: t.doesNot.head, body: fmt(t.doesNot.body, { version }), icon: 'x' },
+  { head: t.funded.head, body: t.funded.body, icon: 'scale' },
 ];
+// What the shipped strategies returned, from the same files as /backtests/.
+const shipped = results.map((result) => {
+  const strategy = b.strategies[result.strategy as keyof typeof b.strategies];
+  if (!strategy) throw new Error(`bot: no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
+  return {
+    name: strategy.short,
+    href: localePath(locale, backtestPath(result.slug)),
+    market: `${result.symbol} ${result.interval}`,
+    views: sampleViews(result, b),
+  };
+});
 
-const jsonLd = [
-  softwareSourceCodeLd(locale, { path: PATH, description: t.description, version }),
-  breadcrumbLd(locale, [
-    { name: c.breadcrumb.home, path: '/' },
-    { name: c.nav.bot, path: PATH },
-  ]),
+// The same line /backtests/ prints under its results.
+const costsCaption = results.every((r) => !r.costs.funding_modelled) ? b.index.caption : b.index.captionPlain;
+
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.bot, path: PATH },
 ];
+const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.description, version }), breadcrumbLd(locale, trail)];
 ---
 
 <Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{t.head}</h1>
-      <p class="sub">{fmt(t.sub, { version })}</p>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.head} lede={fmt(t.sub, { version })} breadcrumb={trail}>
       <Cta
         locale={locale}
         pageType="bot"
@@ -74,44 +102,218 @@ const jsonLd = [
         primary={{ label: t.primary, href: '#quickstart' }}
         secondary={{ label: t.secondary, href: REPO_URL }}
       />
-    </div>
-  </section>
-
-  <section class="read" id="quickstart" aria-label={t.quickstart.head}>
-    <div class="wrap rows">
+    </PageHeader>
+    <dl class="bot-facts" aria-label={t.facts.label}>
       {
-        steps.map((step) => (
+        facts.map((fact) => (
           <div>
-            <h2>{step.head}</h2>
-            <div class="prose">
-              <pre>{step.code}</pre>
-              <p>{step.note}</p>
-            </div>
+            <dt>{fact.label}</dt>
+            <dd class:list={{ num: fact.num }}>{fact.value}</dd>
           </div>
         ))
       }
-    </div>
-  </section>
+    </dl>
+  </PageContainer>
 
-  <section class="read">
-    <div class="wrap rows">
+  <PageContainer band id="quickstart" aria-labelledby="quickstart-head">
+    <SectionHeader title={t.quickstart.head} id="quickstart-head" />
+    <ol class="bot-steps">
+      {
+        steps.map((step, i) => (
+          <li>
+            <div class="bot-step-text">
+              <span class="num bot-step-n" aria-hidden="true">{i + 1}</span>
+              <h3 class="h-card">{step.head}</h3>
+              <p>{step.note}</p>
+            </div>
+            <FormulaBlock formula={step.code} />
+          </li>
+        ))
+      }
+    </ol>
+  </PageContainer>
+
+  <PageContainer>
+    <div class="bot-statements">
       {
         statements.map((s) => (
           <div>
-            <h2>{s.head}</h2>
-            <div class="prose">
-              <p>{s.body}</p>
-            </div>
+            <h2>
+              <Icon name={s.icon} size={20} />
+              {s.head}
+            </h2>
+            <p>{s.body}</p>
           </div>
         ))
       }
-      <div>
-        <h2>{resultsHead}</h2>
-        <div class="prose">
-          <p>{t.results.body}</p>
-          <a class="lnk" href={localePath(locale, '/backtests/')}>{t.results.link}</a>
-        </div>
-      </div>
     </div>
-  </section>
+  </PageContainer>
+
+  <PageContainer flush>
+    <SectionHeader title={resultsHead} desc={t.results.body} href={localePath(locale, '/backtests/')} linkLabel={t.results.link} />
+    <DataTable locale={locale} label={t.results.tableLabel} caption={costsCaption} stickyFirst class="bot-table">
+      <thead>
+        <tr>
+          <th scope="col">{b.columns.strategy}</th>
+          <th scope="col" class="bot-l">{b.detail.data.market}</th>
+          {shipped[0].views.map((v) => <th scope="col">{b.detail.result.totalReturn[v.key]}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          shipped.map((row) => (
+            <tr>
+              <th scope="row">
+                <a href={row.href}>{row.name}</a>
+              </th>
+              <td class="num bot-l">{row.market}</td>
+              {row.views.map((v) => (
+                <td class="num bot-return" data-tone={toneOf(v.totalReturnSign)}>
+                  {v.totalReturn}
+                </td>
+              ))}
+            </tr>
+          ))
+        }
+      </tbody>
+    </DataTable>
+  </PageContainer>
 </Base>
+
+<style>
+  /* Four facts under the page head, ruled like a spec sheet. */
+  .bot-facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-10);
+    margin-top: var(--space-12);
+    padding-top: var(--space-5);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .bot-facts dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .bot-facts dd {
+    margin-top: var(--space-1);
+    color: var(--color-text);
+    font-weight: var(--weight-medium);
+  }
+
+  /* One step a row: what it is on the left, the command on the right. */
+  .bot-steps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bot-steps li {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--space-4) var(--space-10);
+    align-items: start;
+    padding-block: var(--space-8);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .bot-steps li:last-child {
+    padding-bottom: 0;
+  }
+
+  .bot-step-text {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .bot-step-n {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .bot-step-text p {
+    max-width: 44ch;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .bot-statements {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-10);
+  }
+
+  .bot-statements > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  /* The mark sits in the heading's own line: a tick, a cross, a pair of scales. */
+  .bot-statements h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-xl);
+    line-height: var(--leading-tight);
+  }
+
+  .bot-statements h2 :global(.icon) {
+    color: var(--color-text-muted);
+  }
+
+  .bot-statements p {
+    max-width: 44ch;
+    color: var(--color-text-secondary);
+  }
+
+  .bot-l {
+    text-align: left;
+  }
+
+  /* The pinned first column has a background of its own. In a
+     collapsed-border table the rules belong to the table, and that background
+     is painted over them, so the rules vanish in the first column. With
+     separate borders every cell draws its own rule. */
+  :global(.bot-table .data-table) {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .bot-return {
+    color: var(--tone, var(--color-text));
+  }
+
+  tbody a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    text-decoration-color: var(--color-border-control);
+  }
+
+  tbody a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  @media (max-width: 860px) {
+    .bot-steps li {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: var(--space-6);
+    }
+
+    .bot-statements {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .bot-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

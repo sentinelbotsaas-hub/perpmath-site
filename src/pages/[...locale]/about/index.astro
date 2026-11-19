@@ -1,6 +1,10 @@
 ---
 // /about/: who makes the site and how the numbers are made. Short and
 // factual: no credentials, no user counts, nothing that is not true today.
+import DocRow from '../../../components/article/DocRow.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import { common } from '../../../i18n/common';
 import { localePath, localeStaticPaths } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
 import { pages } from '../../../i18n/pages';
@@ -17,43 +21,40 @@ const { locale } = Astro.props;
 const t = pages[locale].about;
 // The author's research log.
 const RESEARCH_LOG = 'https://edgeautopsy.com';
+
+const trail = [
+  { name: common[locale].breadcrumb.home, path: '/' },
+  { name: t.title, path: '/about/' },
+];
 ---
 
 <Base locale={locale} path="/about/" title={t.title} description={t.description}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{t.head}</h1>
-      <p class="sub">{t.lead}</p>
-    </div>
-  </section>
-  <section class="read">
-    <div class="wrap rows">
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.head} lede={t.lead} breadcrumb={trail} />
+    <div class="doc-rows">
       {
         t.sections.map((section) => (
-          <div>
-            <h2>{section.title}</h2>
-            <div>
-              {section.body.map((paragraph) => (
-                <p>{paragraph}</p>
-              ))}
-            </div>
-          </div>
+          <DocRow title={section.title}>
+            {section.body.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </DocRow>
         ))
       }
-      <div>
-        <h2>{t.paidTitle}</h2>
-        <div>
-          <p>{AFFILIATE_ACTIVE ? t.paidBody : t.paidBodyPlain}</p>
-          <a class="lnk" href={localePath(locale, '/disclosure/')}>{t.paidLink}</a>
-        </div>
-      </div>
-      <div>
-        <h2>{t.logTitle}</h2>
-        <div>
-          <p>{t.logBody}</p>
-          <a class="lnk" href={RESEARCH_LOG} rel="noopener">{t.logLinkLabel}</a>
-        </div>
-      </div>
+      <DocRow title={t.paidTitle}>
+        <p>{AFFILIATE_ACTIVE ? t.paidBody : t.paidBodyPlain}</p>
+        <a class="lnk" href={localePath(locale, '/disclosure/')}>{t.paidLink}</a>
+      </DocRow>
+      <DocRow title={t.logTitle}>
+        <p>{t.logBody}</p>
+        <a class="lnk" href={RESEARCH_LOG} rel="noopener">{t.logLinkLabel}</a>
+      </DocRow>
     </div>
-  </section>
+  </PageContainer>
 </Base>
+
+<style>
+  .doc-rows {
+    margin-top: var(--space-12);
+  }
+</style>

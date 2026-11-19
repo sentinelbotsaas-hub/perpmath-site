@@ -1,0 +1,245 @@
+---
+// The equity curve and the drawdown of one backtest, as two inline SVG charts
+// built at build time from the equity points in the result file. No chart
+// library, nothing drawn in the browser.
+//
+//   <EquityCharts locale={locale} result={result} name={strategy.name} />
+//
+// Both charts share one time axis, so they line up when stacked. Each has a
+// sentence under it with the same figures (the text alternative), and the
+// drawdown caption says how its daily points differ from the engine's
+// trade-level max drawdown.
+//
+// How the SVGs are built: two SVGs, one inside the other. The inner one holds
+// the lines in a fixed 1000 x 400 box and is stretched to the plot area; its
+// strokes keep their width. The labels live in the outer one, placed by
+// percentage, so they stay at reading size on a phone.
+import ChartContainer from '../ui/ChartContainer.astro';
+import { backtests } from '../../i18n/backtests';
+import type { Locale } from '../../i18n/config';
+import { PLOT_HEIGHT, PLOT_WIDTH, equityChart } from '../../lib/backtests/chart';
+import { formatDay, formatMoney, formatPct } from '../../lib/backtests/format';
+import type { BacktestResult } from '../../lib/backtests/types';
+import { fmt } from '../../lib/fmt';
+import { drawdownChart } from './drawdown';
+
+interface Props {
+  locale: Locale;
+  result: BacktestResult;
+  /** The strategy's name, for the chart titles. */
+  name: string;
+}
+
+const { locale, result, name } = Astro.props;
+const t = backtests[locale];
+const d = t.detail;
+const { symbol } = result;
+
+const chart = equityChart(result.in_sample.equity_curve, result.out_of_sample.equity_curve, result.split.oos_start);
+const dd = drawdownChart(result.in_sample.equity_curve, result.out_of_sample.equity_curve);
+
+const PLOT_SHARE = 88; // percent of the SVG height; the rest holds the month labels
+const [isLine, oosLine] = chart.series;
+const [isDd, oosDd] = dd.series;
+const eqId = `equity-${result.slug}`;
+const ddId = `drawdown-${result.slug}`;
+
+const equityDesc = fmt(d.chart.desc, {
+  isFrom: formatDay(isLine.first.t),
+  isTo: formatDay(isLine.last.t),
+  isStart: formatMoney(isLine.first.equity),
+  isEnd: formatMoney(isLine.last.equity),
+  oosFrom: formatDay(oosLine.first.t),
+  oosTo: formatDay(oosLine.last.t),
+  oosStart: formatMoney(oosLine.first.equity),
+  oosEnd: formatMoney(oosLine.last.equity),
+  min: formatMoney(chart.minEquity),
+  max: formatMoney(chart.maxEquity),
+});
+const na = t.na;
+const drawdownDesc = fmt(d.drawdown.desc, {
+  isDd: formatPct(isDd.deepest.pct) ?? na,
+  isDay: formatDay(isDd.deepest.t),
+  oosDd: formatPct(oosDd.deepest.pct) ?? na,
+  oosDay: formatDay(oosDd.deepest.t),
+});
+const drawdownCaption = fmt(d.drawdown.caption, {
+  is: formatPct(result.in_sample.metrics.max_drawdown_pct) ?? na,
+  oos: formatPct(result.out_of_sample.metrics.max_drawdown_pct) ?? na,
+});
+
+const pct = (fraction: number) => `${(fraction * 100).toFixed(2)}%`;
+const plotY = (fraction: number) => `${(fraction * PLOT_SHARE).toFixed(2)}%`;
+// The drawdown hangs from the top edge, so its labels get a strip of their
+// own above the plot instead of sitting on the filled area.
+const DD_TOP = 12; // percent of the SVG height
+const ddY = (fraction: number) => `${(DD_TOP + fraction * (PLOT_SHARE - DD_TOP)).toFixed(2)}%`;
+// The equity line closed down to the zero line, for the fill under it.
+const under = (line: (typeof chart.series)[number]) =>
+  `${(line.x0 * PLOT_WIDTH).toFixed(1)},${PLOT_HEIGHT} ${line.points} ${(line.x1 * PLOT_WIDTH).toFixed(1)},${PLOT_HEIGHT}`;
+const monthLabels = chart.xTicks.filter((tick) => tick.labelled);
+---
+
+<div class="bt-charts">
+  <ChartContainer locale={locale} ratio="16 / 6" framed class="bt-eq-box">
+    <svg class="bt-plot" role="img" aria-labelledby={`${eqId}-title ${eqId}-desc`}>
+      <title id={`${eqId}-title`}>{fmt(d.chart.title, { name, symbol })}</title>
+      <desc id={`${eqId}-desc`}>{equityDesc}</desc>
+      <svg x="0" y="0" width="100%" height={`${PLOT_SHARE}%`} viewBox={`0 0 ${PLOT_WIDTH} ${PLOT_HEIGHT}`} preserveAspectRatio="none">
+        {chart.series.map((line) => <polygon class="bt-under" points={under(line)} />)}
+        {chart.yTicks.map((tick) => <line class="bt-grid" x1="0" x2={PLOT_WIDTH} y1={tick.y * PLOT_HEIGHT} y2={tick.y * PLOT_HEIGHT} />)}
+        {chart.xTicks.map((tick) => <line class="bt-tick" x1={tick.x * PLOT_WIDTH} x2={tick.x * PLOT_WIDTH} y1={PLOT_HEIGHT * 0.97} y2={PLOT_HEIGHT} />)}
+        <line class="bt-split" x1={chart.splitX * PLOT_WIDTH} x2={chart.splitX * PLOT_WIDTH} y1="0" y2={PLOT_HEIGHT} />
+        {chart.series.map((line) => <polyline class="bt-line" points={line.points} />)}
+      </svg>
+      {chart.yTicks.map((tick) => <text class="bt-n" x="0" y={plotY(tick.y)} dy="-6">{formatMoney(tick.value)}</text>)}
+      <text class="bt-lab" x="0" y="0" dy="14">{d.chart.axis}</text>
+      <text class="bt-lab" x={pct(chart.splitX)} y="0" dx="-8" dy="14" text-anchor="end">{t.samples.in_sample}</text>
+      <text class="bt-lab" x="100%" y="0" dy="14" text-anchor="end">{t.samples.out_of_sample}</text>
+      {monthLabels.map((tick) => <text class="bt-n" x={pct(tick.x)} y="97%" text-anchor="middle">{tick.label}</text>)}
+    </svg>
+    <div slot="footer" class="bt-chart-text">
+      <p>{equityDesc}</p>
+      <p class="bt-chart-fine">{fmt(d.chart.caption, { capital: formatMoney(result.config.execution.initial_capital) })}</p>
+    </div>
+  </ChartContainer>
+
+  <ChartContainer locale={locale} title={d.drawdown.head} level={3} ratio="16 / 4" framed class="bt-dd-box">
+    <svg class="bt-plot" role="img" aria-labelledby={`${ddId}-title ${ddId}-desc`}>
+      <title id={`${ddId}-title`}>{fmt(d.drawdown.title, { name, symbol })}</title>
+      <desc id={`${ddId}-desc`}>{drawdownDesc}</desc>
+      <svg x="0" y={`${DD_TOP}%`} width="100%" height={`${PLOT_SHARE - DD_TOP}%`} viewBox={`0 0 ${PLOT_WIDTH} ${PLOT_HEIGHT}`} preserveAspectRatio="none">
+        {dd.series.map((s) => <polygon class="bt-dd-area" points={s.area} />)}
+        {dd.yTicks.map((tick) => <line class="bt-grid" x1="0" x2={PLOT_WIDTH} y1={tick.y * PLOT_HEIGHT} y2={tick.y * PLOT_HEIGHT} />)}
+        {chart.xTicks.map((tick) => <line class="bt-tick" x1={tick.x * PLOT_WIDTH} x2={tick.x * PLOT_WIDTH} y1={PLOT_HEIGHT * 0.97} y2={PLOT_HEIGHT} />)}
+        <line class="bt-split" x1={chart.splitX * PLOT_WIDTH} x2={chart.splitX * PLOT_WIDTH} y1="0" y2={PLOT_HEIGHT} />
+        {dd.series.map((s) => <polyline class="bt-dd-line" points={s.line} />)}
+      </svg>
+      {
+        dd.yTicks
+          .filter((tick) => tick.value > 0)
+          .map((tick) => (
+            <text class="bt-n" x="0" y={ddY(tick.y)} dy="-6">{formatPct(-tick.value, 0)}</text>
+          ))
+      }
+      <text class="bt-lab" x="0" y="0" dy="14">{d.drawdown.axis}</text>
+      <text class="bt-lab" x={pct(chart.splitX)} y="0" dx="-8" dy="14" text-anchor="end">{t.samples.in_sample}</text>
+      <text class="bt-lab" x="100%" y="0" dy="14" text-anchor="end">{t.samples.out_of_sample}</text>
+      {monthLabels.map((tick) => <text class="bt-n" x={pct(tick.x)} y="97%" text-anchor="middle">{tick.label}</text>)}
+    </svg>
+    <div slot="footer" class="bt-chart-text">
+      <p>{drawdownDesc}</p>
+      <p class="bt-chart-fine">{drawdownCaption}</p>
+    </div>
+  </ChartContainer>
+</div>
+
+<style>
+  .bt-charts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  /* The plot's height follows its width. A wide ratio is too flat on a small
+     screen, so the ratio changes there. (Not a min-height: on a box with an
+     aspect ratio a minimum height becomes a minimum width, and the chart
+     would stick out of a phone.) */
+  @media (max-width: 960px) {
+    .bt-charts :global(.bt-eq-box .chart-box-plot) {
+      aspect-ratio: 16 / 8;
+    }
+
+    .bt-charts :global(.bt-dd-box .chart-box-plot) {
+      aspect-ratio: 16 / 6;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .bt-charts :global(.bt-eq-box .chart-box-plot) {
+      aspect-ratio: 4 / 3;
+    }
+
+    .bt-charts :global(.bt-dd-box .chart-box-plot) {
+      aspect-ratio: 16 / 10;
+    }
+  }
+
+  .bt-plot :is(line, polyline) {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .bt-grid {
+    stroke: var(--color-border);
+    stroke-width: var(--hairline);
+  }
+
+  .bt-tick,
+  .bt-split {
+    stroke: var(--color-text-muted);
+    stroke-width: var(--hairline);
+  }
+
+  .bt-line {
+    stroke: var(--color-text);
+    stroke-width: var(--line);
+    stroke-linejoin: round;
+  }
+
+  /* From the line down to zero: the axis starts at 0, and the fill shows it. */
+  .bt-under {
+    fill: var(--color-hover);
+    stroke: none;
+  }
+
+  .bt-dd-line {
+    stroke: var(--color-negative);
+    stroke-width: var(--line);
+    stroke-linejoin: round;
+  }
+
+  .bt-dd-area {
+    fill: var(--color-negative-soft);
+    stroke: none;
+  }
+
+  /* Labels sit on the plot; an edge in the card's colour keeps them readable
+     where a line passes behind them. */
+  .bt-plot text {
+    fill: var(--color-text-secondary);
+    font-size: var(--text-2xs);
+    paint-order: stroke;
+    stroke: var(--color-surface);
+    stroke-width: var(--space-1);
+    stroke-linejoin: round;
+  }
+
+  .bt-n {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bt-lab {
+    font-family: var(--font-body);
+    font-weight: var(--weight-medium);
+  }
+
+  .bt-plot .bt-lab {
+    fill: var(--color-text);
+  }
+
+  .bt-chart-text {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    max-width: 88ch;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .bt-chart-fine {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+</style>

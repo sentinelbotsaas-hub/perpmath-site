@@ -1,0 +1,196 @@
+---
+// The body of an article: wraps the rendered Markdown and styles everything
+// Markdown can produce (headings, paragraphs, lists, tables, code blocks,
+// quotes, links). The Markdown itself is never changed for layout reasons.
+//
+//   <ArticleProse><Content /></ArticleProse>
+//
+// The styles are global on purpose: the elements come out of the Markdown
+// renderer, not out of this template, so a scoped rule could not reach them.
+// Every rule is prefixed with .art-prose and builds on .prose in base.css.
+//
+// Code blocks: astro.config.mjs sets Shiki's "css-variables" theme, so a
+// highlighted token carries style="color:var(--astro-code-token-...)". The
+// variables are set here from the design tokens, once, and follow the dark
+// and light themes by themselves. Contrast against --color-surface (the code
+// block's background), dark / light, computed with the WCAG formula:
+// keyword 6.32 / 6.29, string 9.80 / 5.48, constant 7.41 / 5.17,
+// function 11.29 / 5.02, comment 5.58 / 5.28, parameter and punctuation
+// 7.35 / 7.73, plain text 17.15 / 17.72. All above 4.5.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['prose', 'art-prose', className]}>
+  <slot />
+</div>
+
+<style is:global>
+  .prose.art-prose {
+    --astro-code-foreground: var(--color-text);
+    --astro-code-background: var(--color-surface);
+    --astro-code-token-constant: var(--color-chart-blue);
+    --astro-code-token-string: var(--color-positive);
+    --astro-code-token-string-expression: var(--color-positive);
+    --astro-code-token-comment: var(--color-text-muted);
+    --astro-code-token-keyword: var(--color-accent);
+    --astro-code-token-parameter: var(--color-text-secondary);
+    --astro-code-token-function: var(--color-warning);
+    --astro-code-token-punctuation: var(--color-text-secondary);
+    --astro-code-token-link: var(--color-accent);
+  }
+
+  /* --- headings: one clear step down from the page title ------------------- */
+  .prose.art-prose h2 {
+    margin-top: var(--space-16);
+    font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
+  }
+
+  .prose.art-prose h3 {
+    margin-top: var(--space-10);
+    font-size: var(--text-card);
+  }
+
+  .prose.art-prose :is(h2, h3, h4) + * {
+    margin-top: var(--space-4);
+  }
+
+  .prose.art-prose > * + * {
+    margin-top: var(--space-5);
+  }
+
+  /* --- links: sources and references --------------------------------------- */
+  .prose.art-prose a {
+    text-decoration-color: var(--color-border-control);
+    overflow-wrap: anywhere;
+  }
+
+  .prose.art-prose a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* --- tables ----------------------------------------------------------------
+     Markdown gives a bare <table>. It becomes its own scroll box: as wide as
+     its content, never wider than the column, and it scrolls sideways inside
+     itself. The first column stays in view so a row can still be read. */
+  .prose.art-prose table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    margin-top: var(--space-6);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border: var(--hairline) solid var(--color-border);
+    border-radius: var(--radius-control);
+  }
+
+  .prose.art-prose table + * {
+    margin-top: var(--space-6);
+  }
+
+  .prose.art-prose :is(th, td) {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .prose.art-prose thead th {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  .prose.art-prose tbody tr:last-child :is(th, td) {
+    border-bottom: 0;
+  }
+
+  .prose.art-prose :is(th, td):first-child {
+    position: sticky;
+    left: 0;
+    background: var(--color-bg);
+    box-shadow: inset calc(var(--hairline) * -1) 0 0 var(--color-border);
+    color: var(--color-text);
+    font-weight: var(--weight-medium);
+  }
+
+  .prose.art-prose thead th:first-child {
+    background: var(--color-surface);
+  }
+
+  /* --- code blocks, formulas and worked sums ---------------------------------- */
+  .prose.art-prose pre {
+    margin-top: var(--space-5);
+    border-radius: var(--radius-card);
+  }
+
+  .prose.art-prose pre + * {
+    margin-top: var(--space-5);
+  }
+
+  /* base.css flattens every token to the text colour (it was written for a
+     fixed dark palette). These win over it and bring the token colours back. */
+  .prose.art-prose pre.astro-code span[style*='token-constant'] {
+    color: var(--astro-code-token-constant) !important;
+  }
+
+  .prose.art-prose pre.astro-code span[style*='token-string'] {
+    color: var(--astro-code-token-string) !important;
+  }
+
+  .prose.art-prose pre.astro-code span[style*='token-string-expression'] {
+    color: var(--astro-code-token-string-expression) !important;
+  }
+
+  .prose.art-prose pre.astro-code span[style*='token-comment'] {
+    color: var(--astro-code-token-comment) !important;
+  }
+
+  .prose.art-prose pre.astro-code span[style*='token-keyword'] {
+    color: var(--astro-code-token-keyword) !important;
+  }
+
+  .prose.art-prose pre.astro-code span[style*='token-parameter'] {
+    color: var(--astro-code-token-parameter) !important;
+  }
+
+  .prose.art-prose pre.astro-code span[style*='token-function'] {
+    color: var(--astro-code-token-function) !important;
+  }
+
+  .prose.art-prose pre.astro-code span[style*='token-punctuation'] {
+    color: var(--astro-code-token-punctuation) !important;
+  }
+
+  .prose.art-prose pre.astro-code span[style*='token-link'] {
+    color: var(--astro-code-token-link) !important;
+  }
+
+  /* --- warnings and asides: a Markdown quote ---------------------------------- */
+  .prose.art-prose blockquote {
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-surface);
+    border: var(--hairline) solid var(--color-border-hover);
+    border-radius: var(--radius-control);
+    color: var(--color-text);
+  }
+
+  .prose.art-prose blockquote > * + * {
+    margin-top: var(--space-3);
+  }
+
+  @media (max-width: 760px) {
+    .prose.art-prose h2 {
+      margin-top: var(--space-12);
+      font-size: var(--text-xl);
+    }
+
+    .prose.art-prose h3 {
+      margin-top: var(--space-8);
+    }
+
+    .prose.art-prose :is(th, td) {
+      padding: var(--space-3);
+    }
+  }
+</style>

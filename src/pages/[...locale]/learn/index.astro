@@ -1,11 +1,23 @@
 ---
-// /learn/: list of articles in this locale. Builds with zero articles.
+// /learn/: the articles of this locale, newest first. Builds with zero
+// articles (English has fewer than Chinese: the page shows what exists).
+//
+// With few articles they are one grid. From GROUP_MIN articles on, and only
+// if they fall into more than one category, they are grouped by category
+// (the `category` field of the frontmatter), each group under its own heading.
+import ArticleCard from '../../../components/ui/ArticleCard.astro';
+import Button from '../../../components/ui/Button.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import SectionHeader from '../../../components/ui/SectionHeader.astro';
 import { common } from '../../../i18n/common';
 import { localePath, localeStaticPaths } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
+import { toHans } from '../../../i18n/hans';
 import { pages } from '../../../i18n/pages';
 import Base from '../../../layouts/Base.astro';
 import { articlePath, getArticlesFor } from '../../../lib/articles';
+import type { LocalizedArticle } from '../../../lib/articles';
 import { breadcrumbLd } from '../../../lib/seo';
 
 export const getStaticPaths = localeStaticPaths;
@@ -14,47 +26,86 @@ interface Props {
   locale: Locale;
 }
 
+/** Fewer articles than this are easier to scan as one list. */
+const GROUP_MIN = 6;
+
 const { locale } = Astro.props;
 const t = pages[locale].learn;
 const c = common[locale];
 const articles = await getArticlesFor(locale);
 
-const jsonLd = breadcrumbLd(locale, [
+// The generated Simplified articles keep the Traditional `category` (the
+// generator copies that field as it is), so it is converted here.
+const categoryOf = (a: LocalizedArticle) => (locale === 'zh-hans' ? toHans(a.entry.data.category) : a.entry.data.category);
+
+// Categories in the order of their newest article.
+const byCategory = new Map<string, LocalizedArticle[]>();
+for (const article of articles) {
+  const name = categoryOf(article);
+  byCategory.set(name, [...(byCategory.get(name) ?? []), article]);
+}
+const grouped = articles.length >= GROUP_MIN && byCategory.size > 1;
+const columns = articles.length >= 3 ? 'cols-3' : 'cols-2';
+
+const trail = [
   { name: c.breadcrumb.home, path: '/' },
   { name: c.nav.learn, path: '/learn/' },
-]);
+];
+const jsonLd = breadcrumbLd(locale, trail);
 ---
 
 <Base locale={locale} path="/learn/" title={t.title} description={t.description} jsonLd={jsonLd}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{t.head}</h1>
-      <p class="sub">{articles.length > 0 ? t.sub : t.empty}</p>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.head} lede={articles.length > 0 ? t.sub : t.empty} breadcrumb={trail}>
       {
         articles.length === 0 && (
           <div class="acts">
-            <a class="btn" href={localePath(locale, '/tools/')}>
-              {t.toTools}
-            </a>
+            <Button href={localePath(locale, '/tools/')}>{t.toTools}</Button>
           </div>
         )
       }
-    </div>
-  </section>
-  {
-    articles.length > 0 && (
-      <section class="read">
-        <div class="wrap">
-          <ol class="entries">
-            {articles.map(({ entry }) => (
-              <li>
-                <a href={localePath(locale, articlePath(entry.data.slug))}>{entry.data.title}</a>
-                <p>{entry.data.description}</p>
-              </li>
-            ))}
-          </ol>
+    </PageHeader>
+
+    {
+      articles.length > 0 && !grouped && (
+        <div class:list={['cards', columns, 'learn-list']}>
+          {articles.map((article) => (
+            <ArticleCard
+              href={localePath(locale, articlePath(article.entry.data.slug))}
+              title={article.entry.data.title}
+              desc={article.entry.data.description}
+              category={categoryOf(article)}
+              date={article.entry.data.date}
+              level={2}
+            />
+          ))}
         </div>
-      </section>
-    )
+      )
+    }
+  </PageContainer>
+
+  {
+    grouped &&
+      [...byCategory].map(([name, list]) => (
+        <PageContainer flush>
+          <SectionHeader title={name} />
+          <div class="cards cols-3">
+            {list.map((article) => (
+              <ArticleCard
+                href={localePath(locale, articlePath(article.entry.data.slug))}
+                title={article.entry.data.title}
+                desc={article.entry.data.description}
+                date={article.entry.data.date}
+              />
+            ))}
+          </div>
+        </PageContainer>
+      ))
   }
 </Base>
+
+<style>
+  .learn-list {
+    margin-top: var(--space-12);
+  }
+</style>

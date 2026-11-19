@@ -1,6 +1,6 @@
 ---
 // 404. A static host serves one 404 file for every missing address, so this
-// page carries all three languages, one band each, and a small script hides
+// page carries all three languages, one block each, and a small script hides
 // the two that do not match the address. Without scripting all three show.
 import { htmlLang, localePath, locales } from '../i18n/config';
 import { pages } from '../i18n/pages';
@@ -10,24 +10,29 @@ const en = pages.en.notFound;
 ---
 
 <Base locale="en" path="/404/" switcherPath="/" title={en.title} description={en.description} noindex>
-  {
-    locales.map((locale) => {
-      const t = pages[locale].notFound;
-      const Heading = locale === 'en' ? 'h1' : 'h2';
-      return (
-        <section class="read band" lang={htmlLang[locale]} data-404={locale}>
-          <div class="wrap">
-            <Heading class="head">{t.head}</Heading>
-            <p class="sub">{t.body}</p>
-            <div class="acts">
-              <a class="btn" href={localePath(locale, '/')}>{t.toHome}</a>
-              <a class="lnk" href={localePath(locale, '/tools/')}>{t.toTools}</a>
-            </div>
-          </div>
-        </section>
-      );
-    })
-  }
+  <section class="section lead">
+    <div class="wrap">
+      <p class="num nf-code" aria-hidden="true">404</p>
+      <div class="nf-blocks">
+        {
+          locales.map((locale) => {
+            const t = pages[locale].notFound;
+            const Heading = locale === 'en' ? 'h1' : 'h2';
+            return (
+              <div class="nf-block" lang={htmlLang[locale]} data-404={locale}>
+                <Heading class="h-page">{t.head}</Heading>
+                <p class="lede">{t.body}</p>
+                <div class="acts">
+                  <a class="btn" href={localePath(locale, '/')}>{t.toHome}</a>
+                  <a class="lnk" href={localePath(locale, '/tools/')}>{t.toTools}</a>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
   <script is:inline>
     (function () {
       var first = location.pathname.split('/')[1];
@@ -41,3 +46,21 @@ const en = pages.en.notFound;
     })();
   </script>
 </Base>
+
+<style>
+  /* The status code as a figure, in the number face like every other number. */
+  .nf-code {
+    color: var(--color-text-muted);
+    font-size: var(--text-result);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-figure);
+    letter-spacing: -0.03em;
+  }
+
+  .nf-blocks {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-16);
+    margin-top: var(--space-6);
+  }
+</style>

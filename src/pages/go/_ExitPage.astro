@@ -1,0 +1,54 @@
+---
+// Static page that sits at an exit address (/go/bybit/, /go/bybit-testnet/).
+// The underscore keeps this file out of the routes; the two index pages next
+// to it render it.
+//
+// On Vercel the redirect in vercel.json answers first and this page is never
+// seen. It exists so the address is not a 404 in `astro preview` or on a host
+// without the redirect rules. It deliberately has no link to Bybit: if the
+// region gate is not running, nobody is sent anywhere.
+//
+// The address exists once, not per language, so the page carries all three
+// languages, one block each.
+import { htmlLang, localePath, locales } from '../../i18n/config';
+import { pages } from '../../i18n/pages';
+import Base from '../../layouts/Base.astro';
+
+interface Props {
+  /** Locale-less path of this exit, e.g. "/go/bybit/". */
+  path: string;
+}
+
+const { path } = Astro.props;
+const en = pages.en.go;
+---
+
+<Base locale="en" path={path} switcherPath="/" title={en.title} description={en.description} noindex>
+  <section class="section lead">
+    <div class="wrap exit-blocks">
+      {
+        locales.map((locale) => {
+          const t = pages[locale].go;
+          const Heading = locale === 'en' ? 'h1' : 'h2';
+          return (
+            <div lang={htmlLang[locale]}>
+              <Heading class="h-page">{t.head}</Heading>
+              <p class="lede">{t.body}</p>
+              <div class="acts">
+                <a class="btn" href={localePath(locale, '/')}>{t.back}</a>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .exit-blocks {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-16);
+  }
+</style>
