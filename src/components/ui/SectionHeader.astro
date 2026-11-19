@@ -1,0 +1,43 @@
+---
+// The heading of a section: the title, an optional line under it, and an
+// optional link on the right ("All tools", "All results").
+//
+//   <SectionHeader title={t.tools.head} desc={t.tools.sub}
+//                  href={localePath(locale, '/tools/')} linkLabel={t.tools.all} />
+//
+// The link is plain text with an icon after it; do not put an arrow
+// character in the label. For anything other than one link, use the slot:
+//   <SectionHeader title="..."><button class="btn sm secondary" slot="action">...</button></SectionHeader>
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  desc?: string;
+  /** Heading level. Default 2. */
+  level?: 2 | 3;
+  /** id for the heading, for in-page links and aria-labelledby. */
+  id?: string;
+  href?: string;
+  linkLabel?: string;
+  class?: string;
+}
+
+const { title, desc, level = 2, id, href, linkLabel, class: className } = Astro.props;
+const Heading = level === 2 ? 'h2' : 'h3';
+---
+
+<div class:list={['section-header', className]}>
+  <div>
+    <Heading class={level === 2 ? 'h-section' : 'h-card'} id={id}>{title}</Heading>
+    {desc && <p>{desc}</p>}
+  </div>
+  {
+    href && linkLabel && (
+      <a class="lnk" href={href}>
+        {linkLabel}
+        <Icon name="arrow-right" size={16} />
+      </a>
+    )
+  }
+  <slot name="action" />
+</div>

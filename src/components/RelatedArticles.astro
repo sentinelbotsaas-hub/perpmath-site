@@ -1,12 +1,14 @@
 ---
 // "Related lessons" at the foot of a tool, data, daily or backtest page.
 // Driven by src/lib/related.ts; renders nothing when no listed lesson exists
-// in this locale.
+// in this locale. Base.astro places it at the end of <main> on every page.
 import { common } from '../i18n/common';
 import { localePath } from '../i18n/config';
 import type { Locale } from '../i18n/config';
+import { toHans } from '../i18n/hans';
 import { articlePath, getArticlesFor } from '../lib/articles';
 import { RELATED } from '../lib/related';
+import ArticleCard from './ui/ArticleCard.astro';
 
 interface Props {
   locale: Locale;
@@ -17,21 +19,29 @@ const { locale, path } = Astro.props;
 const slugs = RELATED[path] ?? [];
 const all = slugs.length > 0 ? await getArticlesFor(locale) : [];
 const items = slugs.flatMap((slug) => all.filter((a) => a.entry.data.slug === slug));
+// The generated Simplified articles keep the Traditional `category` (the
+// generator copies that field as it is), so it is converted here.
+const category = (text: string) => (locale === 'zh-hans' ? toHans(text) : text);
 ---
 
 {
   items.length > 0 && (
-    <section class="read">
+    <section class="section snug related" aria-labelledby="related-head">
       <div class="wrap">
-        <h2>{common[locale].related}</h2>
-        <ol class="entries">
+        <h2 class="h-section" id="related-head">
+          {common[locale].related}
+        </h2>
+        <div class="cards cols-3 related-list">
           {items.map(({ entry }) => (
-            <li>
-              <a href={localePath(locale, articlePath(entry.data.slug))}>{entry.data.title}</a>
-              <p>{entry.data.description}</p>
-            </li>
+            <ArticleCard
+              href={localePath(locale, articlePath(entry.data.slug))}
+              title={entry.data.title}
+              desc={entry.data.description}
+              category={category(entry.data.category)}
+              date={entry.data.date}
+            />
           ))}
-        </ol>
+        </div>
       </div>
     </section>
   )

@@ -1,0 +1,36 @@
+---
+// What a list, a table or a chart shows when there is nothing to show. It
+// says what is missing and, where there is one, what to do next.
+//
+//   <EmptyState title={t.none.title} body={t.none.body} />
+//   <EmptyState title="No reports for this coin yet" icon="calendar">
+//     <a class="btn sm secondary" href={url}>See the other coins</a>
+//   </EmptyState>
+//
+// The title and body are yours (from your strings file): say what is empty in
+// the page's own terms. The slot is for one action.
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+interface Props {
+  title: string;
+  body?: string;
+  icon?: IconName;
+  class?: string;
+}
+
+const { title, body, icon = 'list', class: className } = Astro.props;
+---
+
+<div class:list={['state-box', className]} data-kind="empty">
+  <Icon name={icon} size={24} />
+  <p class="state-box-title">{title}</p>
+  {body && <p>{body}</p>}
+  {
+    Astro.slots.has('default') && (
+      <div class="acts">
+        <slot />
+      </div>
+    )
+  }
+</div>

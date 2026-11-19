@@ -1,0 +1,58 @@
+---
+// A table of figures inside a box that scrolls sideways by itself, so a wide
+// table never widens the page.
+//
+//   <DataTable locale={locale} label={t.table.label} caption={t.table.caption} stickyFirst>
+//     <thead><tr><th scope="col">Leverage</th><th scope="col">Days liquidated</th></tr></thead>
+//     <tbody>
+//       <tr><th scope="row">10x</th><td class="num">3</td></tr>
+//     </tbody>
+//   </DataTable>
+//
+// You write <thead> and <tbody>; cells are right-aligned except the first
+// column. Use <th scope="col"> and <th scope="row">, put class="num" on
+// figures, and keep units in the header or the cell text. `label` names the
+// scrolling region for keyboard and screen-reader users and is required.
+import { common } from '../../i18n/common';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  /** What the table shows, in a few words. Announced when the region gets focus. */
+  label: string;
+  /** Printed under the table: the source, the period, how to read it. */
+  caption?: string;
+  /** Keep the first column in view while the rest scrolls. */
+  stickyFirst?: boolean;
+  /** Tighter rows. */
+  dense?: boolean;
+  /** Draw the table inside a card frame. Not inside another card. */
+  framed?: boolean;
+  /** Print "This table scrolls sideways" under it on small screens. */
+  hint?: boolean;
+  id?: string;
+  class?: string;
+}
+
+const {
+  locale,
+  label,
+  caption,
+  stickyFirst = false,
+  dense = false,
+  framed = false,
+  hint = false,
+  id,
+  class: className,
+} = Astro.props;
+---
+
+<div class:list={['table-scroll', { framed }, className]} role="region" aria-label={label} tabindex="0">
+  <table class:list={['data-table', { 'sticky-first': stickyFirst, dense }]} id={id}>
+    {/* Read out with the table; the visible copy sits under the box, where it does not scroll away. */}
+    {caption && <caption class="visually-hidden">{caption}</caption>}
+    <slot />
+  </table>
+</div>
+{caption && <p class="table-caption" aria-hidden="true">{caption}</p>}
+{hint && <p class="table-hint">{common[locale].ui.tableScroll}</p>}

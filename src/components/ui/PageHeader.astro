@@ -1,0 +1,52 @@
+---
+// The top of a page: breadcrumb, the one <h1>, a short lede, and optional
+// rows for facts (dates, sources) and actions.
+//
+//   <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+//     <DataFreshness slot="meta" locale={locale} date={date} source="Bybit" />
+//     <a slot="actions" class="btn" href="#calculator">...</a>
+//   </PageHeader>
+//
+// Put it inside the first band of the page:
+//   <PageContainer lead><PageHeader ... /></PageContainer>
+// Every page has exactly one <h1>, and this renders it: do not add another.
+import Breadcrumb from './Breadcrumb.astro';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  /** One or two sentences under the title. */
+  lede?: string;
+  /** Same array as for <Breadcrumb> and breadcrumbLd(). Left out: no trail. */
+  breadcrumb?: Array<{ name: string; path: string }>;
+  /** "hero" uses the largest size; only the home page does. */
+  size?: 'page' | 'hero';
+  /** id for the <h1>, when a script rewrites it. */
+  titleId?: string;
+  class?: string;
+}
+
+const { locale, title, lede, breadcrumb, size = 'page', titleId, class: className } = Astro.props;
+---
+
+<header class:list={['page-header', className]}>
+  {breadcrumb && breadcrumb.length > 1 && <Breadcrumb locale={locale} items={breadcrumb} />}
+  <h1 class={size === 'hero' ? 'h-hero' : 'h-page'} id={titleId}>{title}</h1>
+  {lede && <p class="lede">{lede}</p>}
+  {
+    Astro.slots.has('meta') && (
+      <div class="page-header-meta">
+        <slot name="meta" />
+      </div>
+    )
+  }
+  {
+    Astro.slots.has('actions') && (
+      <div class="acts">
+        <slot name="actions" />
+      </div>
+    )
+  }
+  <slot />
+</header>

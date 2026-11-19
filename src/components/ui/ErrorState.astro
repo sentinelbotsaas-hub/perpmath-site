@@ -1,0 +1,39 @@
+---
+// What a block shows when its data could not be loaded. It says what failed
+// and how to try again; it does not apologise and it never shows stale or
+// made-up numbers in place of the real ones.
+//
+//   <ErrorState title={t.live.failed} body={t.live.retry}>
+//     <button class="btn sm secondary" type="button" id="retry">Try again</button>
+//   </ErrorState>
+//
+// When a script reveals it (remove `hidden`), screen readers announce it
+// because of role="alert". For a build-time error message that is simply part
+// of the page, pass announce={false}.
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  body?: string;
+  /** role="alert", for a block a script reveals. Default true. */
+  announce?: boolean;
+  hidden?: boolean;
+  id?: string;
+  class?: string;
+}
+
+const { title, body, announce = true, hidden = false, id, class: className } = Astro.props;
+---
+
+<div class:list={['state-box', className]} data-kind="error" role={announce ? 'alert' : undefined} id={id} hidden={hidden}>
+  <Icon name="circle-alert" size={24} />
+  <p class="state-box-title">{title}</p>
+  {body && <p>{body}</p>}
+  {
+    Astro.slots.has('default') && (
+      <div class="acts">
+        <slot />
+      </div>
+    )
+  }
+</div>

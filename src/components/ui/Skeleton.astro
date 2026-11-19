@@ -1,0 +1,40 @@
+---
+// A still, softly pulsing placeholder for content a script is about to fill
+// in. Give it the size of what will replace it, so nothing moves when the
+// real content arrives.
+//
+//   <Skeleton width="8ch" height="1.2em" />     one figure
+//   <Skeleton lines={3} />                      a few lines of text
+//   <Skeleton fill />                           covers its positioned parent (a chart plot)
+//
+// Use it only for parts that really load after the page does. Content that
+// exists at build time is rendered directly; never delay it behind a
+// placeholder. It is hidden from screen readers: put role="status" and a
+// visually hidden "Loading" on the container that holds it.
+interface Props {
+  /** CSS length. Default 100%. */
+  width?: string;
+  /** CSS length. Default 1em. */
+  height?: string;
+  /** Render this many text lines instead of one block. */
+  lines?: number;
+  /** Cover the positioned parent. */
+  fill?: boolean;
+  class?: string;
+}
+
+const { width, height, lines, fill = false, class: className } = Astro.props;
+const style = [width ? `--w:${width}` : '', height ? `--h:${height}` : ''].filter(Boolean).join(';') || undefined;
+---
+
+{
+  lines && lines > 1 ? (
+    <span class:list={['skeleton-lines', className]} aria-hidden="true">
+      {Array.from({ length: lines }, (_, i) => (
+        <span class="skeleton" style={i === lines - 1 ? '--w:60%' : undefined} />
+      ))}
+    </span>
+  ) : (
+    <span class:list={['skeleton', { fill }, className]} style={style} aria-hidden="true" />
+  )
+}

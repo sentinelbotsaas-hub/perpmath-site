@@ -1,0 +1,48 @@
+---
+// A lesson, a report or a backtest write-up in a list: category and date, the
+// headline, a short summary. Typographic on purpose; there is no image slot.
+//
+//   <div class="cards cols-3">
+//     <ArticleCard href={localePath(locale, articlePath(a.slug))}
+//                  title={a.title} desc={a.description}
+//                  category={a.category} date={a.date} />
+//   </div>
+//
+// `date` is an ISO date ("2026-11-18"); it is printed as written and marked
+// up as <time>. Category and date are separate items with a gap between
+// them, never joined by a dot.
+import Card from './Card.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+  title: string;
+  desc?: string;
+  category?: string;
+  /** ISO date, "YYYY-MM-DD". */
+  date?: string;
+  /** Heading level of the title. Default 3. */
+  level?: 2 | 3 | 4;
+  class?: string;
+}
+
+const { href, title, desc, category, date, level = 3, class: className } = Astro.props;
+const Heading = `h${level}` as 'h2' | 'h3' | 'h4';
+---
+
+<Card href={href} class:list={['article-card', className]}>
+  {
+    (category || date) && (
+      <p class="card-meta">
+        {category && <span>{category}</span>}
+        {date && <time class="num" datetime={date}>{date}</time>}
+      </p>
+    )
+  }
+  <Heading class="card-title">{title}</Heading>
+  {desc && <p class="card-desc">{desc}</p>}
+  <div class="card-foot">
+    <slot name="foot" />
+    <Icon name="arrow-up-right" size={16} />
+  </div>
+</Card>

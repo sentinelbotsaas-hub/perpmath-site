@@ -1,0 +1,40 @@
+---
+// A boxed remark: a risk statement, a warning, or a side note.
+//
+//   <Disclaimer locale={locale} />                       the standing risk warning
+//   <Disclaimer locale={locale} kind="estimate" />       "results are estimates"
+//   <Disclaimer locale={locale} kind="warning" title="Cross margin is different">
+//     <p>This calculator assumes isolated margin ...</p>
+//   </Disclaimer>
+//   <Disclaimer locale={locale} kind="info" title="Example">...</Disclaimer>
+//
+// kind: "risk" and "estimate" have built-in text (the slot replaces it);
+// "warning" and "info" take their text from the slot. The icon and the title
+// say what kind of remark it is, so it does not depend on colour. Never use
+// it to promise safety: no leverage level is "safe".
+import Icon from './Icon.astro';
+import { common } from '../../i18n/common';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  kind?: 'risk' | 'estimate' | 'warning' | 'info';
+  title?: string;
+  id?: string;
+  class?: string;
+}
+
+const { locale, kind = 'risk', title, id, class: className } = Astro.props;
+const t = common[locale];
+const builtIn = kind === 'risk' ? t.footer.risk : kind === 'estimate' ? t.ui.estimate : undefined;
+const icon = kind === 'risk' || kind === 'warning' ? 'triangle-alert' : 'info';
+const tone = kind === 'risk' || kind === 'warning' ? 'warning' : undefined;
+---
+
+<aside class:list={['note', className]} role="note" id={id} data-tone={tone} data-kind={kind}>
+  <Icon name={icon} size={18} />
+  <div class="note-body">
+    {title && <p class="note-title">{title}</p>}
+    <slot>{builtIn && <p>{builtIn}</p>}</slot>
+  </div>
+</aside>

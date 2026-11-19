@@ -1,0 +1,116 @@
+---
+// The frame around a chart: title, the plot at a reserved size, and a foot
+// for the source line. The plot keeps its box before, during and after
+// loading, so a chart never pushes the page around.
+//
+//   <ChartContainer locale={locale} title={t.chart.title} desc={t.chart.desc} ratio="16 / 7">
+//     <svg viewBox="0 0 800 350" role="img" aria-labelledby="eq-title eq-desc">...</svg>
+//     <DataFreshness slot="footer" locale={locale} date={date} source="Bybit" />
+//   </ChartContainer>
+//
+// The chart itself is inline SVG that you build at build time from real data
+// (no chart library). Give the <svg> a text alternative, and keep a table or
+// a sentence with the same figures next to it.
+//
+// state: "ready" (default), "empty", "error" or "loading".
+//   - Built with no data: pass state="empty" (and your own emptyTitle /
+//     emptyBody if the default wording does not fit).
+//   - A chart a script fills in: pass `live`, which also renders the empty,
+//     error and loading blocks, then switch with
+//       box.dataset.state = 'loading' | 'ready' | 'empty' | 'error'
+//     The loading block is a still placeholder; it does not delay anything.
+// ratio: width / height of the plot, as CSS ("16 / 9", "3 / 1").
+// minHeight: a floor in px for narrow screens, so a wide ratio stays readable.
+import EmptyState from './EmptyState.astro';
+import ErrorState from './ErrorState.astro';
+import Skeleton from './Skeleton.astro';
+import { common } from '../../i18n/common';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  title?: string;
+  desc?: string;
+  /** Heading level of the title. Default 3. */
+  level?: 2 | 3 | 4;
+  ratio?: string;
+  minHeight?: number;
+  state?: 'ready' | 'empty' | 'error' | 'loading';
+  /** Render every state block so a script can switch between them. */
+  live?: boolean;
+  emptyTitle?: string;
+  emptyBody?: string;
+  errorTitle?: string;
+  errorBody?: string;
+  /** Draw the chart inside a card frame. Not inside another card. */
+  framed?: boolean;
+  id?: string;
+  class?: string;
+}
+
+const {
+  locale,
+  title,
+  desc,
+  level = 3,
+  ratio = '16 / 9',
+  minHeight,
+  state = 'ready',
+  live = false,
+  emptyTitle,
+  emptyBody,
+  errorTitle,
+  errorBody,
+  framed = false,
+  id,
+  class: className,
+} = Astro.props;
+
+const t = common[locale].ui;
+const Heading = `h${level}` as 'h2' | 'h3' | 'h4';
+const show = (s: string) => live || state === s;
+const style = [`--chart-ratio:${ratio}`, minHeight ? `--chart-min-h:${minHeight}px` : ''].filter(Boolean).join(';');
+---
+
+<figure class:list={['chart-box', { framed }, className]} id={id} data-state={state} data-chart style={style}>
+  {
+    title && (
+      <figcaption class="chart-box-head">
+        <Heading class="h-card">{title}</Heading>
+        {desc && <p>{desc}</p>}
+      </figcaption>
+    )
+  }
+  <div class="chart-box-plot">
+    <slot />
+    {
+      show('empty') && (
+        <div class="chart-box-state" data-chart-state="empty">
+          <EmptyState title={emptyTitle ?? t.chartEmptyTitle} body={emptyBody ?? t.chartEmptyBody} icon="chart-line" />
+        </div>
+      )
+    }
+    {
+      show('error') && (
+        <div class="chart-box-state" data-chart-state="error">
+          <ErrorState title={errorTitle ?? t.chartErrorTitle} body={errorBody ?? t.errorBody} />
+        </div>
+      )
+    }
+    {
+      show('loading') && (
+        <div class="chart-box-state" data-chart-state="loading" role="status">
+          <Skeleton fill />
+          <span class="visually-hidden">{t.loading}</span>
+        </div>
+      )
+    }
+  </div>
+  {
+    Astro.slots.has('footer') && (
+      <div class="chart-box-foot">
+        <slot name="footer" />
+      </div>
+    )
+  }
+</figure>

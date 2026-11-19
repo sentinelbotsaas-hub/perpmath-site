@@ -1,0 +1,67 @@
+---
+// A button or a link that looks like one.
+//
+//   <Button href={url}>Open the calculator</Button>            primary (one per block)
+//   <Button variant="secondary" href={url}>Read the method</Button>
+//   <Button variant="ghost" size="sm" icon="rotate-ccw" id="reset">Reset</Button>
+//   <Button variant="text" href={url}>See all results</Button>  a text link (.lnk)
+//
+// With `href` it renders <a>, otherwise <button type="button">. The label
+// says what happens ("Copy result"), never "Submit" or "Click here", and has
+// no arrow character in it. The classes work on plain markup too:
+//   <a class="btn secondary" href="...">...</a>
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'text';
+  size?: 'md' | 'sm';
+  href?: string;
+  /** Only for <button>. Default "button". */
+  type?: 'button' | 'submit' | 'reset';
+  /** Icon before the label. */
+  icon?: IconName;
+  /** Icon after the label. */
+  iconAfter?: IconName;
+  id?: string;
+  rel?: string;
+  disabled?: boolean;
+  class?: string;
+  [key: `data-${string}`]: string | undefined;
+  [key: `aria-${string}`]: string | undefined;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  icon,
+  iconAfter,
+  disabled = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const classes =
+  variant === 'text'
+    ? ['lnk', className]
+    : ['btn', { secondary: variant === 'secondary', ghost: variant === 'ghost', sm: size === 'sm' }, className];
+const iconSize = size === 'sm' ? 16 : 18;
+---
+
+{
+  href ? (
+    <a class:list={classes} href={href} aria-disabled={disabled ? 'true' : undefined} {...rest}>
+      {icon && <Icon name={icon} size={iconSize} />}
+      <slot />
+      {iconAfter && <Icon name={iconAfter} size={iconSize} />}
+    </a>
+  ) : (
+    <button class:list={classes} type={type} disabled={disabled} {...rest}>
+      {icon && <Icon name={icon} size={iconSize} />}
+      <slot />
+      {iconAfter && <Icon name={iconAfter} size={iconSize} />}
+    </button>
+  )
+}

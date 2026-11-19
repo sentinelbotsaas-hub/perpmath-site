@@ -1,0 +1,39 @@
+---
+// The trail from the home page to this page.
+//
+//   <Breadcrumb locale={locale} items={[
+//     { name: c.breadcrumb.home, path: '/' },
+//     { name: c.nav.tools, path: '/tools/' },
+//     { name: t.title, path: PATH },
+//   ]} />
+//
+// Pass the same array you give breadcrumbLd() in src/lib/seo.ts, so the
+// visible trail and the JSON-LD can never disagree. Paths are locale-less;
+// the last item is the current page and is printed as text, not as a link.
+import Icon from './Icon.astro';
+import { common } from '../../i18n/common';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  items: Array<{ name: string; path: string }>;
+  class?: string;
+}
+
+const { locale, items, class: className } = Astro.props;
+const last = items.length - 1;
+---
+
+<nav class:list={['breadcrumb-nav', className]} aria-label={common[locale].breadcrumb.label}>
+  <ol class="breadcrumb">
+    {
+      items.map((item, i) => (
+        <li>
+          {i > 0 && <Icon name="chevron-right" size={14} />}
+          {i === last ? <span aria-current="page">{item.name}</span> : <a href={localePath(locale, item.path)}>{item.name}</a>}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

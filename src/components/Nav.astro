@@ -1,32 +1,88 @@
 ---
-// Wordmark, section links, language switcher.
+// The site header: wordmark, the four menu groups, language switch, theme
+// switch, and the menu button on phones.
 //
-// A section link appears only once its index page exists
-// (src/pages/[...locale]/<section>/index.astro), so the nav never points at a
-// page that has not been built. Adding the page is enough; do not edit this.
+// How it degrades:
+// - Without JavaScript every group is a plain link to its overview page
+//   (/tools/, /data/, /backtests/, /learn/) and the language links stay
+//   visible. The theme switch and the menu button need a script and are
+//   hidden.
+// - With JavaScript (src/scripts/nav.ts) a group becomes a button that opens
+//   a panel of links. On a phone the whole menu is a sheet under the header
+//   and the groups open inline.
+//
+// An entry appears only once its page exists (src/pages/[...locale]/...), so
+// the menu never points at a page that has not been built. To add an entry,
+// add it to `groups` below and its label to src/i18n/common.ts.
+import Icon from './ui/Icon.astro';
 import { common } from '../i18n/common';
 import { htmlLang, localePath, locales } from '../i18n/config';
 import type { Locale } from '../i18n/config';
 import { pageExists } from '../lib/routes';
+import { getTools } from '../lib/tools';
 
 interface Props {
   locale: Locale;
+  /** Locale-less path of the page, or of the page the language links lead to. */
   path: string;
+  /** Kept for old callers; the header has one look now. */
   surface?: 'measure' | 'read';
   availableLocales?: readonly Locale[];
 }
 
-const { locale, path, surface = 'read', availableLocales = locales } = Astro.props;
-const t = common[locale].nav;
+const { locale, path, availableLocales = locales } = Astro.props;
+const c = common[locale];
+const t = c.nav;
 
-const sections = [
-  { path: '/tools/', label: t.tools },
-  { path: '/learn/', label: t.learn },
-  { path: '/daily/', label: t.daily },
-  { path: '/data/', label: t.data },
-  { path: '/backtests/', label: t.backtests },
-  { path: '/bot/', label: t.bot },
-].filter((s) => pageExists(s.path));
+interface Item {
+  path: string;
+  label: string;
+  desc: string;
+}
+
+const tools: Item[] = getTools(locale)
+  .filter((tool) => tool.href)
+  .map((tool) => ({ path: tool.path, label: tool.name, desc: tool.question }));
+
+const groups = [
+  {
+    id: 'tools',
+    label: t.tools,
+    path: '/tools/',
+    items: [{ path: '/tools/', ...t.items.toolsAll }, ...tools],
+  },
+  {
+    id: 'markets',
+    label: t.markets,
+    path: '/data/',
+    items: [
+      { path: '/data/', ...t.items.dataAll },
+      { path: '/data/funding-rate/', ...t.items.fundingRate },
+      { path: '/data/open-interest/', ...t.items.openInterest },
+      { path: '/data/long-short-ratio/', ...t.items.longShortRatio },
+      { path: '/data/liquidation/', ...t.items.liquidation },
+      { path: '/daily/', ...t.items.daily },
+    ],
+  },
+  {
+    id: 'research',
+    label: t.research,
+    path: '/backtests/',
+    items: [
+      { path: '/backtests/', ...t.items.backtests },
+      { path: '/bot/', ...t.items.bot },
+    ],
+  },
+  // One destination: a plain link, no panel.
+  { id: 'learn', label: t.learn, path: '/learn/', items: [] as Item[] },
+]
+  .map((g) => ({ ...g, items: g.items.filter((i) => pageExists(i.path)) }))
+  .filter((g) => pageExists(g.path));
+
+// A group is "current" when the page sits under any of its entries.
+const sectionOf = (p: string) => '/' + (p.split('/')[1] ?? '') + '/';
+const inGroup = (g: (typeof groups)[number]) =>
+  path !== '/' && [g.path, ...g.items.map((i) => i.path)].some((p) => sectionOf(p) === sectionOf(path));
 
 // Short labels in the bar, full language name for assistive tech.
 const langShort: Record<Locale, string> = { en: 'EN', 'zh-hant': '繁體', 'zh-hans': '简体' };
@@ -37,35 +93,116 @@ const langFull: Record<Locale, string> = { en: 'English', 'zh-hant': '繁體中�
 // parent section instead.
 const parent = path.replace(/[^/]+\/$/, '');
 const langHref = (l: Locale) => localePath(l, availableLocales.includes(l) ? path : parent);
-const isCurrent = (sectionPath: string) => path.startsWith(sectionPath);
+
+const themes = [
+  { value: 'dark', label: c.theme.dark, icon: 'moon' },
+  { value: 'light', label: c.theme.light, icon: 'sun' },
+  { value: 'system', label: c.theme.system, icon: 'monitor' },
+] as const;
 ---
 
-<header class:list={['site-nav', `on-${surface}`]}>
-  <nav class="nav wrap" aria-label={t.label}>
+<header class="site-header" data-site-header>
+  <div class="wrap site-bar">
     <a class="wordmark" href={localePath(locale, '/')} aria-label={t.home}>perpmath</a>
-    <div class="nav-links">
-      {
-        sections.map((s) => (
-          <a href={localePath(locale, s.path)} aria-current={isCurrent(s.path) ? 'page' : undefined}>
-            {s.label}
-          </a>
-        ))
-      }
+
+    <div class="site-menu" id="site-menu">
+      <nav class="menu" aria-label={t.label}>
+        <ul class="menu-list">
+          {
+            groups.map((g) => {
+              const current = inGroup(g);
+              const hasPanel = g.items.length > 0;
+              return (
+                <li class:list={['menu-group', { 'has-panel': hasPanel }]} data-menu-group={hasPanel ? g.id : undefined}>
+                  <a
+                    class="menu-top menu-top-link"
+                    href={localePath(locale, g.path)}
+                    aria-current={path === g.path ? 'page' : current ? 'true' : undefined}
+                  >
+                    {g.label}
+                  </a>
+                  {hasPanel && (
+                    <>
+                      <button
+                        class="menu-top menu-top-btn"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls={`menu-${g.id}`}
+                        data-current={current ? '' : undefined}
+                      >
+                        {g.label}
+                        <Icon name="chevron-down" size={14} />
+                      </button>
+                      <div class="menu-panel" id={`menu-${g.id}`} data-menu-panel>
+                        <ul>
+                          {g.items.map((item) => (
+                            <li>
+                              <a href={localePath(locale, item.path)} aria-current={path === item.path ? 'page' : undefined}>
+                                <span class="menu-item-label">{item.label}</span>
+                                <span class="menu-item-desc">{item.desc}</span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </>
+                  )}
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+
+      <div class="site-tools">
+        <div class="lang-switch" role="group" aria-label={t.language}>
+          {
+            locales.map((l) => (
+              <a
+                href={langHref(l)}
+                lang={htmlLang[l]}
+                hreflang={htmlLang[l]}
+                aria-label={langFull[l]}
+                aria-current={l === locale ? 'true' : undefined}
+              >
+                {langShort[l]}
+              </a>
+            ))
+          }
+        </div>
+
+        <div class="theme-switch" role="radiogroup" aria-label={c.theme.label} data-theme-switch>
+          {
+            themes.map((theme) => (
+              <button
+                type="button"
+                role="radio"
+                aria-checked={theme.value === 'dark' ? 'true' : 'false'}
+                aria-label={theme.label}
+                title={theme.label}
+                data-theme-value={theme.value}
+                tabindex={theme.value === 'dark' ? 0 : -1}
+              >
+                <Icon name={theme.icon} size={16} />
+              </button>
+            ))
+          }
+        </div>
+      </div>
     </div>
-    <div class="nav-langs" role="group" aria-label={t.language}>
-      {
-        locales.map((l) => (
-          <a
-            href={langHref(l)}
-            lang={htmlLang[l]}
-            hreflang={htmlLang[l]}
-            aria-label={langFull[l]}
-            aria-current={l === locale ? 'true' : undefined}
-          >
-            {langShort[l]}
-          </a>
-        ))
-      }
-    </div>
-  </nav>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-menu"
+      aria-label={t.openMenu}
+      data-menu-toggle
+      data-label-open={t.openMenu}
+      data-label-close={t.closeMenu}
+    >
+      <Icon name="menu" size={22} class="when-closed" />
+      <Icon name="x" size={22} class="when-open" />
+    </button>
+  </div>
 </header>

@@ -1,74 +1,249 @@
-/* Hallmark · shape: stacked full-width bands, one job each (measure, state the result, read) · genre: modern-minimal · theme: custom, carried over from docs/plan-edu-site/wireframes.html · job: try · idea: "every quantity on the site is drawn at its true proportion" · vibe: "measured, blunt, one loud field, drawn to scale" · paper: oklch(97.5% 0.004 250) · accent: none as an accent, the coral field oklch(74% 0.14 28) is a surface · display: Rethink Sans · body: Rethink Sans · outlier: Azeret Mono for numbers and code only · hero: a headline with a live leverage number over a full-width bar whose light sliver is the room left · nav: wordmark, section links, language switcher · footer: links, risk warning, affiliate disclosure · imagery: none, the bars are the picture · signature: the to-scale bar · axes: light/grotesk-heavy/chromatic-coral · posture: three surfaces by job, the coral is a declared surface and never an accent · v2.0.0 */
-/* Hallmark · pre-emit critique: P5 H4 E4 S5 R4 V3 · weakest: V, the home page is three bands and a footer because the backtest and bot sections have no real content yet; left them out instead of filling them with placeholders */
-/* Hallmark · waive 37 · two loaded families, Rethink Sans and Azeret Mono; PingFang and the Microsoft faces are system fallbacks named in --font-cjk · the site is trilingual and Chinese glyphs must fall back to a system font, with a different one for Traditional and Simplified */
-/* Hallmark · dismissed 77 · the home page has four sections because the two planned ones, latest backtests and the open-source bot, have no real content yet and were left out instead of being filled with placeholders */
-/* Hallmark · dismissed 58 · the home, about and disclosure screens that reach 81 to 95 words are the ones the footer shares, and its risk warning and affiliate disclosure lines are required on every page */
-/* Hallmark · motion signature: none. The bar is a control that follows the input instantly; nothing on the site animates. */
+/* Hallmark · shape: app shell, a sticky header over capped sections, calculators as two-column workspaces, articles as one reading column · genre: modern-minimal · theme: custom, taken from the owner's written spec (docs/plan-edu-site/redesign/SPEC.md sections 4 to 6) · job: try · idea: "every price distance on the site is drawn on a ruler at its true proportion" · vibe: "quantitative, restrained, dark, measured to scale" · paper: #09090B, dark by default, #FAFAFA when the reader picks light · accent: #818CF8 (#4F46E5 on light), a signal for links, focus and selection, never a surface · display: Geist, with a one-weight Noto Sans TC or SC subset for Chinese headings · body: Geist over the system Chinese font · outlier: Geist Mono for numbers, formulas and code · hero: a headline and two actions beside a live risk ruler · nav: sticky 64px bar, wordmark, four groups as disclosure menus, language and theme switches, a sheet on phones · footer: brand line, link columns, risk warning, affiliate disclosure · imagery: none, every chart is inline SVG built from real data · signature: the to-scale risk ruler · axes: dark/grotesk/chromatic-indigo · posture: one accent as a signal on near-black, colour carries state only together with a shape or a word · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: V, the palette and the faces are the owner's and sit close to the dark developer-tool default; the ruler is what makes the pages this site's own, so nothing else is allowed to compete with it */
+/* Hallmark · waive 37 · three loaded families: Geist, Geist Mono and one Noto Sans heading subset per Chinese locale; PingFang and the Microsoft faces are system fallbacks named in --font-cjk · the site is trilingual and the owner's spec names Noto Sans for Chinese headings, so the heading subset is the third family */
+/* Hallmark · waive 64 · Geist Mono is set on figures only (prices, percentages, formulas, table numbers, the wordmark), through .num and the result classes, with tabular figures · on a calculator site the numbers are the material and must line up in columns; labels beside them stay in the body face */
+/* Hallmark · waive 78 · the page heading is 40px and section headings are 32px at 1440, one fixed step apart on every page (--text-page, --text-section) · the owner's spec sets these two sizes for a calculator and research site where a section heading labels a tool or a table and must not outweigh the figures under it */
+/* Hallmark · waive 59 · sections are separated by --section-y, 100px above and below at 1440 and 56px on a phone · the owner's spec sets section spacing at 96 to 112px on desktop and 48 to 64px on a phone, and calculator pages need the result close to the inputs */
+/* Hallmark · dismissed 58 · the screens that pass 80 words are the last one of each page, where the footer the owner's spec asks for sits: five link columns, the brand and data-source lines, the risk warning and the affiliate disclosure, all required on every page */
+/* Hallmark · answered F15 · the footer's five link columns sit closer together than a text and figure pair; body sections share one gap (--space-10) */
+/* Hallmark · motion signature: none. The ruler follows the inputs instantly. */
+/* Hallmark · differs from the owner's spec, by the implementation brief (BRIEF.md) · hover: the spec asks for states that ease over 150 to 250ms, here nothing eases between two states and what moves (menu, sheet, tooltip, accordion, a changed result) is a keyframe on transform and opacity with a reduced-motion fallback · Chinese type: headings, menu and buttons use a one-weight Noto Sans subset, body text the system font · formulas and code: Geist Mono, no JetBrains Mono · icons: Lucide shapes inlined in Icon.astro, no package, no emoji · eyebrow: the home hero has the one English line the spec writes out and no other page or component may have one, so gate 54 stays an open Floor finding on that page by the owner's instruction · images: none, charts are inline SVG from real data with a text or table version beside them */
 
-/* Design tokens. Every colour, font family and spacing value on the site is
-   declared here and used through var(). Do not write a literal colour,
-   font-family, padding, margin or gap anywhere else. */
+/* Every line above that starts with "Hallmark" must stay on ONE line:
+   Base.astro copies those lines, one by one, into each page's <head>. */
+
+/* Design tokens. Every colour, font family, size and spacing value on the
+   site is declared here and used through var(). Do not write a literal
+   colour or font-family anywhere else.
+
+   Dark is the default. The reader can switch to light or to "follow the
+   system"; <html data-theme="dark | light | system"> is set by a small inline
+   script in the page head (see src/layouts/Base.astro).
+
+   The light palette is written twice (once for data-theme="light", once
+   inside the media query for data-theme="system"). CSS cannot share the two
+   blocks: when you change one, change the other. */
 :root {
-  /* spacing, 4px scale */
-  --space-2xs: 4px;
-  --space-xs: 8px;
-  --space-sm: 12px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 40px;
-  --space-2xl: 64px;
-  --space-3xl: 96px;
-  --section-gap: 120px;
+  color-scheme: dark;
 
-  /* sizes that are not spacing */
-  --tap: 48px; /* minimum height of anything you can click or tap */
-  --line: 2px; /* control borders */
-  --hairline: 1px; /* rules between rows */
-  --radius: 4px;
-  --container: 1200px;
-  --measure: 68ch; /* reading width */
+  /* --- colour: dark (default) ------------------------------------------- */
+  --color-bg: #09090b;
+  --color-surface: #111114;
+  --color-surface-elevated: #18181b;
+  --color-border: #27272a;
+  --color-border-hover: #3f3f46;
+  /* Edge of inputs and other controls. The spec's border colours are under
+     3:1 against the page, which WCAG 1.4.11 asks of a control's boundary. */
+  --color-border-control: #6b6b76;
+  --color-text: #f4f4f5;
+  --color-text-secondary: #a1a1aa;
+  /* Spec value #71717a is 4.1:1 on the page and 3.7:1 on a raised surface.
+     Lightened to pass AA (4.5:1) on all three surfaces. */
+  --color-text-muted: #8b8b94;
+  --color-accent: #818cf8;
+  --color-accent-ink: #09090b; /* text on an accent fill */
+  --color-positive: #34d399;
+  --color-negative: #f87171;
+  --color-warning: #fbbf24;
+  --color-chart-blue: #60a5fa;
+  --color-scrim: rgb(0 0 0 / 0.6);
+  --shadow-pop: 0 16px 40px rgb(0 0 0 / 0.55);
+  /* What a row, a menu entry or a quiet button shows under the pointer. */
+  --color-hover: color-mix(in srgb, var(--color-text) 7%, transparent);
+  /* The primary button under the pointer. */
+  --color-text-hover: color-mix(in srgb, var(--color-text) 86%, var(--color-bg));
 
-  /* type scale */
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.25rem;
-  --text-xl: 1.5625rem;
-  --text-2xl: 1.953rem;
-  --text-section: clamp(2rem, 2.5vw + 1rem, 2.75rem);
-  --text-display: clamp(2.25rem, 4.6vw + 0.5rem, 4.5rem);
-  --text-figure: clamp(3rem, 7vw, 6rem);
-  --leading-body: 1.55;
-  --leading-display: 1.02;
-  --leading-figure: 1;
+  /* Tints: a state colour at low strength, for fills behind text. */
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  --color-positive-soft: color-mix(in srgb, var(--color-positive) 14%, transparent);
+  --color-negative-soft: color-mix(in srgb, var(--color-negative) 16%, transparent);
+  --color-warning-soft: color-mix(in srgb, var(--color-warning) 14%, transparent);
+  --color-focus: var(--color-accent);
 
-  /* colour: three surfaces, one ink */
-  --color-paper: oklch(97.5% 0.004 250); /* white, to read */
-  --color-paper-2: oklch(74% 0.14 28); /* coral, to measure */
-  --color-ink: oklch(19% 0.015 250); /* ink, to state the result */
-  --color-muted: oklch(40% 0.015 250);
-  --color-rule: oklch(80% 0.01 250);
-  --color-focus: oklch(19% 0.015 250);
-  --color-focus-inv: oklch(97.5% 0.004 250);
-
-  /* state strengths (opacity only, no extra colours) */
-  --opacity-hover: 0.86;
-  --opacity-disabled: 0.45;
-
-  /* fonts. Latin comes from the two webfonts; Chinese falls back to system fonts. */
+  /* --- fonts -------------------------------------------------------------
+     Latin: Geist and Geist Mono, self-hosted variable files in public/fonts.
+     Chinese body text: the system font. Chinese headings, nav and buttons:
+     a one-weight Noto Sans subset (see scripts/subset-cjk.mjs).
+     The "Fallback" families are local fonts with adjusted metrics, declared
+     in Base.astro, so that text does not move when the webfont arrives. */
   --font-cjk: "PingFang TC", "Microsoft JhengHei";
-  --font-display: "Rethink Sans", ui-sans-serif, var(--font-cjk), sans-serif;
-  --font-body: "Rethink Sans", ui-sans-serif, var(--font-cjk), sans-serif;
-  --font-outlier: "Azeret Mono", ui-monospace, monospace;
+  --font-cjk-head: "Noto Sans TC Head";
+  --font-body: "Geist", "Geist Fallback", var(--font-cjk), ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Geist", "Geist Fallback", var(--font-cjk), ui-sans-serif, system-ui, sans-serif;
+  /* The Chinese font sits before the generic monospace: a Chinese label next
+     to a number must not fall into the system's monospace Chinese face. */
+  --font-mono: "Geist Mono", "Geist Mono Fallback Consolas", "Geist Mono Fallback", var(--font-cjk), ui-monospace, monospace;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-strong: 600;
+
+  /* --- type scale ----------------------------------------------------------
+     hero 36 to 60 · page 30 to 40 · section 26 to 32 · card 18 · body 16 ·
+     small 14 · fine 13 · result 36 to 56 */
+  --text-hero: clamp(2.25rem, 0.9rem + 3.6vw, 3.75rem);
+  --text-page: clamp(1.875rem, 1.45rem + 1.6vw, 2.5rem);
+  --text-section: clamp(1.625rem, 1.3rem + 1.2vw, 2rem);
+  --text-card: 1.125rem;
+  --text-md: 1rem;
+  --text-sm: 0.875rem;
+  --text-xs: 0.8125rem;
+  --text-2xs: 0.75rem; /* axis labels inside a chart, nothing else */
+  --text-result: clamp(2.25rem, 1.5rem + 3vw, 3.5rem);
+  --leading-body: 1.6;
+  --leading-tight: 1.3;
+  --leading-display: 1.12;
+  --leading-figure: 1.05;
+  --tracking-display: -0.022em;
+
+  /* --- spacing, 4px base ---------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-28: 112px;
+
+  /* --- layout ----------------------------------------------------------------- */
+  --container: 1280px; /* the page, gutters included */
+  --measure: 760px; /* reading width */
+  --gutter: var(--space-8);
+  --section-y: clamp(3.5rem, 2.25rem + 4.5vw, 6.5rem); /* 56 on a phone, 100 at 1440 */
+  --header-h: 64px;
+  --control-h: 48px; /* inputs and buttons */
+  --control-h-sm: 36px; /* header controls, small buttons */
+  --tap: 44px; /* smallest thing you can tap */
+  --card-pad: var(--space-6);
+
+  --radius-card: 12px;
+  --radius-control: 8px;
+  --radius-sm: 6px;
+  --radius-pill: 999px;
+  --hairline: 1px;
+  --line: 2px;
+
+  --z-sticky: 20;
+  --z-header: 40;
+  --z-pop: 50;
+
+  /* --- motion: keyframes only, on transform and opacity ------------------------ */
+  --dur-fast: 140ms;
+  --dur: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --opacity-disabled: 0.5;
+
+  /* --- names from before the redesign -----------------------------------------
+     Pages written against the old tokens keep working through these. New
+     code uses the names above; page owners replace these as they go. */
+  --color-paper: var(--color-bg);
+  --color-paper-2: var(--color-surface);
+  --color-ink: var(--color-text);
+  --color-muted: var(--color-text-secondary);
+  --color-rule: var(--color-border);
+  --color-focus-inv: var(--color-focus);
+  /* The old proportion bar (Scale.astro): a dark track and a light part, in
+     both themes, because the copy next to it says "the light part". */
+  --color-scale-track: var(--color-border-hover);
+  --color-scale-room: var(--color-text);
+  --font-outlier: var(--font-mono);
+  --opacity-hover: 0.86;
+  --radius: var(--radius-control);
+  --space-2xs: var(--space-1);
+  --space-xs: var(--space-2);
+  --space-sm: var(--space-3);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-10);
+  --space-2xl: var(--space-16);
+  --space-3xl: var(--space-24);
+  --section-gap: var(--section-y);
+  --text-lg: var(--text-card);
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-display: var(--text-page);
+  --text-figure: var(--text-result);
 }
 
-/* Simplified Chinese pages use the Mainland system fonts. */
-:root:lang(zh-Hans) {
-  --font-cjk: "PingFang SC", "Microsoft YaHei";
+/* --- colour: light, chosen by the reader ---------------------------------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f4f4f5;
+  --color-border: #e4e4e7;
+  --color-border-hover: #d4d4d8;
+  --color-border-control: #85858f;
+  --color-text: #18181b;
+  --color-text-secondary: #52525b;
+  /* Spec value #71717a is 4.4:1 on the raised surface. Darkened to pass AA. */
+  --color-text-muted: #6b6b74;
+  --color-accent: #4f46e5;
+  --color-accent-ink: #ffffff;
+  --color-positive: #047857;
+  /* Spec value #dc2626 is 4.4:1 on the raised surface. Darkened to pass AA. */
+  --color-negative: #c81e1e;
+  --color-warning: #b45309;
+  --color-chart-blue: #2563eb;
+  --color-scrim: rgb(24 24 27 / 0.4);
+  --shadow-pop: 0 16px 40px rgb(24 24 27 / 0.14);
+  --color-scale-track: var(--color-text);
+  --color-scale-room: var(--color-surface);
 }
 
-/* Chinese glyphs fill the whole em box, so display lines need more leading. */
+/* --- colour: light, because the system says so ------------------------------ */
+@media (prefers-color-scheme: light) {
+  :root[data-theme="system"] {
+    color-scheme: light;
+    --color-bg: #fafafa;
+    --color-surface: #ffffff;
+    --color-surface-elevated: #f4f4f5;
+    --color-border: #e4e4e7;
+    --color-border-hover: #d4d4d8;
+    --color-border-control: #85858f;
+    --color-text: #18181b;
+    --color-text-secondary: #52525b;
+    --color-text-muted: #6b6b74;
+    --color-accent: #4f46e5;
+    --color-accent-ink: #ffffff;
+    --color-positive: #047857;
+    --color-negative: #c81e1e;
+    --color-warning: #b45309;
+    --color-chart-blue: #2563eb;
+    --color-scrim: rgb(24 24 27 / 0.4);
+    --shadow-pop: 0 16px 40px rgb(24 24 27 / 0.14);
+    --color-scale-track: var(--color-text);
+    --color-scale-room: var(--color-surface);
+  }
+}
+
+/* Chinese pages: headings, nav and buttons get the Noto Sans subset between
+   Geist (Latin, digits) and the system font (any character the subset lacks). */
 :root:lang(zh-Hant),
 :root:lang(zh-Hans) {
-  --leading-display: 1.2;
-  --leading-body: 1.7;
+  --font-display: "Geist", "Geist Fallback", var(--font-cjk-head), var(--font-cjk), ui-sans-serif, system-ui, sans-serif;
+  /* Chinese glyphs fill the whole em box: more leading, no negative tracking. */
+  --leading-display: 1.28;
+  --leading-tight: 1.45;
+  --leading-body: 1.75;
+  --tracking-display: 0;
+}
+
+/* Simplified Chinese pages use the Mainland system fonts and the SC subset. */
+:root:lang(zh-Hans) {
+  --font-cjk: "PingFang SC", "Microsoft YaHei";
+  --font-cjk-head: "Noto Sans SC Head";
+}
+
+@media (max-width: 760px) {
+  :root {
+    --gutter: var(--space-5);
+    --card-pad: var(--space-5);
+  }
 }

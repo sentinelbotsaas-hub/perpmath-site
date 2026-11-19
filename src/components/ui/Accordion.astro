@@ -1,0 +1,39 @@
+---
+// One collapsible item: a question and its answer, or the advanced settings
+// of a form. It is a native <details>, so it opens with scripting off, with
+// the keyboard, and through the browser's find-in-page.
+//
+//   <Accordion summary={faq.q}><p>{faq.a}</p></Accordion>
+//   <Accordion summary={t.advanced} open>...fields...</Accordion>
+//   <Accordion summary="..." name="faq">...</Accordion>   items sharing a name: one open at a time
+//
+// Stack several in a row for a list; the rules between them are drawn for
+// you. `level` wraps the summary text in a heading (use it for FAQ lists so
+// the questions are in the page outline). Do not hide anything a reader must
+// see (the formula, an assumption, a risk warning) inside one.
+import Icon from './Icon.astro';
+
+interface Props {
+  summary: string;
+  open?: boolean;
+  /** Items with the same name close each other. */
+  name?: string;
+  /** Wrap the summary text in a heading of this level. */
+  level?: 2 | 3 | 4;
+  id?: string;
+  class?: string;
+}
+
+const { summary, open = false, name, level, id, class: className } = Astro.props;
+const Heading = level ? (`h${level}` as 'h2' | 'h3' | 'h4') : null;
+---
+
+<details class:list={['accordion', className]} open={open} name={name} id={id}>
+  <summary>
+    {Heading ? <Heading>{summary}</Heading> : <span>{summary}</span>}
+    <Icon name="chevron-down" size={18} />
+  </summary>
+  <div class="accordion-body">
+    <slot />
+  </div>
+</details>

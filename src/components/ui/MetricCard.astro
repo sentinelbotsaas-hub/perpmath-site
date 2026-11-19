@@ -1,0 +1,70 @@
+---
+// One figure with its label: a result, a statistic, a market reading.
+//
+//   <div class="cards cols-4">
+//     <MetricCard label="Win rate" value="38.2" unit="%" />
+//     <MetricCard label="Average R" value="-0.21" tone="negative" trend="down"
+//                 note="Out of sample, after costs" />
+//     <MetricCard label="Liquidation price" value="64,824.4" unit="USDT" valueId="out-price" />
+//   </div>
+//
+// The value is text you formatted (src/lib/fmt.ts); it is set in the number
+// face with tabular figures. `tone` colours the figure, and because colour
+// must never be the only signal, pass `trend` too (an arrow icon) or make the
+// sign part of the value. Every figure must come from the site's data or
+// calculations. Give `valueId` when a script updates the value.
+//
+// `bare` drops the card frame: use it for a row of figures inside a panel
+// that already has a border (a card inside a card is not allowed).
+import Card from './Card.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  label: string;
+  value: string;
+  unit?: string;
+  /** A short line under the figure: the sample, the period, the assumption. */
+  note?: string;
+  tone?: 'positive' | 'negative' | 'warning' | 'accent';
+  trend?: 'up' | 'down';
+  valueId?: string;
+  noteId?: string;
+  /** No frame and no padding. */
+  bare?: boolean;
+  class?: string;
+}
+
+const { label, value, unit, note, tone, trend, valueId, noteId, bare = false, class: className } = Astro.props;
+---
+
+{
+  bare ? (
+    <div class:list={['metric', className]} data-tone={tone}>
+      <p class="metric-label">{label}</p>
+      <p class="metric-value">
+        <span id={valueId}>{value}</span>
+        {unit && <span class="metric-unit">{unit}</span>}
+      </p>
+      {(note || trend) && (
+        <p class="metric-note">
+          {trend && <Icon name={trend === 'up' ? 'arrow-up' : 'arrow-down'} size={14} />}
+          <span id={noteId}>{note}</span>
+        </p>
+      )}
+    </div>
+  ) : (
+    <Card class:list={['metric', className]} data-tone={tone}>
+      <p class="metric-label">{label}</p>
+      <p class="metric-value">
+        <span id={valueId}>{value}</span>
+        {unit && <span class="metric-unit">{unit}</span>}
+      </p>
+      {(note || trend) && (
+        <p class="metric-note">
+          {trend && <Icon name={trend === 'up' ? 'arrow-up' : 'arrow-down'} size={14} />}
+          <span id={noteId}>{note}</span>
+        </p>
+      )}
+    </Card>
+  )
+}

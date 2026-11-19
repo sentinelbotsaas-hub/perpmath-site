@@ -1,0 +1,51 @@
+---
+// One full-width band of a page with the capped, centred container inside.
+// A page is a stack of these; never nest one inside another.
+//
+//   <PageContainer>...</PageContainer>                 a normal section
+//   <PageContainer lead>...</PageContainer>            the first one under the header
+//   <PageContainer narrow>...</PageContainer>          a 760px reading column
+//   <PageContainer band id="results">...</PageContainer> on the raised surface, ruled
+//
+// It renders <section class="section"><div class="wrap">; write those two
+// elements by hand when you need attributes this component does not pass on.
+interface Props {
+  /** Element for the band. Default "section"; use "div" when the content has no heading. */
+  as?: 'section' | 'div' | 'article' | 'aside';
+  /** First band of the page: less room on top. */
+  lead?: boolean;
+  /** 48px above and below instead of the full section spacing. */
+  snug?: boolean;
+  /** No room on top: continues the band above. */
+  flush?: boolean;
+  /** Raised surface with a rule above and below. */
+  band?: boolean;
+  /** Cap the container at the reading width (760px). */
+  narrow?: boolean;
+  id?: string;
+  class?: string;
+  /** Class for the inner container, next to "wrap". */
+  wrapClass?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+}
+
+const {
+  as: Tag = 'section',
+  lead = false,
+  snug = false,
+  flush = false,
+  band = false,
+  narrow = false,
+  id,
+  class: className,
+  wrapClass,
+  ...aria
+} = Astro.props;
+---
+
+<Tag class:list={['section', { lead, snug, flush, band }, className]} id={id} {...aria}>
+  <div class:list={['wrap', { narrow }, wrapClass]}>
+    <slot />
+  </div>
+</Tag>

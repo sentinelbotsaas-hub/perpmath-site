@@ -1,0 +1,41 @@
+---
+// The card base: a bordered surface with 20 to 24px of padding and a 12px
+// radius. ToolCard, MetricCard and ArticleCard are built on it; use it
+// directly for anything else.
+//
+//   <div class="cards cols-3">
+//     <Card href={url}>
+//       <h3 class="card-title">...</h3>
+//       <p class="card-desc">...</p>
+//     </Card>
+//   </div>
+//
+// With `href` the whole card is one link (<a class="card">): do not put
+// another link or a button inside it. Never put a card inside a card.
+// Parts you can use inside: .card-icon, .card-title, .card-desc, .card-meta,
+// .card-viz, .card-foot, .tag.
+interface Props {
+  href?: string;
+  /** Element when the card is not a link. Default "div". */
+  as?: 'div' | 'article' | 'li' | 'section';
+  rel?: string;
+  id?: string;
+  class?: string;
+  [key: `data-${string}`]: string | undefined;
+  [key: `aria-${string}`]: string | undefined;
+}
+
+const { href, as: Tag = 'div', class: className, ...rest } = Astro.props;
+---
+
+{
+  href ? (
+    <a class:list={['card', className]} href={href} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <Tag class:list={['card', className]} {...rest}>
+      <slot />
+    </Tag>
+  )
+}

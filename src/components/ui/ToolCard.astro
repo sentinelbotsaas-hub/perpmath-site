@@ -1,0 +1,64 @@
+---
+// A calculator in a directory: icon, name, one line, an optional small
+// visualization or labelled example, and an affordance in the corner.
+//
+//   <div class="cards cols-4">
+//     <ToolCard locale={locale} href={tool.href} icon="ruler"
+//               title={tool.name} desc={tool.question}>
+//       <RiskRuler ... />   <!-- or a labelled example figure -->
+//     </ToolCard>
+//   </div>
+//
+// Leave `href` out (null) for a tool that is not built yet: the card is then
+// plain text marked "Coming" and is never a link. Do not give an unbuilt tool
+// a date. Whatever goes in the slot must come from real calculation; label an
+// example as an example.
+import Card from './Card.astro';
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+import { common } from '../../i18n/common';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  /** Localised href, or null while the page has not been built. */
+  href?: string | null;
+  icon: IconName;
+  title: string;
+  desc: string;
+  /** Heading level of the title. Default 3. */
+  level?: 2 | 3 | 4;
+  class?: string;
+}
+
+const { locale, href, icon, title, desc, level = 3, class: className } = Astro.props;
+const Heading = `h${level}` as 'h2' | 'h3' | 'h4';
+---
+
+<Card href={href ?? undefined} class:list={['tool-card', className]}>
+  <span class="card-icon"><Icon name={icon} size={20} /></span>
+  <Heading class="card-title">{title}</Heading>
+  <p class="card-desc">{desc}</p>
+  {
+    Astro.slots.has('default') && (
+      <div class="card-viz">
+        <slot />
+      </div>
+    )
+  }
+  <div class="card-foot">
+    {
+      href ? (
+        <>
+          <slot name="foot" />
+          <Icon name="arrow-up-right" size={16} />
+        </>
+      ) : (
+        <span class="tag">
+          <Icon name="hourglass" size={12} />
+          {common[locale].coming}
+        </span>
+      )
+    }
+  </div>
+</Card>

@@ -1,0 +1,36 @@
+---
+// A formula or a worked sum, set in the number face. Long lines wrap; nothing
+// scrolls sideways.
+//
+//   <FormulaBlock label={t.formula.longLabel} formula={t.formula.long} />
+//
+//   <FormulaBlock label="Short">
+//     liquidation = entry × (1 + 1 ÷ leverage − MMR)
+//     <Fragment slot="terms"><p>MMR: the maintenance margin rate ...</p></Fragment>
+//   </FormulaBlock>
+//
+// Pass the formula as the `formula` prop (line breaks are kept) or as the
+// slot. Use real mathematical signs (× ÷ −), not letters and hyphens. The
+// "terms" slot is for the definitions under the formula.
+interface Props {
+  /** What the formula is for: "Long", "With added margin". */
+  label?: string;
+  formula?: string;
+  id?: string;
+  class?: string;
+}
+
+const { label, formula, id, class: className } = Astro.props;
+---
+
+<figure class:list={['formula', className]} id={id}>
+  {label && <figcaption class="formula-label">{label}</figcaption>}
+  <pre class="formula-body">{formula}<slot /></pre>
+  {
+    Astro.slots.has('terms') && (
+      <div class="formula-terms">
+        <slot name="terms" />
+      </div>
+    )
+  }
+</figure>

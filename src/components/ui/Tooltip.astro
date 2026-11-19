@@ -1,0 +1,67 @@
+---
+// A short explanation that opens on hover and on keyboard focus.
+//
+//   <Tooltip locale={locale} term="MMR" tip={t.terms.mmr} />            a term with a dotted underline
+//   <Tooltip locale={locale} term={t.fields.mmr} tip={t.terms.mmr} icon /> only a small "?" button
+//
+// How it behaves: the trigger is a real <button>, so it is in the tab order;
+// the bubble is its aria-describedby, stays open while the pointer is over
+// it, and closes on Escape. On a touch screen a tap opens it and a tap
+// elsewhere closes it. It works with scripting off (hover and focus are CSS).
+//
+// Keep the text to a sentence or two of plain words. Never put the only copy
+// of something the reader needs in a tooltip (an assumption, a unit, an
+// error): that goes in visible text. align: which edge of the trigger the
+// bubble lines up with; use "start" or "end" near the edge of the screen.
+import Icon from './Icon.astro';
+import { common } from '../../i18n/common';
+import type { Locale } from '../../i18n/config';
+import { fmt } from '../../lib/fmt';
+
+interface Props {
+  locale: Locale;
+  /** The word being explained. Shown as the trigger, or used as its label when `icon` is set. */
+  term: string;
+  /** The explanation. */
+  tip: string;
+  /** Show only a question-mark icon. */
+  icon?: boolean;
+  align?: 'start' | 'center' | 'end';
+  /** id of the bubble. Set it when the same term and text appear twice on one page. */
+  id?: string;
+  class?: string;
+}
+
+const { locale, term, tip, icon = false, align = 'center', id: givenId, class: className } = Astro.props;
+// A stable id from the text, so that two builds of the same page are identical.
+const hash = [...`${term}|${tip}`].reduce((h, ch) => (Math.imul(h, 31) + ch.codePointAt(0)!) | 0, 7);
+const id = givenId ?? `tip-${(hash >>> 0).toString(36)}`;
+---
+
+<span class:list={['tip', className]} data-tip data-align={align}>
+  <button
+    class:list={['tip-trigger', { 'icon-only': icon }]}
+    type="button"
+    aria-describedby={id}
+    aria-label={icon ? fmt(common[locale].ui.about, { term }) : undefined}
+  >
+    {icon ? <Icon name="circle-help" size={16} /> : term}
+  </button>
+  <span class="tip-bubble" role="tooltip" id={id}>{tip}</span>
+</span>
+
+<script>
+  // Escape closes the open tooltip; it can open again after the pointer or
+  // the focus has left it.
+  const reset = (tip: Element) => tip.removeAttribute('data-dismissed');
+  for (const tip of document.querySelectorAll('[data-tip]')) {
+    tip.addEventListener('pointerleave', () => reset(tip));
+    tip.addEventListener('focusout', () => reset(tip));
+  }
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    for (const tip of document.querySelectorAll('[data-tip]')) {
+      if (tip.matches(':hover, :focus-within')) tip.setAttribute('data-dismissed', '');
+    }
+  });
+</script>

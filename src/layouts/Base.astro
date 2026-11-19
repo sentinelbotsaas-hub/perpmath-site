@@ -2,18 +2,20 @@
 // The one layout. Every page renders through it.
 //
 //   <Base locale={locale} path="/tools/" title="..." description="...">
-//     <section class="read"><div class="wrap">...</div></section>
+//     <section class="section"><div class="wrap">...</div></section>
 //   </Base>
 //
 // `path` is the locale-less path of the page ("/", "/tools/x/"). Canonical,
 // hreflang and the language switcher are all built from it.
+//
+// The layout gives a page: the <head> (SEO tags, fonts, the theme script),
+// the skip link, the sticky header, <main>, the related-lessons block and the
+// footer. It adds no wrapper inside <main>: a page is a stack of full-width
+// <section class="section"> bands, each with a .wrap inside.
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/components.css';
 import tokensSource from '../styles/tokens.css?raw';
-import rethinkSans from '@fontsource-variable/rethink-sans/files/rethink-sans-latin-wght-normal.woff2?url';
-import azeretMono400 from '@fontsource/azeret-mono/files/azeret-mono-latin-400-normal.woff2?url';
-import azeretMono500 from '@fontsource/azeret-mono/files/azeret-mono-latin-500-normal.woff2?url';
 import Footer from '../components/Footer.astro';
 import RelatedArticles from '../components/RelatedArticles.astro';
 import Nav from '../components/Nav.astro';
@@ -21,6 +23,7 @@ import { common } from '../i18n/common';
 import { absoluteUrl, alternates, htmlLang, locales, ogLocale } from '../i18n/config';
 import type { Locale } from '../i18n/config';
 import { SITE_NAME, serializeJsonLd } from '../lib/seo';
+import { fontFaceCss, preloadFonts } from './fonts';
 
 interface Props {
   locale: Locale;
@@ -32,7 +35,7 @@ interface Props {
   description: string;
   /** Set when the <title> should be exactly `title` (the home page). */
   bareTitle?: boolean;
-  /** Surface of the first section, so the nav sits on the same colour. */
+  /** From before the redesign, when the nav took the colour of the first section. Ignored. */
   surface?: 'measure' | 'read';
   /** Locales this page exists in. Default: all three. Articles pass fewer. */
   availableLocales?: readonly Locale[];
@@ -54,7 +57,6 @@ const {
   title,
   description,
   bareTitle = false,
-  surface = 'read',
   availableLocales = locales,
   noindex = false,
   switcherPath,
@@ -71,9 +73,6 @@ const canonical = absoluteUrl(locale, path);
 const hreflangs = noindex ? [] : alternates(path, availableLocales);
 const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
-// Latin subsets only. Chinese text uses system fonts (see tokens.css).
-const U_LATIN =
-  'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
 // The design stamp (the "Hallmark" comment lines at the top of tokens.css).
 // The CSS minifier strips comments from the bundled stylesheet, so the stamp
 // is repeated here; the design lint looks for it at the top of a page's CSS.
@@ -82,18 +81,23 @@ const stamp = tokensSource
   .map((line) => line.trim())
   .filter((line) => line.startsWith('/* Hallmark'))
   .join('\n');
-const fontFaces = `${stamp}
-@font-face{font-family:"Rethink Sans";font-style:normal;font-weight:400 800;font-display:swap;src:url(${rethinkSans}) format("woff2-variations");unicode-range:${U_LATIN}}
-@font-face{font-family:"Azeret Mono";font-style:normal;font-weight:400;font-display:swap;src:url(${azeretMono400}) format("woff2");unicode-range:${U_LATIN}}
-@font-face{font-family:"Azeret Mono";font-style:normal;font-weight:500;font-display:swap;src:url(${azeretMono500}) format("woff2");unicode-range:${U_LATIN}}
-`;
+const fontFaces = `${stamp}\n${fontFaceCss(locale)}\n`;
+
+// Runs before the first paint. It marks the document as scripted (the header
+// shows its script-only controls) and applies the stored theme, so a reload
+// never flashes the default one. Storage may be blocked: then the default
+// (dark) stays. Keep it tiny and dependency-free; the key and the three
+// values are the same as in src/scripts/theme.ts.
+const bootScript = `(function(){var d=document.documentElement;d.setAttribute("data-js","");try{var t=localStorage.getItem("perpmath-theme");if(t==="light"||t==="dark"||t==="system")d.setAttribute("data-theme",t)}catch(e){}})();`;
 ---
 
 <!doctype html>
-<html lang={htmlLang[locale]}>
+<html lang={htmlLang[locale]} data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <script is:inline set:html={bootScript} />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -118,7 +122,7 @@ const fontFaces = `${stamp}
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preload" href={rethinkSans} as="font" type="font/woff2" crossorigin />
+    {preloadFonts(locale).map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
     <style is:inline set:html={fontFaces}></style>
     <style is:inline>
       html { overflow-x: clip; }
@@ -130,11 +134,15 @@ const fontFaces = `${stamp}
   </head>
   <body>
     <a class="skip" href="#main">{t.skipToContent}</a>
-    <Nav locale={locale} path={switcherPath ?? path} surface={surface} availableLocales={availableLocales} />
+    <Nav locale={locale} path={switcherPath ?? path} availableLocales={availableLocales} />
     <main id="main" tabindex="-1">
       <slot />
       <RelatedArticles locale={locale} path={path} />
     </main>
     <Footer locale={locale} />
+    <script>
+      import '../scripts/theme.ts';
+      import '../scripts/nav.ts';
+    </script>
   </body>
 </html>

@@ -1,9 +1,14 @@
 ---
-// Links, risk warning, affiliate disclosure. Same on every page.
+// The site footer: what the site is, every section's links, the risk warning,
+// the affiliate disclosure and the language links. Same on every page.
+//
+// Only pages that exist are linked (pageExists), and nothing here is
+// invented: no company details, no policies the site does not have.
 import { common } from '../i18n/common';
-import { localePath } from '../i18n/config';
+import { htmlLang, localeName, localePath, locales } from '../i18n/config';
 import type { Locale } from '../i18n/config';
 import { pageExists } from '../lib/routes';
+import { getTools } from '../lib/tools';
 import { AFFILIATE_ACTIVE } from '../../site.config.mjs';
 
 interface Props {
@@ -12,31 +17,98 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = common[locale];
+const items = t.nav.items;
 
-const links = [
-  { path: '/tools/', label: t.nav.tools },
-  { path: '/learn/', label: t.nav.learn },
-  { path: '/daily/', label: t.nav.daily },
-  { path: '/data/', label: t.nav.data },
-  { path: '/backtests/', label: t.nav.backtests },
-  { path: '/bot/', label: t.nav.bot },
-  { path: '/about/', label: t.footer.about },
-].filter((l) => pageExists(l.path));
+interface FooterLink {
+  path: string;
+  label: string;
+}
+
+const tools: FooterLink[] = getTools(locale)
+  .filter((tool) => tool.href)
+  .map((tool) => ({ path: tool.path, label: tool.name }));
+
+const exists = (link: FooterLink) => pageExists(link.path);
+const columns = [
+  { id: 'tools', head: t.nav.tools, links: [{ path: '/tools/', label: items.toolsAll.label }, ...tools] },
+  {
+    id: 'markets',
+    head: t.nav.markets,
+    links: [
+      { path: '/data/', label: items.dataAll.label },
+      { path: '/data/funding-rate/', label: items.fundingRate.label },
+      { path: '/data/open-interest/', label: items.openInterest.label },
+      { path: '/data/long-short-ratio/', label: items.longShortRatio.label },
+      { path: '/data/liquidation/', label: items.liquidation.label },
+      { path: '/daily/', label: items.daily.label },
+    ],
+  },
+  {
+    id: 'research',
+    head: t.nav.research,
+    links: [
+      { path: '/backtests/', label: items.backtests.label },
+      { path: '/bot/', label: items.bot.label },
+    ],
+  },
+  { id: 'learn', head: t.nav.learn, links: [{ path: '/learn/', label: items.learn.label }] },
+  {
+    id: 'about',
+    head: t.footer.aboutColumn,
+    links: [
+      { path: '/about/', label: t.footer.about },
+      { path: '/disclosure/', label: t.footer.disclosure },
+    ],
+  },
+]
+  .map((column) => ({ ...column, links: column.links.filter(exists) }))
+  .filter((column) => column.links.length > 0);
+
 const paidLine = AFFILIATE_ACTIVE ? t.footer.affiliate : t.footer.plain;
 ---
 
 <footer class="site-footer">
-  <div class="wrap cols">
-    <nav aria-label={t.footer.label}>
-      <a class="wordmark" href={localePath(locale, '/')} aria-label={t.nav.home}>perpmath</a>
-      <div class="links">
-        {links.map((l) => <a href={localePath(locale, l.path)}>{l.label}</a>)}
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="wordmark" href={localePath(locale, '/')} aria-label={t.nav.home}>perpmath</a>
+        <p>{t.footer.brand}</p>
+        <p>{t.footer.method}</p>
       </div>
-    </nav>
-    <div class="legal">
-      <p>{t.footer.risk}</p>
-      <p>{paidLine}</p>
-      <a class="lnk" href={localePath(locale, '/disclosure/')}>{t.footer.disclosure}</a>
+      <nav class="footer-nav" aria-label={t.footer.label}>
+        {
+          columns.map((column) => (
+            <div class="footer-col">
+              <p class="footer-head" id={`footer-${column.id}`}>
+                {column.head}
+              </p>
+              <ul aria-labelledby={`footer-${column.id}`}>
+                {column.links.map((link) => (
+                  <li>
+                    <a href={localePath(locale, link.path)}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <div class="footer-legal">
+      <div class="footer-notes">
+        <p>{t.footer.risk}</p>
+        <p>{paidLine}</p>
+      </div>
+      <div class="footer-langs" role="group" aria-label={t.nav.language}>
+        {
+          locales.map((l) => (
+            <a href={localePath(l, '/')} lang={htmlLang[l]} hreflang={htmlLang[l]} aria-current={l === locale ? 'true' : undefined}>
+              {localeName[l]}
+            </a>
+          ))
+        }
+      </div>
     </div>
   </div>
 </footer>

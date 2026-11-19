@@ -1,0 +1,37 @@
+---
+// One share of a whole, drawn to scale: a win rate, the part of the margin
+// that is used, how far through a range a value sits. The bar's full width is
+// 100% and the filled part is `value`; it is never stretched to look bigger.
+//
+//   <Meter value={0.382} label="Win rate 38.2% (out of sample)" />
+//   <Meter value={used} label={...} tone="negative" size="tall" id="margin-meter" />
+//
+// For a price distance (entry to liquidation) use <RiskRuler>, not this.
+// `label` is the text alternative and is required: a full phrase with the
+// number in it. Print the exact figure in visible text next to the bar too.
+// To update from a script:
+//   meter.style.setProperty('--value', '0.42'); meter.setAttribute('aria-label', '...');
+interface Props {
+  /** 0 to 1. Values outside are clamped. */
+  value: number;
+  label: string;
+  tone?: 'positive' | 'negative' | 'warning' | 'accent';
+  size?: 'thin' | 'tall';
+  id?: string;
+  class?: string;
+}
+
+const { value, label, tone, size = 'thin', id, class: className } = Astro.props;
+const clamped = Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0;
+---
+
+<div
+  class:list={['meter', { tall: size === 'tall' }, className]}
+  id={id}
+  role="img"
+  aria-label={label}
+  data-tone={tone}
+  style={`--value:${clamped.toFixed(4)}`}
+>
+  <span class="meter-fill"></span>
+</div>

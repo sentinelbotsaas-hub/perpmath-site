@@ -1,0 +1,150 @@
+---
+// The risk ruler: the one thing this site is remembered by.
+//
+// A horizontal price axis that starts at 0 and is drawn to scale. The entry
+// price and the liquidation price are two marks on it, and the band between
+// them is exactly as long as the price has to travel. It is never zoomed: at
+// 100x the two marks almost touch, and that is the point.
+//
+//   <RiskRuler locale={locale} id="calc-ruler" side="long"
+//              entry={68000} liquidation={64824.4} decimals={1} />
+//
+// Long and short are told apart without colour: the word, the turned icon,
+// which side of the entry mark the liquidation mark is on, and the wedge that
+// points from the entry side at the liquidation mark. The marks have their
+// own shapes too (disc: entry, diamond: liquidation, ring: current price).
+//
+// The picture is hidden from screen readers; the sentence in <figcaption>
+// says the same thing in words. caption="sr" keeps that sentence for screen
+// readers only, for pages that already print it next to the ruler.
+//
+// To redraw it from a script (never set the styles by hand):
+//
+//   import { updateRiskRuler } from '../components/ui/risk-ruler';
+//   updateRiskRuler(document.querySelector('#calc-ruler'), { entry, liquidation, side, current });
+//
+// Hooks, if you need to read from it: the root has data-risk-ruler,
+// data-state ("ready" | "empty"), data-side, data-entry, data-liq. Parts are
+// [data-rr="side|distance|entry|liq|current|gap|ticks|summary|empty"] and the
+// printed prices are [data-rr="entry-value|liq-value|current-value"].
+import Icon from './Icon.astro';
+import { common } from '../../i18n/common';
+import type { Locale } from '../../i18n/config';
+import { layoutRiskRuler, ticksHtml } from './risk-ruler';
+import type { RulerSide } from './risk-ruler';
+
+interface Props {
+  locale: Locale;
+  /** Entry price. */
+  entry: number;
+  /** Liquidation price. A value that is not a number above 0 shows the empty state. */
+  liquidation: number;
+  side: RulerSide;
+  /** Current price, optional. */
+  current?: number | null;
+  /** Unit printed after prices. Default "USDT". */
+  unit?: string;
+  /** Decimals of the printed prices. Default 0. */
+  decimals?: number;
+  id?: string;
+  /** "l" has a taller track and a larger distance figure (the home hero). */
+  size?: 'm' | 'l';
+  /** Keep the row for the current price when a script may add one later, so nothing moves. */
+  reserveCurrent?: boolean;
+  /** "visible" (default) prints the sentence under the ruler; "sr" hides it visually. */
+  caption?: 'visible' | 'sr';
+  class?: string;
+}
+
+const {
+  locale,
+  entry,
+  liquidation,
+  side,
+  current = null,
+  unit = 'USDT',
+  decimals = 0,
+  id,
+  size = 'm',
+  reserveCurrent = false,
+  caption = 'visible',
+  class: className,
+} = Astro.props;
+
+const strings = common[locale].ruler;
+const layout = layoutRiskRuler({ entry, liquidation, side, current }, strings, { unit, decimals });
+const at = (n: number | null) => `--at:${(n ?? 0).toFixed(5)}`;
+const currentRow = reserveCurrent || layout.currentAt !== null;
+---
+
+<figure
+  class:list={['rr', { l: size === 'l', 'has-current': currentRow }, className]}
+  id={id}
+  data-risk-ruler
+  data-state={layout.ok ? 'ready' : 'empty'}
+  data-side={layout.side}
+  data-entry={layout.ok ? entry : undefined}
+  data-liq={layout.ok ? liquidation : undefined}
+  data-rr-unit={unit}
+  data-rr-decimals={decimals}
+  data-rr-strings={JSON.stringify(strings)}
+>
+  <div class="rr-head" aria-hidden="true">
+    <span class="rr-side">
+      <Icon name="trending-up" size={16} />
+      <span data-rr="side">{layout.text.side}</span>
+    </span>
+    <span class="rr-distance" data-rr="distance">{layout.text.distance}</span>
+  </div>
+
+  <div class="rr-plot" aria-hidden="true">
+    <div class="rr-axis">
+      <div class="rr-track"></div>
+      <div
+        class="rr-gap"
+        data-rr="gap"
+        style={`--from:${layout.gapFrom.toFixed(5)};--len:${layout.gapLen.toFixed(5)}`}
+        hidden={!layout.ok}
+      >
+      </div>
+      <div class="rr-ticks" data-rr="ticks" data-max={layout.max} set:html={ticksHtml(layout)} />
+
+      <div class="rr-pin current" data-rr="current" style={at(layout.currentAt)} hidden={layout.currentAt === null}>
+        <span class="rr-pin-label">
+          <span class="rr-shape"></span>
+          {strings.current}
+          <span class="num" data-rr="current-value">{layout.text.current}</span>
+        </span>
+        <span class="rr-pin-stem"></span>
+        <span class="rr-shape rr-pin-head"></span>
+      </div>
+
+      <div class="rr-pin entry" data-rr="entry" style={at(layout.entryAt)} hidden={!layout.ok}>
+        <span class="rr-pin-label">
+          <span class="rr-shape"></span>
+          {strings.entry}
+          <span class="num" data-rr="entry-value">{layout.text.entry}</span>
+        </span>
+        <span class="rr-pin-stem"></span>
+        <span class="rr-shape rr-pin-head"></span>
+      </div>
+
+      <div class="rr-pin liq" data-rr="liq" style={at(layout.liqAt)} hidden={!layout.ok}>
+        <span class="rr-pin-label">
+          <span class="rr-shape"></span>
+          {strings.liquidation}
+          <span class="num" data-rr="liq-value">{layout.text.liquidation}</span>
+        </span>
+        <span class="rr-pin-stem"></span>
+        <span class="rr-shape rr-pin-head"></span>
+        <span class="rr-arrow"></span>
+      </div>
+
+      <p class="rr-empty" data-rr="empty">{layout.ok ? '' : strings.empty}</p>
+    </div>
+  </div>
+
+  <figcaption class:list={['rr-summary', { 'visually-hidden': caption === 'sr' }]} data-rr="summary">
+    {layout.text.summary}
+  </figcaption>
+</figure>

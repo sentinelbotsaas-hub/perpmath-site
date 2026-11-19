@@ -1,0 +1,41 @@
+---
+// The one line under a block of actions that leaves the site for Bybit.
+// Which sentence it prints follows from where the actions go and from
+// AFFILIATE_ACTIVE in site.config.mjs, so it can never claim (or hide) a
+// commission by mistake. <Cta> renders it for you; use it directly only when
+// you build a block of exits by hand.
+//
+//   <AffiliateDisclosure locale={locale} primary="bybit-testnet" secondary="bybit" />
+//
+// primary / secondary: where each action goes. "bybit" is the live exchange
+// (/go/bybit/), "bybit-testnet" the testnet (/go/bybit-testnet/); leave an
+// action out when it stays on this site. Renders nothing when no action
+// leaves the site. Keep it directly under the actions, and keep the actions
+// below the result they follow, never above it.
+import { AFFILIATE_ACTIVE } from '../../../site.config.mjs';
+import { common } from '../../i18n/common';
+import type { Locale } from '../../i18n/config';
+
+type Exit = 'bybit' | 'bybit-testnet';
+
+interface Props {
+  locale: Locale;
+  primary?: Exit;
+  secondary?: Exit;
+  /** Replace the sentence. Still shown only when an action leaves the site. */
+  text?: string;
+  class?: string;
+}
+
+const { locale, primary, secondary, text, class: className } = Astro.props;
+const t = common[locale].cta;
+
+const hasAffiliate = primary === 'bybit' || secondary === 'bybit';
+const hasTestnet = primary === 'bybit-testnet' || secondary === 'bybit-testnet';
+// While AFFILIATE_ACTIVE is false the link earns nothing, and the line says so.
+const own = AFFILIATE_ACTIVE ? t.disclosure : t.disclosurePlain;
+const live = AFFILIATE_ACTIVE ? t.disclosureLiveLink : t.disclosureLiveLinkPlain;
+const line = text ?? (hasAffiliate ? (primary === 'bybit' ? own : live) : hasTestnet ? t.disclosureTestnet : undefined);
+---
+
+{line && <p class:list={['fine', 'disclosure-line', className]}>{line}</p>}
