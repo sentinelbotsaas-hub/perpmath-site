@@ -3,7 +3,7 @@
 // side by side for the last complete UTC day, and the reports on file by day.
 import ContractTable from '../../../components/market/ContractTable.astro';
 import StaleNotice from '../../../components/market/StaleNotice.astro';
-import { leverageFigure } from '../../../components/market/format';
+import { leverageFigure, signTone } from '../../../components/market/format';
 import { isStale } from '../../../components/market/freshness';
 import Card from '../../../components/ui/Card.astro';
 import DataFreshness from '../../../components/ui/DataFreshness.astro';
@@ -50,10 +50,11 @@ const rows = reports.map(({ coin, symbol, report }) => {
     cells: [
       formatNumber(report.day.open, decimals),
       formatNumber(report.day.close, decimals),
-      formatPercent(report.day.adverseLong),
-      formatPercent(report.day.adverseShort),
+      // "Largest drop" and "largest rise" are the column heads; the colour repeats them.
+      { text: formatPercent(report.day.adverseLong), tone: 'negative' as const },
+      { text: formatPercent(report.day.adverseShort), tone: 'positive' as const },
       survived(report),
-      ratePercent(report.funding.average7d),
+      { text: ratePercent(report.funding.average7d), tone: signTone(report.funding.average7d) },
     ],
   };
 });
@@ -76,6 +77,7 @@ const jsonLd = breadcrumbLd(locale, trail);
         slot="meta"
         locale={locale}
         date={first.reportDate}
+        dateLabel={fmt(dt.common.day, { date: first.reportDate })}
         time={first.fetchedAt}
         timeLabel={fmt(dt.common.fetched, { time: utcMinute(first.fetchedAt) })}
         source={dt.common.sourceName}

@@ -81,7 +81,7 @@ const sides: Array<{ side: Side; name: string }> = [
               <Meter
                 value={Math.min(1, moves[side] / row.room)}
                 label={meterLabel(row, side)}
-                tone={row[side].liquidated ? 'negative' : undefined}
+                tone={row[side].liquidated ? 'negative' : 'positive'}
                 size="tall"
               />
               <span class="mk-surv-out">

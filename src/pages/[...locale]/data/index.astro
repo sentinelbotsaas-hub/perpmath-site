@@ -16,6 +16,7 @@ import type { Locale } from '../../../i18n/config';
 import { daily } from '../../../i18n/daily';
 import { data } from '../../../i18n/data';
 import Base from '../../../layouts/Base.astro';
+import { signTone } from '../../../components/market/format';
 import { fmt, formatNumber } from '../../../lib/fmt';
 import { highestSurviving } from '../../../lib/market/compute';
 import type { MarketReport } from '../../../lib/market/report';
@@ -38,8 +39,14 @@ const first = entries[0].report;
 const stale = isStale(first.reportDate, Date.now());
 
 // The same figures the four pages lead with.
-const sets: Array<{ slug: keyof typeof t.names; icon: IconName; figure: (report: MarketReport) => string }> = [
-  { slug: 'funding-rate', icon: 'percent', figure: (r) => ratePercent(r.funding.average7d) },
+// `tone`: a signed figure takes the colour of its sign (the sign is printed).
+const sets: Array<{
+  slug: keyof typeof t.names;
+  icon: IconName;
+  figure: (report: MarketReport) => string;
+  tone?: (report: MarketReport) => 'positive' | 'negative' | undefined;
+}> = [
+  { slug: 'funding-rate', icon: 'percent', figure: (r) => ratePercent(r.funding.average7d), tone: (r) => signTone(r.funding.average7d) },
   { slug: 'long-short-ratio', icon: 'scale', figure: (r) => formatNumber(r.ratio.latest.longShort, 2) },
   {
     slug: 'open-interest',
@@ -70,6 +77,7 @@ const jsonLd = breadcrumbLd(locale, trail);
         slot="meta"
         locale={locale}
         date={first.reportDate}
+        dateLabel={fmt(t.common.day, { date: first.reportDate })}
         time={first.fetchedAt}
         timeLabel={fmt(t.common.fetched, { time: utcMinute(first.fetchedAt) })}
         source={t.common.sourceName}
@@ -80,7 +88,7 @@ const jsonLd = breadcrumbLd(locale, trail);
 
     <div class="cards cols-2 mk-sets">
       {
-        sets.map(({ slug, icon, figure }) => (
+        sets.map(({ slug, icon, figure, tone }) => (
           <Card href={localePath(locale, `/data/${slug}/`)}>
             <div class="mk-set-top">
               <span class="card-icon">
@@ -98,7 +106,7 @@ const jsonLd = breadcrumbLd(locale, trail);
               {entries.map(({ symbol, report }) => (
                 <div>
                   <dt class="num">{symbol}</dt>
-                  <dd class="num">{figure(report)}</dd>
+                  <dd class:list={['num', { toned: tone }]} data-tone={tone?.(report)}>{figure(report)}</dd>
                 </div>
               ))}
             </dl>

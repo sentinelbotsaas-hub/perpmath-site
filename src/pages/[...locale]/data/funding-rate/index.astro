@@ -15,6 +15,7 @@ import { localeStaticPaths } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
 import { daily } from '../../../../i18n/daily';
 import { data } from '../../../../i18n/data';
+import { depthShare, signTone } from '../../../../components/market/format';
 import { fmt, formatNumber } from '../../../../lib/fmt';
 import { latestReports } from '../../../../lib/market/store';
 import { plainNumber, ratePercent } from '../../../../lib/market/view';
@@ -39,17 +40,20 @@ const latestCell = (report: (typeof entries)[number]['report']) =>
 const rows = entries.map(({ coin, symbol, report }) => ({
   coin,
   symbol,
+  // Signed figures: the colour follows the sign that is printed.
   cells: [
-    latestCell(report),
-    ratePercent(report.funding.average7d),
-    usdt(report.funding.costPerDay),
-    usdt(report.funding.costPer30Days),
+    { text: latestCell(report), tone: signTone(report.funding.latest.rate) },
+    { text: ratePercent(report.funding.average7d), tone: signTone(report.funding.average7d) },
+    { text: usdt(report.funding.costPerDay), tone: signTone(report.funding.costPerDay) },
+    { text: usdt(report.funding.costPer30Days), tone: signTone(report.funding.costPer30Days) },
   ],
 }));
 
 // 30 days, newest first, one column per contract.
 const dates = first.history.funding.map((d) => d.date).reverse();
 const sumOn = (index: number, date: string) => entries[index].report.history.funding.find((d) => d.date === date)?.sum;
+// Depth bars in the 30-day table: one scale for the three contracts, the largest daily sum in either direction.
+const largestSum = Math.max(0, ...entries.flatMap((e) => e.report.history.funding.map((d) => Math.abs(d.sum))));
 
 // The charts: the same 30 daily sums, oldest first, in percent, on one axis.
 const series = entries.map(({ symbol, report }) => ({ symbol, report, days: report.history.funding }));
@@ -81,6 +85,7 @@ const vars = { date: first.reportDate, notional, hours: first.instrument.funding
           label={`${daily[locale].coins[coin]} ${symbol}`}
           value={plainNumber(report.funding.costPerDay)}
           unit="USDT"
+          valueTone={signTone(report.funding.costPerDay)}
           note={fmt(p.metricNote, { average: ratePercent(report.funding.average7d), latest: ratePercent(report.funding.latest.rate) })}
         />
       ))
@@ -117,6 +122,7 @@ const vars = { date: first.reportDate, notional, hours: first.instrument.funding
           >
             <SeriesChart
               kind="bars"
+              signed
               values={values}
               titles={days.map((d) => fmt(t.common.point, { date: d.date, value: ratePercent(d.sum) }))}
               axis={axis}
@@ -131,6 +137,7 @@ const vars = { date: first.reportDate, notional, hours: first.instrument.funding
               slot="footer"
               locale={locale}
               date={report.reportDate}
+              dateLabel={fmt(t.common.day, { date: report.reportDate })}
               source={t.common.sourceName}
               stale={isStale(report.reportDate, Date.now())}
             />
@@ -147,6 +154,9 @@ const vars = { date: first.reportDate, notional, hours: first.instrument.funding
     caption={p.historyCaption}
     stickyFirst
     hint
+    depth
+    firstWidth="27%"
+    minWidth="21.25rem"
   >
     <thead>
       <tr>
@@ -161,7 +171,12 @@ const vars = { date: first.reportDate, notional, hours: first.instrument.funding
             <th scope="row" class="num">{date}</th>
             {entries.map((_, i) => {
               const sum = sumOn(i, date);
-              return <td class="num">{sum === undefined ? '' : ratePercent(sum)}</td>;
+              if (sum === undefined) return <td class="num" />;
+              return (
+                <td class="num" data-depth data-tone={signTone(sum)} style={`--depth:${depthShare(sum, largestSum)}`}>
+                  {ratePercent(sum)}
+                </td>
+              );
             })}
           </tr>
         ))

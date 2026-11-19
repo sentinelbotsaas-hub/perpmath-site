@@ -51,6 +51,10 @@ const lev = (n: number) => fmt(t.levFormat, { n });
 const calculatorHref = localePath(locale, toolPath('liquidation-price-calculator'));
 
 // Everything the browser script needs, as plain data.
+// The sentence is printed around its percentage, so the figure alone can
+// take the "down" colour. The words and their order are the string's own.
+const [sentenceBefore = '', sentenceAfter = ''] = t.sentence.split('{pct}');
+
 const heroData = JSON.stringify({
   entry: ENTRY,
   mmr,
@@ -118,7 +122,7 @@ const heroData = JSON.stringify({
         <span class="sim-unit">USDT</span>
       </p>
     </div>
-    <p class="sim-sentence" id="hero-sentence">{fmt(t.sentence, { pct })}</p>
+    <p class="sim-sentence" id="hero-sentence">{sentenceBefore}<span class="toned" data-tone="negative" id="hero-pct">{pct}</span>{sentenceAfter}</p>
   </div>
 
   <RiskRuler
@@ -129,6 +133,7 @@ const heroData = JSON.stringify({
     entry={ENTRY}
     liquidation={liq}
     decimals={decimals}
+    entryDecimals={0}
     caption="sr"
   />
 
@@ -283,14 +288,6 @@ const heroData = JSON.stringify({
      updateRiskRuler() puts them. */
   .sim :global(.rr.l) {
     --rr-track-h: calc(var(--space-12) + var(--space-2));
-  }
-
-  /* "4.67%" and "49.67%" differ in length. Give the distance the rest of its
-     row and set it flush right, so its box stays put when the text changes
-     (otherwise each change counts as a small layout shift). */
-  .sim :global(.rr-distance) {
-    flex: 1 1 auto;
-    text-align: right;
   }
 
   .sim-foot {

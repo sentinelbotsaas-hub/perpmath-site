@@ -1,7 +1,7 @@
 ---
 // Days liquidated out of a run of days, by leverage, for longs and shorts.
-// Under each count a bar shows the same share at its true length: the whole
-// bar is every day in the run.
+// Behind each count a depth bar shows the same share at its true length: the
+// full width of the cell is every day in the run.
 //
 //   <StatsTable locale={locale} label="BTCUSDT: days liquidated, by leverage"
 //     columns={['Leverage', 'Long, days', 'Short, days']} caption="..."
@@ -11,7 +11,6 @@
 // A side left out of a row (leverage above the contract's limit) prints
 // `missing` and draws no bar. Counts and shares come from report.survival90.
 import DataTable from '../ui/DataTable.astro';
-import Meter from '../ui/Meter.astro';
 import type { Locale } from '../../i18n/config';
 
 interface Cell {
@@ -19,7 +18,7 @@ interface Cell {
   text: string;
   /** 0 to 1. */
   share: number;
-  /** Text alternative of the bar: a full phrase with the figures in it. */
+  /** The same figures as a full phrase. Kept for callers; the count itself is the text now. */
   label: string;
 }
 
@@ -31,12 +30,14 @@ interface Props {
   rows: Array<{ leverage: string; long?: Cell; short?: Cell }>;
   missing: string;
   caption?: string;
+  /** Narrowest the table gets before it scrolls sideways; raise it when the cell text is long. */
+  minWidth?: string;
 }
 
-const { locale, label, columns, rows, missing, caption } = Astro.props;
+const { locale, label, columns, rows, missing, caption, minWidth = '19rem' } = Astro.props;
 ---
 
-<DataTable locale={locale} label={label} caption={caption} stickyFirst hint>
+<DataTable locale={locale} label={label} caption={caption} stickyFirst hint depth firstWidth="22%" minWidth={minWidth}>
   <thead>
     <tr>
       <th scope="col">{columns[0]}</th>
@@ -53,9 +54,8 @@ const { locale, label, columns, rows, missing, caption } = Astro.props;
           </th>
           {[row.long, row.short].map((cell) =>
             cell ? (
-              <td class="mk-share">
-                <span class="num">{cell.text}</span>
-                <Meter value={cell.share} label={cell.label} />
+              <td class="num mk-share" data-depth data-tone="negative" style={`--depth:${Math.min(1, Math.max(0, cell.share)).toFixed(4)}`}>
+                {cell.text}
               </td>
             ) : (
               <td class="mk-share">{missing}</td>
@@ -66,16 +66,3 @@ const { locale, label, columns, rows, missing, caption } = Astro.props;
     }
   </tbody>
 </DataTable>
-
-<style>
-  /* The count sits over the start of its bar, so both read from the left. */
-  .mk-share {
-    min-width: 9rem;
-    text-align: left;
-  }
-
-  .mk-share :global(.meter) {
-    margin-top: var(--space-2);
-    background: var(--color-border-hover);
-  }
-</style>

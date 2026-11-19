@@ -94,6 +94,7 @@ const liveSymbols = reports.map((r) => {
         slot="meta"
         locale={locale}
         date={first.reportDate}
+        dateLabel={fmt(t.common.day, { date: first.reportDate })}
         time={first.fetchedAt}
         timeLabel={fmt(t.common.fetched, { time: utcMinute(first.fetchedAt) })}
         source={t.common.sourceName}
@@ -166,6 +167,7 @@ const liveSymbols = reports.map((r) => {
       <DataFreshness
         locale={locale}
         date={first.reportDate}
+        dateLabel={fmt(t.common.day, { date: first.reportDate })}
         time={first.fetchedAt}
         timeLabel={fmt(t.common.fetched, { time: utcMinute(first.fetchedAt) })}
         source={t.common.sourceName}
@@ -246,7 +248,6 @@ const liveSymbols = reports.map((r) => {
     }
 
     .mk-source .fine {
-      max-width: 54ch;
       margin-top: var(--space-2);
     }
   </style>

@@ -6,7 +6,7 @@
 import ContractTable from '../../../../components/market/ContractTable.astro';
 import RangePanels from '../../../../components/market/RangePanels.astro';
 import StatsTable from '../../../../components/market/StatsTable.astro';
-import { leverageFigure } from '../../../../components/market/format';
+import { depthShare, leverageFigure } from '../../../../components/market/format';
 import DataTable from '../../../../components/ui/DataTable.astro';
 import Disclaimer from '../../../../components/ui/Disclaimer.astro';
 import MetricCard from '../../../../components/ui/MetricCard.astro';
@@ -48,8 +48,9 @@ const dayRows = entries.map(({ coin, symbol, report }) => ({
   symbol,
   cells: [
     formatPercent(report.instrument.tierOne.maintenanceMargin),
-    formatPercent(report.day.adverseLong),
-    formatPercent(report.day.adverseShort),
+    // The column heads say "largest drop" and "largest rise"; the colour repeats them.
+    { text: formatPercent(report.day.adverseLong), tone: 'negative' as const },
+    { text: formatPercent(report.day.adverseShort), tone: 'positive' as const },
     lev(highestSurviving(report.survival, 'long')),
     lev(highestSurviving(report.survival, 'short')),
   ],
@@ -79,17 +80,25 @@ const statCell = (report: MarketReport, leverage: number, side: 'long' | 'short'
 const dates = first.history.daily.slice(-30).map((day) => day.date).reverse();
 const dayCell = (report: MarketReport, date: string) => {
   const day = report.history.daily.find((row) => row.date === date);
-  if (!day) return '';
+  if (!day) return null;
   const candle = { start: utcDayStart(day.date), open: day.open, high: day.high, low: day.low, close: day.close };
   const tier = report.instrument.tierOne;
   const rows = survivalTable(candle, [], { mmr: tier.maintenanceMargin, maxLeverage: tier.maxLeverage });
   const moves = adverseMoves(candle);
-  return fmt(p.historyCell, {
-    lev: lev(highestSurviving(rows, 'both')),
-    drop: signedPercent(-moves.long),
-    rise: signedPercent(moves.short),
-  });
+  return {
+    text: fmt(p.historyCell, {
+      lev: lev(highestSurviving(rows, 'both')),
+      drop: signedPercent(-moves.long),
+      rise: signedPercent(moves.short),
+    }),
+    drop: moves.long,
+    rise: moves.short,
+  };
 };
+const dayCells = dates.map((date) => entries.map(({ report }) => dayCell(report, date)));
+// Depth bars: the drop (red, upper) and the rise (green, lower) of each day,
+// on one scale for the whole table, the largest move in it.
+const largestMove = Math.max(0, ...dayCells.flat().flatMap((cell) => (cell ? [cell.drop, cell.rise] : [])));
 
 const btcMmr = first.instrument.tierOne.maintenanceMargin;
 const vars = {
@@ -185,6 +194,9 @@ const vars = {
     caption={p.historyCaption}
     stickyFirst
     hint
+    depth
+    firstWidth="13%"
+    minWidth="50rem"
   >
     <thead>
       <tr>
@@ -194,10 +206,18 @@ const vars = {
     </thead>
     <tbody>
       {
-        dates.map((date) => (
+        dates.map((date, i) => (
           <tr>
             <th scope="row" class="num">{date}</th>
-            {entries.map(({ report }) => <td class="num">{dayCell(report, date)}</td>)}
+            {dayCells[i].map((cell) =>
+              cell ? (
+                <td class="num" data-depth="pair" style={`--depth:${depthShare(cell.drop, largestMove)};--depth-2:${depthShare(cell.rise, largestMove)}`}>
+                  {cell.text}
+                </td>
+              ) : (
+                <td class="num" />
+              ),
+            )}
           </tr>
         ))
       }

@@ -83,6 +83,30 @@ describe('layoutRiskRuler', () => {
     expect(new Set(labels).size).toBe(labels.length);
   });
 
+  it('prints the entry price with its own decimals when asked, and the same everywhere', () => {
+    const input = { entry: 68000, liquidation: 64824.4, side: 'long' as const };
+    // Default: the entry follows `decimals`, as before.
+    expect(layoutRiskRuler(input, strings, { decimals: 1 }).text.entry).toBe('68,000.0');
+    // A fixed number: the home hero prints the entry as a whole number.
+    const fixed = layoutRiskRuler(input, strings, { decimals: 1, entryDecimals: 0 });
+    expect(fixed.text.entry).toBe('68,000');
+    expect(fixed.text.liquidation).toBe('64,824.4');
+    expect(fixed.text.summary).toContain('Long from 68,000 USDT, liquidation at 64,824.4 USDT.');
+    // "auto": as few decimals as the entry needs, never more than `decimals`.
+    const auto = (entry: number, decimals: number) =>
+      layoutRiskRuler({ ...input, entry }, strings, { decimals, entryDecimals: 'auto' }).text.entry;
+    expect(auto(68000, 1)).toBe('68,000');
+    expect(auto(68000.5, 1)).toBe('68,000.5');
+    expect(auto(68000.25, 1)).toBe('68,000.3');
+    expect(auto(0.512, 4)).toBe('0.512');
+    expect(auto(68000, 0)).toBe('68,000');
+    // The drawing itself does not depend on how the entry is printed.
+    const plain = layoutRiskRuler(input, strings, { decimals: 1 });
+    expect(fixed.entryAt).toBe(plain.entryAt);
+    expect(fixed.distance).toBe(plain.distance);
+    expect(fixed.gap).toBe(plain.gap);
+  });
+
   it('describes the current price, also when it is already past liquidation', () => {
     const near = layoutRiskRuler({ entry: 68000, liquidation: 64000, side: 'long', current: 66000 }, strings);
     expect(near.currentAt).toBeCloseTo(66000 / near.max, 10);

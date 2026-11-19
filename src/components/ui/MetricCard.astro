@@ -26,6 +26,10 @@ interface Props {
   /** A short line under the figure: the sample, the period, the assumption. */
   note?: string;
   tone?: 'positive' | 'negative' | 'warning' | 'accent';
+  /** Colours the value alone, when the note under it has figures of its own with other signs. */
+  valueTone?: 'positive' | 'negative';
+  /** Colours the note alone, when the signed figure is in the note and the value is not signed. */
+  noteTone?: 'positive' | 'negative';
   trend?: 'up' | 'down';
   valueId?: string;
   noteId?: string;
@@ -34,7 +38,7 @@ interface Props {
   class?: string;
 }
 
-const { label, value, unit, note, tone, trend, valueId, noteId, bare = false, class: className } = Astro.props;
+const { label, value, unit, note, tone, valueTone, noteTone, trend, valueId, noteId, bare = false, class: className } = Astro.props;
 ---
 
 {
@@ -42,11 +46,11 @@ const { label, value, unit, note, tone, trend, valueId, noteId, bare = false, cl
     <div class:list={['metric', className]} data-tone={tone}>
       <p class="metric-label">{label}</p>
       <p class="metric-value">
-        <span id={valueId}>{value}</span>
+        <span id={valueId} class:list={[{ toned: valueTone }]} data-tone={valueTone}>{value}</span>
         {unit && <span class="metric-unit">{unit}</span>}
       </p>
       {(note || trend) && (
-        <p class="metric-note">
+        <p class:list={['metric-note', { toned: noteTone }]} data-tone={noteTone}>
           {trend && <Icon name={trend === 'up' ? 'arrow-up' : 'arrow-down'} size={14} />}
           <span id={noteId}>{note}</span>
         </p>
@@ -56,11 +60,11 @@ const { label, value, unit, note, tone, trend, valueId, noteId, bare = false, cl
     <Card class:list={['metric', className]} data-tone={tone}>
       <p class="metric-label">{label}</p>
       <p class="metric-value">
-        <span id={valueId}>{value}</span>
+        <span id={valueId} class:list={[{ toned: valueTone }]} data-tone={valueTone}>{value}</span>
         {unit && <span class="metric-unit">{unit}</span>}
       </p>
       {(note || trend) && (
-        <p class="metric-note">
+        <p class:list={['metric-note', { toned: noteTone }]} data-tone={noteTone}>
           {trend && <Icon name={trend === 'up' ? 'arrow-up' : 'arrow-down'} size={14} />}
           <span id={noteId}>{note}</span>
         </p>

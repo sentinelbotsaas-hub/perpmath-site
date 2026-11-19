@@ -17,7 +17,7 @@ import RangePanels from '../../../components/market/RangePanels.astro';
 import StaleNotice from '../../../components/market/StaleNotice.astro';
 import StatsTable from '../../../components/market/StatsTable.astro';
 import SurvivalTable from '../../../components/market/SurvivalTable.astro';
-import { leverageFigure } from '../../../components/market/format';
+import { leverageFigure, signTone } from '../../../components/market/format';
 import { isStale } from '../../../components/market/freshness';
 import Accordion from '../../../components/ui/Accordion.astro';
 import Card from '../../../components/ui/Card.astro';
@@ -195,8 +195,8 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
       <div class="cards cols-2">
         <MetricCard label={t.stats.open} value={price(day.open)} unit="USDT" />
         <MetricCard label={t.stats.close} value={price(day.close)} unit="USDT" />
-        <MetricCard label={t.stats.drop} value={drop} note={fmt(t.stats.low, { price: price(day.low) })} trend="down" />
-        <MetricCard label={t.stats.rise} value={rise} note={fmt(t.stats.high, { price: price(day.high) })} trend="up" />
+        <MetricCard label={t.stats.drop} value={drop} note={fmt(t.stats.low, { price: price(day.low) })} trend="down" tone="negative" />
+        <MetricCard label={t.stats.rise} value={rise} note={fmt(t.stats.high, { price: price(day.high) })} trend="up" tone="positive" />
       </div>
     </div>
   </div>
@@ -211,7 +211,7 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
   </div>
   <SurvivalTable locale={locale} report={report} />
   <p class="fine">{fmt(t.legend, { mmr: formatPercent(mmr) })}</p>
-  <DataFreshness locale={locale} class="mk-fresh" date={report.reportDate} source={dt.common.sourceName} stale={stale} />
+  <DataFreshness locale={locale} class="mk-fresh" date={report.reportDate} dateLabel={fmt(dt.common.day, { date: report.reportDate })} source={dt.common.sourceName} stale={stale} />
   <Cta
     locale={locale}
     pageType="daily"
@@ -236,7 +236,7 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
       desc={`${t.hourlyDesc}${locale === 'en' ? ' ' : ''}${t.hourlyNote}`}
     >
       <HourlyChart locale={locale} report={report} />
-      <DataFreshness slot="footer" locale={locale} date={report.reportDate} source={dt.common.sourceName} stale={stale} />
+      <DataFreshness slot="footer" locale={locale} date={report.reportDate} dateLabel={fmt(dt.common.day, { date: report.reportDate })} source={dt.common.sourceName} stale={stale} />
     </ChartContainer>
   </div>
   <div class="mk-hours">
@@ -305,6 +305,7 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
         short: statCell(row, 'short'),
       }))}
       missing={dt.liquidation.notOffered}
+      minWidth="27rem"
     />
   </div>
   <div class="mk-range-head">
@@ -327,19 +328,19 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
         <tbody>
           <tr>
             <th scope="row">{fmt(t.funding.latest, { time: utcMinute(f.latest.time) })}</th>
-            <td class="num">{ratePercent(f.latest.rate)}</td>
+            <td class="num toned" data-tone={signTone(f.latest.rate)}>{ratePercent(f.latest.rate)}</td>
           </tr>
           <tr>
             <th scope="row">{t.funding.average}</th>
-            <td class="num">{ratePercent(f.average7d)}</td>
+            <td class="num toned" data-tone={signTone(f.average7d)}>{ratePercent(f.average7d)}</td>
           </tr>
           <tr>
             <th scope="row">{fmt(t.funding.perDay, { notional: formatNumber(f.notional) })}</th>
-            <td class="num">{usdt(f.costPerDay)}</td>
+            <td class="num toned" data-tone={signTone(f.costPerDay)}>{usdt(f.costPerDay)}</td>
           </tr>
           <tr>
             <th scope="row">{t.funding.per30}</th>
-            <td class="num">{usdt(f.costPer30Days)}</td>
+            <td class="num toned" data-tone={signTone(f.costPer30Days)}>{usdt(f.costPer30Days)}</td>
           </tr>
         </tbody>
       </table>
@@ -360,7 +361,7 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
           </tr>
           <tr>
             <th scope="row">{t.oi.change}</th>
-            <td class="num">{signedPercent(oi.change7d)}</td>
+            <td class="num toned" data-tone={signTone(oi.change7d)}>{signedPercent(oi.change7d)}</td>
           </tr>
         </tbody>
       </table>
@@ -384,7 +385,7 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
           </tr>
           <tr>
             <th scope="row">{t.ratio.change}</th>
-            <td class="num">{fmt(t.ratio.points, { value: signedPoints(r.longShareChange7d) })}</td>
+            <td class="num toned" data-tone={signTone(r.longShareChange7d)}>{fmt(t.ratio.points, { value: signedPoints(r.longShareChange7d) })}</td>
           </tr>
         </tbody>
       </table>
@@ -401,6 +402,7 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
         locale={locale}
         class="mk-fresh"
         date={report.reportDate}
+        dateLabel={fmt(dt.common.day, { date: report.reportDate })}
         time={report.fetchedAt}
         timeLabel={fmt(dt.common.fetched, { time: utcMinute(report.fetchedAt) })}
         source={dt.common.sourceName}
@@ -491,11 +493,6 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
     margin-top: var(--space-6);
   }
 
-  /* Small print: keep its lines under 75 characters in English. */
-  .fine {
-    max-width: 54ch;
-  }
-
   .mk-summary {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -543,10 +540,6 @@ const others = COINS.filter((entry) => entry.coin !== coin).map((entry) => {
   /* The shape of the plot, per width (see the note in Panels.astro). */
   .mk-hourly :global(.chart-box-plot) {
     --chart-ratio: 1 / 1;
-  }
-
-  .mk-hourly :global(.chart-box-head p) {
-    max-width: 56ch;
   }
 
   @media (min-width: 600px) {

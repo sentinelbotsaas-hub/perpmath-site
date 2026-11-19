@@ -233,13 +233,11 @@ main:focus-visible {
   line-height: var(--leading-display);
 }
 
-.h-page,
-.head {
+.h-page {
   font-size: var(--text-page);
 }
 
-.h-section,
-.section-head {
+.h-section {
   font-size: var(--text-section);
 }
 
@@ -250,8 +248,7 @@ main:focus-visible {
 }
 
 /* One or two sentences under a heading. */
-.lede,
-.sub {
+.lede {
   max-width: 60ch;
   margin-top: var(--space-4);
   color: var(--color-text-secondary);
@@ -261,7 +258,7 @@ main:focus-visible {
 
 /* Small print: assumptions, sources, dates. */
 .fine {
-  max-width: 68ch;
+  max-width: var(--measure-fine);
   margin-top: var(--space-4);
   color: var(--color-text-muted);
   font-size: var(--text-sm);
@@ -281,7 +278,6 @@ main:focus-visible {
   color: var(--color-text-secondary);
 }
 
-.head + .prose,
 .fine + .prose,
 .prose + .prose {
   margin-top: var(--space-10);
@@ -403,17 +399,6 @@ pre {
   font-size: inherit;
 }
 
-/* Astro's Markdown highlighter writes one fixed dark palette inline. Code
-   blocks follow the site's theme instead, in both modes. */
-.prose pre.astro-code {
-  background-color: var(--color-surface) !important;
-  color: var(--color-text) !important;
-}
-
-.prose pre.astro-code span {
-  color: inherit !important;
-}
-
 /* Tables written in Markdown have no wrapper: let them scroll by themselves. */
 .prose table {
   display: block;
@@ -427,10 +412,9 @@ pre {
 
 /* --- Tables --------------------------------------------------------------------
    Numbers right-aligned in tabular figures, the first column left-aligned.
-   Wrap a wide table in .table-scroll (or the older .tw) so that it scrolls
-   sideways inside its own box instead of widening the page. */
-.table-scroll,
-.tw {
+   Wrap a wide table in .table-scroll so that it scrolls sideways inside its
+   own box instead of widening the page. */
+.table-scroll {
   overflow-x: auto;
   overscroll-behavior-x: contain;
 }
@@ -479,50 +463,7 @@ caption {
   font-size: var(--text-xs);
 }
 
-/* --- Pages written before the redesign -----------------------------------------
-   The three old "surfaces" (.measure, .read, .verdict) keep their names and
-   become plain sections in the new colours. Page owners replace them with
-   .section as they rebuild each page. */
-.measure {
-  padding-block: var(--space-12) var(--space-16);
-  border-bottom: var(--hairline) solid var(--color-border);
-}
-
-.read {
-  padding-block: var(--space-16);
-}
-
-.verdict {
-  padding-block: var(--space-16);
-  background: var(--color-surface);
-  border-block: var(--hairline) solid var(--color-border);
-  /* Old page styles paint sticky table cells with --color-ink inside this
-     band; point it at the band's own colour so they stay invisible. */
-  --color-ink: var(--color-surface);
-  --color-paper: var(--color-text);
-}
-
-.measure + .verdict {
-  border-top: 0;
-}
-
-/* Two reading bands in a row are one surface: do not double the gap. */
-.read + .read {
-  padding-top: var(--space-6);
-}
-
-/* ...unless each band stands on its own (the per-language blocks on 404). */
-.read + .read.band {
-  padding-top: var(--space-16);
-}
-
 @media (max-width: 760px) {
-  .measure,
-  .read,
-  .verdict {
-    padding-block: var(--space-8) var(--space-10);
-  }
-
   .section.lead,
   .section.snug {
     padding-block: var(--space-8) var(--space-12);

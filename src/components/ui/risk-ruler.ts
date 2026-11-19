@@ -31,6 +31,21 @@ export interface RulerOptions {
   unit?: string;
   /** Decimals for the entry, liquidation and current prices. Default 0. */
   decimals?: number;
+  /**
+   * Decimals for the entry price alone, when the page prints it differently
+   * from the liquidation price (an entry of 68,000 next to a liquidation
+   * price on a 0.1 tick). A number, or "auto": as few as the entry needs,
+   * never more than `decimals`. Default: the same as `decimals`.
+   */
+  entryDecimals?: number | 'auto';
+}
+
+/** The fewest decimals, up to `max`, that print `value` without losing a digit. */
+function neededDecimals(value: number, max: number): number {
+  for (let d = 0; d < max; d++) {
+    if (Number(value.toFixed(d)) === Number(value.toFixed(max))) return d;
+  }
+  return max;
 }
 
 /** common[locale].ruler from src/i18n/common.ts. */
@@ -155,10 +170,13 @@ export function layoutRiskRuler(input: RulerInput, strings: RulerStrings, option
   const gap = Math.abs(entry - liquidation);
   const distance = gap / entry;
   const price = (n: number) => formatNumber(n, decimals);
+  const entryDecimals =
+    options.entryDecimals === 'auto' ? neededDecimals(entry, decimals) : (options.entryDecimals ?? decimals);
+  const entryText = formatNumber(entry, entryDecimals);
   const pct = formatPercent(distance);
 
   let summary = fmt(side === 'long' ? strings.summaryLong : strings.summaryShort, {
-    entry: price(entry),
+    entry: entryText,
     liq: price(liquidation),
     gap: price(gap),
     pct,
@@ -190,7 +208,7 @@ export function layoutRiskRuler(input: RulerInput, strings: RulerStrings, option
     gap,
     text: {
       side: sideText,
-      entry: price(entry),
+      entry: entryText,
       liquidation: price(liquidation),
       current: current === null ? '' : price(current),
       distance: fmt(strings.distance, { pct }),
@@ -233,7 +251,9 @@ export function updateRiskRuler(root: HTMLElement, input: RulerInput, message?: 
     return null; // leave the server-rendered ruler as it is
   }
   const decimals = Number(root.dataset.rrDecimals || 0);
-  const layout = layoutRiskRuler(input, strings, { unit: root.dataset.rrUnit || 'USDT', decimals });
+  const entryRaw = root.dataset.rrEntryDecimals;
+  const entryDecimals = entryRaw === 'auto' ? 'auto' : entryRaw === undefined || entryRaw === '' ? undefined : Number(entryRaw);
+  const layout = layoutRiskRuler(input, strings, { unit: root.dataset.rrUnit || 'USDT', decimals, entryDecimals });
   const part = (name: string) => root.querySelector<HTMLElement>(`[data-rr="${name}"]`);
   const setText = (name: string, text: string) => {
     const el = part(name);

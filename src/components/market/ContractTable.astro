@@ -4,7 +4,7 @@
 //
 //   <ContractTable locale={locale} label="Funding rate: figures for the report day"
 //     contractLabel="Contract" columns={['Open', 'Close']}
-//     rows={[{ coin: 'btc', symbol: 'BTCUSDT', cells: ['64,850.7', '64,919.9'] }]}
+//     rows={[{ coin: 'btc', symbol: 'BTCUSDT', cells: ['64,850.7', { text: '-0.0042%', tone: 'negative' }] }]}
 //     note="Measured from the 00:00 UTC open." />
 //
 // On a phone the table scrolls sideways inside its own box and the contract
@@ -23,7 +23,8 @@ interface Props {
   contractLabel: string;
   /** Headers of the figure columns, in order. */
   columns: string[];
-  rows: Array<{ coin: Coin; symbol: string; cells: string[] }>;
+  /** A cell is its text, or its text with a tone for a signed figure (the sign is in the text). */
+  rows: Array<{ coin: Coin; symbol: string; cells: Array<string | { text: string; tone?: 'positive' | 'negative' }> }>;
   /** One line under the table: units, sign convention, timestamp. */
   note?: string;
 }
@@ -48,9 +49,9 @@ const { locale, label, contractLabel, columns, rows, note } = Astro.props;
             </a>
             <span class="num mk-symbol">{row.symbol}</span>
           </th>
-          {row.cells.map((cell) => (
-            <td class="num">{cell}</td>
-          ))}
+          {row.cells.map((cell) =>
+            typeof cell === 'string' ? <td class="num">{cell}</td> : <td class="num" data-tone={cell.tone}>{cell.text}</td>,
+          )}
         </tr>
       ))
     }

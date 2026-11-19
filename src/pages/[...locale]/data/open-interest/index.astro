@@ -14,6 +14,7 @@ import { localeStaticPaths } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
 import { daily } from '../../../../i18n/daily';
 import { data } from '../../../../i18n/data';
+import { signTone } from '../../../../components/market/format';
 import { fmt, formatNumber } from '../../../../lib/fmt';
 import { latestReports } from '../../../../lib/market/store';
 import { signedPercent, utcDay, utcMinute } from '../../../../lib/market/view';
@@ -38,7 +39,7 @@ const rows = entries.map(({ coin, symbol, report }) => ({
   cells: [
     amount(report.openInterest.latest.value, report.openInterest.unit),
     amount(report.openInterest.weekAgo.value, report.openInterest.unit),
-    signedPercent(report.openInterest.change7d),
+    { text: signedPercent(report.openInterest.change7d), tone: signTone(report.openInterest.change7d) },
   ],
 }));
 
@@ -74,6 +75,7 @@ const cellAt = (index: number, time: string) => {
           unit={report.openInterest.unit}
           note={fmt(p.metricNote, { change: signedPercent(report.openInterest.change7d) })}
           trend={report.openInterest.change7d > 0 ? 'up' : report.openInterest.change7d < 0 ? 'down' : undefined}
+          noteTone={signTone(report.openInterest.change7d)}
         />
       ))
     }
@@ -127,6 +129,7 @@ const cellAt = (index: number, time: string) => {
               slot="footer"
               locale={locale}
               date={report.reportDate}
+              dateLabel={fmt(t.common.day, { date: report.reportDate })}
               source={t.common.sourceName}
               stale={isStale(report.reportDate, Date.now())}
             />

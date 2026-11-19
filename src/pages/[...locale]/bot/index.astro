@@ -275,15 +275,6 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
     text-align: left;
   }
 
-  /* The pinned first column has a background of its own. In a
-     collapsed-border table the rules belong to the table, and that background
-     is painted over them, so the rules vanish in the first column. With
-     separate borders every cell draws its own rule. */
-  :global(.bot-table .data-table) {
-    border-collapse: separate;
-    border-spacing: 0;
-  }
-
   .bot-return {
     color: var(--tone, var(--color-text));
   }

@@ -46,6 +46,8 @@ interface Props {
   unit?: string;
   /** Decimals of the printed prices. Default 0. */
   decimals?: number;
+  /** Decimals of the entry price alone: a number, or "auto" (as few as it needs). Default: `decimals`. */
+  entryDecimals?: number | 'auto';
   id?: string;
   /** "l" has a taller track and a larger distance figure (the home hero). */
   size?: 'm' | 'l';
@@ -64,6 +66,7 @@ const {
   current = null,
   unit = 'USDT',
   decimals = 0,
+  entryDecimals,
   id,
   size = 'm',
   reserveCurrent = false,
@@ -72,7 +75,7 @@ const {
 } = Astro.props;
 
 const strings = common[locale].ruler;
-const layout = layoutRiskRuler({ entry, liquidation, side, current }, strings, { unit, decimals });
+const layout = layoutRiskRuler({ entry, liquidation, side, current }, strings, { unit, decimals, entryDecimals });
 const at = (n: number | null) => `--at:${(n ?? 0).toFixed(5)}`;
 const currentRow = reserveCurrent || layout.currentAt !== null;
 ---
@@ -87,6 +90,7 @@ const currentRow = reserveCurrent || layout.currentAt !== null;
   data-liq={layout.ok ? liquidation : undefined}
   data-rr-unit={unit}
   data-rr-decimals={decimals}
+  data-rr-entry-decimals={entryDecimals}
   data-rr-strings={JSON.stringify(strings)}
 >
   <div class="rr-head" aria-hidden="true">

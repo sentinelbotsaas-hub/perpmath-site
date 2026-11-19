@@ -18,6 +18,8 @@ import type { Axis } from './chart';
 
 interface Props {
   kind: 'bars' | 'line';
+  /** Bars above zero green, below zero red (a signed series such as a funding rate). */
+  signed?: boolean;
   values: number[];
   titles: string[];
   axis: Axis;
@@ -31,13 +33,13 @@ interface Props {
   label: string;
 }
 
-const { kind, values, titles, axis, tick, yCaption, xCaption, first, last, label } = Astro.props;
+const { kind, signed = false, values, titles, axis, tick, yCaption, xCaption, first, last, label } = Astro.props;
 const count = values.length;
 const slot = 100 / count;
 const zero = yOf(0, axis);
 const bars = values.map((value, i) => {
   const y = yOf(value, axis);
-  return { x: i * slot + slot * 0.15, y: Math.min(y, zero), height: Math.abs(y - zero) };
+  return { x: i * slot + slot * 0.15, y: Math.min(y, zero), height: Math.abs(y - zero), tone: signed ? (value > 0 ? 'pos' : value < 0 ? 'neg' : '') : '' };
 });
 const end = { x: slotCentre(count - 1, count), y: yOf(values[count - 1], axis) };
 ---
@@ -56,7 +58,7 @@ const end = { x: slotCentre(count - 1, count), y: yOf(values[count - 1], axis) }
     kind === 'bars' && (
       <>
         {bars.map((bar) => (
-          <rect class="mk-bar" x={bar.x.toFixed(3)} y={bar.y} width={(slot * 0.7).toFixed(3)} height={bar.height.toFixed(3)} />
+          <rect class:list={['mk-bar', bar.tone]} x={bar.x.toFixed(3)} y={bar.y} width={(slot * 0.7).toFixed(3)} height={bar.height.toFixed(3)} />
         ))}
         <line class="stroke-muted" x1="0" x2="100" y1={zero} y2={zero} stroke-width="1" />
       </>
@@ -76,6 +78,15 @@ const end = { x: slotCentre(count - 1, count), y: yOf(values[count - 1], axis) }
 <style>
   .mk-bar {
     fill: var(--color-text-secondary);
+  }
+
+  /* The sign is the side of the zero line the bar is on; the colour repeats it. */
+  .mk-bar.pos {
+    fill: var(--color-positive);
+  }
+
+  .mk-bar.neg {
+    fill: var(--color-negative);
   }
 
   .mk-hit {

@@ -28,16 +28,24 @@ interface Props {
 const { locale, label, views, caption, surface = false, dense = false } = Astro.props;
 const col = backtests[locale].columns;
 
-const rows: Array<{ head: string; cell: (v: SampleView) => string; plain?: boolean }> = [
+// A share of a whole gets a depth bar at its true length (the full cell is
+// 100%); a signed figure takes the colour of its sign.
+const share = (pct: number | null) => (pct === null || !Number.isFinite(pct) ? undefined : Math.min(1, Math.max(0, Math.abs(pct) / 100)).toFixed(4));
+const rows: Array<{
+  head: string;
+  cell: (v: SampleView) => string;
+  tone?: (v: SampleView) => 'positive' | 'negative' | undefined;
+  depth?: (v: SampleView) => string | undefined;
+}> = [
   { head: col.trades, cell: (v) => v.trades },
-  { head: col.winRate, cell: (v) => v.winRateText },
-  { head: col.avgR, cell: (v) => v.avgR },
+  { head: col.winRate, cell: (v) => v.winRateText, depth: (v) => share(v.winRate) },
+  { head: col.avgR, cell: (v) => v.avgR, tone: (v) => toneOf(v.avgRSign) },
   { head: col.t, cell: (v) => v.tStat },
-  { head: col.maxDrawdown, cell: (v) => v.maxDrawdown },
+  { head: col.maxDrawdown, cell: (v) => v.maxDrawdown, depth: (v) => share(v.maxDrawdownPct), tone: () => 'negative' },
 ];
 ---
 
-<DataTable locale={locale} label={label} caption={caption} stickyFirst dense={dense} class={surface ? 'bt-compare bt-on-surface' : 'bt-compare'}>
+<DataTable locale={locale} label={label} caption={caption} stickyFirst dense={dense} depth firstWidth="30%" class={surface ? 'bt-compare bt-on-surface' : 'bt-compare'}>
   <thead>
     <tr>
       <th scope="col">{col.metric}</th>
@@ -63,9 +71,14 @@ const rows: Array<{ head: string; cell: (v: SampleView) => string; plain?: boole
       rows.map((row) => (
         <tr>
           <th scope="row">{row.head}</th>
-          {views.map((v) => (
-            <td class="num">{row.cell(v)}</td>
-          ))}
+          {views.map((v) => {
+            const depth = row.depth?.(v);
+            return depth === undefined ? (
+              <td class="num" data-tone={row.tone?.(v)}>{row.cell(v)}</td>
+            ) : (
+              <td class="num" data-depth data-tone={row.tone?.(v)} style={`--depth:${depth}`}>{row.cell(v)}</td>
+            );
+          })}
         </tr>
       ))
     }
@@ -93,15 +106,6 @@ const rows: Array<{ head: string; cell: (v: SampleView) => string; plain?: boole
 
   :global(.bt-compare tbody tr:last-child) :is(th, td) {
     border-bottom: 0;
-  }
-
-  /* The pinned first column has a background of its own (it must cover what
-     scrolls under it). In a collapsed-border table the rules belong to the
-     table, and that background is painted over them, so the rules vanish in
-     the first column. With separate borders every cell draws its own rule. */
-  :global(.bt-compare .data-table) {
-    border-collapse: separate;
-    border-spacing: 0;
   }
 
   /* Two dates, one above the other: the columns stay narrow enough for a phone. */

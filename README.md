@@ -37,7 +37,7 @@ src/
   pages/[...locale]/   One file per page; each serves all three locales
   pages/go/            Static fallbacks for the exit addresses
   layouts/Base.astro   The only layout: head, nav, footer
-  components/          Scale (the to-scale bar), Cta, Verdict, Field, Segmented, ToolIndex, Nav, Footer
+  components/          Nav, Footer, Cta, Field, Segmented; ui/ (shared kit, the risk ruler); calc/, market/, research/, article/, home/
   lib/                 calc/ (pure calculation functions), seo.ts (JSON-LD), fmt.ts, routes.ts, tools.ts
   scripts/             Browser scripts, one per interactive page
   styles/              tokens.css, base.css, components.css

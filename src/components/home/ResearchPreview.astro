@@ -68,18 +68,20 @@ const rows = results.map((result) => {
   if (!strategy) throw new Error(`home: no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
   const m = result.out_of_sample.metrics;
   const negative = (value: number | null) => value !== null && value < 0;
+  const positive = (value: number | null) => value !== null && value > 0;
   return {
     name: strategy.short,
     href: localePath(locale, backtestPath(result.slug)),
     market: `${result.symbol} ${result.interval}`,
     cells: [
       { label: bt.columns.trades, value: formatCount(m.trades), number: true, negative: false },
-      { label: bt.columns.avgR, value: formatSigned(m.avg_r) ?? na, number: m.avg_r !== null, negative: negative(m.avg_r) },
+      { label: bt.columns.avgR, value: formatSigned(m.avg_r) ?? na, number: m.avg_r !== null, negative: negative(m.avg_r), positive: positive(m.avg_r) },
       {
         label: bt.columns.totalReturn,
         value: formatPct(m.total_return_pct) ?? na,
         number: m.total_return_pct !== null,
         negative: negative(m.total_return_pct),
+        positive: positive(m.total_return_pct),
       },
       { label: bt.columns.verdict, value: bt.verdict[verdictOf(m)], number: false, negative: false },
     ],
@@ -132,7 +134,7 @@ const rows = results.map((result) => {
               {row.cells.map((cell) => (
                 <div>
                   <dt>{cell.label}</dt>
-                  <dd class:list={[{ num: cell.number, 'rs-neg': cell.negative }]}>{cell.value}</dd>
+                  <dd class:list={[{ num: cell.number, 'rs-neg': cell.negative, 'rs-pos': 'positive' in cell && cell.positive }]}>{cell.value}</dd>
                 </div>
               ))}
             </dl>
@@ -265,9 +267,13 @@ const rows = results.map((result) => {
     font-size: var(--text-card);
   }
 
-  /* The minus sign is in the text; the colour repeats it. */
+  /* The sign is in the text; the colour repeats it. */
   .rs-neg {
     color: var(--color-negative);
+  }
+
+  .rs-pos {
+    color: var(--color-positive);
   }
 
   @media (min-width: 620px) {

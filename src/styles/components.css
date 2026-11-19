@@ -4,7 +4,7 @@
 
    Order: header, buttons and links, page furniture, cards, tables, text
    blocks, charts and states, tooltip, accordion, form controls, results, the
-   risk ruler, the meter, pages from before the redesign, footer, motion.
+   risk ruler, the meter, footer, motion.
 
    How to use each one, with markup, is in docs/DESIGN_SYSTEM.md. */
 
@@ -383,7 +383,7 @@ html:not([data-js]) .menu-toggle {
 
 /* --- Buttons and links --------------------------------------------------------
    .btn             the one primary action of a block
-   .btn.secondary   an outline, for the action next to it (.btn.quiet is the old name)
+   .btn.secondary   an outline, for the action next to it
    .btn.ghost       no edge, for tools such as "reset" and "copy"
    .btn.sm          36px high, for dense places
    .lnk             a text link that stands on its own line or in a row of actions */
@@ -416,15 +416,13 @@ html:not([data-js]) .menu-toggle {
   transform: translateY(var(--hairline));
 }
 
-.btn.secondary,
-.btn.quiet {
+.btn.secondary {
   background: none;
   border-color: var(--color-border-control);
   color: var(--color-text);
 }
 
-.btn.secondary:hover,
-.btn.quiet:hover {
+.btn.secondary:hover {
   background: var(--color-hover);
   border-color: var(--color-text-secondary);
 }
@@ -619,6 +617,24 @@ a.card:hover .card-icon {
   color: var(--color-text);
 }
 
+/* A tool card: the icon sits beside the name, at every width. The line
+   under them takes the spare height, so what follows (an example, the
+   corner mark) lines up along the bottom of a row of cards. */
+.tool-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  align-items: center;
+}
+
+.tool-card > :not(.card-icon, .card-title) {
+  grid-column: 1 / -1;
+}
+
+.tool-card > .card-desc {
+  align-self: start;
+}
+
 .card-title {
   font-size: var(--text-card);
   line-height: var(--leading-tight);
@@ -747,6 +763,18 @@ a.card:hover .card-foot {
   color: var(--tone, inherit);
 }
 
+/* --- Red and green -----------------------------------------------------------
+   Green: up, long, a positive number, survived. Red: down, short, a negative
+   number, liquidated. On data only: never on a button, a link, a heading, a
+   border or a section. The colour always repeats something that is also
+   printed: a sign, an arrow, an icon or a word.
+     class="toned" data-tone="positive | negative"   a figure in running markup
+     <td data-tone="...">                             a figure in a DataTable */
+.toned,
+.data-table td[data-tone]:not([data-depth]) {
+  color: var(--tone, inherit);
+}
+
 /* --- Data table ------------------------------------------------------------------
    Markup: DataTable.astro. The base table styles are in base.css. */
 .table-scroll:focus-visible {
@@ -783,7 +811,84 @@ a.card:hover .card-foot {
   padding-block: var(--space-2);
 }
 
-/* The first column stays in view while the rest scrolls sideways. */
+/* Depth bars, as in an order book: behind a figure, a bar whose length is
+   that figure's share of the column's scale, growing from the right edge.
+     <td class="num" data-depth style="--depth:0.42">          neutral
+     <td class="num" data-depth data-tone="negative" ...>      red or green
+     <td class="num" data-depth="pair" style="--depth:..;--depth-2:..">
+                                    two figures in one cell: red over green
+   --depth is 0 to 1 and must be the real ratio. The figure stays text in
+   --color-text; the bar is decoration and is never the only place a value
+   is shown. The bar is a full-width layer scaled by a transform.
+
+   The figure columns of such a table are equally wide (fixed layout: the
+   first column takes --depth-first, the rest share what is left), so that
+   one share is one length in every column. */
+.data-table.has-depth {
+  table-layout: fixed;
+}
+
+.data-table.has-depth :is(th, td):first-child {
+  width: var(--depth-first, 24%);
+}
+
+.data-table.has-depth :is(th, td):last-child {
+  padding-right: var(--space-3);
+}
+
+/* A phone: closer columns, so a four-column table of rates fits without scrolling. */
+@media (max-width: 760px) {
+  .data-table.has-depth :is(th, td):not(:first-child) {
+    padding-inline: var(--space-2);
+  }
+}
+
+.data-table [data-depth] {
+  position: relative;
+  isolation: isolate;
+}
+
+.data-table [data-depth]::before,
+.data-table [data-depth="pair"]::after {
+  content: "";
+  position: absolute;
+  /* A gap on the left keeps a full bar off the bar of the column before it. */
+  inset: var(--space-1) 0 var(--space-1) var(--space-2);
+  z-index: -1;
+  background: var(--color-neutral-fill);
+  transform-origin: right center;
+  transform: scaleX(var(--depth, 0));
+}
+
+.data-table [data-depth][data-tone="positive"]::before {
+  background: var(--color-positive-fill);
+}
+
+.data-table [data-depth][data-tone="negative"]::before {
+  background: var(--color-negative-fill);
+}
+
+.data-table [data-depth="pair"]::before {
+  bottom: 50%;
+  background: var(--color-negative-fill);
+}
+
+.data-table [data-depth="pair"]::after {
+  top: 50%;
+  background: var(--color-positive-fill);
+  transform: scaleX(var(--depth-2, 0));
+}
+
+/* The first column stays in view while the rest scrolls sideways. Its cells
+   have a background of their own (they cover what scrolls under them). In a
+   collapsed-border table the rules belong to the table and that background
+   is painted over them, so the rules would vanish in the first column: with
+   separate borders every cell draws its own. */
+.data-table.sticky-first {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
 .data-table.sticky-first :is(th, td):first-child {
   position: sticky;
   left: 0;
@@ -924,14 +1029,21 @@ a.card:hover .card-foot {
 }
 
 .chart-box-head p {
+  max-width: var(--measure-fine);
   margin-top: var(--space-1);
   color: var(--color-text-secondary);
   font-size: var(--text-sm);
 }
 
-/* The plot keeps its size before, during and after loading: no shift. */
+/* The plot keeps its size before, during and after loading: no shift.
+   The width is stated: left to "auto", a min-height on a box that also has
+   an aspect-ratio turns into a min-width, and on a phone that pushes the
+   plot out of its card. With a stated width the floor only makes the plot
+   taller than its ratio. */
 .chart-box-plot {
   position: relative;
+  justify-self: stretch;
+  width: 100%;
   aspect-ratio: var(--chart-ratio, 16 / 9);
   min-width: 0;
   min-height: var(--chart-min-h, 0);
@@ -1231,7 +1343,7 @@ a.card:hover .card-foot {
    .field-box   the 48px box: an input and an optional unit after it
    .input       a bare input or select with the same look
    .seg         a segmented control built from radio inputs
-   .slider-row  label, range input, number box (.ctl is the old name) */
+   .slider-row  label, range input, number box */
 .fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1407,6 +1519,16 @@ a.card:hover .card-foot {
   font-weight: var(--weight-strong);
 }
 
+/* Long and short: the chosen side takes its colour. The word stays, and the
+   chosen side is still the filled one in heavier type. */
+.seg input[value="long"]:checked + span {
+  background: var(--color-positive);
+}
+
+.seg input[value="short"]:checked + span {
+  background: var(--color-negative);
+}
+
 .seg input:focus-visible + span {
   outline: var(--line) solid var(--color-focus);
   outline-offset: var(--line);
@@ -1418,8 +1540,7 @@ a.card:hover .card-foot {
 }
 
 /* Slider row: label, range, number. */
-.slider-row,
-.ctl {
+.slider-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1427,8 +1548,7 @@ a.card:hover .card-foot {
   margin-top: var(--space-6);
 }
 
-.slider,
-.ctl input[type="range"] {
+.slider {
   flex: 1 1 200px;
   min-width: 0;
   min-height: var(--tap);
@@ -1437,12 +1557,7 @@ a.card:hover .card-foot {
   cursor: pointer;
 }
 
-.ctl input[type="range"] {
-  max-width: 320px;
-}
-
-.slider-row .field-box,
-.ctl .field-box {
+.slider-row .field-box {
   flex: 0 0 auto;
   width: calc(var(--space-24) + var(--space-4));
 }
@@ -1461,8 +1576,7 @@ a.card:hover .card-foot {
 
 /* --- Results ------------------------------------------------------------------------ */
 /* The one big figure of a result panel. */
-.result-value,
-.figure {
+.result-value {
   font-family: var(--font-mono);
   font-size: var(--text-result);
   font-weight: var(--weight-medium);
@@ -1473,8 +1587,7 @@ a.card:hover .card-foot {
   min-width: 0;
 }
 
-.result-label,
-.verdict-label {
+.result-label {
   color: var(--color-text-secondary);
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
@@ -1538,8 +1651,20 @@ a.card:hover .card-foot {
   transform: scaleY(-1);
 }
 
+.rr[data-side="long"] .rr-side {
+  color: var(--color-positive);
+}
+
+.rr[data-side="short"] .rr-side {
+  color: var(--color-negative);
+}
+
+/* "4.67%" and "49.67%" differ in length: the distance takes the rest of its
+   row and sits flush right, so its box stays put when the text changes. */
 .rr-distance {
-  color: var(--color-text);
+  flex: 1 1 auto;
+  text-align: right;
+  color: var(--color-negative); /* the distance to liquidation, like the band it names */
   font-size: var(--text-card);
   font-weight: var(--weight-medium);
   line-height: var(--leading-tight);
@@ -1796,261 +1921,6 @@ a.card:hover .card-foot {
   transform: scaleX(var(--value, 0));
 }
 
-/* --- Pages from before the redesign ------------------------------------------------
-   Classes the existing pages use. They are restyled so those pages read well
-   in the new colours; each goes away when its page is rebuilt. */
-
-/* The old proportion bar (Scale.astro). The light part is the room left. */
-.scale {
-  position: relative;
-  height: var(--space-16);
-  background: var(--color-scale-track);
-  border: var(--space-1) solid var(--color-scale-track);
-  border-radius: var(--radius-sm);
-  margin-top: var(--space-6);
-  overflow: hidden;
-}
-
-.scale.s {
-  height: var(--space-12);
-}
-
-.scale .room {
-  position: absolute;
-  inset: 0;
-  background: var(--color-scale-room);
-  transform-origin: left center;
-  transform: scaleX(var(--room, 0));
-}
-
-/* Marks drawn over the old bar by the daily report. */
-.bar {
-  --color-ink: var(--color-scale-track);
-  --color-paper: var(--color-scale-room);
-}
-
-.ends {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0 var(--space-4);
-  margin-top: var(--space-2);
-  color: var(--color-text-secondary);
-  font-size: var(--text-sm);
-}
-
-/* Two bars whose lengths are the two numbers (50 and 100). */
-.pair {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-3);
-  margin-top: var(--space-6);
-}
-
-.pair > div {
-  display: flex;
-  align-items: center;
-  min-height: var(--space-12);
-  padding-inline: var(--space-4);
-  background: var(--color-text);
-  border-radius: var(--radius-sm);
-  color: var(--color-bg);
-  font-size: var(--text-sm);
-}
-
-.pair .half {
-  width: 50%;
-}
-
-.status {
-  min-height: calc(var(--text-sm) * var(--leading-body));
-  margin-top: var(--space-3);
-  color: var(--color-text-secondary);
-  font-size: var(--text-sm);
-  font-variant-numeric: tabular-nums;
-}
-
-.docs {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
-  gap: var(--space-10);
-  align-items: start;
-}
-
-.toc {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  position: sticky;
-  top: calc(var(--header-h) + var(--space-6));
-}
-
-.toc .lnk {
-  color: var(--color-text-secondary);
-  font-weight: var(--weight-regular);
-  text-decoration: none;
-  white-space: normal;
-}
-
-.toc .lnk:hover {
-  color: var(--color-text);
-  text-decoration: underline;
-}
-
-/* Document pages (about, disclosure): heading on the left, text on the right. */
-.rows > div {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: var(--space-4) var(--space-10);
-  padding-block: var(--space-12);
-  border-top: var(--hairline) solid var(--color-border);
-}
-
-.rows > div:first-child {
-  padding-top: var(--space-10);
-}
-
-.rows h2 {
-  font-size: var(--text-xl);
-  line-height: var(--leading-tight);
-}
-
-.rows p {
-  max-width: var(--measure);
-  color: var(--color-text-secondary);
-}
-
-.rows p + p {
-  margin-top: var(--space-4);
-}
-
-.examples {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-6) var(--space-10);
-  margin-top: var(--space-4);
-}
-
-.examples > div > * + * {
-  margin-top: var(--space-3);
-}
-
-/* Index of tools: one row per tool. */
-.index {
-  margin-top: var(--space-10);
-  border-top: var(--hairline) solid var(--color-border-hover);
-}
-
-.wrap > .index:first-child {
-  margin-top: 0;
-}
-
-.index li {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-1);
-  padding-block: var(--space-6);
-  border-bottom: var(--hairline) solid var(--color-border);
-}
-
-.index .name {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: var(--weight-strong);
-  line-height: var(--leading-tight);
-  overflow-wrap: break-word;
-  min-width: 0;
-}
-
-.index span.name {
-  color: var(--color-text-muted);
-}
-
-.index .question {
-  max-width: 60ch;
-  color: var(--color-text-secondary);
-}
-
-.index a.name {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--tap);
-  text-decoration-color: var(--color-border-control);
-}
-
-.index a.name:hover {
-  text-decoration-color: currentColor;
-}
-
-.index .state {
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-}
-
-.index .state:empty {
-  display: none;
-}
-
-/* Article list. */
-.entries {
-  margin-top: var(--space-8);
-  border-top: var(--hairline) solid var(--color-border-hover);
-}
-
-.entries li {
-  padding-block: var(--space-6);
-  border-bottom: var(--hairline) solid var(--color-border);
-}
-
-.entries a {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: var(--weight-strong);
-  line-height: var(--leading-tight);
-  text-decoration-color: var(--color-border-control);
-}
-
-.entries a:hover {
-  text-decoration-color: currentColor;
-}
-
-.entries p {
-  max-width: var(--measure);
-  margin-top: var(--space-2);
-  color: var(--color-text-secondary);
-}
-
-@media (max-width: 760px) {
-  .examples,
-  .docs,
-  .rows > div {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .rows > div {
-    padding-block: var(--space-8);
-  }
-
-  .toc {
-    position: static;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 var(--space-6);
-  }
-
-  /* The old bar stays in view, under the header, while you change the inputs. */
-  .sticky-scale {
-    position: sticky;
-    top: var(--header-h);
-    z-index: var(--z-sticky);
-    background: var(--color-bg);
-    padding-bottom: var(--space-2);
-  }
-
-  .sticky-scale .scale {
-    margin-top: var(--space-3);
-  }
-}
-
 /* --- Footer ------------------------------------------------------------------------ */
 .site-footer {
   margin-top: var(--space-16);
@@ -2058,6 +1928,13 @@ a.card:hover .card-foot {
   border-top: var(--hairline) solid var(--color-border);
   color: var(--color-text-secondary);
   font-size: var(--text-sm);
+}
+
+/* A page that ends on a raised band: the footer starts right under it, with
+   no strip of the page colour in between (the band has its own rule). */
+main:has(> .section.band:last-child) + .site-footer {
+  margin-top: 0;
+  border-top: 0;
 }
 
 /* The brand lines sit above the link columns: the columns need the full

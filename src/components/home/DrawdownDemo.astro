@@ -120,7 +120,7 @@ const data = JSON.stringify({
           <span>{t.neededLane}</span>
           <span class="num" id="dd-needed-value">{needed}</span>
         </p>
-        <Meter id="dd-needed-bar" size="tall" value={r.neededShare} label={fmt(t.neededBar, { needed })} />
+        <Meter id="dd-needed-bar" size="tall" tone="positive" value={r.neededShare} label={fmt(t.neededBar, { needed })} />
       </div>
       <p class="dd-scale" id="dd-scale">{fmt(t.scale, { max: percent(r.scaleMax) })}</p>
     </div>

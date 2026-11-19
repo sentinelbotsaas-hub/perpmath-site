@@ -34,11 +34,15 @@ export interface SampleView {
   winRate: number | null;
   winRateText: string;
   avgR: string;
+  /** -1, 0 or 1, like totalReturnSign. */
+  avgRSign: -1 | 0 | 1;
   tStat: string;
   totalReturn: string;
   /** -1, 0 or 1; 0 also when the value was not computed. Colour follows it, next to the printed sign. */
   totalReturnSign: -1 | 0 | 1;
   maxDrawdown: string;
+  /** Percent, 0 to 100, or null when the engine did not compute it. For the depth bar. */
+  maxDrawdownPct: number | null;
   verdictCode: VerdictCode;
   verdict: string;
 }
@@ -59,10 +63,12 @@ export function sampleViews(result: BacktestResult, t: SampleStrings): SampleVie
       winRate: m.win_rate_pct,
       winRateText: formatPct(m.win_rate_pct) ?? t.na,
       avgR: formatSigned(m.avg_r) ?? t.na,
+      avgRSign: m.avg_r === null || !Number.isFinite(m.avg_r) || m.avg_r === 0 ? 0 : m.avg_r < 0 ? -1 : 1,
       tStat: formatSigned(m.t_stat) ?? t.na,
       totalReturn: formatPct(r) ?? t.na,
       totalReturnSign: r === null || !Number.isFinite(r) || r === 0 ? 0 : r < 0 ? -1 : 1,
       maxDrawdown: formatPct(m.max_drawdown_pct) ?? t.na,
+      maxDrawdownPct: m.max_drawdown_pct,
       verdictCode,
       verdict: t.verdict[verdictCode],
     };

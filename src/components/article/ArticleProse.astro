@@ -128,44 +128,6 @@ const { class: className } = Astro.props;
     margin-top: var(--space-5);
   }
 
-  /* base.css flattens every token to the text colour (it was written for a
-     fixed dark palette). These win over it and bring the token colours back. */
-  .prose.art-prose pre.astro-code span[style*='token-constant'] {
-    color: var(--astro-code-token-constant) !important;
-  }
-
-  .prose.art-prose pre.astro-code span[style*='token-string'] {
-    color: var(--astro-code-token-string) !important;
-  }
-
-  .prose.art-prose pre.astro-code span[style*='token-string-expression'] {
-    color: var(--astro-code-token-string-expression) !important;
-  }
-
-  .prose.art-prose pre.astro-code span[style*='token-comment'] {
-    color: var(--astro-code-token-comment) !important;
-  }
-
-  .prose.art-prose pre.astro-code span[style*='token-keyword'] {
-    color: var(--astro-code-token-keyword) !important;
-  }
-
-  .prose.art-prose pre.astro-code span[style*='token-parameter'] {
-    color: var(--astro-code-token-parameter) !important;
-  }
-
-  .prose.art-prose pre.astro-code span[style*='token-function'] {
-    color: var(--astro-code-token-function) !important;
-  }
-
-  .prose.art-prose pre.astro-code span[style*='token-punctuation'] {
-    color: var(--astro-code-token-punctuation) !important;
-  }
-
-  .prose.art-prose pre.astro-code span[style*='token-link'] {
-    color: var(--astro-code-token-link) !important;
-  }
-
   /* --- warnings and asides: a Markdown quote ---------------------------------- */
   .prose.art-prose blockquote {
     padding: var(--space-4) var(--space-5);

@@ -15,6 +15,7 @@ import { localeStaticPaths } from '../../../../i18n/config';
 import type { Locale } from '../../../../i18n/config';
 import { daily } from '../../../../i18n/daily';
 import { data } from '../../../../i18n/data';
+import { signTone } from '../../../../components/market/format';
 import { fmt, formatNumber, formatPercent } from '../../../../lib/fmt';
 import { longShortRatio } from '../../../../lib/market/compute';
 import { latestReports } from '../../../../lib/market/store';
@@ -40,7 +41,7 @@ const rows = entries.map(({ coin, symbol, report }) => ({
     formatPercent(report.ratio.latest.buyRatio),
     formatPercent(report.ratio.latest.sellRatio),
     formatNumber(report.ratio.latest.longShort, 2),
-    fmt(p.points, { value: signedPoints(report.ratio.longShareChange7d) }),
+    { text: fmt(p.points, { value: signedPoints(report.ratio.longShareChange7d) }), tone: signTone(report.ratio.longShareChange7d) },
   ],
 }));
 
@@ -84,6 +85,7 @@ const tick = (value: number) => `${value.toFixed(axis.decimals)}%`;
             change: signedPoints(report.ratio.longShareChange7d),
           })}
           trend={report.ratio.longShareChange7d > 0 ? 'up' : report.ratio.longShareChange7d < 0 ? 'down' : undefined}
+          noteTone={signTone(report.ratio.longShareChange7d)}
         />
       ))
     }
@@ -103,7 +105,7 @@ const tick = (value: number) => `${value.toFixed(axis.decimals)}%`;
                 <span>{fmt(p.splitLong, { long })}</span>
                 <span>{fmt(p.splitShort, { short })}</span>
               </span>
-              <Meter value={report.ratio.latest.buyRatio} label={fmt(p.splitLabel, { symbol, long, short })} size="tall" />
+              <Meter value={report.ratio.latest.buyRatio} label={fmt(p.splitLabel, { symbol, long, short })} size="tall" tone="positive" />
             </li>
           );
         })
@@ -155,6 +157,7 @@ const tick = (value: number) => `${value.toFixed(axis.decimals)}%`;
               slot="footer"
               locale={locale}
               date={report.reportDate}
+              dateLabel={fmt(t.common.day, { date: report.reportDate })}
               source={t.common.sourceName}
               stale={isStale(report.reportDate, Date.now())}
             />
@@ -192,6 +195,12 @@ const tick = (value: number) => `${value.toFixed(axis.decimals)}%`;
 </DataShell>
 
 <style>
+  /* One bar, two sides: the long share green from the left, the short share
+     red in what is left. Both shares are printed above it. */
+  .mk-split :global(.meter) {
+    background: var(--color-negative);
+  }
+
   .mk-split {
     margin-top: var(--space-8);
   }

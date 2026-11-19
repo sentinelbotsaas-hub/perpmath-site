@@ -41,10 +41,30 @@ function init(): void {
   const s = data.strings;
   const figure = document.querySelector<HTMLElement>('#hero-liq');
   const sentence = document.querySelector<HTMLElement>('#hero-sentence');
+  // The percentage inside the sentence has its own element (it is coloured).
+  let sentencePct = document.querySelector<HTMLElement>('#hero-pct');
   const open = document.querySelector<HTMLAnchorElement>('#hero-open');
 
   const setText = (el: HTMLElement | null, text: string) => {
     if (el && el.textContent !== text) el.textContent = text;
+  };
+
+  // The sentence is written whole each time, as new nodes: "4.67%" and
+  // "49.67%" differ in width, and words that stayed in place while the figure
+  // before them grew would count as a layout shift.
+  const [sentenceBefore = '', sentenceAfter = ''] = s.sentence.split('{pct}');
+  const writeSentence = (pct: string) => {
+    if (!sentence) return;
+    const next = sentenceBefore + pct + sentenceAfter;
+    if (sentence.textContent === next) return;
+    if (!sentencePct) {
+      sentence.textContent = next;
+      return;
+    }
+    const figure = sentencePct.cloneNode(false) as HTMLElement;
+    figure.textContent = pct;
+    sentence.replaceChildren(sentenceBefore, figure, sentenceAfter);
+    sentencePct = figure;
   };
 
   function render(leverage: number): void {
@@ -58,7 +78,7 @@ function init(): void {
     const lev = fmt(s.levFormat, { n: leverage });
     const pct = formatPercent(layout.distance);
     setText(figure, formatNumber(price, data.decimals));
-    setText(sentence, fmt(s.sentence, { pct }));
+    writeSentence(pct);
     slider!.setAttribute('aria-valuetext', fmt(s.sliderText, { lev, pct }));
     if (open) open.href = `${data.calculatorHref}?lev=${leverage}`;
   }

@@ -9,6 +9,14 @@
 //     </tbody>
 //   </DataTable>
 //
+// A cell can carry a depth bar, as in an order book: a bar behind the figure
+// whose length is the figure's share of the column's scale.
+//   <DataTable ... depth>
+//     <td class="num" data-depth data-tone="negative" style={`--depth:${share}`}>12 (13.3%)</td>
+// --depth is 0 to 1 and must be the real ratio (value / the column's largest
+// value, or / the whole when the column has one, such as days in a period).
+// data-tone="positive | negative" colours a signed figure, with or without a bar.
+//
 // You write <thead> and <tbody>; cells are right-aligned except the first
 // column. Use <th scope="col"> and <th scope="row">, put class="num" on
 // figures, and keep units in the header or the cell text. `label` names the
@@ -26,6 +34,12 @@ interface Props {
   stickyFirst?: boolean;
   /** Tighter rows. */
   dense?: boolean;
+  /** The table has cells with a depth bar (data-depth): its figure columns are made equally wide. */
+  depth?: boolean;
+  /** Share of the width the first column takes in a `depth` table, as CSS ("16%"). Default 24%. */
+  firstWidth?: string;
+  /** Narrowest the table may get before it scrolls sideways, as CSS ("44rem"). For `depth` tables with long cells. */
+  minWidth?: string;
   /** Draw the table inside a card frame. Not inside another card. */
   framed?: boolean;
   /** Print "This table scrolls sideways" under it on small screens. */
@@ -34,12 +48,18 @@ interface Props {
   class?: string;
 }
 
+const tableStyle = (first?: string, min?: string) =>
+  [first ? `--depth-first:${first}` : '', min ? `min-width:${min}` : ''].filter(Boolean).join(';') || undefined;
+
 const {
   locale,
   label,
   caption,
   stickyFirst = false,
   dense = false,
+  depth = false,
+  firstWidth,
+  minWidth,
   framed = false,
   hint = false,
   id,
@@ -48,7 +68,7 @@ const {
 ---
 
 <div class:list={['table-scroll', { framed }, className]} role="region" aria-label={label} tabindex="0">
-  <table class:list={['data-table', { 'sticky-first': stickyFirst, dense }]} id={id}>
+  <table class:list={['data-table', { 'sticky-first': stickyFirst, dense, 'has-depth': depth }]} id={id} style={tableStyle(firstWidth, minWidth)}>
     {/* Read out with the table; the visible copy sits under the box, where it does not scroll away. */}
     {caption && <caption class="visually-hidden">{caption}</caption>}
     <slot />

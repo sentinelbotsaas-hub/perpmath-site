@@ -4,8 +4,13 @@
 /* Hallmark · waive 64 · Geist Mono is set on figures only (prices, percentages, formulas, table numbers, the wordmark), through .num and the result classes, with tabular figures · on a calculator site the numbers are the material and must line up in columns; labels beside them stay in the body face */
 /* Hallmark · waive 78 · the page heading is 40px and section headings are 32px at 1440, one fixed step apart on every page (--text-page, --text-section) · the owner's spec sets these two sizes for a calculator and research site where a section heading labels a tool or a table and must not outweigh the figures under it */
 /* Hallmark · waive 59 · sections are separated by --section-y, 100px above and below at 1440 and 56px on a phone · the owner's spec sets section spacing at 96 to 112px on desktop and 48 to 64px on a phone, and calculator pages need the result close to the inputs */
+/* Hallmark · waive 79 · lesson and daily report pages open with a breadcrumb, the page heading, one lede and the data date, 300 to 400px tall at 1440, and the reading column starts right under them · a lesson or a report is one reading column, and its first screen is the heading that says what the page answers; a hero visual grown to fill that screen would push the text the reader came for below the fold */
+/* Hallmark · waive 25 · article bodies are capped at --measure, 760px, which is 80 to 90 Latin characters or 47 Chinese ones a line at 16px · the owner's spec sets the article column at 760px, and the lessons carry tables, formulas and code blocks that need that width */
 /* Hallmark · dismissed 58 · the screens that pass 80 words are the last one of each page, where the footer the owner's spec asks for sits: five link columns, the brand and data-source lines, the risk warning and the affiliate disclosure, all required on every page */
 /* Hallmark · answered F15 · the footer's five link columns sit closer together than a text and figure pair; body sections share one gap (--space-10) */
+/* Hallmark · answered F25 · a wide table scrolls sideways inside its own box and never widens the page; the column that names the row is pinned (DataTable stickyFirst, and the first column of a Markdown table in an article), so a row can still be read while the other columns are off-screen on a phone */
+/* Hallmark · kept open on the owner's ruling, Floor findings that cannot be signed off here · 58 on English pages: the last screen is the footer the spec requires, and English runs to more words than Chinese for the same links, warning and disclosure · 58 on lesson pages: a lesson is long running text and its Markdown is not edited for layout · 54 on the home hero: the one English line above the headline is written out in the spec */
+/* Hallmark · red and green, added on the owner's request · the pair an exchange order book uses, on data only: green for up, long, a positive number and a position that survived, red for down, short, a negative number and a liquidation; depth bars behind table figures are drawn to scale; never on a button, a link, a heading, a border or a section, and always next to a sign, an arrow, an icon or a word · the interactive accent stays indigo */
 /* Hallmark · motion signature: none. The ruler follows the inputs instantly. */
 /* Hallmark · differs from the owner's spec, by the implementation brief (BRIEF.md) · hover: the spec asks for states that ease over 150 to 250ms, here nothing eases between two states and what moves (menu, sheet, tooltip, accordion, a changed result) is a keyframe on transform and opacity with a reduced-motion fallback · Chinese type: headings, menu and buttons use a one-weight Noto Sans subset, body text the system font · formulas and code: Geist Mono, no JetBrains Mono · icons: Lucide shapes inlined in Icon.astro, no package, no emoji · eyebrow: the home hero has the one English line the spec writes out and no other page or component may have one, so gate 54 stays an open Floor finding on that page by the owner's instruction · images: none, charts are inline SVG from real data with a text or table version beside them */
 
@@ -42,8 +47,11 @@
   --color-text-muted: #8b8b94;
   --color-accent: #818cf8;
   --color-accent-ink: #09090b; /* text on an accent fill */
-  --color-positive: #34d399;
-  --color-negative: #f87171;
+  /* Green and red as an exchange order book prints them. Green: up, long, a
+     positive number, survived. Red: down, short, a negative number,
+     liquidated. Both are 4.7:1 or more on the three surfaces. */
+  --color-positive: #20b26c;
+  --color-negative: #ef454a;
   --color-warning: #fbbf24;
   --color-chart-blue: #60a5fa;
   --color-scrim: rgb(0 0 0 / 0.6);
@@ -58,6 +66,11 @@
   --color-positive-soft: color-mix(in srgb, var(--color-positive) 14%, transparent);
   --color-negative-soft: color-mix(in srgb, var(--color-negative) 16%, transparent);
   --color-warning-soft: color-mix(in srgb, var(--color-warning) 14%, transparent);
+  /* Depth bars: the to-scale bar behind a figure in a table. A figure on a
+     bar is printed in --color-text (11:1 or more), never in the bar's colour. */
+  --color-positive-fill: color-mix(in srgb, var(--color-positive) 22%, transparent);
+  --color-negative-fill: color-mix(in srgb, var(--color-negative) 22%, transparent);
+  --color-neutral-fill: color-mix(in srgb, var(--color-text) 12%, transparent);
   --color-focus: var(--color-accent);
 
   /* --- fonts -------------------------------------------------------------
@@ -73,17 +86,23 @@
   /* The Chinese font sits before the generic monospace: a Chinese label next
      to a number must not fall into the system's monospace Chinese face. */
   --font-mono: "Geist Mono", "Geist Mono Fallback Consolas", "Geist Mono Fallback", var(--font-cjk), ui-monospace, monospace;
+  /* The design lint's name for the third face (the stamp's "outlier"). Kept so
+     that its check of waiver 64 can see that the monospace face is a token;
+     components use --font-mono. */
+  --font-outlier: var(--font-mono);
 
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-strong: 600;
 
   /* --- type scale ----------------------------------------------------------
-     hero 36 to 60 · page 30 to 40 · section 26 to 32 · card 18 · body 16 ·
-     small 14 · fine 13 · result 36 to 56 */
+     hero 36 to 60 · page 30 to 40 · section 26 to 32 · 28 · 22 · card 18 ·
+     body 16 · small 14 · fine 13 · result 36 to 56 */
   --text-hero: clamp(2.25rem, 0.9rem + 3.6vw, 3.75rem);
   --text-page: clamp(1.875rem, 1.45rem + 1.6vw, 2.5rem);
   --text-section: clamp(1.625rem, 1.3rem + 1.2vw, 2rem);
+  --text-2xl: 1.75rem; /* article h2, a metric card's figure */
+  --text-xl: 1.375rem; /* article h3, a list row's title */
   --text-card: 1.125rem;
   --text-md: 1rem;
   --text-sm: 0.875rem;
@@ -113,6 +132,10 @@
   /* --- layout ----------------------------------------------------------------- */
   --container: 1280px; /* the page, gutters included */
   --measure: 760px; /* reading width */
+  /* Small print (.fine, a chart's description): about 75 characters a line.
+     In "ch" because it follows the font size; Chinese pages widen it below,
+     where one character is a full em. */
+  --measure-fine: 54ch;
   --gutter: var(--space-8);
   --section-y: clamp(3.5rem, 2.25rem + 4.5vw, 6.5rem); /* 56 on a phone, 100 at 1440 */
   --header-h: 64px;
@@ -138,37 +161,6 @@
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --opacity-disabled: 0.5;
-
-  /* --- names from before the redesign -----------------------------------------
-     Pages written against the old tokens keep working through these. New
-     code uses the names above; page owners replace these as they go. */
-  --color-paper: var(--color-bg);
-  --color-paper-2: var(--color-surface);
-  --color-ink: var(--color-text);
-  --color-muted: var(--color-text-secondary);
-  --color-rule: var(--color-border);
-  --color-focus-inv: var(--color-focus);
-  /* The old proportion bar (Scale.astro): a dark track and a light part, in
-     both themes, because the copy next to it says "the light part". */
-  --color-scale-track: var(--color-border-hover);
-  --color-scale-room: var(--color-text);
-  --font-outlier: var(--font-mono);
-  --opacity-hover: 0.86;
-  --radius: var(--radius-control);
-  --space-2xs: var(--space-1);
-  --space-xs: var(--space-2);
-  --space-sm: var(--space-3);
-  --space-md: var(--space-4);
-  --space-lg: var(--space-6);
-  --space-xl: var(--space-10);
-  --space-2xl: var(--space-16);
-  --space-3xl: var(--space-24);
-  --section-gap: var(--section-y);
-  --text-lg: var(--text-card);
-  --text-xl: 1.375rem;
-  --text-2xl: 1.75rem;
-  --text-display: var(--text-page);
-  --text-figure: var(--text-result);
 }
 
 /* --- colour: light, chosen by the reader ---------------------------------- */
@@ -186,15 +178,15 @@
   --color-text-muted: #6b6b74;
   --color-accent: #4f46e5;
   --color-accent-ink: #ffffff;
-  --color-positive: #047857;
-  /* Spec value #dc2626 is 4.4:1 on the raised surface. Darkened to pass AA. */
-  --color-negative: #c81e1e;
+  /* One step deeper than the dark theme's pair: 4.6:1 or more on white. */
+  --color-positive: #0c7f4b;
+  --color-negative: #cf2a33;
+  --color-positive-fill: color-mix(in srgb, var(--color-positive) 16%, transparent);
+  --color-negative-fill: color-mix(in srgb, var(--color-negative) 16%, transparent);
   --color-warning: #b45309;
   --color-chart-blue: #2563eb;
   --color-scrim: rgb(24 24 27 / 0.4);
   --shadow-pop: 0 16px 40px rgb(24 24 27 / 0.14);
-  --color-scale-track: var(--color-text);
-  --color-scale-room: var(--color-surface);
 }
 
 /* --- colour: light, because the system says so ------------------------------ */
@@ -212,14 +204,14 @@
     --color-text-muted: #6b6b74;
     --color-accent: #4f46e5;
     --color-accent-ink: #ffffff;
-    --color-positive: #047857;
-    --color-negative: #c81e1e;
+    --color-positive: #0c7f4b;
+    --color-negative: #cf2a33;
+    --color-positive-fill: color-mix(in srgb, var(--color-positive) 16%, transparent);
+    --color-negative-fill: color-mix(in srgb, var(--color-negative) 16%, transparent);
     --color-warning: #b45309;
     --color-chart-blue: #2563eb;
     --color-scrim: rgb(24 24 27 / 0.4);
     --shadow-pop: 0 16px 40px rgb(24 24 27 / 0.14);
-    --color-scale-track: var(--color-text);
-    --color-scale-room: var(--color-surface);
   }
 }
 
@@ -233,6 +225,7 @@
   --leading-tight: 1.45;
   --leading-body: 1.75;
   --tracking-display: 0;
+  --measure-fine: 68ch; /* about 40 Chinese characters */
 }
 
 /* Simplified Chinese pages use the Mainland system fonts and the SC subset. */

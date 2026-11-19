@@ -8,6 +8,8 @@
 //   <DataFreshness locale={locale} date={date} stale />
 //
 // date: the day the data describes ("2026-11-18"), printed as written.
+// dateLabel: what to print instead of the bare date when the day needs its
+//       timezone said ("2026-11-18 UTC"); `date` stays the <time datetime>.
 // time: a full ISO timestamp for <time datetime>; print it yourself in
 //       `timeLabel` and say the timezone there ("16:00 UTC").
 // stale: adds a visible warning. Set it from the data (how old the snapshot
@@ -21,6 +23,7 @@ import type { Locale } from '../../i18n/config';
 interface Props {
   locale: Locale;
   date?: string;
+  dateLabel?: string;
   time?: string;
   timeLabel?: string;
   source?: string;
@@ -30,7 +33,7 @@ interface Props {
   class?: string;
 }
 
-const { locale, date, time, timeLabel, source, sourceHref, stale = false, id, class: className } = Astro.props;
+const { locale, date, dateLabel, time, timeLabel, source, sourceHref, stale = false, id, class: className } = Astro.props;
 const t = common[locale].ui;
 // Split "Data as of {date}" around the placeholder so the date can be a <time>.
 const around = (template: string, key: string) => {
@@ -49,7 +52,7 @@ const sourceText = around(t.source, 'name');
         <Icon name="calendar" size={14} />
         <span>
           {dateText.before}
-          <time class="num" datetime={date} data-fresh="date">{date}</time>
+          <time class="num" datetime={date} data-fresh="date">{dateLabel ?? date}</time>
           {dateText.after}
         </span>
       </span>

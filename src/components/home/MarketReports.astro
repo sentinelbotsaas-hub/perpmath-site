@@ -74,6 +74,7 @@ const stale = Date.now() - Date.parse(`${first.reportDate}T00:00:00Z`) > 3 * DAY
   <DataFreshness
     locale={locale}
     date={first.reportDate}
+    dateLabel={fmt(t.updated, { time: first.reportDate })}
     time={first.fetchedAt}
     timeLabel={fmt(t.updated, { time: utcMinute(first.fetchedAt) })}
     source="Bybit"

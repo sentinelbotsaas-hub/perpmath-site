@@ -53,8 +53,10 @@ import SectionHeader from '../../components/ui/SectionHeader.astro';
 | `--color-text-muted` | `#8b8b94` | `#6b6b74` | 註記、日期、座標軸標籤 |
 | `--color-accent` | `#818cf8` | `#4f46e5` | 連結（文章內文）、focus 外框、目前所在的選單、滑桿、目前價 |
 | `--color-accent-ink` | `#09090b` | `#ffffff` | 放在強調色底上的文字 |
-| `--color-positive` | `#34d399` | `#047857` | 正值 |
-| `--color-negative` | `#f87171` | `#c81e1e` | 負值、爆倉價、錯誤 |
+| `--color-positive` | `#20b26c` | `#0c7f4b` | 綠：漲、做多、正值、撐住 |
+| `--color-negative` | `#ef454a` | `#cf2a33` | 紅：跌、做空、負值、爆倉；也是表單錯誤的顏色 |
+| `--color-positive-fill`、`--color-negative-fill` | 各色 22% | 各色 16% | 深度條（表格數字後面照比例的底條） |
+| `--color-neutral-fill` | 文字色 12% | 同左 | 沒有正負意義的深度條 |
 | `--color-warning` | `#fbbf24` | `#b45309` | 風險警語、資料過期 |
 | `--color-chart-blue` | `#60a5fa` | `#2563eb` | 圖表第二條線 |
 | `--color-hover` | 文字色 7% | 同左 | 列、選單項目、ghost 按鈕的 hover 底 |
@@ -67,13 +69,37 @@ import SectionHeader from '../../components/ui/SectionHeader.astro';
 | --- | --- | --- | --- | --- |
 | 深色 `text-muted` | `#71717a` | 在 bg／surface／elevated 上是 4.12／3.90／3.67，內文要 4.5 | `#8b8b94` | 5.25 |
 | 淺色 `text-muted` | `#71717a` | 在 elevated 上 4.40 | `#6b6b74` | 4.80 |
-| 淺色 `negative` | `#dc2626` | 在 elevated 上 4.39 | `#c81e1e` | 5.22 |
+| 紅綠（站長指定交易所掛單簿的紅綠） | 深色 `#34d399`／`#f87171`，淺色 `#047857`／`#dc2626` | 換成掛單簿那一組 | 深色 `#20b26c`／`#ef454a`，淺色 `#0c7f4b`／`#cf2a33` | 深色綠 6.45、紅 4.74；淺色綠 4.60、紅 4.74（都是在最不利的 elevated 底上） |
 | 控制項邊框（新增） | `#27272a`／`#e4e4e7` | 對底色只有 1.2 到 1.3，控制項邊界要 3:1 | `#6b6b76`／`#85858f` | 3.32 |
 | 淺色 `chart-blue`（規格沒給） | | | `#2563eb` | 4.70 |
 
 強調色放在主要按鈕上的話，深色模式白字只有 2.98，所以主要按鈕不用強調色：它是「文字色底、背景色字」，深淺模式都是 16:1 以上。**強調色不當面積用**，只出現在連結、focus、選取狀態、目前價這些小地方。
 
 顏色不能是唯一的訊號：正負值要有正負號或箭頭圖示，多空要有文字，錯誤要有訊息。
+
+### 紅與綠
+
+慣例和交易所掛單簿一樣：**綠＝漲、做多、正值、撐住；紅＝跌、做空、負值、爆倉**。規則只有四條：
+
+1. **只用在資料上**：有方向或正負意義的數字、長條、記號。不准用在按鈕、連結、標題、區塊背景、邊框、發光或漸層。互動元素的強調色仍然是 indigo。
+2. **顏色永遠是重複，不是唯一訊號**：旁邊一定有正負號、箭頭、勾叉圖示或文字（「做多」「最大跌幅」「撐住」）。灰階下頁面要一樣讀得懂。
+3. **顏色跟著印出來的正負號走，不做價值判斷**：資金費率是正的就是綠，不管對多單是付出還是收到。
+4. **深度條上的數字用 `--color-text`**，不用紅綠字（紅字放在紅底條上對比只有 3.7 到 4.3）。
+
+寫法：
+
+| 要做的事 | 寫法 |
+| --- | --- |
+| 一般標記裡的一個數字 | `<span class="toned" data-tone="negative">−4.47%</span>` |
+| `DataTable` 的儲存格 | `<td class="num" data-tone={signTone(value)}>` |
+| 指標卡整張（值與註記） | `<MetricCard tone="negative" trend="down" />` |
+| 指標卡只有值、或只有註記 | `valueTone`、`noteTone` |
+| 比例條 | `<Meter tone="positive" />` |
+| 做多／做空切換 | `.seg` 裡 `value="long"`／`value="short"` 的選項選中時自動變綠／紅 |
+| 風險尺 | 方向標籤自動上色，距離與色帶是紅的 |
+| 圖表 | `SeriesChart` 加 `signed`（0 以上綠、以下紅）；`RangeChart` 漲幅綠、跌幅紅；自己畫的 SVG 用 `.fill-positive`／`.fill-negative` |
+
+`signTone(n)`（`src/components/market/format.ts`）回傳 `'positive'`、`'negative'` 或 `undefined`（0 與無效值不上色）；回測用 `toneOf(sign)`（`src/components/research/samples.ts`）。
 
 ### 字型
 
@@ -94,7 +120,8 @@ import SectionHeader from '../../components/ui/SectionHeader.astro';
 | `--text-hero` | 36 到 60px | `.h-hero` | 只有首頁 hero |
 | `--text-page` | 30 到 40px | `.h-page` | 每頁的 h1 |
 | `--text-section` | 26 到 32px | `.h-section` | 區塊標題 h2 |
-| `--text-xl` | 22px | | 文章內 h3、舊版列表標題 |
+| `--text-2xl` | 28px | | 文章內文的 h2、指標卡的數字 |
+| `--text-xl` | 22px | | 文章內 h3、列表列的標題、結果旁的次要數字 |
 | `--text-card` | 18px | `.h-card`、`.lede` | 卡片標題、導言 |
 | `--text-md` | 16px | | 內文 |
 | `--text-sm` | 14px | | 說明、表格、標籤 |
@@ -112,6 +139,7 @@ import SectionHeader from '../../components/ui/SectionHeader.astro';
 | --- | --- | --- |
 | `--container` | 1280px | 頁面最大寬，含左右留白 |
 | `--measure` | 760px | 閱讀寬度 |
+| `--measure-fine` | 54ch，中文頁 68ch | 小字說明（`.fine`、圖表框的說明）每行的上限：英文約 75 個字元，中文約 40 個字 |
 | `--gutter` | 32px，760px 以下 20px | 左右留白 |
 | `--section-y` | 手機 56px 到 1440 寬 100px | 區塊上下間距 |
 | `--header-h` | 64px | 頁首高度，sticky 元素的 `top` 要用它 |
@@ -124,11 +152,9 @@ import SectionHeader from '../../components/ui/SectionHeader.astro';
 
 多欄區塊的欄距統一用 `--space-10`；卡片格線的間距是 `--space-4`（`.cards` 已設好）。
 
-### 舊 token 名稱
+### 舊 token 名稱已經刪掉
 
-改版前的名稱還在，都是指到新 token 的別名，所以舊頁面不會壞：`--color-paper`、`--color-paper-2`、`--color-ink`、`--color-muted`、`--color-rule`、`--font-outlier`、`--space-2xs` 到 `--space-3xl`、`--section-gap`、`--text-lg`、`--text-display`、`--text-figure`、`--radius`。**重寫頁面時請換成新名稱**，四個區塊都換完後地基會把別名刪掉。
-
-`--color-ink` 和 `--color-paper` 在 `.verdict` 與 `.bar` 裡被重新指向別的顏色（為了讓舊頁面的 sticky 表格欄和每日報告的刻度看得見），所以不要在新程式碼裡用這兩個名稱。
+改版前的別名（`--color-paper`、`--color-paper-2`、`--color-ink`、`--color-muted`、`--color-rule`、`--color-focus-inv`、`--color-scale-track`、`--color-scale-room`、`--opacity-hover`、`--radius`、`--space-2xs` 到 `--space-3xl`、`--section-gap`、`--text-lg`、`--text-display`、`--text-figure`）在整合階段確認全站沒有人用之後已經移除。現在寫這些名稱不會有任何效果，一律用上面表格裡的名稱。唯一留下的是 `--font-outlier`（等於 `--font-mono`）：設計檢查用這個名稱確認等寬字是 token，元件裡仍然寫 `--font-mono`。
 
 ## 字型怎麼載入
 
@@ -177,7 +203,7 @@ npm run build        # 再 build 一次，確認訊息變成「cover every headi
 
 props：`as`（`section`｜`div`｜`article`｜`aside`）、`lead`、`snug`、`flush`、`band`、`narrow`、`id`、`class`、`wrapClass`、`aria-label`、`aria-labelledby`。它輸出 `<section class="section"><div class="wrap">`，要自己寫這兩層也可以。
 
-舊的三個「surface」class（`.measure`、`.read`、`.verdict`）還能用，已經改成新配色的普通區塊，重寫頁面時換成 `.section`。
+改版前的三個「surface」class（`.measure`、`.read`、`.verdict`）與其他舊頁面專用的 class（`.head`、`.sub`、`.section-head`、`.rows`、`.entries`、`.index`、`.docs`、`.toc`、`.scale`、`.ends`、`.pair`、`.status`、`.examples`）已經移除，沒有替代名稱：區塊用 `.section`，其餘用下面的元件。
 
 ### PageHeader
 
@@ -224,7 +250,7 @@ props：`title`、`desc`、`level`（2｜3）、`id`、`href` 加 `linkLabel`、
 | class | 樣子 | 用在 |
 | --- | --- | --- |
 | `.btn` | 文字色底，48px 高 | 一個區塊唯一的主要動作 |
-| `.btn.secondary`（舊名 `.btn.quiet`） | 外框 | 旁邊的次要動作 |
+| `.btn.secondary` | 外框 | 旁邊的次要動作 |
 | `.btn.ghost` | 沒有邊框 | 重設、複製這類工具動作 |
 | `.btn.sm` | 36px 高 | 密集的地方 |
 | `.lnk` | 帶底線的文字連結，44px 高 | 一排動作裡的文字連結 |
@@ -259,8 +285,8 @@ props 和以前一樣，多一個 `secondaryStyle`（`link` 預設｜`button`）
 | 元件 | props | 說明 |
 | --- | --- | --- |
 | `Card` | `href`、`as`、`rel`、`id`、`class` | 基底。有 `href` 整張卡是一個連結，裡面不能再放連結或按鈕 |
-| `ToolCard` | `locale`、`href`（沒有就是「製作中」，不會是連結）、`icon`、`title`、`desc`、`level` | 預設 slot 放小圖；`foot` slot 放左下角文字 |
-| `MetricCard` | `label`、`value`、`unit`、`note`、`tone`、`trend`、`valueId`、`noteId`、`bare` | `tone` 上色時要一起給 `trend`（箭頭）或讓正負號寫在值裡；`bare` 去掉外框，放在已經有框的面板裡 |
+| `ToolCard` | `locale`、`href`（沒有就是「製作中」，不會是連結）、`icon`、`title`、`desc`、`level` | 預設 slot 放小圖；`foot` slot 放左下角文字。600px 以下（一列一張卡）圖示會移到標題同一行，這是元件自己做的，頁面不用覆寫。圖示一律取 `src/components/calc/tool-meta.ts` 的 `TOOL_ICON` |
+| `MetricCard` | `label`、`value`、`unit`、`note`、`tone`、`valueTone`、`noteTone`、`trend`、`valueId`、`noteId`、`bare` | `tone` 上色時要一起給 `trend`（箭頭）或讓正負號寫在值裡；`bare` 去掉外框，放在已經有框的面板裡 |
 | `ArticleCard` | `href`、`title`、`desc`、`category`、`date`（ISO 日期）、`level` | 純文字卡，沒有圖片位置 |
 
 卡片內可用的零件：`.card-icon`、`.card-title`、`.card-desc`、`.card-meta`（分類與日期，用間距分開，不用「·」）、`.card-viz`、`.card-foot`、`.tag`（小膠囊標籤）。
@@ -278,7 +304,29 @@ props 和以前一樣，多一個 `secondaryStyle`（`link` 預設｜`button`）
 </DataTable>
 ```
 
-props：`locale`、`label`（必填，捲動區的名稱）、`caption`、`stickyFirst`、`dense`、`framed`（卡片外框，不要放進另一張卡片）、`hint`（小螢幕顯示「可以左右捲動」）、`id`、`class`。寬表格在自己的框裡橫向捲動，頁面不會被撐寬；捲動區可以用鍵盤聚焦。數字靠右、第一欄靠左是預設。舊的 `.tw` 包裝還能用。
+props：`locale`、`label`（必填，捲動區的名稱）、`caption`、`stickyFirst`、`dense`、`depth`、`firstWidth`、`minWidth`（後三個見下面「深度條」）、`framed`（卡片外框，不要放進另一張卡片）、`hint`（小螢幕顯示「可以左右捲動」）、`id`、`class`。寬表格在自己的框裡橫向捲動，頁面不會被撐寬；捲動區可以用鍵盤聚焦。數字靠右、第一欄靠左是預設。
+
+#### 深度條
+
+像掛單簿：數字格後面一條半透明的底條，長度是這個值佔該欄尺度的比例，從右邊長出來。
+
+```astro
+<DataTable locale={locale} label={...} stickyFirst depth firstWidth="25%" minWidth="24rem">
+  ...
+  <td class="num" data-depth data-tone={signTone(sum)} style={`--depth:${depthShare(sum, largest)}`}>{ratePercent(sum)}</td>
+</DataTable>
+```
+
+- `data-depth` 加 `style="--depth:0.42"`（0 到 1）。`data-tone` 決定紅或綠，不給就是中性灰。
+- 一格有兩個數字（跌幅與漲幅）時用 `data-depth="pair"`，`--depth` 是紅條（上半）、`--depth-2` 是綠條（下半）。
+- **比例必須是真的**：`--depth` ＝ 值 ÷ 尺度上限。尺度上限是「同一張表裡互相比較的那些值的最大值」，或者這個量本身有個整體時用那個整體（90 天裡爆倉幾天就除以 90，勝率與回撤除以 100%）。用 `depthShare(value, max)` 算，不准為了好看給假寬度。
+- `DataTable` 要加 `depth`：表格會改成固定欄寬（第一欄佔 `firstWidth`，預設 24%，其餘數字欄平分），這樣同一個比例在每一欄都是同一個長度。儲存格文字很長的表再給 `minWidth`，窄螢幕會在自己的框裡橫向捲動。
+- 底條是裝飾：數字仍然是文字（`--color-text`，在底條上對比 11 以上），值不能只存在於底條。
+- 底條是一整格寬的偽元素用 `transform: scaleX()` 縮出來的，沒有 transition。
+
+目前用在：90 天爆倉統計表（`market/StatsTable.astro`，除以天數）、資金費率 30 天表（三個合約共用一個尺度）、爆倉數據頁的 30 天最大跌幅與漲幅表（pair）、回測樣本對照表的勝率與最大回撤（除以 100%）。
+
+`stickyFirst` 的表格用 `border-collapse: separate`（固定欄有自己的底色，合併框線時那一欄的列分隔線會被底色蓋掉），這件事共用樣式已經處理，頁面不要再寫一次。表格放在有底色的區塊（`band`、卡片）裡時，在外層設 `--table-bg: var(--color-surface)`，固定欄的底色才會跟著區塊。
 
 ### FormulaBlock
 
@@ -297,7 +345,7 @@ props：`label`、`formula`（保留換行）或預設 slot、`id`、`class`。�
 <DataFreshness locale={locale} time="2026-11-18T16:00:00Z" timeLabel="16:00 UTC" source="Bybit" stale />
 ```
 
-props：`locale`、`date`（資料日期）、`time` 加 `timeLabel`（要自己寫出時區）、`source`、`sourceHref`、`stale`（顯示過期警告）、`id`、`class`。每個顯示市場或交易所資料的表格、圖表、數字旁邊都要有一個。日期來自資料檔，不准手寫。腳本更新用 `[data-fresh="date"]`、`[data-fresh="time"]`。
+props：`locale`、`date`（資料日期）、`dateLabel`（選填，日期需要標時區時印這個字串，例如 `fmt(t.common.day, { date })` 會印出「2026-11-18（UTC）」；`<time datetime>` 仍然是 `date`）、`time` 加 `timeLabel`（要自己寫出時區）、`source`、`sourceHref`、`stale`（顯示過期警告）、`id`、`class`。市場數據頁與每日報告的報告日都是 UTC 日，一律傳 `dateLabel`。每個顯示市場或交易所資料的表格、圖表、數字旁邊都要有一個。日期來自資料檔，不准手寫。腳本更新用 `[data-fresh="date"]`、`[data-fresh="time"]`。
 
 ### ChartContainer
 
@@ -314,6 +362,8 @@ props：`locale`、`title`、`desc`、`level`、`ratio`（寬／高，預設 `16
 - 建置時沒資料就傳 `state="empty"`。
 - 由腳本填的圖表傳 `live`，再用 `box.dataset.state = 'loading' | 'ready' | 'empty' | 'error'` 切換。
 - 繪圖區的尺寸一開始就保留好，載入前後不位移。
+- `ratio` 與 `minHeight` 可以一起給：繪圖區的寬度固定是容器寬，窄螢幕上 `minHeight` 只會讓圖比 `ratio` 高，不會把圖撐出卡片。要依寬度換形狀時，在外層對 `.chart-box-plot` 設 `--chart-ratio`（`market/Panels.astro` 的做法）。
+- 圖表說明（`desc`）每行上限是 `--measure-fine`，不用在頁面裡再收窄。
 - SVG 的顏色用 class：`.stroke-text`、`.stroke-muted`、`.stroke-grid`、`.stroke-accent`、`.stroke-blue`、`.stroke-positive`、`.stroke-negative`，以及對應的 `.fill-*`；或在自己的 `<style>` 裡用 token。
 
 ### Meter
@@ -360,8 +410,8 @@ props：`locale`、`title`、`desc`、`level`、`ratio`（寬／高，預設 `16
 - **錯誤**：在 input 上設 `aria-invalid="true"`，外框會變粗變紅；同時在 `.field-error` 寫出「怎麼修」，不能只變色。
 - **停用**：input 加 `disabled`。
 - **NumericInput** 就是 `.field-box` 裡放 `<input type="text" inputmode="decimal">`，數字會用等寬字。單獨的輸入框或下拉用 `class="input"`。
-- **SegmentedControl**：`.seg` 裡放 `<label><input type="radio"><span>文字</span></label>`，幾個選項都可以。選中的是反色實心塊加粗字。
-- **Slider**：`<div class="slider-row">` 裡放 `<label class="field-label">`、`<input class="slider" type="range">`、一個 `.field-box`。滑桿用瀏覽器原生外觀，顏色跟強調色。舊名 `.ctl` 還能用。滑桿要設 `aria-valuetext`。
+- **SegmentedControl**：`.seg` 裡放 `<label><input type="radio"><span>文字</span></label>`，幾個選項都可以。選中的是反色實心塊加粗字；`value` 是 `long`／`short` 的選項選中時是綠／紅實心塊（字是底色，對比 4.8 以上）。
+- **Slider**：`<div class="slider-row">` 裡放 `<label class="field-label">`、`<input class="slider" type="range">`、一個 `.field-box`。滑桿用瀏覽器原生外觀，顏色跟強調色。滑桿要設 `aria-valuetext`。
 - **進階參數**用 `Accordion` 收合。
 
 ### 結果
@@ -373,7 +423,7 @@ props：`locale`、`title`、`desc`、`level`、`ratio`（寬／高，預設 `16
 </div>
 ```
 
-`.result-value`（舊名 `.figure`）是 36 到 56px 的等寬數字。`aria-live` 只包「主要結果」那一小塊，不要包整個面板，否則每次按鍵螢幕閱讀器都會念一大串。值改變時可以加 `.is-updated`（一次 200ms 的淡入，動畫結束後移除 class）。
+`.result-value` 是 36 到 56px 的等寬數字。`aria-live` 只包「主要結果」那一小塊，不要包整個面板，否則每次按鍵螢幕閱讀器都會念一大串。值改變時可以加 `.is-updated`（一次 200ms 的淡入，動畫結束後移除 class）。
 
 ## 風險尺（RiskRuler）
 
@@ -392,12 +442,13 @@ props：`locale`、`title`、`desc`、`level`、`ratio`（寬／高，預設 `16
 | `current` | 目前價，選填 |
 | `unit` | 預設 `USDT` |
 | `decimals` | 價格的小數位，預設 0 |
+| `entryDecimals` | 只給進場價用的小數位：數字，或 `"auto"`（進場價需要幾位就印幾位，最多 `decimals` 位）。不給就和 `decimals` 一樣。爆倉價照合約 tick 印一位小數、進場價是整數時用它，尺上才不會印出「68,000.0」 |
 | `size` | `m`｜`l`（首頁 hero 用 `l`） |
 | `reserveCurrent` | 之後腳本可能補上目前價時設 `true`，先保留那一列，補上時才不會位移 |
 | `caption` | `visible`（預設，尺下方印出整句說明）｜`sr`（只給螢幕閱讀器，頁面別處已經印過同一句時用） |
 | `id`、`class` | |
 
-多空不靠顏色分辨：有「做多／做空」文字、圖示翻轉、爆倉記號在進場記號的左邊或右邊、一個從進場側指向爆倉記號的楔形。三個記號的形狀也不同（圓點是進場價、菱形是爆倉價、空心圓是目前價），標籤前面有同樣的形狀。圖形對螢幕閱讀器隱藏，`<figcaption>` 用一句話講同一件事。
+多空不靠顏色分辨：有「做多／做空」文字、圖示翻轉、爆倉記號在進場記號的左邊或右邊、一個從進場側指向爆倉記號的楔形。顏色只是再說一次：方向標籤做多是綠、做空是紅，爆倉記號、色帶與「距離爆倉」那一行是紅。三個記號的形狀也不同（圓點是進場價、菱形是爆倉價、空心圓是目前價），標籤前面有同樣的形狀。圖形對螢幕閱讀器隱藏，`<figcaption>` 用一句話講同一件事。
 
 ### 用腳本即時更新
 
@@ -418,7 +469,9 @@ updateRiskRuler(ruler, { entry, liquidation: NaN, side }, t.ui.cannotLiquidate);
 
 掛點（需要讀值時用）：根元素有 `data-risk-ruler`、`data-state`（`ready`｜`empty`）、`data-side`、`data-entry`、`data-liq`；零件是 `[data-rr="side|distance|entry|liq|current|gap|ticks|summary|empty"]`，印出來的價格是 `[data-rr="entry-value|liq-value|current-value"]`。
 
-它取代 `Scale.astro` 的「價格距離」用途。`Scale.astro` 先留著（舊頁面還在用），其他比例條（勝率等）改用 `Meter`。
+「距離爆倉 4.67%」那一行會佔滿標題列剩下的寬度並靠右對齊，數字變長變短時位置不動，頁面不用自己覆寫。
+
+改版前的 `Scale.astro` 已經刪除：價格距離用風險尺，其他比例條（勝率等）用 `Meter`，兩個量放在同一把尺上比較用 `calc/ScaleBars.astro`。
 
 ## 頁首與頁尾
 
@@ -468,6 +521,77 @@ updateRiskRuler(ruler, { entry, liquidation: NaN, side }, t.ui.cannotLiquidate);
 - 表頭、標籤、分類不寫全大寫加字距；不用「·」串接資訊；連結文字不黏箭頭字元。
 - 關掉 JavaScript 時，說明、公式、例題、預設值算出來的結果都還在。
 
+## 各區塊自己的元件
+
+共用元件在 `src/components/ui/`。下面這些屬於各個頁面區塊，樣式寫在元件自己的 `<style>` 裡，class 一律帶該區塊的前綴，所以不會和全域名稱或別的區塊撞名。新增元件時沿用同一個前綴。
+
+### 工具（`src/components/calc/`，前綴 `calc-`）
+
+| 檔案 | 用途 |
+| --- | --- |
+| `CalculatorShell.astro` | 四個計算機共用的工作區：左邊輸入（約 40%）、右邊結果面板（約 60%），960px 以下單欄。slot：`inputs`、`after-inputs`、`flags`、`viz`、`metrics`、`assumptions`、`cta` |
+| `DocSection.astro` | 計算機下方的閱讀區塊（公式、例題、常見錯誤）：標題在左欄、內文在右欄 |
+| `ExampleBlock.astro` | 一個例題：已知、算式、結果 |
+| `Metric.astro` | 結果面板裡的次要數字（`MetricCard` 的 `bare` 形式，標籤可帶 id） |
+| `RelatedTools.astro` | 頁尾的「相關計算機」，只列已經存在的 |
+| `ResultFlag.astro` | 結果句下面的警告列（帶圖示，不靠顏色） |
+| `ScaleBars.astro` 與 `scale-bars.ts` | 兩個量畫在同一把從 0 開始的尺上（停損距離與爆倉距離、虧損與回本漲幅）；腳本用 `updateScaleBars()` 更新 |
+| `SliderField.astro` | 數字欄位加一條滑桿，兩者由 `calc-ui.ts` 的 `bindSliders()` 同步 |
+| `calc-ui.ts` | 四個計算機腳本共用的顯示層：結果面板、滑桿同步、進階設定、重設與複製。不含任何公式 |
+| `starting-values.ts` | 每個計算機開場的例題數值。計算機頁、工具總覽與首頁工具卡都從這裡讀 |
+| `tool-meta.ts` | 每個工具的圖示（`TOOL_ICON`）與分組 |
+
+`src/components/Field.astro` 與 `Segmented.astro`（輸入欄位、分段控制）也屬於這一區，輸出的是「表單控制項」一節的全域 class。
+
+### 市場（`src/components/market/`，前綴 `mk-`）
+
+| 檔案 | 用途 |
+| --- | --- |
+| `ContractTable.astro` | 每個合約一列的數字表，幣名連到每日報告 |
+| `StatsTable.astro` | 各槓桿在一段日子裡爆倉幾天，每格下面有一條照比例的 `Meter` |
+| `SurvivalTable.astro` | 每日報告的槓桿存活表 |
+| `Plot.astro` | 圖表的座標軸與框，放在 `ChartContainer` 裡；標籤是 HTML，照實際字級顯示 |
+| `SeriesChart.astro`、`RangeChart.astro`、`HourlyChart.astro` | 每日一個值的長條或折線、每日最大跌幅與漲幅、報告日 24 小時 |
+| `Panels.astro` | 一排圖表（每個合約一張），並依寬度設定圖的形狀 |
+| `RangePanels.astro` | 「每日最大跌幅與漲幅」30 天與 90 天切換（兩個 radio 加一條 CSS，無 JS 也能切） |
+| `LivePanel.astro` | 「從 Bybit 抓目前數值」的獨立區塊，腳本是 `src/scripts/market-live.ts` |
+| `StaleNotice.astro` 與 `freshness.ts` | 報告日不再是最近一個完整 UTC 日時的警告 |
+| `chart.ts`、`format.ts` | 圖表幾何與顯示用的字串切割，不計算任何市場數字 |
+
+### 研究（`src/components/research/`，前綴 `bt-`）
+
+| 檔案 | 用途 |
+| --- | --- |
+| `StrategyCard.astro` | `/backtests/` 上的一個回測：策略、市場、樣本內與樣本外數字 |
+| `SampleCompare.astro` | 樣本內與樣本外並排的比較表 |
+| `EquityCharts.astro` 與 `drawdown.ts` | 權益曲線與回撤兩張內嵌 SVG |
+| `samples.ts` | 回測結果檔的顯示格式，`/backtests/`、策略頁、`/bot/` 共用，三處印出來的數字才會一樣 |
+
+`/bot/` 頁面自己的 class 用 `bot-`。
+
+### 文章與文件頁（`src/components/article/`，前綴 `art-`、`doc-`）
+
+| 檔案 | 用途 |
+| --- | --- |
+| `ArticleProse.astro` | 包住 Markdown 內文並設定所有 Markdown 會產生的元素（標題、表格、程式碼、引用）。樣式是全域的，全部以 `.prose.art-prose` 開頭 |
+| `ArticleToc.astro` | 文章目錄：桌機是右側 sticky 清單，手機是 `<details>` |
+| `DocRow.astro` | 文件頁（關於、揭露）的一列：標題在左、內文在右 |
+
+文章裡的程式碼區塊用 Shiki 的 `css-variables` 主題（`astro.config.mjs`），顏色變數 `--astro-code-*` 在 `ArticleProse.astro` 裡從設計 token 指定，深淺色會自己跟著切換。不要再用 `!important` 蓋語法色。
+
+### 首頁（`src/components/home/`）
+
+| 檔案 | 前綴 | 用途 |
+| --- | --- | --- |
+| `HeroSimulator.astro` | `sim-` | hero 右欄的爆倉風險模擬器（風險尺 `size="l"`），腳本是 `src/scripts/home-hero.ts` |
+| `TrustStrip.astro` | `trust-` | hero 下面的五個事實 |
+| `HomeTools.astro` | `ht-`、`ex-`、`roadmap-` | 工具卡（每張一個標明是範例的結果）與還沒做的工具清單 |
+| `DrawdownDemo.astro` | `dd-` | 回撤與回本漲幅的滑桿示範，腳本是 `src/scripts/home-drawdown.ts` |
+| `ResearchPreview.astro` | `rs-` | 回測摘要 |
+| `MarketReports.astro` | `mk-` | 三個合約最新的每日報告 |
+| `LearnList.astro` | `ls-` | 最新的教學與搭配的頁面 |
+| `Transparency.astro` | `op-` | 「這個站怎麼運作」的六個答案 |
+
 ## 檔案位置
 
 ```
@@ -479,6 +603,7 @@ src/layouts/fonts.ts        @font-face 與 preload
 src/layouts/cjk-head-chars.json  中文標題子集裡有哪些字（腳本產生）
 src/components/Nav.astro、Footer.astro、Cta.astro、RelatedArticles.astro
 src/components/ui/          共用元件、risk-ruler.ts
+src/components/{calc,market,research,article,home}/  各區塊自己的元件（見上一節）
 src/scripts/nav.ts、theme.ts  頁首行為、主題切換
 src/i18n/common.ts          共用字串（nav、theme、footer、cta、ui、ruler）
 scripts/subset-cjk.mjs      中文標題字型子集

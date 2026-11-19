@@ -5,12 +5,17 @@
 // the moment its page exists.
 //
 // Each card carries one labelled example. Every example figure is computed by
-// the calculator's own function in src/lib/calc/**, from the same inputs as
-// the first worked example on that calculator's page.
+// the calculator's own function in src/lib/calc/**. The inputs are the ones
+// the calculator opens with (src/components/calc/starting-values.ts), which
+// are also its first worked example, and the icon is the one the tool
+// directory uses (tool-meta.ts), so this page and /tools/ cannot drift apart.
+// The drawdown card is the one exception: it keeps that page's first worked
+// example (30%), because the section right under this one is about 50%.
+import { ASSUMED_FEE_PCT, LEVERAGE_START, LIQUIDATION_START, POSITION_START } from '../calc/starting-values';
+import { TOOL_ICON } from '../calc/tool-meta';
 import SectionHeader from '../ui/SectionHeader.astro';
 import ToolCard from '../ui/ToolCard.astro';
 import Icon from '../ui/Icon.astro';
-import type { IconName } from '../ui/Icon.astro';
 import { localePath } from '../../i18n/config';
 import type { Locale } from '../../i18n/config';
 import { home } from '../../i18n/home';
@@ -42,7 +47,6 @@ const price = (n: number) => formatNumber(roundToTick(n, tick), tickDecimals(tic
 const invalid = (slug: string) => new Error(`home: the example for ${slug} is not a valid calculation`);
 
 interface Example {
-  icon: IconName;
   given: string;
   value: string;
 }
@@ -51,11 +55,11 @@ interface Example {
 // here still gets its card, just without an example.
 const examples: Partial<Record<ToolSlug, () => Example>> = {
   'liquidation-price-calculator': () => {
-    const input = { side: 'long' as const, entryPrice: 68000, leverage: 20 };
+    const s = LIQUIDATION_START;
+    const input = { side: s.side, entryPrice: s.entry, leverage: s.lev };
     const r = liquidationPrice({ ...input, mmr });
     if (!r.ok || !r.reachable) throw invalid('liquidation-price-calculator');
     return {
-      icon: 'ruler',
       given: fmt(t.examples['liquidation-price-calculator'].given, {
         entry: formatNumber(input.entryPrice),
         lev: input.leverage,
@@ -64,11 +68,11 @@ const examples: Partial<Record<ToolSlug, () => Example>> = {
     };
   },
   'leverage-calculator': () => {
-    const input = { side: 'long' as const, entryPrice: 68000, stopPrice: 64600 };
+    const s = LEVERAGE_START;
+    const input = { side: s.side, entryPrice: s.entry, stopPrice: s.stop };
     const r = maxLeverage({ ...input, mmr, maxLeverage: cap });
     if (!r.ok || !r.feasible) throw invalid('leverage-calculator');
     return {
-      icon: 'gauge',
       given: fmt(t.examples['leverage-calculator'].given, {
         entry: formatNumber(input.entryPrice),
         stop: formatNumber(input.stopPrice),
@@ -78,12 +82,18 @@ const examples: Partial<Record<ToolSlug, () => Example>> = {
   },
   'position-size-calculator': () => {
     // Leverage and the fee rate do not change the quantity; they are the
-    // values of the first worked example on the calculator's page.
-    const input = { accountSize: 10000, riskFraction: 0.01, entryPrice: 68000, stopPrice: 66400, leverage: 10 };
-    const r = positionSize({ ...input, feeRate: 0.00055, mmr, maxLeverage: cap });
+    // values the calculator opens with.
+    const s = POSITION_START;
+    const input = {
+      accountSize: s.account,
+      riskFraction: s.riskPct / 100,
+      entryPrice: s.entry,
+      stopPrice: s.stop,
+      leverage: s.lev,
+    };
+    const r = positionSize({ ...input, feeRate: ASSUMED_FEE_PCT / 100, mmr, maxLeverage: cap });
     if (!r.ok) throw invalid('position-size-calculator');
     return {
-      icon: 'scale',
       given: fmt(t.examples['position-size-calculator'].given, {
         account: formatNumber(input.accountSize),
         risk: formatPercent(input.riskFraction, 0),
@@ -96,7 +106,6 @@ const examples: Partial<Record<ToolSlug, () => Example>> = {
     const r = drawdown({ mode: 'drawdown', drawdown: 0.3 });
     if (!r.ok) throw invalid('drawdown-calculator');
     return {
-      icon: 'trending-down',
       given: fmt(t.examples['drawdown-calculator'].given, { lost: formatPercent(r.drawdown, 0) }),
       // The unit string carries the percent sign.
       value: formatNumber(r.recoveryGain * 100, 2),
@@ -124,7 +133,7 @@ const cards = ready.map((tool) => {
       <ToolCard
         locale={locale}
         href={tool.href}
-        icon={example?.icon ?? 'calculator'}
+        icon={TOOL_ICON[tool.slug]}
         title={tool.name}
         desc={tool.question}
       >
@@ -276,19 +285,8 @@ const cards = ready.map((tool) => {
     }
   }
 
-  /* One card a row: the icon moves beside the name, and no height is
-     reserved for a second line of the example. */
+  /* One card a row: no height is reserved for a second line of the example. */
   @media (max-width: 599px) {
-    .ht-cards :global(.card) {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      align-items: center;
-    }
-
-    .ht-cards :global(.card > :not(.card-icon, .card-title)) {
-      grid-column: 1 / -1;
-    }
-
     .ex-given {
       min-height: 0;
     }
