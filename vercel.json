@@ -93,18 +93,6 @@
       "has": [
         {
           "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "TW"
-        }
-      ],
-      "destination": "/not-available/",
-      "permanent": false
-    },
-    {
-      "source": "/go/bybit/",
-      "has": [
-        {
-          "type": "header",
           "key": "x-vercel-ip-country"
         }
       ],
@@ -138,11 +126,6 @@
           "type": "header",
           "key": "x-vercel-ip-country",
           "value": "GB"
-        },
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "TW"
         }
       ],
       "destination": "https://www.bybit.com/",
@@ -225,18 +208,6 @@
       "has": [
         {
           "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "TW"
-        }
-      ],
-      "destination": "/not-available/",
-      "permanent": false
-    },
-    {
-      "source": "/go/bybit",
-      "has": [
-        {
-          "type": "header",
           "key": "x-vercel-ip-country"
         }
       ],
@@ -270,11 +241,6 @@
           "type": "header",
           "key": "x-vercel-ip-country",
           "value": "GB"
-        },
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "TW"
         }
       ],
       "destination": "https://www.bybit.com/",
@@ -357,18 +323,6 @@
       "has": [
         {
           "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "TW"
-        }
-      ],
-      "destination": "/not-available/",
-      "permanent": false
-    },
-    {
-      "source": "/go/bybit-testnet/",
-      "has": [
-        {
-          "type": "header",
           "key": "x-vercel-ip-country"
         }
       ],
@@ -402,11 +356,6 @@
           "type": "header",
           "key": "x-vercel-ip-country",
           "value": "GB"
-        },
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "TW"
         }
       ],
       "destination": "https://testnet.bybit.com/",
@@ -489,18 +438,6 @@
       "has": [
         {
           "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "TW"
-        }
-      ],
-      "destination": "/not-available/",
-      "permanent": false
-    },
-    {
-      "source": "/go/bybit-testnet",
-      "has": [
-        {
-          "type": "header",
           "key": "x-vercel-ip-country"
         }
       ],
@@ -534,11 +471,6 @@
           "type": "header",
           "key": "x-vercel-ip-country",
           "value": "GB"
-        },
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "TW"
         }
       ],
       "destination": "https://testnet.bybit.com/",

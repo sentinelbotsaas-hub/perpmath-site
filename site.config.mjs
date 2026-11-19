@@ -26,10 +26,10 @@ export const BYBIT_TESTNET_TARGET = 'https://testnet.bybit.com/';
 export const RESTRICTED_COUNTRIES = ['US', 'CA', 'CN', 'HK', 'SG', 'GB'];
 
 // === TAIWAN GATE =========================================================
-// true  = Taiwan is treated like a restricted country (current decision).
-// false = Taiwan visitors are sent on to Bybit.
+// true  = Taiwan is treated like a restricted country.
+// false = Taiwan visitors are sent on to Bybit (owner's decision, 2026-11-19).
 // After changing it run `npm run gen:vercel` and commit vercel.json.
-export const GATE_TW = true;
+export const GATE_TW = false;
 // =========================================================================
 
 /** Path every affiliate action links to. */
