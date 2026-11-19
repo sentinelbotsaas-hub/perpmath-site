@@ -7,7 +7,7 @@ export const tools = defineStrings({
   en: {
     title: 'Calculators for crypto perpetual futures',
     description:
-      'Free calculators for perpetual futures. Ready now: {names}. Each draws its answer to scale.',
+      'Free perpetual futures calculators: {names}. Answers drawn to scale.',
     // Joins the names of the ready calculators in the description.
     separator: ', ',
     head: 'Each calculator answers one question.',

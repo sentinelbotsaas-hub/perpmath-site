@@ -9,7 +9,7 @@ export const drawdown = defineStrings({
   en: {
     title: 'Drawdown calculator',
     description:
-      'See what gain it takes to recover from a drawdown, and how much capital a losing streak leaves. Enter a drawdown, or a streak and a risk per trade; the bars are drawn to scale.',
+      'See what gain it takes to recover from a drawdown, and how much capital a losing streak leaves. Enter a drawdown, or a streak and a risk per trade. Bars drawn to scale.',
     lede: 'What gain it takes to get back to where you started, from a drawdown or from a losing streak.',
     noscript:
       'The calculator needs JavaScript. What you see is the result for a 50% drawdown; the formula, the table and the examples below can be done on paper.',

@@ -66,7 +66,7 @@ export const backtests = defineStrings({
     detail: {
       title: '{name} backtest on {symbol} {interval}',
       description:
-        '{name} on {symbol} {interval} bars: {isTrades} in-sample and {oosTrades} out-of-sample trades, fees and slippage included. Rules, parameters, equity curve and the commands to rerun it.',
+        '{name} on {symbol} {interval} bars: {isTrades} in-sample and {oosTrades} out-of-sample trades, after fees and slippage. Rules, parameters, equity curve and how to rerun it.',
       headLost: '{name} lost money.',
       head: '{name}, tested on {symbol}.',
       sub: 'After costs on {symbol} {interval}: {is} in-sample, {oos} out-of-sample.',

@@ -15,6 +15,7 @@ import rethinkSans from '@fontsource-variable/rethink-sans/files/rethink-sans-la
 import azeretMono400 from '@fontsource/azeret-mono/files/azeret-mono-latin-400-normal.woff2?url';
 import azeretMono500 from '@fontsource/azeret-mono/files/azeret-mono-latin-500-normal.woff2?url';
 import Footer from '../components/Footer.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
 import Nav from '../components/Nav.astro';
 import { common } from '../i18n/common';
 import { absoluteUrl, alternates, htmlLang, locales, ogLocale } from '../i18n/config';
@@ -132,6 +133,7 @@ const fontFaces = `${stamp}
     <Nav locale={locale} path={switcherPath ?? path} surface={surface} availableLocales={availableLocales} />
     <main id="main" tabindex="-1">
       <slot />
+      <RelatedArticles locale={locale} path={path} />
     </main>
     <Footer locale={locale} />
   </body>

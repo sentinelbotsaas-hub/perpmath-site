@@ -6,6 +6,7 @@ import { defineStrings } from './strings';
 export const common = defineStrings({
   en: {
     siteName: 'perpmath',
+    related: 'Related lessons',
     skipToContent: 'Skip to content',
     nav: {
       label: 'Main',
@@ -54,6 +55,7 @@ export const common = defineStrings({
   },
   'zh-hant': {
     siteName: 'perpmath',
+    related: '相關教學',
     skipToContent: '跳到主要內容',
     nav: {
       label: '主選單',

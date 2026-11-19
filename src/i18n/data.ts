@@ -133,7 +133,7 @@ export const data = defineStrings({
     liquidation: {
       title: 'Liquidation: how often each leverage got liquidated',
       description:
-        'What liquidation is, and on how many of the last 90 days a 2x to 100x long or short in BTCUSDT, ETHUSDT or SOLUSDT would have been liquidated. Computed from Bybit candles.',
+        'What liquidation is, and on how many of the last 90 days a 2x to 100x long or short in BTCUSDT, ETHUSDT or SOLUSDT would have been liquidated. From Bybit candles.',
       sub: 'On how many days each leverage would have been closed out.',
       noFeed:
         'This site has no live liquidation feed and does not show a liquidation heatmap. The tables are computed from Bybit’s public daily and hourly candles: they show which positions would have been liquidated, not which ones were.',
