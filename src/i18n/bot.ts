@@ -14,6 +14,18 @@ export const bot = defineStrings({
     sub: 'An open-source backtester for Bybit perpetuals; version {version} cannot place orders.',
     primary: 'Read the quickstart',
     secondary: 'View on GitHub',
+    // The facts strip under the page head. Each value restates something the
+    // page already says (the install note, the licence line, the JSON-LD).
+    facts: {
+      label: 'The engine at a glance',
+      version: 'Version',
+      language: 'Language',
+      languageValue: 'Python 3.10 or newer',
+      dependency: 'Dependency',
+      dependencyValue: 'NumPy',
+      license: 'Licence',
+      licenseValue: 'MIT',
+    },
     quickstart: {
       head: 'Quickstart',
       install: 'Install',
@@ -40,6 +52,7 @@ export const bot = defineStrings({
       head: '{n} shipped results, published as they came.',
       body: 'They show how the accounting works. They are not for trading.',
       link: 'See the backtests',
+      tableLabel: 'Total return of each shipped strategy, after fees and slippage',
     },
   },
   'zh-hant': {
@@ -50,6 +63,16 @@ export const bot = defineStrings({
     sub: '開源的 Bybit 永續合約回測工具；{version} 版還不能下單。',
     primary: '看快速上手',
     secondary: '到 GitHub 看原始碼',
+    facts: {
+      label: '這個工具的基本資料',
+      version: '版本',
+      language: '語言',
+      languageValue: 'Python 3.10 以上',
+      dependency: '相依套件',
+      dependencyValue: 'NumPy',
+      license: '授權',
+      licenseValue: 'MIT',
+    },
     quickstart: {
       head: '快速上手',
       install: '安裝',
@@ -76,6 +99,7 @@ export const bot = defineStrings({
       head: '隨附 {n} 份回測結果，照實公開。',
       body: '放這些策略是為了示範帳怎麼算，不是要讓人拿去交易。',
       link: '看回測結果',
+      tableLabel: '隨附策略的總報酬率，已扣手續費與滑價',
     },
   },
 });

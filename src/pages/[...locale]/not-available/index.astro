@@ -6,6 +6,8 @@
 // no language. The small script below moves the visitor to the page in the
 // language they came from, using the referrer. Without scripting they stay on
 // the English page and can use the language switcher.
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
 import { localePath, localeStaticPaths } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
 import { pages } from '../../../i18n/pages';
@@ -32,14 +34,10 @@ const followReferrerLanguage = [
 
 <Base locale={locale} path="/not-available/" title={t.title} description={t.description} noindex>
   {locale === 'en' && <script is:inline slot="head" set:html={followReferrerLanguage} />}
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{t.head}</h1>
-      <p class="sub">{t.body}</p>
-      <div class="acts">
-        <a class="btn" href={localePath(locale, '/tools/')}>{t.toTools}</a>
-        <a class="lnk" href={localePath(locale, '/disclosure/')}>{t.why}</a>
-      </div>
-    </div>
-  </section>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.head} lede={t.body}>
+      <a slot="actions" class="btn" href={localePath(locale, '/tools/')}>{t.toTools}</a>
+      <a slot="actions" class="lnk" href={localePath(locale, '/disclosure/')}>{t.why}</a>
+    </PageHeader>
+  </PageContainer>
 </Base>

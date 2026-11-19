@@ -14,6 +14,10 @@ export default defineConfig({
   // Astro 7 strips whitespace between inline elements the way JSX does by
   // default. `true` keeps the older, safer behaviour: collapse, do not remove.
   compressHTML: true,
+  // Code blocks in articles take their colours from CSS variables, so they
+  // follow the dark and light themes. The variables (--astro-code-*) are set
+  // from the design tokens in src/components/article/ArticleProse.astro.
+  markdown: { shikiConfig: { theme: 'css-variables' } },
   integrations: [
     sitemap({
       filter: (page) => !NOT_IN_SITEMAP.test(new URL(page).pathname),

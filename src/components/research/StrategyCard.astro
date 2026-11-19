@@ -1,0 +1,83 @@
+---
+// One published backtest on /backtests/: the strategy, its market, and its
+// in-sample and out-of-sample figures side by side. Every figure is read
+// from the result file through ./samples.ts.
+//
+//   <div class="cards cols-3">
+//     <StrategyCard locale={locale} result={result} />
+//   </div>
+//
+// The card is not one big link (it holds a table): the title and the line at
+// the foot link to the result's own page.
+import Card from '../ui/Card.astro';
+import Icon from '../ui/Icon.astro';
+import { backtests } from '../../i18n/backtests';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import { backtestPath } from '../../lib/backtests/load';
+import type { BacktestResult } from '../../lib/backtests/types';
+import { fmt } from '../../lib/fmt';
+import SampleCompare from './SampleCompare.astro';
+import { sampleViews } from './samples';
+
+interface Props {
+  locale: Locale;
+  result: BacktestResult;
+  /** Heading level of the strategy name. Default 3. */
+  level?: 2 | 3;
+}
+
+const { locale, result, level = 3 } = Astro.props;
+const t = backtests[locale];
+const strategy = t.strategies[result.strategy as keyof typeof t.strategies];
+if (!strategy) throw new Error(`backtests: no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
+
+const href = localePath(locale, backtestPath(result.slug));
+const Heading = level === 2 ? 'h2' : 'h3';
+---
+
+<Card as="article" class="bt-card">
+  <div class="bt-card-head">
+    <Heading class="card-title">
+      <a href={href}>{strategy.short}</a>
+    </Heading>
+    <p class="tag num">{result.symbol} {result.interval}</p>
+  </div>
+  <SampleCompare locale={locale} label={fmt(t.index.cardLabel, { name: strategy.short })} views={sampleViews(result, t)} surface dense />
+  <div class="card-foot">
+    <a class="lnk" href={href}>
+      {t.index.open}
+      <Icon name="arrow-right" size={16} />
+    </a>
+  </div>
+</Card>
+
+<style>
+  .bt-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-3);
+  }
+
+  .bt-card-head a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    text-decoration-color: var(--color-border-control);
+  }
+
+  .bt-card-head a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .card-foot {
+    padding-top: 0;
+  }
+
+  .card-foot .lnk {
+    font-size: var(--text-sm);
+    white-space: normal;
+  }
+</style>

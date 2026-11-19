@@ -2,12 +2,21 @@
 // /learn/<slug>/: one article. A page is generated for every Markdown file in
 // src/content/articles/<locale>/. hreflang lists only the locales in which
 // the same slug exists.
+//
+// Layout: a reading column (760px at most) with the table of contents beside
+// it on a wide screen, sticky under the header; on a narrow screen the same
+// list is a <details> above the text. The Markdown is rendered as it is: the
+// styles for what it produces are in src/components/article/ArticleProse.astro.
 import { render } from 'astro:content';
+import ArticleProse from '../../../components/article/ArticleProse.astro';
+import ArticleToc from '../../../components/article/ArticleToc.astro';
+import Cta from '../../../components/Cta.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
 import { common } from '../../../i18n/common';
 import { localeParam, localePath } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
+import { toHans } from '../../../i18n/hans';
 import { pages } from '../../../i18n/pages';
-import Cta from '../../../components/Cta.astro';
 import Base from '../../../layouts/Base.astro';
 import { articlePath, getArticles } from '../../../lib/articles';
 import type { Article } from '../../../lib/articles';
@@ -33,12 +42,22 @@ const t = pages[locale].learn;
 const c = common[locale];
 const { data } = entry;
 const path = articlePath(data.slug);
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const sections = headings.filter((h) => h.depth === 2);
+
+// The generated Simplified articles keep the Traditional `category` (the
+// generator copies that field as it is), so it is converted here.
+const category = locale === 'zh-hans' ? toHans(data.category) : data.category;
 
 // End-of-article action (PLAN_06 section 5): a backtest write-up sends the
 // reader to run it themselves; a basics lesson to the calculator, then testnet.
 const isBacktest = data.category === 'Backtests' || data.category === '回測';
 
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.learn, path: '/learn/' },
+  { name: data.title, path },
+];
 const jsonLd = [
   articleLd(locale, {
     path,
@@ -48,11 +67,7 @@ const jsonLd = [
     lastmod: data.lastmod,
     keywords: data.keywords,
   }),
-  breadcrumbLd(locale, [
-    { name: c.breadcrumb.home, path: '/' },
-    { name: c.nav.learn, path: '/learn/' },
-    { name: data.title, path },
-  ]),
+  breadcrumbLd(locale, trail),
   ...[faqLd(entry.body ?? '')].filter((ld) => ld !== undefined),
 ];
 ---
@@ -66,46 +81,165 @@ const jsonLd = [
   ogType="article"
   jsonLd={jsonLd}
 >
-  <article class="read">
-    <div class="wrap">
-      <h1 class="head">{data.title}</h1>
-      <p class="fine">
-        <time datetime={data.date}>{fmt(t.published, { date: data.date })}</time>
-        {
-          data.lastmod !== data.date && (
-            <>
-              {', '}
-              <time datetime={data.lastmod}>{fmt(t.updated, { date: data.lastmod })}</time>
-            </>
-          )
-        }
-      </p>
-      <div class="prose">
-        <p><strong>{t.summary}</strong>{locale === 'en' ? ': ' : '：'}{data.tldr}</p>
-        <Content />
+  <article class="section lead">
+    <div class="wrap art-grid">
+      <div class="art-main">
+        <PageHeader locale={locale} title={data.title} breadcrumb={trail}>
+          <p slot="meta" class="art-meta">
+            <span class="tag">{category}</span>
+            <time datetime={data.date}>{fmt(t.published, { date: data.date })}</time>
+            {data.lastmod !== data.date && <time datetime={data.lastmod}>{fmt(t.updated, { date: data.lastmod })}</time>}
+          </p>
+        </PageHeader>
+
+        <div class="art-tldr">
+          <p><strong>{t.summary}</strong>{locale === 'en' ? ': ' : '：'}{data.tldr}</p>
+        </div>
+
+        <div class="art-fold">
+          <ArticleToc title={t.toc} headings={sections} variant="fold" />
+        </div>
+
+        <ArticleProse class="art-body">
+          <Content />
+        </ArticleProse>
+
+        <div class="art-end">
+          {
+            isBacktest ? (
+              <Cta
+                locale={locale}
+                pageType="article"
+                position="end"
+                primary={{ label: t.ctaRun, href: localePath(locale, '/bot/') }}
+                secondary={{ label: t.ctaResults, href: localePath(locale, '/backtests/') }}
+              />
+            ) : (
+              <Cta
+                locale={locale}
+                pageType="article"
+                position="end"
+                primary={{ label: t.ctaCalc, href: localePath(locale, '/tools/liquidation-price-calculator/') }}
+                secondary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+              />
+            )
+          }
+          <a class="lnk art-back" href={localePath(locale, '/learn/')}>{t.back}</a>
+        </div>
       </div>
-      {
-        isBacktest ? (
-          <Cta
-            locale={locale}
-            pageType="article"
-            position="end"
-            primary={{ label: t.ctaRun, href: localePath(locale, '/bot/') }}
-            secondary={{ label: t.ctaResults, href: localePath(locale, '/backtests/') }}
-          />
-        ) : (
-          <Cta
-            locale={locale}
-            pageType="article"
-            position="end"
-            primary={{ label: t.ctaCalc, href: localePath(locale, '/tools/liquidation-price-calculator/') }}
-            secondary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
-          />
-        )
-      }
-      <div class="acts">
-        <a class="lnk" href={localePath(locale, '/learn/')}>{t.back}</a>
+
+      <div class="art-side">
+        <ArticleToc title={t.toc} headings={sections} variant="side" />
       </div>
     </div>
   </article>
 </Base>
+
+<style>
+  /* One reading column; from 1080px the contents list sits beside it. */
+  .art-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .art-main {
+    min-width: 0;
+    max-width: var(--measure);
+  }
+
+  .art-side {
+    display: none;
+  }
+
+  /* The trail ends with the article's own title, which the <h1> right under
+     it prints in full: keep the trail to one line. */
+  .art-main :global(.breadcrumb-nav) {
+    justify-self: stretch;
+    min-width: 0;
+  }
+
+  .art-main :global(.breadcrumb) {
+    flex-wrap: nowrap;
+  }
+
+  .art-main :global(.breadcrumb li) {
+    flex: none;
+  }
+
+  .art-main :global(.breadcrumb li:last-child) {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .art-main :global(.breadcrumb [aria-current]) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .art-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The summary: the article in a few sentences, set apart but not loud. */
+  .art-tldr {
+    margin-top: var(--space-8);
+    padding: var(--card-pad);
+    background: var(--color-surface);
+    border: var(--hairline) solid var(--color-border);
+    border-radius: var(--radius-card);
+    color: var(--color-text);
+  }
+
+  .art-fold {
+    margin-top: var(--space-6);
+  }
+
+  .art-main :global(.art-body) {
+    margin-top: var(--space-8);
+  }
+
+  /* What to do next, after the last paragraph. */
+  .art-end {
+    margin-top: var(--space-16);
+    padding-top: var(--space-4);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .art-back {
+    margin-top: var(--space-4);
+  }
+
+  @media (min-width: 1080px) {
+    .art-grid {
+      grid-template-columns: minmax(0, var(--measure)) minmax(0, 20rem);
+      justify-content: space-between;
+      column-gap: var(--space-16);
+    }
+
+    .art-fold {
+      display: none;
+    }
+
+    .art-side {
+      display: block;
+      min-width: 0;
+    }
+
+    /* Stays in view under the header; scrolls by itself if it is taller than the screen. */
+    .art-side :global(.art-toc) {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-8));
+      max-height: calc(100dvh - var(--header-h) - var(--space-16));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+  }
+</style>

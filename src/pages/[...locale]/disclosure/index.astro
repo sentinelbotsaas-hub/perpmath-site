@@ -1,6 +1,11 @@
 ---
 // /disclosure/: how the site earns money. Linked from the footer and from the
-// line under every affiliate action.
+// line under every affiliate action. The text is printed exactly as it stands
+// in src/i18n/pages.ts; which of the two versions follows AFFILIATE_ACTIVE.
+import DocRow from '../../../components/article/DocRow.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import { common } from '../../../i18n/common';
 import { localeStaticPaths } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
 import { pages } from '../../../i18n/pages';
@@ -15,29 +20,32 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = AFFILIATE_ACTIVE ? pages[locale].disclosure : pages[locale].disclosurePlain;
+
+const trail = [
+  { name: common[locale].breadcrumb.home, path: '/' },
+  { name: t.title, path: '/disclosure/' },
+];
 ---
 
 <Base locale={locale} path="/disclosure/" title={t.title} description={t.description}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{t.head}</h1>
-      <p class="sub">{t.lead}</p>
-    </div>
-  </section>
-  <section class="read">
-    <div class="wrap rows">
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.head} lede={t.lead} breadcrumb={trail} />
+    <div class="doc-rows">
       {
         t.sections.map((section) => (
-          <div>
-            <h2>{section.title}</h2>
-            <div>
-              {section.body.map((paragraph) => (
-                <p>{paragraph}</p>
-              ))}
-            </div>
-          </div>
+          <DocRow title={section.title}>
+            {section.body.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </DocRow>
         ))
       }
     </div>
-  </section>
+  </PageContainer>
 </Base>
+
+<style>
+  .doc-rows {
+    margin-top: var(--space-12);
+  }
+</style>

@@ -1,22 +1,29 @@
 ---
-// /backtests/: every published backtest in one table, in-sample and
-// out-of-sample, with a one-line verdict.
+// /backtests/: every published backtest on one page. Four summary figures,
+// then one card per strategy with in-sample and out-of-sample side by side,
+// then how to read the numbers.
 //
-// The rows are read from src/data/backtests/*.json; nothing is typed in. The
+// The cards are read from src/data/backtests/*.json; nothing is typed in, and
+// the summary figures are counted from the same files on this page. The
 // verdict is decided by src/lib/backtests/verdict.ts and the same rule is
-// printed under the table, with its thresholds taken from that file.
-// No colour says good or bad: a loss is a minus sign and a sentence.
+// printed under the cards, with its thresholds taken from that file.
+// A loss is never shown by colour alone: it is a minus sign and a sentence.
 import Cta from '../../../components/Cta.astro';
+import StrategyCard from '../../../components/research/StrategyCard.astro';
+import DataTable from '../../../components/ui/DataTable.astro';
+import MetricCard from '../../../components/ui/MetricCard.astro';
+import PageContainer from '../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import SectionHeader from '../../../components/ui/SectionHeader.astro';
 import { backtests } from '../../../i18n/backtests';
 import { common } from '../../../i18n/common';
 import { localePath, localeStaticPaths } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
 import Base from '../../../layouts/Base.astro';
 import { REPO_URL } from '../../../lib/backtests/engine';
-import { formatCount, formatDay, formatPct, formatSigned } from '../../../lib/backtests/format';
-import { backtestPath, results } from '../../../lib/backtests/load';
-import { SAMPLE_KEYS } from '../../../lib/backtests/types';
-import { MIN_TRADES, T_THRESHOLD, lostInBothSamples, verdictOf } from '../../../lib/backtests/verdict';
+import { exclusiveEnd, formatCount, formatDay, formatSigned } from '../../../lib/backtests/format';
+import { results } from '../../../lib/backtests/load';
+import { MIN_TRADES, T_THRESHOLD, lostInBothSamples } from '../../../lib/backtests/verdict';
 import type { VerdictCode } from '../../../lib/backtests/verdict';
 import { fmt } from '../../../lib/fmt';
 import { breadcrumbLd } from '../../../lib/seo';
@@ -35,36 +42,41 @@ const PATH = '/backtests/';
 
 if (results.length === 0) throw new Error('backtests: src/data/backtests/ is empty. Run scripts/backtests-import.mjs.');
 
-const na = t.na;
-const groups = results.map((result) => {
-  const strategy = t.strategies[result.strategy as keyof typeof t.strategies];
-  if (!strategy) throw new Error(`backtests: no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
-  return {
-    name: strategy.short,
-    href: localePath(locale, backtestPath(result.slug)),
-    market: `${result.symbol} ${result.interval}`,
-    rows: SAMPLE_KEYS.map((key) => {
-      const block = result[key];
-      const m = block.metrics;
-      return {
-        sample: t.samples[key],
-        // "2025-11-18 to" and "2026-07-30": two parts, so a phone can stack them
-        rangeLead: fmt(t.range, { from: formatDay(block.first_bar), to: '' }).trim(),
-        rangeEnd: formatDay(block.last_bar),
-        trades: formatCount(m.trades),
-        winRate: formatPct(m.win_rate_pct) ?? na,
-        avgR: formatSigned(m.avg_r) ?? na,
-        tStat: formatSigned(m.t_stat) ?? na,
-        maxDrawdown: formatPct(m.max_drawdown_pct) ?? na,
-        verdict: t.verdict[verdictOf(m)],
-      };
-    }),
-  };
-});
-
 const n = formatCount(results.length);
 const head = fmt(results.every(lostInBothSamples) ? x.headAllLost : x.head, { n });
 const caption = results.every((r) => !r.costs.funding_modelled) ? x.caption : x.captionPlain;
+
+// --- the four summary figures, counted from the result files ---------------
+const sum = (values: number[]) => values.reduce((a, b) => a + b, 0);
+const lostOutOfSample = results.filter((r) => {
+  const value = r.out_of_sample.metrics.total_return_pct;
+  return value !== null && value < 0;
+}).length;
+const tradesIn = sum(results.map((r) => r.in_sample.metrics.trades));
+const tradesOut = sum(results.map((r) => r.out_of_sample.metrics.trades));
+// The data period: from the earliest first bar to the end of the latest last bar.
+const byTime = (a: string, b: string) => Date.parse(a) - Date.parse(b);
+const firstBar = results.map((r) => r.data.first_bar).sort(byTime)[0];
+const lastBar = results.map((r) => r.data.last_bar).sort(byTime).at(-1) as string;
+const periodEnd = results.map((r) => exclusiveEnd(r.data.last_bar, r.interval)).sort(byTime).at(-1) as string;
+const days = Math.round((Date.parse(periodEnd) - Date.parse(firstBar)) / 86_400_000);
+const markets = [...new Set(results.map((r) => `${r.symbol} ${r.interval}`))];
+
+const summary: Array<{ label: string; value: string; unit?: string; note: string }> = [
+  { label: x.summary.strategies, value: n, note: markets.join(', ') },
+  { label: x.summary.oosLost, value: `${formatCount(lostOutOfSample)} / ${n}`, note: x.summary.oosLostNote },
+  {
+    label: x.summary.trades,
+    value: formatCount(tradesIn + tradesOut),
+    note: fmt(x.summary.tradesNote, { is: formatCount(tradesIn), oos: formatCount(tradesOut) }),
+  },
+  {
+    label: x.summary.period,
+    value: formatCount(days),
+    unit: x.summary.days,
+    note: fmt(t.range, { from: formatDay(firstBar), to: formatDay(lastBar) }),
+  },
+];
 
 // The rule, in the order verdict.ts checks it.
 const thresholds = {
@@ -75,17 +87,16 @@ const thresholds = {
 const ORDER: VerdictCode[] = ['insufficient', 'not-computable', 'loss-clear', 'gain-clear', 'no-difference'];
 const rule = ORDER.map((code) => ({ condition: fmt(x.conditions[code], thresholds), verdict: t.verdict[code] }));
 
-const jsonLd = breadcrumbLd(locale, [
+const trail = [
   { name: c.breadcrumb.home, path: '/' },
   { name: t.crumb, path: PATH },
-]);
+];
+const jsonLd = breadcrumbLd(locale, trail);
 ---
 
 <Base locale={locale} path={PATH} title={x.title} description={x.description} jsonLd={jsonLd}>
-  <section class="read">
-    <div class="wrap">
-      <h1 class="head">{head}</h1>
-      <p class="sub">{x.sub}</p>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={head} lede={x.sub} breadcrumb={trail}>
       <Cta
         locale={locale}
         pageType="backtest"
@@ -93,166 +104,113 @@ const jsonLd = breadcrumbLd(locale, [
         primary={{ label: x.primary, href: localePath(locale, '/bot/#quickstart') }}
         secondary={{ label: x.secondary, href: REPO_URL }}
       />
+    </PageHeader>
+    <div class="cards cols-4 bt-summary" role="group" aria-label={x.summary.label}>
+      {summary.map((item) => <MetricCard label={item.label} value={item.value} unit={item.unit} note={item.note} />)}
     </div>
-  </section>
+  </PageContainer>
 
-  <section class="verdict">
-    <div class="wrap">
-      <h2 class="section-head">{x.tableHead}</h2>
-      <div class="tw">
-        <table>
+  <PageContainer flush>
+    <SectionHeader title={x.tableHead} desc={caption} />
+    <div class="bt-grid">
+      {results.map((result) => <StrategyCard locale={locale} result={result} />)}
+    </div>
+  </PageContainer>
+
+  <PageContainer band>
+    <SectionHeader title={x.readHead} />
+    <div class="bt-read">
+      <div id="verdict-rule">
+        <h3 class="h-card">{x.ruleHead}</h3>
+        <DataTable locale={locale} label={x.ruleHead} class="bt-on-surface">
           <thead>
             <tr>
-              <th scope="col" class="pin">{t.columns.sample}</th>
-              <th scope="col">{t.columns.trades}</th>
-              <th scope="col">{t.columns.winRate}</th>
-              <th scope="col">{t.columns.avgR}</th>
-              <th scope="col">{t.columns.t}</th>
-              <th scope="col">{t.columns.maxDrawdown}</th>
-              <th scope="col" class="l">{t.columns.verdict}</th>
+              <th scope="col">{x.condition}</th>
+              <th scope="col" class="bt-l">{t.columns.verdict}</th>
             </tr>
           </thead>
-          {
-            groups.map((group) => (
-              <tbody>
-                <tr class="group">
-                  <th scope="rowgroup" colspan="7">
-                    <span class="name">
-                      <a class="lnk" href={group.href}>
-                        {group.name}
-                      </a>
-                      <span class="num">{group.market}</span>
-                    </span>
-                  </th>
+          <tbody>
+            {
+              rule.map((line) => (
+                <tr>
+                  <td>{line.condition}</td>
+                  <td class="bt-l">{line.verdict}</td>
                 </tr>
-                {group.rows.map((row) => (
-                  <tr>
-                    <th scope="row" class="pin">
-                      {row.sample}
-                      <span class="when">
-                        <span>{row.rangeLead}</span>{' '}<span>{row.rangeEnd}</span>
-                      </span>
-                    </th>
-                    <td class="num">{row.trades}</td>
-                    <td class="num">{row.winRate}</td>
-                    <td class="num">{row.avgR}</td>
-                    <td class="num">{row.tStat}</td>
-                    <td class="num">{row.maxDrawdown}</td>
-                    <td class="l">{row.verdict}</td>
-                  </tr>
-                ))}
-              </tbody>
-            ))
-          }
-        </table>
+              ))
+            }
+          </tbody>
+        </DataTable>
       </div>
-      <p class="fine">{caption}</p>
-    </div>
-  </section>
-
-  <section class="read">
-    <div class="wrap rows">
-      <div>
-        <h2>{x.rHead}</h2>
-        <div class="prose">
+      <div class="bt-defs">
+        <div>
+          <h3 class="h-card">{x.rHead}</h3>
           <p>{x.rBody}</p>
         </div>
-      </div>
-      <div id="verdict-rule">
-        <h2>{x.ruleHead}</h2>
-        <div class="prose">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">{x.condition}</th>
-                <th scope="col" class="l">{t.columns.verdict}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                rule.map((line) => (
-                  <tr>
-                    <td>{line.condition}</td>
-                    <td class="l">{line.verdict}</td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div>
-        <h2>{x.tHead}</h2>
-        <div class="prose">
+        <div>
+          <h3 class="h-card">{x.tHead}</h3>
           <p>{x.tBody}</p>
         </div>
       </div>
     </div>
-  </section>
-
-  <style>
-    .tw {
-      margin-top: var(--space-lg);
-    }
-
-    .l {
-      text-align: left;
-    }
-
-    .verdict th,
-    .verdict td {
-      vertical-align: top;
-      white-space: nowrap;
-    }
-
-    /* The sample name stays in view while the figures scroll sideways, and so
-       does the strategy name in the row above each pair. */
-    .verdict .pin {
-      position: sticky;
-      left: 0;
-      background: var(--color-ink);
-    }
-
-    .group th {
-      padding-block: var(--space-md) 0;
-      border-bottom: 0;
-    }
-
-    .group .name {
-      position: sticky;
-      left: var(--space-xs);
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0 var(--space-md);
-      font-weight: 400;
-    }
-
-    .group .lnk {
-      font-size: var(--text-lg);
-      font-weight: 800;
-    }
-
-    .when {
-      display: block;
-      font-weight: 400;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .when span {
-      white-space: nowrap;
-    }
-
-    @media (max-width: 760px) {
-      /* Two lines for the dates, so the figures get the room. */
-      .when span {
-        display: block;
-      }
-    }
-
-    /* The rule table sits in a text column: keep it a table, let it wrap. */
-    .prose table {
-      display: table;
-    }
-  </style>
+  </PageContainer>
 </Base>
+
+<style>
+  .bt-summary {
+    margin-top: var(--space-12);
+  }
+
+  /* One card a strategy. Each holds a three-column table, so a card is never
+     narrower than that table: two across from 860px, three from 1260px. */
+  .bt-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 860px) {
+    .bt-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1260px) {
+    .bt-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* The rule on the left, the two definitions it relies on beside it. */
+  .bt-read {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .bt-read h3 {
+    margin-bottom: var(--space-3);
+  }
+
+  .bt-defs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .bt-defs p {
+    max-width: 52ch;
+    color: var(--color-text-secondary);
+  }
+
+  .bt-l {
+    text-align: left;
+    white-space: normal;
+  }
+
+  @media (max-width: 860px) {
+    .bt-read {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
