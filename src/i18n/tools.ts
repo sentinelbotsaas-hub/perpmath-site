@@ -25,6 +25,10 @@ export const tools = defineStrings({
         name: 'Position planning',
         desc: 'Settle the leverage and the size before you open.',
       },
+      performance: {
+        name: 'Costs and performance',
+        desc: 'What a position cost, what a trade left, and what a record of returns can say.',
+      },
     },
     // One worked result per card, computed at build time by the calc library
     // from the same starting values as the calculator page.
@@ -50,6 +54,21 @@ export const tools = defineStrings({
         label: 'Gain needed to recover',
         value: '{needed}',
       },
+      'dca-calculator': {
+        setup: '{lev}x long in {n} fills, from {first} down to {last}',
+        label: 'Average entry price',
+        value: '{avg} USDT',
+      },
+      'crypto-profit-calculator': {
+        setup: '{lev}x long, {qty} BTC from {entry} to {exit}',
+        label: 'Net P&L after fees and funding',
+        value: '{net} USDT',
+      },
+      'sharpe-ratio-calculator': {
+        setup: '{n} monthly returns, 95% interval {low} to {high}',
+        label: 'Annualised Sharpe ratio',
+        value: '{annual}',
+      },
     },
     plannedHead: 'In development',
     plannedNote: 'These are not built yet, and there is no date for them. They have no page until they work.',
@@ -70,6 +89,10 @@ export const tools = defineStrings({
       planning: {
         name: '倉位規劃',
         desc: '開倉之前，先決定開幾倍、開多大。',
+      },
+      performance: {
+        name: '績效與成本',
+        desc: '部位的平均成本、一筆單實際剩多少，以及一段報酬紀錄能說明什麼。',
       },
     },
     exampleTag: '範例',
@@ -93,6 +116,21 @@ export const tools = defineStrings({
         setup: '回撤 {lost} 之後',
         label: '回本需要的報酬',
         value: '{needed}',
+      },
+      'dca-calculator': {
+        setup: '做多 {lev} 倍，從 {first} 到 {last} 分 {n} 筆進場',
+        label: '平均進場價',
+        value: '{avg} USDT',
+      },
+      'crypto-profit-calculator': {
+        setup: '做多 {lev} 倍，{qty} BTC，從 {entry} 到 {exit}',
+        label: '扣掉手續費和資金費的淨損益',
+        value: '{net} USDT',
+      },
+      'sharpe-ratio-calculator': {
+        setup: '{n} 個月報酬，95% 區間 {low} 到 {high}',
+        label: '年化夏普值',
+        value: '{annual}',
       },
     },
     plannedHead: '開發中',

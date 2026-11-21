@@ -1,0 +1,479 @@
+---
+// Futures profit calculator. One file serves all three locales.
+// The interactive part is src/scripts/profit-calculator.ts; everything on
+// this page is also correct with scripting off (it shows worked example 1).
+import Cta from '../../../../components/Cta.astro';
+import Field from '../../../../components/Field.astro';
+import Segmented from '../../../../components/Segmented.astro';
+import CalculatorShell from '../../../../components/calc/CalculatorShell.astro';
+import DocSection from '../../../../components/calc/DocSection.astro';
+import ExampleBlock from '../../../../components/calc/ExampleBlock.astro';
+import RelatedTools from '../../../../components/calc/RelatedTools.astro';
+import ResultFlag from '../../../../components/calc/ResultFlag.astro';
+import ScaleBars from '../../../../components/calc/ScaleBars.astro';
+import SliderField from '../../../../components/calc/SliderField.astro';
+import { splitFigure } from '../../../../components/calc/calc-ui';
+import { profitView, ratePercent, showQuantity, typedPrice } from '../../../../components/calc/profit-view';
+import { signed, signedPercent } from '../../../../components/calc/signed';
+import { ASSUMED_FEE_PCT, PROFIT_START } from '../../../../components/calc/starting-values';
+import Accordion from '../../../../components/ui/Accordion.astro';
+import DataFreshness from '../../../../components/ui/DataFreshness.astro';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import FormulaBlock from '../../../../components/ui/FormulaBlock.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../../components/ui/PageHeader.astro';
+import { common } from '../../../../i18n/common';
+import { localePath, localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { profit as strings } from '../../../../i18n/profit';
+import { toolIndex } from '../../../../i18n/tool-index';
+import { calc } from '../../../../i18n/tools';
+import Base from '../../../../layouts/Base.astro';
+import { roundToTick } from '../../../../lib/calc/liquidation';
+import type { Side } from '../../../../lib/calc/liquidation';
+import { MAX_FUNDING_PERIODS, profit } from '../../../../lib/calc/profit';
+import type { ProfitSizeUnit } from '../../../../lib/calc/profit';
+import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../../lib/fmt';
+import { latestReport } from '../../../../lib/market/store';
+import { BTCUSDT, snapshotDate, tierOne } from '../../../../lib/risk-limit';
+import { pageExists } from '../../../../lib/routes';
+import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const c = common[locale];
+const ui = calc[locale];
+const PATH = '/tools/crypto-profit-calculator/';
+const FUNDING_PATH = '/data/funding-rate/';
+
+// Exchange parameters come from the snapshot, never from a constant here.
+const tier = tierOne(BTCUSDT);
+const mmr = tier.maintenanceMargin;
+const cap = tier.maxLeverage;
+const tick = BTCUSDT.tickSize;
+const decimals = tickDecimals(tick);
+const date = snapshotDate(BTCUSDT);
+const limit = formatNumber(tier.riskLimitValue);
+const mmrPct = formatPercent(mmr);
+const price = (n: number) => formatNumber(roundToTick(n, tick), decimals);
+const money = (n: number) => formatNumber(n, 2);
+
+// The settlement interval and the latest settled rate are market data, read
+// from the daily report; the rate in the form is an example the reader replaces.
+const market = latestReport('BTCUSDT');
+const fundingNow = fmt(t.fundingNow, {
+  hours: market.instrument.fundingIntervalHours,
+  day: market.reportDate,
+  rate: ratePercent(market.funding.latest.rate),
+});
+
+// The fee per side is the one assumption the calculators share (ASSUMED_FEE_PCT, in percent).
+const feeRate = ASSUMED_FEE_PCT / 100;
+const feePct = ratePercent(feeRate);
+
+interface Trade {
+  side: Side;
+  entry: number;
+  exit: number;
+  unit: ProfitSizeUnit;
+  size: number;
+  lev: number;
+  fundingPct: number;
+  periods: number;
+}
+
+function solve(trade: Trade) {
+  const r = profit({
+    side: trade.side,
+    entryPrice: trade.entry,
+    exitPrice: trade.exit,
+    sizeUnit: trade.unit,
+    size: trade.size,
+    leverage: trade.lev,
+    feeRate,
+    fundingRate: trade.fundingPct / 100,
+    fundingPeriods: trade.periods,
+    mmr,
+    maxLeverage: cap,
+  });
+  if (!r.ok || r.liquidatedBeforeExit) throw new Error('Worked example is invalid');
+  const vars = {
+    lev: trade.lev,
+    periods: trade.periods,
+    qty: showQuantity(r.quantity),
+    entry: typedPrice(trade.entry),
+    exit: typedPrice(trade.exit),
+    fee: feePct,
+    rate: ratePercent(trade.fundingPct / 100),
+    notional: money(r.notional),
+    margin: money(r.margin),
+    gross: signed(r.grossPnl),
+    feeAmount: money(r.roundTripFee),
+    fundingAbs: money(Math.abs(r.funding)),
+    fundingSign: r.funding < 0 ? '−' : '+',
+    net: signed(r.netPnl),
+    roi: signedPercent(r.netReturnOnMargin),
+    roiNotional: signedPercent(r.netReturnOnNotional),
+    costsAbs: money(Math.abs(r.costs)),
+    liq: price(r.liquidationPrice),
+  };
+  return { trade, r, vars };
+}
+
+// Example 1 is also the starting state, and what a reader without JavaScript sees.
+const defaults = PROFIT_START;
+const first = solve({
+  side: defaults.side,
+  entry: defaults.entry,
+  exit: defaults.exit,
+  unit: 'quantity',
+  size: defaults.qty,
+  lev: defaults.lev,
+  fundingPct: defaults.fundingPct,
+  periods: defaults.periods,
+});
+const second = solve({ side: 'short', entry: 68000, exit: 69500, unit: 'margin', size: 500, lev: 20, fundingPct: 0.01, periods: 6 });
+// The result sentences of the two examples are written for these outcomes.
+if (!(first.r.netPnl > 0 && first.r.funding < 0)) throw new Error('Worked example 1 changed meaning');
+if (!(second.r.netPnl < 0 && second.r.funding > 0)) throw new Error('Worked example 2 changed meaning');
+// The margin field of the starting state has to describe the same position as its quantity field.
+if (Math.abs(first.r.margin - defaults.margin) > 1e-9) throw new Error('PROFIT_START: margin and quantity disagree');
+
+const lines = (keys: string[], vars: Record<string, string | number>) => keys.map((line) => fmt(line, vars)).join('\n');
+const ex1 = {
+  title: fmt(t.examples.first, first.vars),
+  setup: fmt(t.examples.setupQuantity, first.vars),
+  working: lines(
+    [
+      t.examples.workNotional,
+      t.examples.workMargin,
+      t.examples.workGrossLong,
+      t.examples.workFee,
+      t.examples.workFundingPaid,
+      t.examples.workNet,
+      t.examples.workRoi,
+    ],
+    first.vars,
+  ),
+  result: fmt(t.examples.resultWin, first.vars),
+};
+const ex2 = {
+  title: t.examples.second,
+  setup: fmt(t.examples.setupMargin, second.vars),
+  working: lines(
+    [
+      t.examples.workNotionalMargin,
+      t.examples.workQuantity,
+      t.examples.workGrossShort,
+      t.examples.workFee,
+      t.examples.workFundingReceived,
+      t.examples.workNet,
+      t.examples.workRoi,
+    ],
+    second.vars,
+  ),
+  result: fmt(t.examples.resultLoss, second.vars),
+};
+
+const view = profitView(first.r, { entry: defaults.entry, exit: defaults.exit, leverage: defaults.lev, tick }, t.ui);
+const startFigure = splitFigure(view.figure);
+
+const MANY_PERIODS = 90;
+const mistakeVars = {
+  ...first.vars,
+  move: signedPercent(first.r.priceChange),
+  grossRoi: signedPercent(first.r.grossReturnOnMargin),
+  feeRoi: formatPercent(first.r.roundTripFee / first.r.margin),
+  manyPeriods: MANY_PERIODS,
+  fundingLong: money(first.r.notional * (defaults.fundingPct / 100) * MANY_PERIODS),
+  breakEven: price(first.r.breakEvenPrice),
+};
+const termVars = { fee: feePct };
+const checkVars = { mmr: mmrPct, date };
+
+// Plain data for the browser script.
+const calcData = JSON.stringify({
+  tick,
+  maxLeverage: cap,
+  tierLimit: tier.riskLimitValue,
+  mmr,
+  maxPeriods: MAX_FUNDING_PERIODS,
+  strings: t.ui,
+});
+
+// The same trail for the visible breadcrumb and for JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+  { name: toolIndex[locale]['crypto-profit-calculator'].name, path: PATH },
+];
+const jsonLd = [softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }), breadcrumbLd(locale, trail)];
+---
+
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  {/* The class carries the sign of the starting figure until the script takes over. */}
+  <PageContainer lead class={view.figureTone ? `calc-long-form calc-pnl calc-pnl-${view.figureTone}` : 'calc-long-form calc-pnl'}>
+    <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+      <nav class="calc-jump" aria-label={ui.onThisPage}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+      </nav>
+    </PageHeader>
+
+    <CalculatorShell
+      locale={locale}
+      data={calcData}
+      label={t.result.label}
+      figure={startFigure.value}
+      unit={startFigure.unit}
+      tightUnit={startFigure.tight}
+      sentence={view.sentence}
+    >
+      <Fragment slot="inputs">
+        <Segmented
+          name="side"
+          class="calc-wide"
+          label={t.fields.side}
+          value={defaults.side}
+          options={[
+            { value: 'long', label: t.fields.long },
+            { value: 'short', label: t.fields.short },
+          ]}
+        />
+        <Field id="entry" label={t.fields.entry} unit="USDT" value={defaults.entry} />
+        <Field id="exit" label={t.fields.exit} unit="USDT" value={defaults.exit} />
+        <Segmented
+          name="unit"
+          class="calc-wide"
+          label={t.fields.unit}
+          value={defaults.unit}
+          options={[
+            { value: 'quantity', label: t.fields.unitQuantity },
+            { value: 'margin', label: t.fields.unitMargin },
+          ]}
+        />
+        <div class="calc-wide" data-unit="quantity">
+          <Field id="qty" label={t.fields.quantity} unit="BTC" value={defaults.qty} />
+        </div>
+        <div class="calc-wide" data-unit="margin" hidden>
+          <Field id="margin" label={t.fields.margin} unit="USDT" value={defaults.margin} />
+        </div>
+        <SliderField
+          id="lev"
+          class="calc-wide"
+          label={t.fields.leverage}
+          unit={t.fields.leverageUnit}
+          value={defaults.lev}
+          min={1}
+          max={cap}
+          sliderLabel={fmt(ui.slider, { label: t.fields.leverage })}
+          valueText={t.ui.levText}
+          minText={fmt(t.ui.levText, { value: 1 })}
+          maxText={fmt(t.ui.levText, { value: cap })}
+        />
+        <Field id="funding" label={t.fields.fundingRate} unit="%" value={defaults.fundingPct} hint={t.fields.fundingHint} />
+        <Field
+          id="periods"
+          label={t.fields.periods}
+          unit={t.fields.periodsUnit}
+          value={defaults.periods}
+          inputmode="numeric"
+          hint={t.fields.periodsHint}
+        />
+        <Accordion summary={ui.advanced} id="calc-advanced">
+          <div class="calc-fields">
+            <Field
+              id="fee"
+              class="calc-wide"
+              label={t.fields.fee}
+              unit="%"
+              value={ASSUMED_FEE_PCT}
+              hint={fmt(t.fields.feeHint, { fee: feePct })}
+            />
+          </div>
+        </Accordion>
+      </Fragment>
+
+      <Fragment slot="after-inputs">
+        <p class="fine">
+          {fundingNow}
+          {pageExists(FUNDING_PATH) && <a href={localePath(locale, FUNDING_PATH)}>{t.fundingLink}</a>}
+        </p>
+        <noscript><p class="fine">{t.noscript}</p></noscript>
+      </Fragment>
+
+      <Fragment slot="flags">
+        <ResultFlag id="calc-tier" />
+      </Fragment>
+
+      <ScaleBars
+        slot="viz"
+        id="calc-bars"
+        a={view.bars.a}
+        b={view.bars.b}
+        aLabel={t.ui.grossBar}
+        aValue={view.bars.aValue}
+        aTone={view.bars.aTone}
+        bLabel={t.ui.costBar}
+        bValue={view.bars.bValue}
+        bTone={view.bars.bTone}
+        caption={view.bars.caption}
+      />
+
+      <Fragment slot="metrics">
+        <table class="calc-kv">
+          <caption class="visually-hidden">{t.result.caption}</caption>
+          <tbody>
+            <tr>
+              <th scope="row">{t.result.gross}</th>
+              <td class="num toned" id="out-gross" data-tone={view.gross.tone}>{view.gross.text}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.fee}</th>
+              <td class="num toned" id="out-fee" data-tone={view.fee.tone}>{view.fee.text}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.funding}</th>
+              <td class="num toned" id="out-funding" data-tone={view.funding.tone}>{view.funding.text}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.roiMargin}</th>
+              <td class="num toned" id="out-roi-margin" data-tone={view.roiMargin.tone}>{view.roiMargin.text}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.roiNotional}</th>
+              <td class="num toned" id="out-roi-notional" data-tone={view.roiNotional.tone}>{view.roiNotional.text}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.breakEven}</th>
+              <td class="num" id="out-break-even">{view.breakEven}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.quantity}</th>
+              <td class="num" id="out-quantity">{view.quantity}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.notional}</th>
+              <td class="num" id="out-notional">{view.notional}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.margin}</th>
+              <td class="num" id="out-margin">{view.margin}</td>
+            </tr>
+            <tr>
+              <th scope="row" id="out-liq-label">{view.liqLabel}</th>
+              <td class="num" id="out-liq">{view.liq}</td>
+            </tr>
+          </tbody>
+        </table>
+      </Fragment>
+
+      <Fragment slot="assumptions">
+        <ul class="calc-assume">
+          {t.assumptions.map((line) => <li>{fmt(line, { fee: feePct })}</li>)}
+          <li>{fmt(t.assumption, { mmr: mmrPct, limit, date })}</li>
+          <li>{c.ui.estimate}</li>
+        </ul>
+        <DataFreshness locale={locale} date={date} source={ui.source} />
+      </Fragment>
+
+      <Cta
+        slot="cta"
+        locale={locale}
+        pageType="tool"
+        position="result"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+      />
+    </CalculatorShell>
+  </PageContainer>
+
+  <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+    <p>{t.formula.intro}</p>
+    <FormulaBlock formula={t.formula.lines.join('\n')} />
+    <dl class="calc-terms">
+      {
+        t.formula.terms.map((item) => (
+          <div>
+            <dt>{item.term}</dt>
+            <dd>{fmt(item.text, termVars)}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p>{fmt(t.formula.check, checkVars)}</p>
+    <Disclaimer locale={locale} kind="info" title={ui.leftOut}>
+      <p>{t.formula.leftOut}</p>
+    </Disclaimer>
+  </DocSection>
+
+  <DocSection id="worked-examples" title={t.toc.examples}>
+    <div class="calc-pair">
+      {[ex1, ex2].map((ex) => <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />)}
+    </div>
+  </DocSection>
+
+  <DocSection id="common-mistakes" title={t.toc.mistakes}>
+    <ul class="calc-mistakes">
+      {
+        t.mistakes.map((m) => (
+          <li>
+            <h3>{m.title}</h3>
+            <p>{fmt(m.text, mistakeVars)}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </DocSection>
+
+  <RelatedTools locale={locale} current="crypto-profit-calculator" allLabel={t.allTools} />
+
+  <script>
+    import '../../../../scripts/profit-calculator.ts';
+  </script>
+</Base>
+
+<style is:global>
+  /* This form is taller than a laptop screen. A pinned column has to fit on
+     screen (CalculatorShell pins both), so the inputs scroll with the page
+     here; otherwise the last fields could only be reached after scrolling
+     past the whole result. */
+  @media (min-width: 960px) {
+    .calc-long-form .calc-inputs {
+      position: static;
+    }
+  }
+
+  /* A signed figure in the result table takes the colour of its sign; the
+     sign itself is printed, so the colour only repeats it. */
+  .calc-kv td.toned[data-tone] {
+    color: var(--tone);
+  }
+
+  /* The net P&L takes the colour of its sign; the sign itself is printed.
+     Before the script runs the section's class says which; afterwards the
+     figure carries data-tone. */
+  .calc-pnl-positive #calc-figure:not([data-live]) {
+    color: var(--color-positive);
+  }
+
+  .calc-pnl-negative #calc-figure:not([data-live]) {
+    color: var(--color-negative);
+  }
+
+  .calc-pnl #calc-figure[data-live][data-tone] {
+    color: var(--tone);
+  }
+
+  .calc-pnl .calc-inputs .fine a {
+    display: inline-block;
+    color: var(--color-text-secondary);
+  }
+</style>

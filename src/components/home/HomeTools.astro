@@ -12,6 +12,11 @@
 // The drawdown card is the one exception: it keeps that page's first worked
 // example (30%), because the section right under this one is about 50%.
 import { ASSUMED_FEE_PCT, LEVERAGE_START, LIQUIDATION_START, POSITION_START } from '../calc/starting-values';
+import { DCA_START, PROFIT_START, SHARPE_START } from '../calc/starting-values';
+import { dcaFormat } from '../calc/dca-view';
+import { showQuantity, typedPrice } from '../calc/profit-view';
+import { ratio } from '../calc/sharpe-view';
+import { signed } from '../calc/signed';
 import { TOOL_ICON } from '../calc/tool-meta';
 import SectionHeader from '../ui/SectionHeader.astro';
 import ToolCard from '../ui/ToolCard.astro';
@@ -20,10 +25,13 @@ import { localePath } from '../../i18n/config';
 import type { Locale } from '../../i18n/config';
 import { home } from '../../i18n/home';
 import type { ToolSlug } from '../../i18n/tool-index';
+import { dca } from '../../lib/calc/dca';
 import { drawdown } from '../../lib/calc/drawdown';
 import { floorTo, maxLeverage } from '../../lib/calc/leverage';
 import { liquidationPrice, roundToTick } from '../../lib/calc/liquidation';
 import { positionSize } from '../../lib/calc/position-size';
+import { profit } from '../../lib/calc/profit';
+import { sharpe } from '../../lib/calc/sharpe';
 import { fmt, formatNumber, formatPercent, tickDecimals } from '../../lib/fmt';
 import { BTCUSDT, tierOne } from '../../lib/risk-limit';
 import { getTools } from '../../lib/tools';
@@ -109,6 +117,57 @@ const examples: Partial<Record<ToolSlug, () => Example>> = {
       given: fmt(t.examples['drawdown-calculator'].given, { lost: formatPercent(r.drawdown, 0) }),
       // The unit string carries the percent sign.
       value: formatNumber(r.recoveryGain * 100, 2),
+    };
+  },
+  'dca-calculator': () => {
+    const s = DCA_START;
+    const r = dca({ fills: s.fills, sizeUnit: 'quantity', futures: { side: s.side, leverage: s.lev, mmr, maxLeverage: cap } });
+    if (!r.ok || !r.futures || r.futures.liquidatedBeforeFill !== null) throw invalid('dca-calculator');
+    const f = dcaFormat('futures', tick);
+    return {
+      given: fmt(t.examples['dca-calculator'].given, {
+        lev: s.lev,
+        n: r.steps.length,
+        first: f.typed(r.firstPrice),
+        last: f.typed(r.lastPrice),
+      }),
+      value: f.average(r.averagePrice),
+    };
+  },
+  'crypto-profit-calculator': () => {
+    const s = PROFIT_START;
+    const r = profit({
+      side: s.side,
+      entryPrice: s.entry,
+      exitPrice: s.exit,
+      sizeUnit: 'quantity',
+      size: s.qty,
+      leverage: s.lev,
+      feeRate: ASSUMED_FEE_PCT / 100,
+      fundingRate: s.fundingPct / 100,
+      fundingPeriods: s.periods,
+      mmr,
+      maxLeverage: cap,
+    });
+    if (!r.ok || r.liquidatedBeforeExit) throw invalid('crypto-profit-calculator');
+    return {
+      given: fmt(t.examples['crypto-profit-calculator'].given, {
+        lev: s.lev,
+        qty: showQuantity(r.quantity),
+        entry: typedPrice(s.entry),
+        exit: typedPrice(s.exit),
+      }),
+      // After fees and funding; the sign is part of the figure.
+      value: signed(r.netPnl),
+    };
+  },
+  'sharpe-ratio-calculator': () => {
+    const s = SHARPE_START;
+    const r = sharpe({ returns: s.returns.map((v) => v / 100), riskFreeRate: s.rf / 100, periodsPerYear: s.periods });
+    if (!r.ok) throw invalid('sharpe-ratio-calculator');
+    return {
+      given: fmt(t.examples['sharpe-ratio-calculator'].given, { n: r.count }),
+      value: ratio(r.annualizedSharpe),
     };
   },
 };

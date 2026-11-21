@@ -23,3 +23,43 @@ export const ASSUMED_FEE_PCT = 0.055;
 
 /** Drawdown calculator: a 50% drawdown; the streak mode starts at 10 losses of 2%. */
 export const DRAWDOWN_START = { mode: 'drawdown', dd: 50, n: 10, risk: 2 };
+
+/** DCA calculator: a 10x long, added to twice on the way down (worked example 1). */
+export const DCA_START = {
+  mode: 'futures',
+  unit: 'quantity',
+  side: 'long' as Side,
+  lev: 10,
+  fills: [
+    { price: 68000, size: 0.01 },
+    { price: 64000, size: 0.01 },
+    { price: 62000, size: 0.02 },
+  ],
+};
+
+/**
+ * Futures profit calculator: a 10x long of 0.1 BTC held through three funding
+ * settlements (worked example 1). The funding rate is an illustration, in
+ * percent per settlement; real rates are on /data/funding-rate/.
+ */
+export const PROFIT_START = {
+  side: 'long' as Side,
+  entry: 68000,
+  exit: 70000,
+  unit: 'quantity',
+  qty: 0.1,
+  margin: 680,
+  lev: 10,
+  fundingPct: 0.01,
+  periods: 3,
+};
+
+/**
+ * Sharpe ratio calculator: twelve monthly returns in percent (worked example
+ * 1). An illustration, not the record of any account or strategy.
+ */
+export const SHARPE_START = {
+  returns: [3.2, -1.5, 4.1, 0.8, -2.7, 5.0, 1.9, -0.6, 2.4, -3.1, 3.6, 1.1],
+  rf: 0,
+  periods: 12,
+};

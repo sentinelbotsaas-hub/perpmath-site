@@ -1,0 +1,243 @@
+---
+// An estimate and the interval around it, drawn on one linear axis that
+// always contains 0. The Sharpe ratio calculator uses it: the band is the 95%
+// interval of the annualised Sharpe ratio, the dot is the estimate, and the
+// upright line is zero.
+//
+//   <IntervalAxis id="calc-span" title={t.result.axis}
+//                 low={-0.52} high={3.58} point={1.53}
+//                 bandLabel="95% interval" range="−0.52 to 3.58"
+//                 pointLabel="Estimate" value="1.53" zeroLabel="Zero"
+//                 caption="..." />
+//
+// The three marks differ in shape (a band, a dot, a line) and each is named in
+// the key under the axis, so the picture does not depend on colour. It is
+// hidden from screen readers; the caption says the same in words.
+// To redraw from a script: updateIntervalAxis() in interval-axis.ts.
+import { intervalTicksHtml, layoutInterval } from './interval-axis';
+
+interface Props {
+  id: string;
+  /** What the axis measures, printed above it. */
+  title: string;
+  low: number;
+  high: number;
+  point: number;
+  bandLabel: string;
+  /** The interval as text: "−0.52 to 3.58". */
+  range: string;
+  pointLabel: string;
+  /** The estimate as text. */
+  value: string;
+  zeroLabel: string;
+  /** The sentence under the axis; also its text alternative. */
+  caption: string;
+  class?: string;
+}
+
+const { id, title, low, high, point, bandLabel, range, pointLabel, value, zeroLabel, caption, class: className } = Astro.props;
+const layout = layoutInterval({ low, high, point });
+---
+
+<figure class:list={['calc-span', className]} id={id} data-state={layout.ok ? 'ready' : 'empty'}>
+  <div class="calc-span-plot" aria-hidden="true">
+    <p class="calc-span-title">{title}</p>
+    <div class="calc-span-track">
+      <span class="calc-span-band" data-span="band" style={`--from:${layout.from.toFixed(5)};--to:${layout.to.toFixed(5)}`}></span>
+      <span class="calc-span-mark calc-span-zero" data-span="zero" style={`--at:${layout.zero.toFixed(5)}`}><span></span></span>
+      <span class="calc-span-mark calc-span-point" data-span="point" style={`--at:${layout.point.toFixed(5)}`}><span></span></span>
+    </div>
+    <div
+      class="calc-span-axis"
+      data-span="ticks"
+      data-scale={layout.ok ? `${layout.min}:${layout.max}` : ''}
+      set:html={intervalTicksHtml(layout)}
+    />
+    <ul class="calc-span-key">
+      <li>
+        <span class="calc-span-key-band"></span>
+        <span>{bandLabel}</span>
+        <span class="calc-span-key-value" data-span="range">{range}</span>
+      </li>
+      <li>
+        <span class="calc-span-key-point"></span>
+        <span>{pointLabel}</span>
+        <span class="num" data-span="value">{value}</span>
+      </li>
+      <li>
+        <span class="calc-span-key-zero"></span>
+        <span>{zeroLabel}</span>
+      </li>
+    </ul>
+  </div>
+  <figcaption class="calc-span-caption" data-span="caption">{caption}</figcaption>
+</figure>
+
+<style is:global>
+  .calc-span {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    min-width: 0;
+    margin: 0;
+  }
+
+  .calc-span-plot {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    /* The mark and tick-label layers are moved sideways by a transform: keep
+       them from widening the page. The inline padding leaves room for half a
+       dot and half a tick label at either end of the axis. */
+    padding-inline: var(--space-3);
+    overflow-x: clip;
+  }
+
+  .calc-span-title {
+    margin-bottom: var(--space-3);
+    margin-inline: calc(var(--space-3) * -1);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+  }
+
+  /* The track is the whole axis; the band is the interval on it. */
+  .calc-span-track {
+    position: relative;
+    height: var(--space-8);
+  }
+
+  .calc-span-track::before {
+    content: "";
+    position: absolute;
+    inset: var(--space-3) 0;
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+
+  .calc-span-band {
+    position: absolute;
+    inset: var(--space-3) 0;
+    background: var(--color-text-secondary);
+    transform-origin: left center;
+    transform: translateX(calc(var(--from, 0) * 100%)) scaleX(calc(var(--to, 0) - var(--from, 0)));
+  }
+
+  /* A full-width layer moved by a transform carries each mark to its place. */
+  .calc-span-mark {
+    position: absolute;
+    inset: 0;
+    transform: translateX(calc(var(--at, 0) * 100%));
+    pointer-events: none;
+  }
+
+  /* Zero: an upright line through the track. */
+  .calc-span-zero > span {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--line);
+    background: var(--color-text);
+    transform: translateX(-50%);
+  }
+
+  /* The estimate: a dot, ringed so that it reads on the band. */
+  .calc-span-point > span {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: var(--space-4);
+    height: var(--space-4);
+    background: var(--color-accent);
+    border: var(--line) solid var(--color-surface);
+    border-radius: var(--radius-pill);
+    transform: translate(-50%, -50%);
+  }
+
+  .calc-span[data-state="empty"] :is(.calc-span-band, .calc-span-mark) {
+    visibility: hidden;
+  }
+
+  .calc-span-axis {
+    position: relative;
+    height: var(--space-8);
+    border-top: var(--hairline) solid var(--color-text-muted);
+  }
+
+  .calc-span-tick {
+    position: absolute;
+    top: 0;
+    left: calc(var(--at) * 100%);
+    width: var(--hairline);
+    height: var(--space-2);
+    background: var(--color-text-muted);
+  }
+
+  /* The label is centred on its tick. */
+  .calc-span-ticklabel {
+    position: absolute;
+    inset: 0;
+    transform: translateX(calc(var(--at) * 100%));
+    pointer-events: none;
+  }
+
+  .calc-span-ticklabel > span {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-50%);
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  /* The key: each mark again, with its name and its value. */
+  .calc-span-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    margin-top: var(--space-3);
+    margin-inline: calc(var(--space-3) * -1);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .calc-span-key > li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .calc-span-key :is(.num, .calc-span-key-value) {
+    color: var(--color-text);
+    font-weight: var(--weight-medium);
+  }
+
+  .calc-span-key-band {
+    flex: none;
+    width: var(--space-4);
+    height: var(--space-2);
+    background: var(--color-text-secondary);
+  }
+
+  .calc-span-key-point {
+    flex: none;
+    width: var(--space-3);
+    height: var(--space-3);
+    background: var(--color-accent);
+    border-radius: var(--radius-pill);
+  }
+
+  .calc-span-key-zero {
+    flex: none;
+    width: var(--line);
+    height: var(--space-4);
+    margin-inline: var(--space-1);
+    background: var(--color-text);
+  }
+
+  .calc-span-caption {
+    max-width: 72ch;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+</style>

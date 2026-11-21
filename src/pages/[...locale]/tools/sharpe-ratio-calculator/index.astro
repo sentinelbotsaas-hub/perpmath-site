@@ -1,0 +1,341 @@
+---
+// Sharpe ratio calculator. One file serves all three locales.
+// The interactive part is src/scripts/sharpe-calculator.ts; everything on
+// this page is also correct with scripting off (it shows worked example 1).
+import Cta from '../../../../components/Cta.astro';
+import Field from '../../../../components/Field.astro';
+import CalculatorShell from '../../../../components/calc/CalculatorShell.astro';
+import DocSection from '../../../../components/calc/DocSection.astro';
+import ExampleBlock from '../../../../components/calc/ExampleBlock.astro';
+import IntervalAxis from '../../../../components/calc/IntervalAxis.astro';
+import RelatedTools from '../../../../components/calc/RelatedTools.astro';
+import ResultFlag from '../../../../components/calc/ResultFlag.astro';
+import { percent4, ratio, sharpeView } from '../../../../components/calc/sharpe-view';
+import { trimmed } from '../../../../components/calc/signed';
+import { SHARPE_START } from '../../../../components/calc/starting-values';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import FormulaBlock from '../../../../components/ui/FormulaBlock.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../../components/ui/PageHeader.astro';
+import { common } from '../../../../i18n/common';
+import { localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { sharpe as strings } from '../../../../i18n/sharpe';
+import { toolIndex } from '../../../../i18n/tool-index';
+import { calc } from '../../../../i18n/tools';
+import Base from '../../../../layouts/Base.astro';
+import { MAX_RETURNS, MIN_SAMPLE, sharpe } from '../../../../lib/calc/sharpe';
+import { fmt, formatNumber, formatPercent } from '../../../../lib/fmt';
+import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const c = common[locale];
+const ui = calc[locale];
+const PATH = '/tools/sharpe-ratio-calculator/';
+const SOURCE_URL = 'https://doi.org/10.2469/faj.v58.n4.2453';
+
+/** A typed percentage as a number with a real minus sign: -1.5 -> "−1.5". */
+const typed = (value: number) => `${value < 0 ? '−' : ''}${trimmed(Math.abs(value), 4)}`;
+
+// One worked example: everything shown is computed by the calc library. The
+// inputs are in percent, the way they are typed.
+function solve(returnsPct: number[], rfPct: number, periods: number) {
+  const r = sharpe({ returns: returnsPct.map((v) => v / 100), riskFreeRate: rfPct / 100, periodsPerYear: periods });
+  if (!r.ok) throw new Error('Worked example is invalid');
+  const sum = returnsPct.reduce((total, v) => total + v, 0);
+  // Sum of squared distances from the mean, in percent squared: s² × (n − 1).
+  const squares = (r.standardDeviation * 100) ** 2 * (r.count - 1);
+  const vars = {
+    list: returnsPct.map(typed).join(', '),
+    rf: `${typed(rfPct)}%`,
+    periods,
+    n: r.count,
+    nm1: r.count - 1,
+    sum: `${typed(Number(sum.toFixed(6)))}%`,
+    mean: percent4(r.mean),
+    squares: formatNumber(squares, 4),
+    sd: percent4(r.standardDeviation),
+    sr: ratio(r.sharpe, 4),
+    annual: ratio(r.annualizedSharpe),
+    se: formatNumber(r.standardError, 4),
+    seAnnual: formatNumber(r.annualizedStandardError, 2),
+    low: ratio(r.annualizedInterval.low),
+    high: ratio(r.annualizedInterval.high),
+    t: ratio(r.tStatistic),
+  };
+  return { returnsPct, rfPct, periods, r, vars };
+}
+
+function example(title: string, s: ReturnType<typeof solve>) {
+  // The result sentence is written for an interval that includes zero.
+  if (s.r.distinctFromZero) throw new Error('Worked example changed meaning');
+  const lines = [
+    t.examples.workMean,
+    t.examples.workSquares,
+    t.examples.workDeviation,
+    t.examples.workSharpe,
+    t.examples.workAnnual,
+    t.examples.workError,
+    t.examples.workInterval,
+    t.examples.workT,
+  ];
+  return {
+    title,
+    setup: fmt(t.examples.setup, s.vars),
+    working: lines.map((line) => fmt(line, s.vars)).join('\n'),
+    result: fmt(t.examples.result, s.vars),
+  };
+}
+
+// Example 1 is also the starting state, and what a reader without JavaScript sees.
+const defaults = SHARPE_START;
+const first = solve(defaults.returns, defaults.rf, defaults.periods);
+const second = solve([2, -1, 3, 0, 1], 0.5, 52);
+const ex1 = example(t.examples.first, first);
+const ex2 = example(t.examples.second, second);
+
+const view = sharpeView(first.r, defaults.periods, t.ui);
+const startText = defaults.returns.join(', ');
+
+// The n version of the deviation, for the mistake about n and n − 1.
+const sdPop = first.r.standardDeviation * Math.sqrt((first.r.count - 1) / first.r.count);
+const RF_YEAR = 4;
+const mistakeVars = {
+  ...first.vars,
+  gapDays: formatPercent(1 - Math.sqrt(252 / 365)),
+  rfYear: `${RF_YEAR}%`,
+  rfDay: `${trimmed(RF_YEAR / 365, 4)}%`,
+  sdPop: percent4(sdPop),
+  srPop: ratio(first.r.excessMean / sdPop, 4),
+};
+const termVars = { gap: formatPercent(Math.sqrt(12 / 11) - 1, 1) };
+
+// Plain data for the browser script.
+const calcData = JSON.stringify({ min: MIN_SAMPLE, max: MAX_RETURNS, strings: t.ui });
+
+// The same trail for the visible breadcrumb and for JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+  { name: toolIndex[locale]['sharpe-ratio-calculator'].name, path: PATH },
+];
+const jsonLd = [softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }), breadcrumbLd(locale, trail)];
+---
+
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+      <nav class="calc-jump" aria-label={ui.onThisPage}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+      </nav>
+    </PageHeader>
+
+    <CalculatorShell
+      locale={locale}
+      data={calcData}
+      label={t.result.label}
+      figure={view.figure}
+      sentence={view.sentence}
+      state={view.state}
+    >
+      <Fragment slot="inputs">
+        <div class="field calc-wide">
+          <label class="field-label" for="returns">{t.fields.returns}</label>
+          <textarea
+            class="input calc-sharpe-returns"
+            id="returns"
+            name="returns"
+            rows="5"
+            autocomplete="off"
+            spellcheck="false"
+            aria-describedby="returns-hint returns-error">{startText}</textarea
+          >
+          <span class="field-hint" id="returns-hint">{t.fields.returnsHint}</span>
+          <span class="field-error" id="returns-error" role="alert" hidden></span>
+        </div>
+        <Field id="rf" label={t.fields.riskFree} unit="%" value={defaults.rf} hint={t.fields.riskFreeHint} />
+        <Field
+          id="periods"
+          label={t.fields.periods}
+          unit={t.fields.periodsUnit}
+          value={defaults.periods}
+          hint={t.fields.periodsHint}
+        />
+      </Fragment>
+
+      <Fragment slot="after-inputs">
+        <p class="fine">{t.exampleNote}</p>
+        <noscript><p class="fine">{t.noscript}</p></noscript>
+      </Fragment>
+
+      <Fragment slot="flags">
+        <ResultFlag id="calc-small" text={view.flag ?? ''} show={view.flag !== null} />
+      </Fragment>
+
+      <IntervalAxis
+        slot="viz"
+        id="calc-span"
+        title={t.result.axis}
+        low={view.axis.low}
+        high={view.axis.high}
+        point={view.axis.point}
+        bandLabel={t.result.band}
+        range={view.axis.range}
+        pointLabel={t.result.point}
+        value={view.axis.value}
+        zeroLabel={t.result.zero}
+        caption={view.axis.caption}
+      />
+
+      <Fragment slot="metrics">
+        <table class="calc-kv">
+          <caption class="visually-hidden">{t.result.caption}</caption>
+          <tbody>
+            <tr>
+              <th scope="row">{t.result.count}</th>
+              <td class="num" id="out-count">{view.count}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.mean}</th>
+              <td class="num toned" id="out-mean" data-tone={view.mean.tone}>{view.mean.text}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.deviation}</th>
+              <td class="num" id="out-deviation">{view.deviation}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.sharpe}</th>
+              <td class="num" id="out-sharpe">{view.sharpe}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.factor}</th>
+              <td class="num" id="out-factor">{view.factor}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.se}</th>
+              <td class="num" id="out-se">{view.se}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.interval}</th>
+              <td id="out-interval">{view.interval}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.t}</th>
+              <td class="num" id="out-t">{view.t}</td>
+            </tr>
+          </tbody>
+        </table>
+      </Fragment>
+
+      <Fragment slot="assumptions">
+        <ul class="calc-assume">
+          {t.assumptions.map((line) => <li>{line}</li>)}
+        </ul>
+      </Fragment>
+
+      <Cta
+        slot="cta"
+        locale={locale}
+        pageType="tool"
+        position="result"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+      />
+    </CalculatorShell>
+  </PageContainer>
+
+  <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+    <p>{t.formula.intro}</p>
+    <FormulaBlock formula={t.formula.lines.join('\n')} />
+    <dl class="calc-terms">
+      {
+        t.formula.terms.map((item) => (
+          <div>
+            <dt>{item.term}</dt>
+            <dd>{fmt(item.text, termVars)}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <h3>{t.formula.annualHead}</h3>
+    <p>{t.formula.annual}</p>
+    <h3>{t.formula.errorHead}</h3>
+    <p>{t.formula.errorIntro}</p>
+    <FormulaBlock formula={t.formula.errorLines.join('\n')} />
+    <p>{t.formula.errorNote}</p>
+    <p>{t.formula.years}</p>
+    <p class="calc-sharpe-source">
+      {t.formula.source}
+      <a href={SOURCE_URL} rel="noopener">{t.formula.sourceLink}</a>
+    </p>
+    <Disclaimer locale={locale} kind="info" title={ui.leftOut}>
+      <p>{t.formula.leftOut}</p>
+    </Disclaimer>
+  </DocSection>
+
+  <DocSection id="worked-examples" title={t.toc.examples}>
+    <div class="calc-pair">
+      {[ex1, ex2].map((ex) => <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />)}
+    </div>
+    <p class="fine">{t.examples.rounding}</p>
+  </DocSection>
+
+  <DocSection id="common-mistakes" title={t.toc.mistakes}>
+    <ul class="calc-mistakes">
+      {
+        t.mistakes.map((m) => (
+          <li>
+            <h3>{m.title}</h3>
+            <p>{fmt(m.text, mistakeVars)}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </DocSection>
+
+  <RelatedTools locale={locale} current="sharpe-ratio-calculator" allLabel={t.allTools} />
+
+  <script>
+    import '../../../../scripts/sharpe-calculator.ts';
+  </script>
+</Base>
+
+<style is:global>
+  /* A signed figure in the result table takes the colour of its sign; the
+     sign itself is printed, so the colour only repeats it. */
+  .calc-kv td.toned[data-tone] {
+    color: var(--tone);
+  }
+
+  /* The list of returns: the shared input look on a multi-line box, in the
+     number face. */
+  .calc-sharpe-returns {
+    display: block;
+    min-height: calc(var(--control-h) * 2.5);
+    padding-block: var(--space-3);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--leading-body);
+    resize: vertical;
+  }
+
+  .calc-sharpe-source {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .calc-sharpe-source a {
+    display: inline-block;
+    color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+  }
+</style>

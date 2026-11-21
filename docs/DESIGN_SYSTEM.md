@@ -540,6 +540,10 @@ updateRiskRuler(ruler, { entry, liquidation: NaN, side }, t.ui.cannotLiquidate);
 | `calc-ui.ts` | 四個計算機腳本共用的顯示層：結果面板、滑桿同步、進階設定、重設與複製。不含任何公式 |
 | `starting-values.ts` | 每個計算機開場的例題數值。計算機頁、工具總覽與首頁工具卡都從這裡讀 |
 | `tool-meta.ts` | 每個工具的圖示（`TOOL_ICON`）與分組 |
+| `FillsBars.astro` 與 `fills-bars.ts` | 任意幾個比例各畫一條橫條，尺度固定是 0 到 100%（DCA 計算機：每一筆佔總數量的比例）；腳本用 `updateFillsBars()` 更新 |
+| `IntervalAxis.astro` 與 `interval-axis.ts` | 一個估計值和它的區間畫在一條一定包含 0 的線性座標軸上（夏普值計算機：年化夏普值與 95% 區間）；腳本用 `updateIntervalAxis()` 更新 |
+| `signed.ts` | 帶正負號的數字：`signed()`、`signedPercent()` 印出正負號（真正的負號），`toneOf()` 給出對應的 `data-tone`。結果表裡的寫法是 `<td class="num toned" data-tone={...}>` |
+| `dca-view.ts`、`profit-view.ts`、`sharpe-view.ts` | 這三個計算機「結果怎麼變成文字與數字」的唯一一份實作，頁面（建置時）和瀏覽器腳本都呼叫它，兩邊才不會對不上。不含公式 |
 
 `src/components/Field.astro` 與 `Segmented.astro`（輸入欄位、分段控制）也屬於這一區，輸出的是「表單控制項」一節的全域 class。
 
