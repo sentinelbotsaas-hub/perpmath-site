@@ -18,7 +18,7 @@ tldr: "A liquidity sweep is a bar that trades through a prior high or low and cl
 
 A liquidity sweep is a move in which price trades through an obvious prior high or low and then fails to stay beyond it. "Liquidity" means the orders resting there. A stop-loss above a high is a buy order waiting to happen, and so is a breakout entry, so a push through the high finds plenty to trade against.
 
-It is a term from ICT and smart money trading, like the [fair value gap](/learn/fair-value-gap/). In that telling the sweep is the trap before the real move: breakout buyers get filled at the top, shorts get stopped out, and price turns. What a chart can show is narrower. A level broke and the break failed. Who did it, and whether they meant to, isn't on the chart.
+It is a term from [ICT and smart money trading](/learn/ict-trading/), like the [fair value gap](/learn/fair-value-gap/). In that telling the sweep is the trap before the real move: breakout buyers get filled at the top, shorts get stopped out, and price turns. What a chart can show is narrower. A level broke and the break failed. Who did it, and whether they meant to, isn't on the chart.
 
 ## Where do the usual definitions stop being checkable?
 

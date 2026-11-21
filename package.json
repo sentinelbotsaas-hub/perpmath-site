@@ -12,7 +12,7 @@
     "dev": "astro dev",
     "prebuild": "node scripts/gen-zh-hans.mjs",
     "build": "astro build",
-    "postbuild": "node scripts/subset-cjk.mjs --check --warn",
+    "postbuild": "node scripts/unreleased-links.mjs && node scripts/subset-cjk.mjs --check --warn",
     "fonts:cjk": "node scripts/subset-cjk.mjs",
     "fonts:check": "node scripts/subset-cjk.mjs --check",
     "preview": "astro preview",

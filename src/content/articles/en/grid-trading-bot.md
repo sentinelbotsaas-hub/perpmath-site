@@ -144,7 +144,7 @@ I went in expecting the out-of-range runs to be the disaster section, and at lev
 
 ## What does leverage do to a grid?
 
-It multiplies the pair income and the inventory loss by the same factor, and it moves the worst moment much closer to liquidation. We reran the shipped config and both range tests at leverage 3, then, when nothing was liquidated, the shipped config and the one-month test at 5 and 10. No other values were tried. The one-month rows below are its eleven-month test period; the half-period range at 3x returned +11.32% with a 7.74% drawdown.
+It multiplies the pair income and the inventory loss by the same factor, and it moves the worst moment much closer to [liquidation](/learn/what-is-liquidation/). We reran the shipped config and both range tests at leverage 3, then, when nothing was liquidated, the shipped config and the one-month test at 5 and 10. No other values were tried. The one-month rows below are its eleven-month test period; the half-period range at 3x returned +11.32% with a 7.74% drawdown.
 
 | Run | Leverage | Return | Max drawdown | Lowest equity at a bar close |
 | --- | --- | --- | --- | --- |
