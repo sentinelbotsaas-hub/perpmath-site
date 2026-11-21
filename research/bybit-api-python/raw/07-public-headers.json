@@ -1,0 +1,18 @@
+{
+ "http_status": 200,
+ "header_names": [
+  "Connection",
+  "Content-Length",
+  "Content-Type",
+  "Date",
+  "Ret_code",
+  "Server",
+  "Timenow",
+  "Traceid",
+  "Via",
+  "X-Amz-Cf-Id",
+  "X-Amz-Cf-Pop",
+  "X-Cache",
+  "x-cld-src"
+ ]
+}

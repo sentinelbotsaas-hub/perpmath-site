@@ -1,0 +1,13 @@
+{
+  "strategy": "fvg",
+  "params": {"atr_period": 14, "min_gap_atr": 0.5, "max_wait_bars": 96, "stop_buffer_atr": 0.1, "r_multiple": 2.0},
+  "live": {
+    "network": "testnet",
+    "order_notional_usdt": 100,
+    "max_position_notional_usdt": 200,
+    "max_daily_loss_usdt": 20,
+    "max_consecutive_api_errors": 5,
+    "max_clock_skew_ms": 5000,
+    "broker_id": ""
+  }
+}

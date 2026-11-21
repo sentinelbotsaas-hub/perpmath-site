@@ -1,0 +1,4 @@
+candles: 2500 rows downloaded again, identical to the saved 2500: True
+funding: 1095 rows downloaded again, identical to the saved 1095: True
+signatures with the made-up key equal the saved ones: True
+signed_headers() gives the same GET signature: True

@@ -1,0 +1,23 @@
+$ perpmath live ma_cross --symbol BTCUSDT --interval 15m --config <engine>/configs/live/ma_cross.json --dry-run --once   (perpmath 0.2.0, commit 85ee44e, no API key in the environment, run from an empty folder)
+2026-11-21T17:30:42Z perpmath live ma_cross BTCUSDT 15m | DRY RUN (no signed requests, no orders) | state .perpmath-live\ma_cross-BTCUSDT-15m-a690e4-dryrun.json
+2026-11-21T17:30:42Z limits: order 100 USDT, max position 200 USDT, max daily loss 20 USDT, max 5 consecutive API errors, max clock skew 5000 ms
+2026-11-21T17:30:42Z clock offset to Bybit: 897 ms (request timestamps and bar timing use Bybit's clock)
+2026-11-21T17:30:42Z bar 2026-11-21T17:15:00Z close 59660.0: no entry
+exit code 0
+
+state file it wrote (.perpmath-live/ma_cross-BTCUSDT-15m-a690e4-dryrun.json):
+{
+  "consecutive_api_errors": 0,
+  "day": null,
+  "dry_run": true,
+  "halt": null,
+  "interval": "15m",
+  "last_bar_ms": 1795281300000,
+  "orders": [],
+  "pending_order": null,
+  "position": null,
+  "run_id": "ma_cross-BTCUSDT-15m-a690e4",
+  "state_version": 1,
+  "strategy": "ma_cross",
+  "symbol": "BTCUSDT"
+}

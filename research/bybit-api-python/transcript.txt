@@ -1,0 +1,97 @@
+run started 2026-11-21T17:26:12Z (local clock), Python 3.12.10
+
+========================================================================
+1. Server time and clock offset
+========================================================================
+{"retCode": 0, "retMsg": "OK", "result": {"timeSecond": "1795281973", "timeNano": "1795281973213909951"}, "retExtInfo": {}, "time": 1795281973213}
+mainnet: 20 samples, offset min 872 / median 879 / max 892 ms; round trip min 68 / median 78 / max 106 ms
+testnet: 20 samples, offset min 871 / median 884 / max 916 ms; round trip min 67 / median 91 / max 154 ms
+
+========================================================================
+2. Candles: one page
+========================================================================
+{"retCode": 0, "retMsg": "OK", "result": {"symbol": "BTCUSDT", "category": "linear", "list": [["1795281300000", "60222.2", "60313", "60100.9", "60234.4", "328.35", "19764229.5002"], ["1795280400000", "60027.8", "60298.6", "60022.8", "60222.2", "790.816", "47614664.4799"], ["1795279500000", "59957.1", "60218.5", "59957.1", "60027.8", "713.282", "42857538.6064"]]}, "retExtInfo": {}, "time": 1795281984867}
+server time 1795281984867 = 2026-11-21T17:26:24Z
+  open time 1795281300000 = 2026-11-21T17:15:00Z  close 60234.4  (still forming)
+  open time 1795280400000 = 2026-11-21T17:00:00Z  close 60222.2  (closed)
+  open time 1795279500000 = 2026-11-21T16:45:00Z  close 60027.8  (closed)
+no limit      -> 200 rows
+limit=5000    -> 1000 rows, retCode 0
+interval='15m'         -> HTTP 200 {"retCode":0,"retMsg":"OK","result":{"symbol":"BTCUSDT","category":"linear","list":[]},"retExtInfo":{},"time":1795281985135}
+
+start/end in seconds   -> HTTP 200 {"retCode":0,"retMsg":"OK","result":{"symbol":"BTCUSDT","category":"linear","list":[]},"retExtInfo":{},"time":1795281985239}
+
+symbol='btcusdt'       -> HTTP 200 {"retCode":10001,"retMsg":"params error: Symbol Is Invalid","result":{},"retExtInfo":{},"time":1795281985340}
+
+symbol='BTCUSD_NOPE'   -> HTTP 200 {"retCode":10001,"retMsg":"params error: Symbol Is Invalid","result":{},"retExtInfo":{},"time":1795281985431}
+
+path /v5/market/klines -> HTTP 404, body length 0
+
+========================================================================
+3. Candles: 2,500 bars need three requests
+========================================================================
+asked for [2026-10-26T16:15:00Z, 2026-11-21T17:15:00Z): 2500 candles in 3 requests, 0 gaps
+first 2026-10-26T16:15:00Z, last 2026-11-21T17:00:00Z
+
+========================================================================
+4. Funding history
+========================================================================
+{"retCode": 0, "retMsg": "OK", "result": {"category": "linear", "list": [{"symbol": "BTCUSDT", "fundingRate": "-0.00001056", "fundingRateTimestamp": "1795276800000"}, {"symbol": "BTCUSDT", "fundingRate": "-0.0000354", "fundingRateTimestamp": "1795248000000"}, {"symbol": "BTCUSDT", "fundingRate": "-0.00004217", "fundingRateTimestamp": "1795219200000"}]}, "retExtInfo": {}, "time": 1795281986162}
+  2026-11-21T16:00:00Z  -0.001056%
+  2026-11-21T08:00:00Z  -0.003540%
+  2026-11-21T00:00:00Z  -0.004217%
+only startTime -> HTTP 200 {"retCode":10001,"retMsg":"params error: Time Is Invalid","result":{"category":"","list":[]},"retExtInfo":{},"time":1795281986272}
+limit=1000     -> 200 rows, retCode 0
+365 days [2025-11-21T00:00:00Z, 2026-11-21T00:00:00Z): 1095 settlements in 6 requests, spacing in hours [8]
+sum +2.8426%, mean +0.002596% per settlement, negative in 303 of 1095
+
+========================================================================
+5. Contract rules (instruments-info)
+========================================================================
+{"symbol": "BTCUSDT", "contractType": "LinearPerpetual", "status": "Trading", "priceFilter": {"minPrice": "0.10", "maxPrice": "1999999.80", "tickSize": "0.10"}, "lotSizeFilter": {"maxOrderQty": "1500.000", "minOrderQty": "0.001", "qtyStep": "0.001", "postOnlyMaxOrderQty": "1500.000", "maxMktOrderQty": "150.000", "minNotionalValue": "5"}, "leverageFilter": {"minLeverage": "1", "maxLeverage": "150.00", "leverageStep": "0.01"}, "fundingInterval": 480, "upperFundingRate": "0.00333", "lowerFundingRate": "-0.00333"}
+no symbol, no limit -> 500 instruments, nextPageCursor present
+paged with limit=1000 -> 939 linear instruments in 1 page(s)
+
+========================================================================
+6. Risk limit tiers
+========================================================================
+BTCUSDT: 35 tiers
+  {"id": 1, "symbol": "BTCUSDT", "riskLimitValue": "300000", "maintenanceMargin": "0.0033", "initialMargin": "0.0066", "isLowestRisk": 1, "maxLeverage": "150.00", "mmDeduction": ""}
+  {"id": 2, "symbol": "BTCUSDT", "riskLimitValue": "2000000", "maintenanceMargin": "0.005", "initialMargin": "0.01", "isLowestRisk": 0, "maxLeverage": "100.00", "mmDeduction": "510"}
+  {"id": 3, "symbol": "BTCUSDT", "riskLimitValue": "2600000", "maintenanceMargin": "0.0056", "initialMargin": "0.0111", "isLowestRisk": 0, "maxLeverage": "90.00", "mmDeduction": "1710"}
+  {"id": 35, "symbol": "BTCUSDT", "riskLimitValue": "1200000000", "maintenanceMargin": "0.6", "initialMargin": "1", "isLowestRisk": 0, "maxLeverage": "1.00", "mmDeduction": "242382510"}
+no symbol -> 407 rows covering 15 symbols, nextPageCursor present
+
+========================================================================
+7. Response headers of a public request
+========================================================================
+HTTP 200; header names: Connection, Content-Length, Content-Type, Date, Ret_code, Server, Timenow, Traceid, Via, X-Amz-Cf-Id, X-Amz-Cf-Pop, X-Cache, x-cld-src
+X-Bapi-Limit-* headers present: none
+
+========================================================================
+8. Signing with a made-up key (nothing is sent)
+========================================================================
+GET  string to sign: 1795281600000FAKEKEY00000000005000category=linear&symbol=BTCUSDT
+GET  X-BAPI-SIGN:    d410389680b571cf1181fcff2bcfae0cfec777c1b7ed354b2c9de4638b70bdd9
+POST body:           {"category":"linear","symbol":"BTCUSDT","side":"Buy","orderType":"Market","qty":"0.001","positionIdx":0,"orderLinkId":"demo-1795281600-LE1"}
+POST string to sign: 1795281600000FAKEKEY00000000005000{"category":"linear","symbol":"BTCUSDT","side":"Buy","orderType":"Market","qty":"0.001","positionIdx":0,"orderLinkId":"demo-1795281600-LE1"}
+POST X-BAPI-SIGN:    89715eb5de523bdd0377f338350da0a8dbc4fd87e16ff2d46cf436649e1ae785
+same dict, default json.dumps (with spaces): 1c62a89642fcb0fd4e7d1c6cb2e01d87d3c2352c81fc63d5dc5eadf814dfcba7
+headers: {"X-BAPI-API-KEY": "FAKEKEY0000000000", "X-BAPI-TIMESTAMP": "1795281600000", "X-BAPI-RECV-WINDOW": "5000", "X-BAPI-SIGN": "d410389680b571cf1181fcff2bcfae0cfec777c1b7ed354b2c9de4638b70bdd9", "Content-Type": "application/json"}
+perpmath.live.bybit.sign gives the same two signatures: True
+
+========================================================================
+9. What the TESTNET answers to a made-up key (read-only GETs)
+========================================================================
+no auth headers                    -> HTTP 200 {"retCode":10001,"retMsg":"Request parameter error: apiKey is missing","result":{},"retExtInfo":{},"time":1795281988731}
+fake key, timestamp on time        -> HTTP 200 {"retCode":10003,"retMsg":"API key is invalid.","result":{},"retExtInfo":{},"time":1795281989341}
+timestamp 4.0 s behind             -> HTTP 200 {"retCode":10003,"retMsg":"API key is invalid.","result":{},"retExtInfo":{},"time":1795281989943}
+timestamp 6.0 s behind             -> HTTP 200 {"retCode":10002,"retMsg":"invalid request, please check your server timestamp or recv_window param: req_timestamp[1795281984494],server_timestamp[1795281990543],recv_window[5000]","result":{},"retExtInfo":{},"time":1795281990543}
+timestamp 0.5 s ahead              -> HTTP 200 {"retCode":10003,"retMsg":"API key is invalid.","result":{},"retExtInfo":{},"time":1795281991152}
+timestamp 1.5 s ahead              -> HTTP 200 {"retCode":10002,"retMsg":"invalid request, please check your server timestamp or recv_window param: req_timestamp[1795281993203],server_timestamp[1795281991748],recv_window[5000]","result":{},"retExtInfo":{},"time":1795281991748}
+6.0 s behind, recv_window 10000    -> HTTP 200 {"retCode":10003,"retMsg":"API key is invalid.","result":{},"retExtInfo":{},"time":1795281992364}
+1.5 s ahead, recv_window 10000     -> HTTP 200 {"retCode":10002,"retMsg":"invalid request, please check your server timestamp or recv_window param: req_timestamp[1795281994416],server_timestamp[1795281992962],recv_window[10000]","result":{},"retExtInfo":{},"time":1795281992962}
+fake key on /v5/position/list      -> HTTP 401 (empty body)
+X-Bapi-Limit-* headers on any of these answers: none
+
+run finished 2026-11-21T17:26:33Z, 76 HTTP requests in total
