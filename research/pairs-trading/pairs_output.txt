@@ -1,0 +1,86 @@
+BTCUSDT / ETHUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z  35040 bars each, none missing
+window 672 bars, entry |z| >= 2.0, exit z through 0, stop |z| >= 4.0, max hold 672 bars
+out-of-sample starts 2026-07-31T00:00:00Z; funding not modelled
+
+costs      sample          trades   win %    avg %   move %  t-stat  return %  max DD %      fees    bars
+published  in_sample           78   66.67  -0.1187   0.0313   -0.98     -9.26     13.04    826.00   142.7
+published  out_of_sample       35   54.29  -0.0221   0.1288   -0.13     -0.95      3.82    389.81   143.4
+fee_only   in_sample           78   66.67  -0.0787   0.0313   -0.65     -6.38     11.04    838.63   142.7
+fee_only   out_of_sample       35   54.29   0.0182   0.1288    0.10      0.46      3.73    392.51   143.4
+zero_cost  in_sample           78   67.95   0.0313   0.0313    0.26      2.01     10.47      0.00   142.7
+zero_cost  out_of_sample       35   65.71   0.1288   0.1288    0.74      4.42      3.62      0.00   143.4
+
+published costs, by exit reason (move % = both legs open to open, before costs)
+in_sample      end          1    0.4255    0.2757     0 with a negative move    323.0 bars
+in_sample      revert      63    0.3165    0.1666    11 with a negative move    140.4 bars
+in_sample      stop        13   -1.2049   -1.3553    13 with a negative move     99.1 bars
+in_sample      time         1   -2.2591   -2.4100     1 with a negative move    672.0 bars
+out_of_sample  revert      28    0.4825    0.3320     5 with a negative move    158.8 bars
+out_of_sample  stop         7   -1.2862   -1.4386     7 with a negative move     82.1 bars
+
+stationarity (descriptive, no formal test)
+{
+ "return_correlation": {
+  "whole": 0.8901,
+  "in_sample": 0.8939,
+  "out_of_sample": 0.8763
+ },
+ "rolling_672_bar_return_correlation": {
+  "min": 0.7448,
+  "p5": 0.835,
+  "median": 0.8897,
+  "p95": 0.9272,
+  "max": 0.9419
+ },
+ "rolling_672_bar_hedge_ratio": {
+  "min": 0.0503,
+  "p5": 0.643,
+  "median": 1.2227,
+  "p95": 1.9083,
+  "max": 2.7568,
+  "share_of_bars_not_positive_pct": 0.0
+ },
+ "fixed_line_fitted_in_sample": {
+  "slope": 1.5057,
+  "intercept": -9.1736,
+  "residual_sd": 0.04582,
+  "in_sample": {
+   "phi": -0.00065993,
+   "dickey_fuller_t_ratio_no_lags": -2.7854,
+   "half_life_bars": 1050.0,
+   "half_life_days": 10.94
+  },
+  "out_of_sample_with_in_sample_line": {
+   "phi": -0.00051862,
+   "dickey_fuller_t_ratio_no_lags": -1.7737,
+   "half_life_bars": 1336.2,
+   "half_life_days": 13.92,
+   "mean_in_units_of_in_sample_sd": -0.11,
+   "largest_in_units_of_in_sample_sd": 2.57,
+   "last_in_units_of_in_sample_sd": 0.03,
+   "share_of_bars_beyond_2_sd_pct": 0.42
+  },
+  "out_of_sample_own_line": {
+   "slope": 1.216,
+   "phi": -0.00052794,
+   "dickey_fuller_t_ratio_no_lags": -1.5874,
+   "half_life_bars": 1312.6,
+   "half_life_days": 13.67
+  }
+ },
+ "formal_cointegration_test": "not run (needs an augmented regression and MacKinnon critical values)"
+}
+
+HINDSIGHT sensitivity, not used to choose anything (IS = in-sample, OOS = out-of-sample)
+ window  entry   IS n     IS %    IS t  IS 0-cost %  OOS n    OOS %   OOS t  OOS 0-cost %  OOS 0-cost t
+    192    1.5    311   -25.34   -3.49        19.09    154   -22.56   -3.52         -2.41         -0.30
+    192    2.0    244   -27.25   -3.65         4.96    115   -19.90   -3.13         -4.79         -0.67
+    192    2.5    187   -21.58   -3.41         3.87     90   -16.27   -2.83         -4.15         -0.65
+    672    1.5    101   -15.11   -1.58        -1.23     47    -4.17   -0.59          2.85          0.44
+    672    2.0     78    -9.26   -0.98         2.01     35    -0.95   -0.13          4.42          0.74
+    672    2.5     53    -9.25   -1.20        -1.75     30    -1.13   -0.15          3.44          0.56
+   2880    1.5     28    -4.90   -0.56        -0.81     11    -2.86   -0.66         -1.24         -0.27
+   2880    2.0     22    -4.50   -0.55        -1.31     11    -0.79   -0.14          0.87          0.20
+   2880    2.5     16    -8.30   -1.21        -6.08     10     2.11    0.45          3.65          0.76
+
+wrote research/pairs-trading/pairs_summary.json and pairs_trades.json

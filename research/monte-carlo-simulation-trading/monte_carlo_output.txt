@@ -1,0 +1,55 @@
+10,000 paths per method, seed 20261202, block length 20, NumPy 2.5.5
+
+sizing: as_run   max drawdown % on closed trades (p5 / p50 / p95), final return % (p5 / p50 / p95)
+list                          n  orig DD  orig ret  method       DD p5  DD p50  DD p95   ret p5  ret p50  ret p95  deeper %   up %
+ma_cross/in_sample          572  62.8077  -62.3527  shuffle      62.35   64.67   69.60   -62.35   -62.35   -62.35     83.06   0.00
+                                                    bootstrap    45.64   65.65   78.04   -76.92   -62.77   -36.35     61.61   0.18
+                                                    blocks       46.16   66.39   79.23   -78.15   -62.95   -33.22     62.99   0.45
+ma_cross/out_of_sample      263  28.8324  -18.4566  shuffle      21.57   29.20   37.51   -18.46   -18.46   -18.46     52.44   0.00
+                                                    bootstrap    16.68   30.51   45.86   -43.26   -20.05    24.34     56.46  19.39
+                                                    blocks       16.87   30.41   46.38   -43.35   -19.51    21.42     56.34  18.80
+fvg/in_sample               801   66.945   -66.945  shuffle      66.94   67.85   69.97   -66.94   -66.94   -66.94     92.65   0.00
+                                                    bootstrap    55.06   68.04   77.57   -76.89   -66.84   -52.60     56.44   0.00
+                                                    blocks       55.13   68.08   77.20   -76.64   -66.96   -52.70     56.91   0.00
+fvg/out_of_sample           304   43.036  -42.8564  shuffle      42.86   43.39   45.42   -42.86   -42.86   -42.86     70.54   0.00
+                                                    bootstrap    33.63   43.80   52.42   -51.96   -42.96   -31.94     55.19   0.00
+                                                    blocks       33.50   43.70   52.27   -51.67   -42.81   -31.96     54.54   0.00
+
+sizing: risk_1pct   max drawdown % on closed trades (p5 / p50 / p95), final return % (p5 / p50 / p95)
+list                          n  orig DD  orig ret  method       DD p5  DD p50  DD p95   ret p5  ret p50  ret p95  deeper %   up %
+ma_cross/in_sample          572  85.5834  -84.8916  shuffle      84.89   86.06   88.83   -84.89   -84.89   -84.89     64.33   0.00
+                                                    bootstrap    71.28   86.59   93.56   -93.18   -84.94   -65.17     56.34   0.01
+                                                    blocks       71.01   87.18   93.94   -93.47   -85.38   -61.62     59.21   0.14
+ma_cross/out_of_sample      263  54.7966  -37.7192  shuffle      48.16   60.86   71.48   -37.72   -37.72   -37.72     74.01   0.00
+                                                    bootstrap    39.81   62.53   79.60   -77.84   -42.04   141.77     69.68  24.78
+                                                    blocks       38.49   62.00   80.60   -78.29   -40.65   115.25     67.96  24.45
+fvg/in_sample               801  99.0548  -99.0548  shuffle      99.05   99.07   99.13   -99.05   -99.05   -99.05     81.51   0.00
+                                                    bootstrap    98.13   99.07   99.54   -99.53   -99.04   -98.07     51.53   0.00
+                                                    blocks       97.98   99.07   99.58   -99.57   -99.04   -97.91     51.37   0.00
+fvg/out_of_sample           304  92.3103   -92.243  shuffle      92.24   92.34   92.64   -92.24   -92.24   -92.24     55.84   0.00
+                                                    bootstrap    88.36   92.33   94.93   -94.87   -92.21   -88.09     50.34   0.00
+                                                    blocks       87.57   92.47   95.21   -95.13   -92.33   -87.28     53.03   0.00
+
+list                        lag-1 r  runs z  orig streak   shuffle streak p5/p50/p95  longer %
+ma_cross/in_sample           0.0419    1.59           27                16 / 21 / 32     13.82
+ma_cross/out_of_sample      -0.0378    0.81           16                14 / 20 / 30     78.37
+fvg/in_sample                0.0311   -0.45           20                11 / 15 / 22      7.60
+fvg/out_of_sample           -0.0532    0.65           12                10 / 14 / 21     71.54
+
+in-sample list resampled to the length of the out-of-sample list (sizing as_run)
+strategy       ret p5  ret p50  ret p95   actual  worse %   DD p5  DD p50  DD p95   actual  deeper %
+ma_cross       -53.79   -36.76    -9.12   -18.46    87.66   23.69   41.28   55.51    28.83     87.30
+fvg            -47.08   -34.53   -17.88   -42.86    14.45   22.65   36.65   48.16    43.04     19.27
+
+grid: max drawdown % of shuffled closed-position profits against the engine's marked-to-market figure
+sample           round trips  losers  final close  RT only p95  RT only max  with close p95  with close max   engine
+in_sample                669       0      -953.84       0.0000       0.0000          9.4688          9.5384  12.5168
+out_of_sample            197       0        -0.29       0.0000       0.0000          0.0029          0.0029   7.3070
+
+thresholds below the start (sizing as_run, bootstrap): share of paths touching 20% / 50% down
+ma_cross/in_sample           99.69   86.61
+ma_cross/out_of_sample       66.45    1.11
+fvg/in_sample               100.00   97.88
+fvg/out_of_sample            99.93   11.55
+
+wrote research/monte-carlo-simulation-trading/monte_carlo.json
