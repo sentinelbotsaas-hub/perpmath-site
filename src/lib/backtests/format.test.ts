@@ -7,6 +7,8 @@ import {
   formatMoney,
   formatParam,
   formatPct,
+  formatPlus,
+  formatPlusPct,
   formatRate,
   formatSigned,
   formatUtc,
@@ -15,6 +17,29 @@ import {
 
 // Hand-made values. A loss is written with the real minus sign (U+2212) and
 // nothing else: no colour, no brackets, no plus sign on gains.
+describe('formatPlus', () => {
+  it('puts a plus sign on a gain and the real minus sign on a loss', () => {
+    expect(formatPlus(3.1659)).toBe('+3.17');
+    expect(formatPlus(-29.2964)).toBe('−29.30');
+    expect(formatPlus(1366.5466)).toBe('+1,366.55');
+    expect(formatPlusPct(4.3692)).toBe('+4.37%');
+    expect(formatPlusPct(-1.1168)).toBe('−1.12%');
+  });
+
+  it('gives zero, and anything that rounds to zero, no sign', () => {
+    expect(formatPlus(0)).toBe('0.00');
+    expect(formatPlus(0.004)).toBe('0.00');
+    expect(formatPlus(-0.004)).toBe('0.00');
+    expect(formatPlusPct(0)).toBe('0.00%');
+  });
+
+  it('keeps a value that was not computed as null', () => {
+    expect(formatPlus(null)).toBeNull();
+    expect(formatPlusPct(null)).toBeNull();
+    expect(formatPlus(Number.NaN)).toBeNull();
+  });
+});
+
 describe('formatSigned', () => {
   it('uses the real minus sign', () => {
     expect(MINUS).toBe('−');

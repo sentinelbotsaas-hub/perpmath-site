@@ -28,6 +28,23 @@ export function formatPct(value: number | null, decimals = 2): string | null {
   return text === null ? null : `${text}%`;
 }
 
+/**
+ * Like formatSigned, with a plus sign on a gain: 3.1659 -> "+3.17";
+ * -29.2964 -> "−29.30"; 0 -> "0.00". For the grid figures, where gains and
+ * losses sit side by side and the sign must be readable without the colour.
+ */
+export function formatPlus(value: number | null, decimals = 2): string | null {
+  const text = formatSigned(value, decimals);
+  if (text === null || value === null) return null;
+  return value > 0 && Number(text.replace(/,/g, '')) !== 0 ? `+${text}` : text;
+}
+
+/** A value already in percent units, with a plus sign on a gain: 3.1659 -> "+3.17%". */
+export function formatPlusPct(value: number | null, decimals = 2): string | null {
+  const text = formatPlus(value, decimals);
+  return text === null ? null : `${text}%`;
+}
+
 /** 1639 -> "1,639". */
 export function formatCount(value: number): string {
   return fixed(Math.round(value), 0);

@@ -1,14 +1,20 @@
 ---
-// The backtests, in short: how many strategies were tested, over what data,
-// at what cost, and what each one did out of sample. Losing results are
-// shown exactly like any other; that is the point of the section.
+// The backtests, in short: how many were run, over what data, at what cost,
+// and what each one did out of sample. Losing results are shown exactly like
+// any other; that is the point of the section. A grid result that gained is
+// shown with the condition it gained under, in the place where a signal
+// strategy has its verdict.
 //
 // Every figure is read from src/data/backtests/*.json through
 // src/lib/backtests/load.ts, with the formatters and the verdict rule that
-// /backtests/ uses. Nothing is averaged or summed across strategies here:
-// the data holds one average R per strategy and sample, and that is what is
-// printed. A fact that is not the same in every result file (the data
-// period, the costs, the out-of-sample range) is left out instead of guessed.
+// /backtests/ uses, and the headline is the one /backtests/ prints
+// (src/components/research/headline.ts). Nothing is averaged or summed
+// across strategies here: the data holds one average R per strategy and
+// sample, and that is what is printed. A fact that is not the same in every
+// result file (the data period, the costs, the out-of-sample range) is left
+// out instead of guessed.
+import { gridViews } from '../research/grid-views';
+import { headline } from '../research/headline';
 import Icon from '../ui/Icon.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import { backtests } from '../../i18n/backtests';
@@ -16,8 +22,8 @@ import { localePath } from '../../i18n/config';
 import type { Locale } from '../../i18n/config';
 import { home } from '../../i18n/home';
 import { formatCount, formatDay, formatPct, formatRate, formatSigned } from '../../lib/backtests/format';
-import { backtestPath, results } from '../../lib/backtests/load';
-import { lostInBothSamples, verdictOf } from '../../lib/backtests/verdict';
+import { allResults, backtestPath, gridResults, results } from '../../lib/backtests/load';
+import { verdictOf } from '../../lib/backtests/verdict';
 import { fmt } from '../../lib/fmt';
 import { pageExists } from '../../lib/routes';
 
@@ -33,21 +39,26 @@ const x = bt.index;
 if (results.length === 0) throw new Error('home: src/data/backtests/ is empty. Run scripts/backtests-import.mjs.');
 
 // Same headline as /backtests/, so the two can never disagree.
-const head = fmt(results.every(lostInBothSamples) ? x.headAllLost : x.head, { n: formatCount(results.length) });
+const top = headline(x, bt.na);
+const head = top.head;
 const na = bt.na;
+const hasGrid = gridResults.length > 0;
 
-/** The value all results share, or null when they differ. */
-function shared<T>(pick: (result: (typeof results)[number]) => T): T | null {
-  const first = pick(results[0]);
-  return results.every((result) => pick(result) === first) ? first : null;
+/** The value all of `list` share, or null when they differ. */
+function shared<R, T>(list: R[], pick: (result: R) => T): T | null {
+  const first = pick(list[0]);
+  return list.every((result) => pick(result) === first) ? first : null;
 }
 
-const firstBar = shared((r) => r.data.first_bar);
-const lastBar = shared((r) => r.data.last_bar);
-const fee = shared((r) => r.costs.fee_rate_per_side);
-const slip = shared((r) => r.costs.slippage_per_fill);
-const oosFirst = shared((r) => r.out_of_sample.first_bar);
-const oosLast = shared((r) => r.out_of_sample.last_bar);
+// The period and the split are facts about every result, the grid included.
+// The fee and the slippage are the signal strategies' own: a grid pays a
+// maker fee on its grid orders, so the label says whose costs these are.
+const firstBar = shared(allResults, (r) => r.data.first_bar);
+const lastBar = shared(allResults, (r) => r.data.last_bar);
+const fee = shared(results, (r) => r.costs.fee_rate_per_side);
+const slip = shared(results, (r) => r.costs.slippage_per_fill);
+const oosFirst = shared(allResults, (r) => r.out_of_sample.first_bar);
+const oosLast = shared(allResults, (r) => r.out_of_sample.last_bar);
 
 const facts = [
   firstBar && lastBar
@@ -57,13 +68,13 @@ const facts = [
     ? { label: t.oosFrom, value: formatDay(oosFirst) }
     : null,
   fee !== null && slip !== null
-    ? { label: t.costs, value: fmt(t.costsValue, { fee: formatRate(fee), slip: formatRate(slip) }) }
+    ? { label: hasGrid ? t.costsStrategies : t.costs, value: fmt(t.costsValue, { fee: formatRate(fee), slip: formatRate(slip) }) }
     : null,
 ].filter((fact) => fact !== null);
 
-const method = `${x.sub}${locale === 'en' ? ' ' : ''}${results.every((r) => !r.costs.funding_modelled) ? x.caption : x.captionPlain}`;
+const method = `${x.sub}${locale === 'en' ? ' ' : ''}${top.caption}`;
 
-const rows = results.map((result) => {
+const strategyRows = results.map((result) => {
   const strategy = bt.strategies[result.strategy as keyof typeof bt.strategies];
   if (!strategy) throw new Error(`home: no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
   const m = result.out_of_sample.metrics;
@@ -87,6 +98,29 @@ const rows = results.map((result) => {
     ],
   };
 });
+// A grid has no trades with a stop, so no average R and no verdict: its row
+// shows round trips and drawdown, and ends with what the sample depended on.
+const gridRows = gridResults.map((result) => {
+  const view = gridViews(result, bt)[1];
+  return {
+    name: bt.grid.short,
+    href: localePath(locale, backtestPath(result.slug)),
+    market: `${result.symbol} ${result.interval}`,
+    cells: [
+      { label: bt.grid.compare.roundTrips, value: view.roundTrips, number: true, negative: false },
+      { label: bt.columns.maxDrawdown, value: view.maxDrawdown, number: view.maxDrawdownPct !== null, negative: false },
+      {
+        label: bt.columns.totalReturn,
+        value: view.totalReturn,
+        number: view.totalReturnSign !== 0,
+        negative: view.totalReturnSign < 0,
+        positive: view.totalReturnSign > 0,
+      },
+      { label: bt.grid.card.reading, value: view.noteShort, number: false, negative: false },
+    ],
+  };
+});
+const rows = [...strategyRows, ...gridRows];
 ---
 
 <SectionHeader title={head} desc={t.sub} id="research-head" />

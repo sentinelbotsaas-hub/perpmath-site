@@ -1,0 +1,175 @@
+---
+// A grid backtest, in-sample and out-of-sample side by side: the metrics are
+// the rows and the two samples are the columns, like SampleCompare for the
+// signal strategies. A grid has no win rate, no R and no t-statistic, so its
+// rows are its own: round trips, fills, drawdown, buy and hold beside it.
+//
+//   <GridCompare locale={locale} label={...} views={gridViews(result, t)} />
+//   <GridCompare ... compact surface dense />     the card on /backtests/
+//
+// `views` comes from ./grid-views.ts. `compact` keeps the rows that fit a
+// card and ends with what to keep in mind about each sample, where a signal
+// strategy has its verdict. `surface` says the table sits on a card, so the
+// pinned first column takes the card's colour.
+import DataTable from '../ui/DataTable.astro';
+import { backtests } from '../../i18n/backtests';
+import type { Locale } from '../../i18n/config';
+import type { GridSampleView } from './grid-views';
+import { toneOf } from './samples';
+
+interface Props {
+  locale: Locale;
+  /** Names the table for screen readers. */
+  label: string;
+  views: GridSampleView[];
+  /** Printed under the table. */
+  caption?: string;
+  compact?: boolean;
+  surface?: boolean;
+  dense?: boolean;
+  /** False when the run did not count funding: the "with funding" row is left out. */
+  funding?: boolean;
+}
+
+const { locale, label, views, caption, compact = false, surface = false, dense = false, funding = true } = Astro.props;
+const t = backtests[locale];
+const col = t.columns;
+const g = t.grid.compare;
+
+// A share of a whole gets a depth bar at its true length (the full cell is 100%).
+const share = (pct: number | null) =>
+  pct === null || !Number.isFinite(pct) ? undefined : Math.min(1, Math.max(0, Math.abs(pct) / 100)).toFixed(4);
+
+type Row = {
+  head: string;
+  cell: (v: GridSampleView) => string;
+  tone?: (v: GridSampleView) => 'positive' | 'negative' | undefined;
+  depth?: (v: GridSampleView) => string | undefined;
+};
+const roundTrips: Row = { head: g.roundTrips, cell: (v) => v.roundTrips };
+const maxDrawdown: Row = { head: col.maxDrawdown, cell: (v) => v.maxDrawdown, depth: (v) => share(v.maxDrawdownPct), tone: () => 'negative' };
+const buyHold: Row = { head: g.buyHold, cell: (v) => v.buyHold, tone: (v) => toneOf(v.buyHoldSign) };
+const buyHoldFunding: Row = { head: g.buyHoldFunding, cell: (v) => v.buyHoldFunding, tone: (v) => toneOf(v.buyHoldFundingSign) };
+const rows: Row[] = compact
+  ? [roundTrips, maxDrawdown, funding ? buyHoldFunding : buyHold]
+  : [
+      roundTrips,
+      { head: g.fills, cell: (v) => v.fills },
+      maxDrawdown,
+      buyHold,
+      ...(funding ? [buyHoldFunding] : []),
+      { head: g.outside, cell: (v) => v.outside, depth: (v) => share(v.outsidePct) },
+    ];
+---
+
+<DataTable
+  locale={locale}
+  label={label}
+  caption={caption}
+  stickyFirst
+  dense={dense}
+  depth
+  firstWidth={compact ? '30%' : '34%'}
+  class={surface ? 'bt-gridcmp bt-gridcmp-surface' : 'bt-gridcmp'}
+>
+  <thead>
+    <tr>
+      <th scope="col">{col.metric}</th>
+      {views.map((v) => <th scope="col">{v.sample}</th>)}
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">{col.period}</th>
+      {
+        views.map((v) => (
+          <td class="num bt-gridcmp-when">
+            <span>{v.rangeLead}</span> <span>{v.rangeEnd}</span>
+          </td>
+        ))
+      }
+    </tr>
+    <tr class="bt-gridcmp-total">
+      <th scope="row">{col.totalReturn}</th>
+      {views.map((v) => <td class="num" data-tone={toneOf(v.totalReturnSign)}>{v.totalReturn}</td>)}
+    </tr>
+    {
+      rows.map((row) => (
+        <tr>
+          <th scope="row">{row.head}</th>
+          {views.map((v) => {
+            const depth = row.depth?.(v);
+            return depth === undefined ? (
+              <td class="num" data-tone={row.tone?.(v)}>{row.cell(v)}</td>
+            ) : (
+              <td class="num" data-depth data-tone={row.tone?.(v)} style={`--depth:${depth}`}>{row.cell(v)}</td>
+            );
+          })}
+        </tr>
+      ))
+    }
+    {
+      compact ? (
+        <tr>
+          <th scope="row">{t.grid.card.reading}</th>
+          {views.map((v) => <td class="bt-gridcmp-words">{v.noteShort}</td>)}
+        </tr>
+      ) : (
+        <tr>
+          <th scope="row">{g.liquidated}</th>
+          {views.map((v) => <td class="bt-gridcmp-words">{v.liquidated ? g.yes : g.no}</td>)}
+        </tr>
+      )
+    }
+  </tbody>
+</DataTable>
+
+<style>
+  /* The table sits on a card: the pinned column takes the card's colour... */
+  :global(.bt-gridcmp-surface) {
+    --table-bg: var(--color-surface);
+  }
+
+  /* ...and the columns sit closer, so three of them fit a card. */
+  :global(.bt-gridcmp-surface) :is(th, td):not(:first-child) {
+    padding-left: var(--space-2);
+  }
+
+  :global(.bt-gridcmp-surface) :is(th, td):not(:last-child) {
+    padding-right: var(--space-2);
+  }
+
+  :global(.bt-gridcmp tbody tr:last-child) :is(th, td) {
+    border-bottom: 0;
+  }
+
+  /* Row names here are longer than "Trades": they may wrap. */
+  :global(.bt-gridcmp) th[scope="row"] {
+    white-space: normal;
+  }
+
+  /* Two dates, one above the other: the columns stay narrow enough for a phone. */
+  .bt-gridcmp-when {
+    color: var(--color-text-secondary);
+    font-size: var(--text-xs);
+  }
+
+  .bt-gridcmp-when span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  /* The headline figure of each sample. The sign is printed; the colour repeats it. */
+  .bt-gridcmp-total td {
+    color: var(--tone, var(--color-text));
+    font-size: var(--text-card);
+    font-weight: var(--weight-medium);
+  }
+
+  /* A phrase, not a figure: it may wrap. */
+  .bt-gridcmp-words {
+    min-width: 7em;
+    color: var(--color-text);
+    white-space: normal;
+  }
+</style>

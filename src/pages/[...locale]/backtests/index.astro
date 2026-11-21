@@ -1,15 +1,24 @@
 ---
 // /backtests/: every published backtest on one page. Four summary figures,
-// then one card per strategy with in-sample and out-of-sample side by side,
+// then one card per result with in-sample and out-of-sample side by side,
 // then how to read the numbers.
+//
+// There are two kinds of result. The signal strategies come first, each with
+// a verdict. A grid backtest gets a section of its own, with the conditions
+// it has to be read with printed beside its card: a grid that gained while
+// price stayed in its range is not shown as if it were a strategy that works.
 //
 // The cards are read from src/data/backtests/*.json; nothing is typed in, and
 // the summary figures are counted from the same files on this page. The
+// headline is chosen by src/lib/backtests/overview.ts from those files. The
 // verdict is decided by src/lib/backtests/verdict.ts and the same rule is
 // printed under the cards, with its thresholds taken from that file.
 // A loss is never shown by colour alone: it is a minus sign and a sentence.
 import Cta from '../../../components/Cta.astro';
+import GridCard from '../../../components/research/GridCard.astro';
+import GridPremises from '../../../components/research/GridPremises.astro';
 import StrategyCard from '../../../components/research/StrategyCard.astro';
+import { headline } from '../../../components/research/headline';
 import DataTable from '../../../components/ui/DataTable.astro';
 import MetricCard from '../../../components/ui/MetricCard.astro';
 import PageContainer from '../../../components/ui/PageContainer.astro';
@@ -22,8 +31,8 @@ import type { Locale } from '../../../i18n/config';
 import Base from '../../../layouts/Base.astro';
 import { REPO_URL } from '../../../lib/backtests/engine';
 import { exclusiveEnd, formatCount, formatDay, formatSigned } from '../../../lib/backtests/format';
-import { results } from '../../../lib/backtests/load';
-import { MIN_TRADES, T_THRESHOLD, lostInBothSamples } from '../../../lib/backtests/verdict';
+import { allResults, gridResults, results } from '../../../lib/backtests/load';
+import { MIN_TRADES, T_THRESHOLD } from '../../../lib/backtests/verdict';
 import type { VerdictCode } from '../../../lib/backtests/verdict';
 import { fmt } from '../../../lib/fmt';
 import { breadcrumbLd } from '../../../lib/seo';
@@ -42,33 +51,50 @@ const PATH = '/backtests/';
 
 if (results.length === 0) throw new Error('backtests: src/data/backtests/ is empty. Run scripts/backtests-import.mjs.');
 
-const n = formatCount(results.length);
-const head = fmt(results.every(lostInBothSamples) ? x.headAllLost : x.head, { n });
-const caption = results.every((r) => !r.costs.funding_modelled) ? x.caption : x.captionPlain;
+// The headline, the line under it and the cost captions: one rule for this
+// page, the home page and /bot/.
+const top = headline(x, t.na);
+const { n } = top;
+const hasGrid = gridResults.length > 0;
+const gridCaption = gridResults.every((r) => r.costs.funding_modelled) ? x.gridCaption : x.gridCaptionPlain;
 
 // --- the four summary figures, counted from the result files ---------------
 const sum = (values: number[]) => values.reduce((a, b) => a + b, 0);
-const lostOutOfSample = results.filter((r) => {
+const lostOutOfSample = allResults.filter((r) => {
   const value = r.out_of_sample.metrics.total_return_pct;
   return value !== null && value < 0;
 }).length;
 const tradesIn = sum(results.map((r) => r.in_sample.metrics.trades));
 const tradesOut = sum(results.map((r) => r.out_of_sample.metrics.trades));
+const gridTrips = sum(gridResults.flatMap((r) => [r.in_sample.metrics.round_trips, r.out_of_sample.metrics.round_trips]));
 // The data period: from the earliest first bar to the end of the latest last bar.
 const byTime = (a: string, b: string) => Date.parse(a) - Date.parse(b);
-const firstBar = results.map((r) => r.data.first_bar).sort(byTime)[0];
-const lastBar = results.map((r) => r.data.last_bar).sort(byTime).at(-1) as string;
-const periodEnd = results.map((r) => exclusiveEnd(r.data.last_bar, r.interval)).sort(byTime).at(-1) as string;
+const firstBar = allResults.map((r) => r.data.first_bar).sort(byTime)[0];
+const lastBar = allResults.map((r) => r.data.last_bar).sort(byTime).at(-1) as string;
+const periodEnd = allResults.map((r) => exclusiveEnd(r.data.last_bar, r.interval)).sort(byTime).at(-1) as string;
 const days = Math.round((Date.parse(periodEnd) - Date.parse(firstBar)) / 86_400_000);
-const markets = [...new Set(results.map((r) => `${r.symbol} ${r.interval}`))];
+const markets = [...new Set(allResults.map((r) => `${r.symbol} ${r.interval}`))];
 
 const summary: Array<{ label: string; value: string; unit?: string; note: string }> = [
-  { label: x.summary.strategies, value: n, note: markets.join(', ') },
-  { label: x.summary.oosLost, value: `${formatCount(lostOutOfSample)} / ${n}`, note: x.summary.oosLostNote },
+  hasGrid
+    ? {
+        label: x.summary.backtests,
+        value: n,
+        note: fmt(x.summary.backtestsNote, { s: top.s, g: top.g, markets: markets.join(', ') }),
+      }
+    : { label: x.summary.strategies, value: n, note: markets.join(', ') },
+  {
+    label: x.summary.oosLost,
+    value: `${formatCount(lostOutOfSample)} / ${n}`,
+    // The longer note says which one did not lose; it is only true in that one case.
+    note: top.code === 'grid-ranged' ? x.summary.oosLostNoteRanged : x.summary.oosLostNote,
+  },
   {
     label: x.summary.trades,
     value: formatCount(tradesIn + tradesOut),
-    note: fmt(x.summary.tradesNote, { is: formatCount(tradesIn), oos: formatCount(tradesOut) }),
+    note: hasGrid
+      ? fmt(x.summary.tradesNoteGrid, { is: formatCount(tradesIn), oos: formatCount(tradesOut), trips: formatCount(gridTrips) })
+      : fmt(x.summary.tradesNote, { is: formatCount(tradesIn), oos: formatCount(tradesOut) }),
   },
   {
     label: x.summary.period,
@@ -96,7 +122,7 @@ const jsonLd = breadcrumbLd(locale, trail);
 
 <Base locale={locale} path={PATH} title={x.title} description={x.description} jsonLd={jsonLd}>
   <PageContainer lead>
-    <PageHeader locale={locale} title={head} lede={x.sub} breadcrumb={trail}>
+    <PageHeader locale={locale} title={top.head} lede={top.sub} breadcrumb={trail}>
       <Cta
         locale={locale}
         pageType="backtest"
@@ -110,12 +136,28 @@ const jsonLd = breadcrumbLd(locale, trail);
     </div>
   </PageContainer>
 
-  <PageContainer flush>
-    <SectionHeader title={x.tableHead} desc={caption} />
+  <PageContainer flush id="signal-strategies">
+    <SectionHeader title={hasGrid ? x.signalsHead : x.tableHead} desc={top.strategyCaption} />
     <div class="bt-grid">
       {results.map((result) => <StrategyCard locale={locale} result={result} />)}
     </div>
   </PageContainer>
+
+  {
+    hasGrid && (
+      <PageContainer flush id="grid">
+        <SectionHeader title={x.gridHead} desc={gridCaption} />
+        <div class="bt-grids">
+          {gridResults.map((result) => (
+            <div class="bt-grid-pair">
+              <GridCard locale={locale} result={result} />
+              <GridPremises locale={locale} result={result} compact />
+            </div>
+          ))}
+        </div>
+      </PageContainer>
+    )
+  }
 
   <PageContainer band>
     <SectionHeader title={x.readHead} />
@@ -150,6 +192,14 @@ const jsonLd = breadcrumbLd(locale, trail);
           <h3 class="h-card">{x.tHead}</h3>
           <p>{x.tBody}</p>
         </div>
+        {
+          hasGrid && (
+            <div>
+              <h3 class="h-card">{x.gridWhyHead}</h3>
+              <p>{x.gridWhyBody}</p>
+            </div>
+          )
+        }
       </div>
     </div>
   </PageContainer>
@@ -180,7 +230,39 @@ const jsonLd = breadcrumbLd(locale, trail);
     }
   }
 
-  /* The rule on the left, the two definitions it relies on beside it. */
+  /* A grid result and, beside it, what it has to be read with. */
+  .bt-grids {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .bt-grid-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+  }
+
+  @media (min-width: 860px) {
+    .bt-grid-pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* On the three-column grid of the cards above: the card takes one column,
+     the conditions the other two. */
+  @media (min-width: 1260px) {
+    .bt-grid-pair {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .bt-grid-pair > :global(.note) {
+      grid-column: span 2;
+    }
+  }
+
+  /* The rule on the left, the definitions it relies on beside it. */
   .bt-read {
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);

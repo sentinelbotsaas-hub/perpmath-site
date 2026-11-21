@@ -1,0 +1,22 @@
+---
+// A sentence that mentions command-line flags: each "--flag" is set as code
+// and kept on one line, so a line never ends on "--".
+//
+//   <p><Flags text={t.quickstart.dryRunNote} /></p>
+//
+// The text comes from src/i18n as it is; nothing else in it is touched.
+interface Props {
+  text: string;
+}
+
+// Odd parts are the flags.
+const parts = Astro.props.text.split(/(--[a-z][a-z-]*)/);
+---
+
+{parts.map((part, i) => (i % 2 === 1 ? <code class="bt-flag">{part}</code> : part))}
+
+<style is:global>
+  code.bt-flag {
+    white-space: nowrap;
+  }
+</style>
