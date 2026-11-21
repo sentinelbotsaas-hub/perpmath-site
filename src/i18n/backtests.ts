@@ -11,6 +11,14 @@
 // budget of about 80 words a screen; the page links to the file for the exact
 // wording. A result whose strategy or parameter has no entry here fails the
 // build instead of printing a blank.
+//
+// `definitions` is for the strategies whose idea has no agreed definition
+// (order blocks, breaks of structure, breaker blocks). Keyed like
+// `strategies`, it holds the two extra parts of their pages, both taken from
+// the same docstring: the judgement calls the module fixes ("Judgement
+// calls"), and what the engine cannot do that the usual description assumes
+// ("Approximation forced by the engine"). A strategy without an entry has no
+// such section on its page.
 import { defineStrings } from './strings';
 
 export const backtests = defineStrings({
@@ -44,7 +52,7 @@ export const backtests = defineStrings({
     index: {
       title: 'Backtests of perpetual futures strategies, losses included',
       description:
-        'Every backtest perpmath has published: trades, win rate, average R, t-statistic and max drawdown, in-sample and out-of-sample, after fees and slippage. Losses stay up.',
+        'Every backtest perpmath has published: total return and max drawdown, in-sample and out-of-sample, after costs, with the rules and code behind each. Losses stay up.',
       headAllLost: '{n} strategies tested. All {n} lost money.',
       head: '{n} strategies tested, results as they came.',
       // Chosen by src/lib/backtests/overview.ts when every signal strategy
@@ -62,6 +70,9 @@ export const backtests = defineStrings({
       caption: 'Fees and slippage included. Funding payments are not.',
       captionPlain: 'Fees and slippage included.',
       captionMixed: 'Fees and slippage included. Funding is counted for the grid only.',
+      // The funding half of the captions alone, for the home page, which has already said the rest.
+      fundingNone: 'Funding payments are not counted.',
+      fundingGridOnly: 'Funding is counted for the grid only.',
       gridCaption: 'Maker and taker fees, slippage and funding included.',
       gridCaptionPlain: 'Maker and taker fees and slippage included. Funding is not.',
       ruleHead: 'The verdict rule',
@@ -98,6 +109,8 @@ export const backtests = defineStrings({
         days: 'days',
       },
       cardLabel: '{name}: in-sample and out-of-sample',
+      // Under the table of a card whose sample has fewer than {min} trades.
+      thin: '{sample}: {trades} trades, under {min}. Read every number in that column as noise.',
       open: 'Rules, costs and equity curve',
       readHead: 'How to read these numbers',
     },
@@ -126,7 +139,7 @@ export const backtests = defineStrings({
         title: 'Drawdown of {name} on {symbol}',
         desc: 'From the daily equity points. In-sample, the deepest day was {isDd} below the earlier high, on {isDay}. Out-of-sample, {oosDd}, on {oosDay}.',
         caption:
-          'How far equity sits below its earlier high, one point a day. The axis runs from 0 to −100%, to scale. The engine measures max drawdown trade by trade ({is} in-sample, {oos} out-of-sample), so it can be deeper than the lowest daily point.',
+          'How far equity sits below its earlier high, one point a day. The axis runs from 0 to −100%, to scale. The engine measures max drawdown at every bar close, with an open position valued at that close ({is} in-sample, {oos} out-of-sample), so it can be deeper than the lowest daily point.',
       },
       distribution: {
         note: 'No histogram of trade returns is drawn here: the result file on this site keeps the daily equity points, not the list of trades. Every trade is in the full result on GitHub.',
@@ -143,6 +156,24 @@ export const backtests = defineStrings({
         totalReturn: { in_sample: 'Total return, in-sample', out_of_sample: 'Total return, out-of-sample' },
         verdictLine: '{verdict}: t is {t} over {n} trades.',
         computed: 'Computed by perpmath {version} on {date}. A backtest is arithmetic on past prices, not a forecast.',
+      },
+      // The warning under the two returns when a sample has fewer than {min}
+      // trades (the engine's `insufficient_sample`). Every figure is filled in
+      // from that sample's metric block. `title` is also the short flag on
+      // /bot/.
+      thin: {
+        title: '{sample}: {trades} trades, too few to read',
+        body: 'Under {min} trades the engine marks a sample as insufficient. Treat every number in it as noise, whichever way it points.',
+        // Added when the average R is above zero while equity fell.
+        rUp: 'The average R here is {avgR}, and equity still fell {loss} over the same period. R counts every trade equally, whatever the distance to its stop; the return is compounded on the full position, so trades with a far stop move it more. At {trades} trades neither figure is a result.',
+        // Added when signals were skipped because a position was open.
+        why: 'A position was held for {held} bars on average, and {skipped} signals came while one was open and were ignored. The parameters were not changed to get more trades.',
+      },
+      // The section of a strategy that has an entry in `definitions`.
+      definition: {
+        head: 'The definition used here, and the judgement calls it fixes',
+        only: 'Ideas like this one have no agreed definition: two teachers will mark the same chart differently. The result on this page is a result for this one definition, not for every reading of the idea.',
+        callsLabel: 'Judgement calls and how each is fixed',
       },
       winRate: {
         head: 'Win rate, drawn to scale',
@@ -215,6 +246,10 @@ export const backtests = defineStrings({
       fast_period: 'Fast average, in bars',
       slow_period: 'Slow average, in bars',
       stop_atr_mult: 'Stop distance, in ATR',
+      swing_left: 'Swing: bars before the pivot',
+      swing_right: 'Swing: bars after the pivot',
+      impulse_bars: 'Shortest impulse, in bars',
+      min_impulse_atr: 'Smallest impulse, in ATR',
     },
     // The grid backtest: /backtests/<slug>/ of a grid result, its card on
     // /backtests/, its row on the home page and on /bot/. Like the rest of
@@ -515,6 +550,187 @@ export const backtests = defineStrings({
           },
         ],
       },
+      // The three below describe the long side; the short side is the exact
+      // mirror image, as in the engine's docstrings.
+      order_block: {
+        name: 'Order block return entry',
+        short: 'Order block',
+        rules: [
+          {
+            head: 'The impulse',
+            text: 'A run of {impulse_bars} or more up bars in a row (close above open) that has risen at least {min_impulse_atr} × ATR from the open of its first bar. Down runs are the mirror image, here and below.',
+          },
+          {
+            head: 'The break',
+            text: 'The run’s latest close must be above the latest confirmed swing high, which the bar before the run had not closed above, and above the high of the bar before the run.',
+          },
+          {
+            head: 'The swing high',
+            text: 'A bar whose high is above the highs of the {swing_left} bars before it and the {swing_right} bars after it. It is known, and used, only once those {swing_right} bars have closed.',
+          },
+          {
+            head: 'The block',
+            text: 'The bar immediately before the run, if it is a down bar. The zone is that whole candle, low to high, wicks included. ATR is the average of the last {atr_period} true ranges on that bar.',
+          },
+          {
+            head: 'The return',
+            text: 'The block waits up to {max_wait_bars} bars. The first bar whose low reaches the top of the zone decides: a close below the bottom drops the block, anything else goes long. Each block is used once.',
+          },
+          {
+            head: 'The exit',
+            text: 'Stop: {stop_buffer_atr} × ATR below the bottom of the zone. Target: {r_multiple} times the distance from fill to stop. One position at a time.',
+          },
+        ],
+      },
+      break_of_structure: {
+        name: 'Break of structure entry',
+        short: 'Break of structure',
+        rules: [
+          {
+            head: 'The swing',
+            text: 'A swing high is a bar whose high is above the highs of the {swing_left} bars before it and the {swing_right} bars after it. A swing low is the mirror image, on lows. A tie with a neighbour means no swing.',
+          },
+          {
+            head: 'Confirmation',
+            text: 'A swing is known only when the {swing_right} bars after it have closed. Before that it is neither a level to break nor a stop. A newly confirmed swing replaces the older one, higher or lower.',
+          },
+          {
+            head: 'The break',
+            text: 'A close above the latest swing high: go long. A close below the latest swing low: go short. A wick through the level without a close beyond it is not a break.',
+          },
+          {
+            head: 'Once per level',
+            text: 'Each swing level can be broken once, whether or not the break led to a trade. The next signal on that side needs a newly confirmed swing.',
+          },
+          {
+            head: 'The stop',
+            text: 'Long: the latest swing low minus {stop_buffer_atr} × ATR. Short: the latest swing high plus the same. ATR is averaged over {atr_period} bars. With no confirmed swing on that side, or a stop that is not on the losing side of the close, there is no signal.',
+          },
+          {
+            head: 'The target',
+            text: '{r_multiple} times the distance from fill to stop. One position at a time; breaks during an open position are ignored.',
+          },
+        ],
+      },
+      breaker_block: {
+        name: 'Breaker block retest entry',
+        short: 'Breaker block',
+        rules: [
+          {
+            head: 'The order block',
+            text: 'Found exactly as in the order block backtest, same code and same parameters: the down bar before an up run of {impulse_bars} or more bars that covers {min_impulse_atr} × ATR and closes above the latest swing high ({swing_left} bars before, {swing_right} after). The zone is that whole candle.',
+          },
+          {
+            head: 'The failure',
+            text: 'Within {max_wait_bars} bars of the block forming, a bar closes below the bottom of the zone. From that close the zone is a bearish breaker. A bearish block closed through upwards becomes a bullish breaker, the mirror image.',
+          },
+          {
+            head: 'The retest',
+            text: 'The breaker waits up to {max_wait_bars} bars from the bar that broke it. The first bar whose high reaches the bottom of the zone decides: a close above the top drops the breaker, anything else goes short.',
+          },
+          {
+            head: 'Once each',
+            text: 'Each breaker is used once, whether or not it leads to a trade. If several trigger on the same bar, the most recently broken one is used.',
+          },
+          {
+            head: 'The stop',
+            text: 'Short: {stop_buffer_atr} × ATR above the top of the zone. Long, from a bullish breaker: the same distance below the bottom. ATR is averaged over {atr_period} bars on the bar that broke the block.',
+          },
+          {
+            head: 'The target',
+            text: '{r_multiple} times the distance from fill to stop. One position at a time; signals during an open position are ignored.',
+          },
+        ],
+      },
+    },
+    definitions: {
+      order_block: {
+        intro: 'Order blocks are taught from chart examples, and the examples disagree. This page tests one definition that can be checked bar by bar.',
+        calls: [
+          {
+            head: 'Which candle is the block',
+            text: 'The single bar immediately before the run, not “the last down candle somewhere near the low”.',
+          },
+          {
+            head: 'How big a move counts',
+            text: '{impulse_bars} same-direction closes in a row covering {min_impulse_atr} × ATR, plus a close beyond the latest confirmed swing point. A fair value gap inside the move is not required.',
+          },
+          {
+            head: 'The zone',
+            text: 'The whole candle, high to low. Body-only zones and the candle’s midpoint (“mean threshold”) are also taught; they are not used.',
+          },
+          {
+            head: 'Mitigation',
+            text: 'The first bar that touches the zone uses the block up.',
+          },
+          {
+            head: 'Filters left out',
+            text: 'No higher-timeframe bias, no session filter, no premium/discount filter.',
+          },
+        ],
+        engine: {
+          head: 'Engine approximation: no limit order',
+          text: 'The usual description rests a limit order at the edge of the block. The engine has no limit orders, so the entry is a market order at the open after the bar that came back to the zone, and it pays the {fee} taker fee. The fill can be anywhere relative to the zone: above it, inside it, or below it but above the stop.',
+        },
+      },
+      break_of_structure: {
+        intro: '“Structure” is taught with a chart and a marker pen. This page pins it down as one rule set that can be checked bar by bar.',
+        calls: [
+          {
+            head: 'How many bars make a swing',
+            text: '{swing_left} before and {swing_right} after. The three-candle swing of ICT teaching (1 each side) and the five-bar fractal (2 each side) are also common. Fewer bars give more, smaller swings.',
+          },
+          {
+            head: 'Wick or close',
+            text: 'A close beyond the level is required.',
+          },
+          {
+            head: 'BOS or CHoCH',
+            text: 'The usual teaching calls a break in the direction of the trend a break of structure and the first break against it a change of character. Telling them apart needs a definition of trend. None is made here: every break of the latest swing is traded the same way.',
+          },
+          {
+            head: 'Filters and entry left out',
+            text: 'No higher-timeframe bias, no session filter, no retest entry.',
+          },
+          {
+            head: 'The stop distance',
+            text: 'Whatever the distance to the opposite swing is. It is not capped, so risk per trade in price terms varies a lot.',
+          },
+        ],
+        engine: {
+          head: 'How the engine enters: a market order at the next open',
+          text: 'The engine has no limit orders, only market orders at the next bar’s open. This definition does not ask for one: the entry is a market order at the open after the breaking bar, not an order waiting for a retest. It pays the {fee} taker fee, and the fill is that open, not the close that broke the level.',
+        },
+      },
+      breaker_block: {
+        intro: 'A breaker block is an order block that price has closed straight through, expected to act the other way round from then on. The order blocks here are exactly those of the order block backtest; what counts as “failed” is fixed below.',
+        calls: [
+          {
+            head: 'What “failed” means',
+            text: 'One close beyond the far edge of the block. A wick through it does not count, and no minimum size is asked of the breaking bar.',
+          },
+          {
+            head: 'A liquidity sweep first',
+            text: 'Some descriptions only call it a breaker when the failed block came from a move that first ran a prior high or low (a liquidity sweep). That condition is not applied: every failed order block is a breaker.',
+          },
+          {
+            head: 'The zone',
+            text: 'The whole order-block candle, high to low, unchanged by the failure.',
+          },
+          {
+            head: 'Time limits',
+            text: 'One parameter, max_wait_bars ({max_wait_bars} bars), is used for both clocks: block to failure, and failure to retest.',
+          },
+          {
+            head: 'Filters left out',
+            text: 'No higher-timeframe bias, no session filter.',
+          },
+        ],
+        engine: {
+          head: 'Engine approximation: no limit order',
+          text: 'As in the order block backtest, there is no resting limit order at the edge of the zone: the entry is a market order at the open after the retest bar has closed, and it pays the {fee} taker fee. The fill can be anywhere relative to the zone.',
+        },
+      },
     },
   },
   'zh-hant': {
@@ -545,7 +761,7 @@ export const backtests = defineStrings({
     index: {
       title: '永續合約策略回測結果，賠錢的也照登',
       description:
-        'perpmath 公開過的每一份回測：交易筆數、勝率、平均 R、t 值與最大回撤，樣本內與樣本外分開列，手續費與滑價都算進去。賠錢的結果也不會拿掉。',
+        'perpmath 公開過的每一份回測：總報酬率與最大回撤，樣本內與樣本外分開列，成本都算進去，並附上每一份的規則與可以重跑的程式。賠錢的結果也不會拿掉。',
       headAllLost: '測了 {n} 個策略，{n} 個都賠錢。',
       head: '測了 {n} 個策略，結果照實列出。',
       headRanged: '{s} 個訊號策略都賠錢，{g} 個網格在價格沒出界的區間裡有賺。',
@@ -560,6 +776,8 @@ export const backtests = defineStrings({
       caption: '已扣掉手續費與滑價，但沒有計入資金費率。',
       captionPlain: '已扣掉手續費與滑價。',
       captionMixed: '已扣掉手續費與滑價。只有網格計入資金費。',
+      fundingNone: '沒有計入資金費率。',
+      fundingGridOnly: '只有網格計入資金費。',
       gridCaption: '已計入掛單與吃單手續費、滑價與資金費。',
       gridCaptionPlain: '已計入掛單與吃單手續費和滑價，沒有計入資金費。',
       ruleHead: '判讀規則',
@@ -592,6 +810,7 @@ export const backtests = defineStrings({
         days: '天',
       },
       cardLabel: '{name}：樣本內與樣本外',
+      thin: '{sample}只有 {trades} 筆交易，不到 {min} 筆。這一欄的每個數字都可能只是運氣。',
       open: '看規則、成本與權益曲線',
       readHead: '這些數字怎麼讀',
     },
@@ -617,7 +836,7 @@ export const backtests = defineStrings({
         title: '{name}在 {symbol} 的回撤',
         desc: '由每日權益點算出。樣本內最深的一天比先前高點低 {isDd}（{isDay}）；樣本外最深 {oosDd}（{oosDay}）。',
         caption:
-          '每天一個點，量的是權益比先前最高點低多少。縱軸從 0 畫到 −100%，照比例畫。回測工具的最大回撤是逐筆交易量的（樣本內 {is}，樣本外 {oos}），所以可能比圖上每日的最低點更深。',
+          '每天一個點，量的是權益比先前最高點低多少。縱軸從 0 畫到 −100%，照比例畫。回測工具的最大回撤是在每一根 K 線收盤時量的，還沒平倉的部位也照那個收盤價計入（樣本內 {is}，樣本外 {oos}），所以可能比圖上每日的最低點更深。',
       },
       distribution: {
         note: '這一頁沒有畫單筆報酬的分佈圖：本站的結果檔只留每日權益點，沒有留逐筆交易。每一筆交易都在 GitHub 上的完整結果裡。',
@@ -634,6 +853,17 @@ export const backtests = defineStrings({
         totalReturn: { in_sample: '樣本內總報酬率', out_of_sample: '樣本外總報酬率' },
         verdictLine: '{verdict}：{n} 筆交易，t 值 {t}。',
         computed: '由 perpmath {version} 於 {date} 算出。回測只是對過去的價格做計算，不是預測。',
+      },
+      thin: {
+        title: '{sample}只有 {trades} 筆交易，太少，不能判讀',
+        body: '交易少於 {min} 筆時，回測工具會把那一段標成樣本不足。這一段的每個數字都可能只是運氣，不管它看起來偏好還是偏壞。',
+        rUp: '這一段的平均 R 是 {avgR}，但同一段期間權益還是少了 {loss}。平均 R 把每一筆交易看得一樣重，不管停損放多遠；總報酬率則是用整個倉位複利算的，停損放得遠的交易對它影響比較大。只有 {trades} 筆交易，這兩個數字都不能當成結果。',
+        why: '每筆交易平均持有 {held} 根 K 線，持倉期間出現的 {skipped} 個訊號都被略過。參數沒有為了多做幾筆交易而調整。',
+      },
+      definition: {
+        head: '這裡採用的定義，以及固定下來的裁量點',
+        only: '這類概念沒有統一的定義，兩位老師在同一張圖上圈出來的位置可能不一樣。這一頁的結果只代表這一種定義，不代表這個概念的每一種讀法。',
+        callsLabel: '裁量點，以及這裡怎麼固定',
       },
       winRate: {
         head: '勝率，照比例畫',
@@ -706,6 +936,10 @@ export const backtests = defineStrings({
       fast_period: '快線長度（K 線根數）',
       slow_period: '慢線長度（K 線根數）',
       stop_atr_mult: '停損距離（ATR 倍數）',
+      swing_left: '波段點左側根數',
+      swing_right: '波段點右側根數',
+      impulse_bars: '推動走勢最少根數',
+      min_impulse_atr: '推動走勢最小幅度（ATR 倍數）',
     },
     grid: {
       name: '網格機器人',
@@ -992,6 +1226,185 @@ export const backtests = defineStrings({
             text: '這個策略不設停利目標。倉位在反向交叉或停損時結束。停損出場後空手等下一次交叉。',
           },
         ],
+      },
+      order_block: {
+        name: '訂單塊（order block）進場',
+        short: '訂單塊（order block）',
+        rules: [
+          {
+            head: '推動走勢（impulse）',
+            text: '連續 {impulse_bars} 根以上的上漲 K 線（收盤高於開盤），而且從第一根的開盤算起，漲幅至少有 {min_impulse_atr} 倍 ATR。下跌的情況完全對稱，以下都只講上漲。',
+          },
+          {
+            head: '突破結構',
+            text: '這段走勢最新一根的收盤，要高於最近一個已確認的波段高點（走勢開始前的那一根還沒有收在它上面），同時高於走勢開始前那一根的最高價。',
+          },
+          {
+            head: '波段高點（swing high）',
+            text: '一根 K 線的最高價，比前面 {swing_left} 根和後面 {swing_right} 根的最高價都高。要等後面那 {swing_right} 根都收盤才知道，在那之前不會拿來用。',
+          },
+          {
+            head: '訂單塊',
+            text: '走勢開始前緊鄰的那一根 K 線，而且它必須是下跌 K 線。區塊範圍是整根 K 線，從最低價到最高價，影線也算。ATR 取這一根當下最近 {atr_period} 根真實波幅的平均。',
+          },
+          {
+            head: '回到區塊',
+            text: '區塊最多等 {max_wait_bars} 根 K 線。第一根最低價碰到區塊上緣的 K 線決定結果：收盤跌破區塊下緣，這個區塊就作廢；沒有跌破，就做多。每個區塊只用一次。',
+          },
+          {
+            head: '出場',
+            text: '停損放在區塊下緣再往下 {stop_buffer_atr} 倍 ATR。停利目標是成交價到停損距離的 {r_multiple} 倍。同一時間只持有一個倉位。',
+          },
+        ],
+      },
+      break_of_structure: {
+        name: '結構突破（break of structure）進場',
+        short: '結構突破（BOS）',
+        rules: [
+          {
+            head: '波段高低點（swing）',
+            text: '波段高點是最高價比前面 {swing_left} 根和後面 {swing_right} 根的最高價都高的 K 線；波段低點反過來，看最低價。和旁邊任何一根平手就不算。',
+          },
+          {
+            head: '確認',
+            text: '波段點要等後面 {swing_right} 根都收盤才成立。在那之前，它既不是可以被突破的價位，也不能拿來放停損。新確認的波段點會取代舊的，不管比較高還是比較低。',
+          },
+          {
+            head: '突破',
+            text: '收盤價高於最近的波段高點：做多。收盤價低於最近的波段低點：做空。只有影線穿過、收盤沒有站過去，不算突破。',
+          },
+          {
+            head: '每個價位只算一次',
+            text: '每個波段價位只能被突破一次，不管那一次有沒有進場。同一側要再出訊號，得等新的波段點確認。',
+          },
+          {
+            head: '停損',
+            text: '做多時放在最近的波段低點再減 {stop_buffer_atr} 倍 ATR；做空時放在最近的波段高點再加同樣的距離。ATR 取最近 {atr_period} 根的平均。那一側還沒有已確認的波段點，或算出來的停損不在收盤價的虧損那一側，就不進場。',
+          },
+          {
+            head: '停利目標',
+            text: '成交價到停損距離的 {r_multiple} 倍。同一時間只持有一個倉位，持倉期間出現的突破一律略過。',
+          },
+        ],
+      },
+      breaker_block: {
+        name: 'Breaker block 進場',
+        short: 'Breaker block',
+        rules: [
+          {
+            head: '訂單塊',
+            text: '找法和訂單塊那一份回測完全相同，同一段程式、同樣的參數：一段連續 {impulse_bars} 根以上、漲幅 {min_impulse_atr} 倍 ATR、收盤突破最近波段高點（前面 {swing_left} 根、後面 {swing_right} 根）的上漲走勢，它開始前的那一根下跌 K 線。區塊範圍是整根 K 線。',
+          },
+          {
+            head: '失效',
+            text: '區塊成立後 {max_wait_bars} 根 K 線之內，有一根收盤跌破區塊下緣。從那一根收盤起，這個區塊就是看空的 breaker。看空的訂單塊被收盤向上穿過，則變成看多的 breaker，規則完全對稱。',
+          },
+          {
+            head: '重測（retest）',
+            text: 'breaker 從收盤穿過它的那一根算起，最多等 {max_wait_bars} 根 K 線。第一根最高價碰到區塊下緣的 K 線決定結果：收盤高於區塊上緣，這個 breaker 就作廢；沒有，就做空。',
+          },
+          {
+            head: '只用一次',
+            text: '每個 breaker 只用一次，不管最後有沒有進場。同一根 K 線有好幾個同時觸發時，用最晚被穿過的那一個。',
+          },
+          {
+            head: '停損',
+            text: '做空時放在區塊上緣再往上 {stop_buffer_atr} 倍 ATR；做多時（看多的 breaker）放在區塊下緣再往下同樣的距離。ATR 取收盤穿過區塊那一根當下最近 {atr_period} 根的平均。',
+          },
+          {
+            head: '停利目標',
+            text: '成交價到停損距離的 {r_multiple} 倍。同一時間只持有一個倉位，持倉期間出現的訊號一律略過。',
+          },
+        ],
+      },
+    },
+    definitions: {
+      order_block: {
+        intro: '訂單塊在教學裡是用圖例教的，而各家的圖例彼此並不一致。這一頁測的是其中一種可以逐根 K 線檢查的定義。',
+        calls: [
+          {
+            head: '哪一根 K 線算訂單塊',
+            text: '走勢開始前緊鄰的那一根，不是「低點附近最後一根下跌 K 線」這種說法。',
+          },
+          {
+            head: '多大的走勢才算',
+            text: '連續 {impulse_bars} 根同方向收盤、合計 {min_impulse_atr} 倍 ATR，再加上收盤越過最近一個已確認的波段點。走勢裡面不需要有公平價值缺口。',
+          },
+          {
+            head: '區塊範圍',
+            text: '整根 K 線，從最高價到最低價。也有人教只取實體，或取 K 線的中點（mean threshold），這裡都不採用。',
+          },
+          {
+            head: 'Mitigation（區塊被用掉）',
+            text: '第一根碰到區塊的 K 線，就把這個區塊用掉。',
+          },
+          {
+            head: '沒有加的過濾條件',
+            text: '沒有大週期方向（higher-timeframe bias），沒有交易時段過濾，也沒有 premium/discount 過濾。',
+          },
+        ],
+        engine: {
+          head: '引擎的近似：沒有限價單',
+          text: '一般的說法是在區塊邊緣掛一張限價單等成交。這個引擎沒有限價單，所以是等價格回到區塊的那一根 K 線收盤，再用下一根的開盤價市價進場，付的是 {fee} 的吃單（taker）費率。成交價可能在區塊上方、在區塊裡面，或在區塊下方但還沒到停損。',
+        },
+      },
+      break_of_structure: {
+        intro: '「結構」在教學裡是拿著圖表、用筆圈出來的。這一頁把它寫成一組可以逐根 K 線檢查的規則。',
+        calls: [
+          {
+            head: '幾根 K 線定一個波段點',
+            text: '前面 {swing_left} 根、後面 {swing_right} 根。ICT 教學常見的三根 K 線波段（左右各 1 根）和五根 K 線的 fractal（左右各 2 根）也很常用。根數愈少，波段點愈多、愈小。',
+          },
+          {
+            head: '看影線還是看收盤',
+            text: '要收盤價越過那個價位才算。',
+          },
+          {
+            head: 'BOS 還是 CHoCH',
+            text: '一般的教法把順著趨勢的突破叫 break of structure，把第一次逆著趨勢的突破叫 change of character（CHoCH）。要分辨這兩種，得先定義什麼是趨勢。這裡沒有定義：最近的波段點只要被突破，一律用同樣的方式交易。',
+          },
+          {
+            head: '沒有加的過濾條件與進場方式',
+            text: '沒有大週期方向，沒有交易時段過濾，也不等價格回頭重測才進場。',
+          },
+          {
+            head: '停損距離',
+            text: '到對側波段點有多遠就是多遠，沒有上限，所以每筆交易以價格計的風險差異很大。',
+          },
+        ],
+        engine: {
+          head: '引擎的進場方式：下一根開盤市價',
+          text: '這個引擎沒有限價單，只有下一根開盤成交的市價單。這個定義本來就不需要限價單：突破的那一根 K 線收盤後，用下一根的開盤價市價進場，不是掛單等價格回頭重測。付的是 {fee} 的吃單（taker）費率，成交價是那個開盤價，不是突破時的收盤價。',
+        },
+      },
+      breaker_block: {
+        intro: 'Breaker block 指的是被價格直接收盤穿過的訂單塊，一般認為它從此會反過來作用。這裡的訂單塊和訂單塊那一份回測完全相同；怎樣才算「失效」，固定如下。',
+        calls: [
+          {
+            head: '怎樣算「失效」',
+            text: '有一根 K 線收盤越過區塊另一側的邊緣。只有影線穿過不算，對那一根 K 線的大小也沒有要求。',
+          },
+          {
+            head: '要不要先掃過流動性',
+            text: '有些教法認為，失效的訂單塊要來自一段先掃過前高或前低的走勢（流動性掃蕩），才叫 breaker。這裡沒有加這個條件：只要是失效的訂單塊，就算 breaker。',
+          },
+          {
+            head: '區塊範圍',
+            text: '整根訂單塊 K 線，從最高價到最低價，失效之後也不變。',
+          },
+          {
+            head: '時間限制',
+            text: '兩段等待共用同一個參數 max_wait_bars（{max_wait_bars} 根）：訂單塊成立到失效，以及失效到重測。',
+          },
+          {
+            head: '沒有加的過濾條件',
+            text: '沒有大週期方向，也沒有交易時段過濾。',
+          },
+        ],
+        engine: {
+          head: '引擎的近似：沒有限價單',
+          text: '和訂單塊那一份回測一樣，區塊邊緣沒有掛著等成交的限價單：等重測的那一根 K 線收盤，再用下一根的開盤價市價進場，付的是 {fee} 的吃單（taker）費率。成交價可能落在區塊的任何一側。',
+        },
       },
     },
   },

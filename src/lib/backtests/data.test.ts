@@ -13,6 +13,7 @@ import { equityChart } from './chart';
 import {
   BACKTEST_COMMAND,
   DOWNLOAD_COMMAND,
+  ENGINE_VERSION,
   GRID_COMMAND,
   GRID_DOWNLOAD_COMMAND,
   GRID_FUNDING_COMMAND,
@@ -196,7 +197,8 @@ describe('figures as printed, against the table in the engine README', () => {
         const row = [
           result.strategy,
           label,
-          formatCount(m.trades),
+          // The README marks a block with fewer than 100 trades with a footnote star ("42\*").
+          formatCount(m.trades) + (m.insufficient_sample ? '\\*' : ''),
           ascii(formatPct(m.win_rate_pct)),
           ascii(formatSigned(m.avg_r)),
           ascii(formatSigned(m.t_stat)),
@@ -209,6 +211,36 @@ describe('figures as printed, against the table in the engine README', () => {
       }
     }
     expect(compared).toBeGreaterThan(0);
+  });
+
+  it.skipIf(!hasEngine)('publishes every strategy the README lists, both samples of each', () => {
+    const text = readFileSync(readme, 'utf8');
+    // "Example strategies" rows look like: | `fvg` | Enters on the first return ... | [fvg.py](...) |
+    const listed = [...text.matchAll(/^\| `([a-z_]+)` \| .* \| \[\1\.py\]/gm)].map((m) => m[1]).sort();
+    expect(listed.length).toBeGreaterThan(0);
+    expect(results.map((r) => r.strategy).sort()).toEqual(listed);
+    for (const result of results) {
+      for (const label of ['in-sample', 'out-of-sample']) expect(text).toContain(`| ${result.strategy} | ${label} |`);
+    }
+  });
+});
+
+describe('the engine version quoted on /bot/', () => {
+  const pyproject = fileURLToPath(new URL('../../../../perpmath-engine/pyproject.toml', import.meta.url));
+
+  it.skipIf(!existsSync(pyproject))('is the version in the engine’s pyproject.toml', () => {
+    const [, version] = /^version = "([^"]+)"/m.exec(readFileSync(pyproject, 'utf8')) ?? [];
+    expect(ENGINE_VERSION).toBe(version);
+  });
+
+  it('is not older than the engine that wrote any published result', () => {
+    const parts = (v: string) => v.split('.').map(Number);
+    const older = (a: string, b: string) => {
+      const [x, y] = [parts(a), parts(b)];
+      for (let i = 0; i < 3; i++) if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) < (y[i] ?? 0);
+      return false;
+    };
+    for (const result of [...results, ...gridResults]) expect(older(ENGINE_VERSION, result.package_version)).toBe(false);
   });
 });
 

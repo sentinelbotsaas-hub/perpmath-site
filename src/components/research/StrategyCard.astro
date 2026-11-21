@@ -14,8 +14,10 @@ import Icon from '../ui/Icon.astro';
 import { backtests } from '../../i18n/backtests';
 import { localePath } from '../../i18n/config';
 import type { Locale } from '../../i18n/config';
+import { formatCount } from '../../lib/backtests/format';
 import { backtestPath } from '../../lib/backtests/load';
 import type { BacktestResult } from '../../lib/backtests/types';
+import { MIN_TRADES } from '../../lib/backtests/verdict';
 import { fmt } from '../../lib/fmt';
 import SampleCompare from './SampleCompare.astro';
 import { sampleViews } from './samples';
@@ -34,6 +36,13 @@ if (!strategy) throw new Error(`backtests: no strings for strategy "${result.str
 
 const href = localePath(locale, backtestPath(result.slug));
 const Heading = level === 2 ? 'h2' : 'h3';
+
+const views = sampleViews(result, t);
+// A sample with too few trades is named in a sentence under the table, so
+// its figures are never read on this page without the warning.
+const thin = views
+  .filter((v) => v.insufficient)
+  .map((v) => fmt(t.index.thin, { sample: v.sample, trades: v.trades, min: formatCount(MIN_TRADES) }));
 ---
 
 <Card as="article" class="bt-card">
@@ -43,7 +52,15 @@ const Heading = level === 2 ? 'h2' : 'h3';
     </Heading>
     <p class="tag num">{result.symbol} {result.interval}</p>
   </div>
-  <SampleCompare locale={locale} label={fmt(t.index.cardLabel, { name: strategy.short })} views={sampleViews(result, t)} surface dense />
+  <SampleCompare locale={locale} label={fmt(t.index.cardLabel, { name: strategy.short })} views={views} surface dense />
+  {
+    thin.map((line) => (
+      <p class="bt-card-thin" data-tone="warning">
+        <Icon name="triangle-alert" size={16} />
+        <span>{line}</span>
+      </p>
+    ))
+  }
   <div class="card-foot">
     <a class="lnk" href={href}>
       {t.index.open}
@@ -70,6 +87,24 @@ const Heading = level === 2 ? 'h2' : 'h3';
 
   .bt-card-head a:hover {
     text-decoration-color: currentColor;
+  }
+
+  /* "Out-of-sample: 42 trades, under 100." An icon and a sentence on a tinted
+     strip; the sentence stays in the text colour so it reads in both themes. */
+  .bt-card-thin {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--color-warning-soft);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+  }
+
+  .bt-card-thin :global(.icon) {
+    margin-top: 0.15em;
+    color: var(--tone);
   }
 
   .card-foot {

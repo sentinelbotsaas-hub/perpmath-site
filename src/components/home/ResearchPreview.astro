@@ -9,10 +9,16 @@
 // src/lib/backtests/load.ts, with the formatters and the verdict rule that
 // /backtests/ uses, and the headline is the one /backtests/ prints
 // (src/components/research/headline.ts). Nothing is averaged or summed
-// across strategies here: the data holds one average R per strategy and
-// sample, and that is what is printed. A fact that is not the same in every
-// result file (the data period, the costs, the out-of-sample range) is left
+// across strategies here. A fact that is not the same in every result file
+// (the data period, the costs, the out-of-sample range, the market) is left
 // out instead of guessed.
+//
+// The list is one line a result: its name, its out-of-sample total return,
+// the verdict of that sample and how many trades the verdict rests on. The
+// other figures (win rate, average R, t, drawdown) are on /backtests/. With
+// seven results a block of four figures each made the home page a report.
+// A sample with too few trades says so here in words and with a warning
+// icon, and nothing of it but its total return is printed.
 import { gridViews } from '../research/grid-views';
 import { headline } from '../research/headline';
 import Icon from '../ui/Icon.astro';
@@ -21,7 +27,7 @@ import { backtests } from '../../i18n/backtests';
 import { localePath } from '../../i18n/config';
 import type { Locale } from '../../i18n/config';
 import { home } from '../../i18n/home';
-import { formatCount, formatDay, formatPct, formatRate, formatSigned } from '../../lib/backtests/format';
+import { formatCount, formatDay, formatPct, formatRate } from '../../lib/backtests/format';
 import { allResults, backtestPath, gridResults, results } from '../../lib/backtests/load';
 import { verdictOf } from '../../lib/backtests/verdict';
 import { fmt } from '../../lib/fmt';
@@ -72,52 +78,60 @@ const facts = [
     : null,
 ].filter((fact) => fact !== null);
 
-const method = `${x.sub}${locale === 'en' ? ' ' : ''}${top.caption}`;
+// x.sub already says fees and slippage are on every fill; only the funding half of the caption is added.
+const method = [x.sub, top.fundingNote].filter(Boolean).join(locale === 'en' ? ' ' : '');
 
-const strategyRows = results.map((result) => {
+// The market is printed once, beside the list's heading, when every result
+// shares it; otherwise on each line.
+const market = shared(allResults, (r) => `${r.symbol} ${r.interval}`);
+
+interface Row {
+  name: string;
+  href: string;
+  market: string;
+  /** Out-of-sample total return as printed, and its sign for the colour. */
+  ret: string;
+  sign: -1 | 0 | 1;
+  /** The verdict of the sample, or for a grid what the sample depended on. */
+  reading: string;
+  /** True when the sample has too few trades to read. */
+  thin: boolean;
+  countLabel: string;
+  count: string;
+}
+
+const strategyRows: Row[] = results.map((result) => {
   const strategy = bt.strategies[result.strategy as keyof typeof bt.strategies];
   if (!strategy) throw new Error(`home: no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
   const m = result.out_of_sample.metrics;
-  const negative = (value: number | null) => value !== null && value < 0;
-  const positive = (value: number | null) => value !== null && value > 0;
+  const r = m.total_return_pct;
+  const verdict = verdictOf(m);
   return {
     name: strategy.short,
     href: localePath(locale, backtestPath(result.slug)),
     market: `${result.symbol} ${result.interval}`,
-    cells: [
-      { label: bt.columns.trades, value: formatCount(m.trades), number: true, negative: false },
-      { label: bt.columns.avgR, value: formatSigned(m.avg_r) ?? na, number: m.avg_r !== null, negative: negative(m.avg_r), positive: positive(m.avg_r) },
-      {
-        label: bt.columns.totalReturn,
-        value: formatPct(m.total_return_pct) ?? na,
-        number: m.total_return_pct !== null,
-        negative: negative(m.total_return_pct),
-        positive: positive(m.total_return_pct),
-      },
-      { label: bt.columns.verdict, value: bt.verdict[verdictOf(m)], number: false, negative: false },
-    ],
+    ret: formatPct(r) ?? na,
+    sign: r === null || r === 0 ? 0 : r < 0 ? -1 : 1,
+    reading: bt.verdict[verdict],
+    thin: verdict === 'insufficient',
+    countLabel: bt.columns.trades,
+    count: formatCount(m.trades),
   };
 });
-// A grid has no trades with a stop, so no average R and no verdict: its row
-// shows round trips and drawdown, and ends with what the sample depended on.
-const gridRows = gridResults.map((result) => {
+// A grid has no trades with a stop, so no verdict: its line ends with what
+// the sample depended on, and counts round trips.
+const gridRows: Row[] = gridResults.map((result) => {
   const view = gridViews(result, bt)[1];
   return {
     name: bt.grid.short,
     href: localePath(locale, backtestPath(result.slug)),
     market: `${result.symbol} ${result.interval}`,
-    cells: [
-      { label: bt.grid.compare.roundTrips, value: view.roundTrips, number: true, negative: false },
-      { label: bt.columns.maxDrawdown, value: view.maxDrawdown, number: view.maxDrawdownPct !== null, negative: false },
-      {
-        label: bt.columns.totalReturn,
-        value: view.totalReturn,
-        number: view.totalReturnSign !== 0,
-        negative: view.totalReturnSign < 0,
-        positive: view.totalReturnSign > 0,
-      },
-      { label: bt.grid.card.reading, value: view.noteShort, number: false, negative: false },
-    ],
+    ret: view.totalReturn,
+    sign: view.totalReturnSign,
+    reading: view.noteShort,
+    thin: false,
+    countLabel: bt.grid.compare.roundTrips,
+    count: view.roundTrips,
   };
 });
 const rows = [...strategyRows, ...gridRows];
@@ -153,25 +167,31 @@ const rows = [...strategyRows, ...gridRows];
   </div>
 
   <div class="rs-results">
-    <h3 class="rs-sample">{bt.samples.out_of_sample}</h3>
+    <div class="rs-results-head">
+      <h3 class="rs-sample">{bt.detail.result.totalReturn.out_of_sample}</h3>
+      {market && <p class="num rs-market">{market}</p>}
+    </div>
     <ul class="rs-rows" aria-label={t.listLabel}>
       {
         rows.map((row) => (
           <li>
-            <p class="rs-name">
-              <a class="lnk" href={row.href}>
-                {row.name}
-              </a>
-              <span class="num">{row.market}</span>
+            <a class="lnk rs-name" href={row.href}>
+              {row.name}
+            </a>
+            <p class="rs-meta">
+              <span class="rs-reading" data-tone={row.thin ? 'warning' : undefined}>
+                {row.thin && <Icon name="triangle-alert" size={14} />}
+                {row.reading}
+              </span>
+              <span class="rs-count">
+                {row.countLabel} <span class="num">{row.count}</span>
+              </span>
+              {!market && <span class="num rs-count">{row.market}</span>}
             </p>
-            <dl class="rs-cells">
-              {row.cells.map((cell) => (
-                <div>
-                  <dt>{cell.label}</dt>
-                  <dd class:list={[{ num: cell.number, 'rs-neg': cell.negative, 'rs-pos': 'positive' in cell && cell.positive }]}>{cell.value}</dd>
-                </div>
-              ))}
-            </dl>
+            <p class:list={['num', 'rs-return', { 'rs-neg': row.sign < 0, 'rs-pos': row.sign > 0 }]}>
+              <span class="visually-hidden">{bt.columns.totalReturn}</span>
+              {row.ret}
+            </p>
           </li>
         ))
       }
@@ -248,57 +268,70 @@ const rows = [...strategyRows, ...gridRows];
     border-top: var(--hairline) solid var(--color-border-hover);
   }
 
+  /* What the column of figures is, and the market they share. */
+  .rs-results-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-4);
+  }
+
+  .rs-market {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  /* One result a line. On a phone the name and the return share the first
+     line and the verdict sits under them; from 620px it is one row. */
   .rs-rows li {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-2);
-    padding-block: var(--space-4);
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "name ret" "meta meta";
+    align-items: center;
+    gap: 0 var(--space-4);
+    padding-block: var(--space-1) var(--space-3);
     border-bottom: var(--hairline) solid var(--color-border);
   }
 
   .rs-name {
+    grid-area: name;
+    justify-self: start;
+    font-weight: var(--weight-strong);
+    white-space: normal;
+  }
+
+  .rs-return {
+    grid-area: ret;
+    font-size: var(--text-card);
+    font-weight: var(--weight-medium);
+    text-align: right;
+  }
+
+  .rs-meta {
+    grid-area: meta;
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 0 var(--space-3);
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-4);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
   }
 
-  .rs-name .lnk {
-    font-size: var(--text-card);
-    font-weight: var(--weight-strong);
+  /* "Too few trades": the icon and the words say it, the colour repeats it. */
+  .rs-reading[data-tone] {
+    color: var(--tone);
   }
 
-  .rs-name .num {
+  .rs-reading :global(.icon) {
+    margin-right: var(--space-1);
+    vertical-align: -0.12em;
+  }
+
+  .rs-count {
     color: var(--color-text-muted);
-    font-size: var(--text-xs);
-  }
-
-  .rs-cells {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-3) var(--space-6);
-  }
-
-  .rs-cells > div {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-content: start;
-    gap: var(--space-1);
-    min-width: 0;
-  }
-
-  .rs-cells dt {
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-  }
-
-  .rs-cells dd {
-    font-size: var(--text-md);
-    font-weight: var(--weight-medium);
-  }
-
-  .rs-cells dd.num {
-    font-size: var(--text-card);
+    white-space: nowrap;
   }
 
   /* The sign is in the text; the colour repeats it. */
@@ -311,8 +344,10 @@ const rows = [...strategyRows, ...gridRows];
   }
 
   @media (min-width: 620px) {
-    .rs-cells {
-      grid-template-columns: repeat(3, minmax(0, 0.8fr)) minmax(0, 1.4fr);
+    .rs-rows li {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr) minmax(8ch, auto);
+      grid-template-areas: "name meta ret";
+      padding-block: var(--space-1);
     }
   }
 

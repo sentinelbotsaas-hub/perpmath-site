@@ -14,13 +14,23 @@
 // The result file keeps daily equity points but no list of trades, so there
 // is an equity curve and a drawdown chart and no histogram of trade returns.
 //
+// Two parts appear only when the result calls for them:
+// - a sample with fewer than MIN_TRADES trades gets a warning directly under
+//   the two returns (./samples.ts, thinNotices), so none of its figures is
+//   read without it;
+// - a strategy whose idea has no agreed definition (it has an entry in
+//   `definitions` of src/i18n/backtests.ts) gets a section after the rules:
+//   the judgement calls this definition fixes, and what the engine does in
+//   place of the limit order the usual description assumes.
+//
 // There is no exchange link on this page. The actions are "run it yourself"
 // and "view the code".
 import Cta from '../Cta.astro';
 import EquityCharts from './EquityCharts.astro';
 import SampleCompare from './SampleCompare.astro';
-import { sampleViews, toneOf } from './samples';
+import { sampleViews, thinNotices, toneOf } from './samples';
 import Card from '../ui/Card.astro';
+import Disclaimer from '../ui/Disclaimer.astro';
 import FormulaBlock from '../ui/FormulaBlock.astro';
 import Icon from '../ui/Icon.astro';
 import Meter from '../ui/Meter.astro';
@@ -78,6 +88,7 @@ const blocks = sampleViews(result, t).map((view) => ({
   verdictLine: fmt(d.result.verdictLine, { verdict: view.verdict, t: view.tStat, n: view.trades }),
 }));
 const [inSample, outOfSample] = blocks;
+const thin = thinNotices(result, t, d.thin);
 
 const head = fmt(lostInBothSamples(result) ? d.headLost : d.head, { name, symbol });
 const sub = fmt(d.sub, { symbol, interval, is: inSample.totalReturn, oos: outOfSample.totalReturn });
@@ -104,6 +115,21 @@ const params = Object.entries(paramValues).map(([key, value]) => ({
   value,
   label: t.params[key as keyof typeof t.params] ?? stop(`no label for parameter "${key}" in src/i18n/backtests.ts`),
 }));
+
+// --- the definition this result stands for, when the idea has no agreed one ---
+// The parameter values and the fee rate inside the sentences are this run's.
+const definitionStrings: (typeof t.definitions)[keyof typeof t.definitions] | undefined =
+  t.definitions[result.strategy as keyof typeof t.definitions];
+const filled = (text: string) => {
+  const out = fmt(text, { ...paramValues, fee: formatRate(result.costs.fee_rate_per_side) });
+  if (/\{\w+\}/.test(out)) stop(`the definition mentions a parameter this result does not have: ${out}`);
+  return out;
+};
+const definition = definitionStrings && {
+  intro: filled(definitionStrings.intro),
+  calls: definitionStrings.calls.map((call) => ({ head: call.head, text: filled(call.text) })),
+  engine: { head: definitionStrings.engine.head, text: filled(definitionStrings.engine.text) },
+};
 
 // --- run it yourself ------------------------------------------------------------
 const commands = reproduceCommands(result);
@@ -149,6 +175,15 @@ const jsonLd = breadcrumbLd(locale, trail);
         ))
       }
     </div>
+    {
+      thin.map((notice) => (
+        <Disclaimer locale={locale} kind="warning" title={notice.title} class="bt-thin">
+          {notice.lines.map((line) => (
+            <p>{line}</p>
+          ))}
+        </Disclaimer>
+      ))
+    }
     <div class="bt-result">
       <div>
         <SampleCompare
@@ -235,6 +270,28 @@ const jsonLd = breadcrumbLd(locale, trail);
       </div>
     </div>
   </PageContainer>
+
+  {
+    definition && (
+      <PageContainer id="definition">
+        <SectionHeader title={d.definition.head} desc={definition.intro} />
+        <p class="bt-def-only">{d.definition.only}</p>
+        <div class="bt-def">
+          <dl class="bt-calls" aria-label={d.definition.callsLabel}>
+            {definition.calls.map((call) => (
+              <div>
+                <dt>{call.head}</dt>
+                <dd>{call.text}</dd>
+              </div>
+            ))}
+          </dl>
+          <Disclaimer locale={locale} kind="info" title={definition.engine.head} id="engine-approximation">
+            <p>{definition.engine.text}</p>
+          </Disclaimer>
+        </div>
+      </PageContainer>
+    )
+  }
 
   <PageContainer id="assumptions">
     <SectionHeader title={d.sections.assumptions} />
@@ -369,6 +426,53 @@ const jsonLd = breadcrumbLd(locale, trail);
   .bt-return-note {
     color: var(--color-text-secondary);
     font-size: var(--text-sm);
+  }
+
+  /* The warning of a sample with too few trades, right under the two returns. */
+  :global(.bt-thin) {
+    margin-top: var(--space-4);
+  }
+
+  :global(.bt-thin) p {
+    max-width: 72ch;
+  }
+
+  /* What the result stands for: one sentence set larger, then the judgement
+     calls as a list of question and answer, with the engine's part beside it. */
+  .bt-def-only {
+    max-width: 68ch;
+    color: var(--color-text);
+    font-size: var(--text-card);
+    line-height: var(--leading-tight);
+  }
+
+  .bt-def {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-10);
+    align-items: start;
+    margin-top: var(--space-8);
+  }
+
+  .bt-calls {
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  .bt-calls > div {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--space-1) var(--space-5);
+    padding-block: var(--space-4);
+    border-bottom: var(--hairline) solid var(--color-border);
+  }
+
+  .bt-calls dt {
+    color: var(--color-text);
+    font-weight: var(--weight-medium);
+  }
+
+  .bt-calls dd {
+    color: var(--color-text-secondary);
   }
 
   /* The full comparison beside the win-rate bars. */
@@ -555,7 +659,8 @@ const jsonLd = breadcrumbLd(locale, trail);
 
   @media (max-width: 960px) {
     .bt-result,
-    .bt-run {
+    .bt-run,
+    .bt-def {
       grid-template-columns: minmax(0, 1fr);
     }
 
@@ -569,6 +674,10 @@ const jsonLd = breadcrumbLd(locale, trail);
     .bt-assume {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-8);
+    }
+
+    .bt-calls > div {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

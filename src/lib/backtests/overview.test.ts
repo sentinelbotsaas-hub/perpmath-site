@@ -98,7 +98,7 @@ describe('the headline over the published results', () => {
   it.each(locales)('%s: leaves no placeholder and counts the results it names', (locale) => {
     const t = backtests[locale];
     const top = headline(t.index, t.na);
-    for (const text of [top.head, top.sub, top.caption, top.strategyCaption]) expect(text).not.toMatch(/\{\w+\}/);
+    for (const text of [top.head, top.sub, top.caption, top.strategyCaption, top.fundingNote]) expect(text).not.toMatch(/\{\w+\}/);
     expect(top.n).toBe(String(results.length + gridResults.length));
     expect(top.head).toContain(String(results.length));
     expect(top.head).toContain(String(gridResults.length));
@@ -118,5 +118,8 @@ describe('the headline over the published results', () => {
     // funding: counted for the grid, not for the strategies, and the caption says exactly that
     expect(top.caption).toBe(t.index.captionMixed);
     expect(top.strategyCaption).toBe(t.index.caption);
+    // the home page adds only the funding half to a sentence that already names fees and slippage
+    expect(top.fundingNote).toBe(t.index.fundingGridOnly);
+    expect(t.index.captionMixed.endsWith(top.fundingNote)).toBe(true);
   });
 });
