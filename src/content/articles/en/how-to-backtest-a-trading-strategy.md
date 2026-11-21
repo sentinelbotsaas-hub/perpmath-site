@@ -168,6 +168,14 @@ The second version is subtler, and I have to report that the check missed it. Ev
 <!-- unique:firsthand-data -->
 What did catch it every time was a stricter test in our script: cut the data right after each bar that carries an entry signal, and ask whether that bar still decides the same thing. Both peeking versions failed on their first signal. The shipped rule passed all 835. So read the built-in check as a tripwire for blatant leaks. The README already says it cannot see future prices pulled in from outside the data, and sparse one-bar leaks are a second gap.
 
+**Update for engine 0.2.2.** That stricter test is now the built-in check. From 0.2.2 the engine cuts the data after every bar that produced a signal, after each of the first 4,000 bars, and after 500 sampled later ones. We ran both peeking versions again on 0.2.2 on 21 November 2026 (UTC), and the one-bar-early version no longer gets through:
+
+```
+error: signals.side at bar 55 (2025-11-19T01:15:00Z) changes when bars after bar 55 are removed: the strategy uses future data
+```
+
+The centred version is still refused. The table above is the 0.2.1 run and stays as it was recorded. One gap remains, and the README spells it out: a peek that only removes signals leaves no trace on the signal bars, so past the first 4,000 bars it is caught by sampling, and only `--lookahead every-bar` checks every bar. The rerun is `research/how-to-backtest/lookahead_recheck.py`.
+
 ## What if one candle touches both the stop and the target?
 
 Then the candle cannot tell you which came first, and the backtester has to assume. This engine always assumes the stop, the worse case for you. ma_cross has no target, so the question never comes up for it; the other five shipped strategies all aim for 2R.

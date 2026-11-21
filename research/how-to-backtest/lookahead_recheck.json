@@ -1,0 +1,20 @@
+{
+  "article": "en/how-to-backtest-a-trading-strategy",
+  "engine_version": "0.2.2",
+  "runs": {
+    "ma_cross_centered": {
+      "command": "perpmath backtest ma_cross_centered --symbol BTCUSDT --interval 15m --config research/how-to-backtest/ma-cross-centered.config.json --out research/how-to-backtest/ma-cross-centered-btcusdt.json",
+      "exit_code": 1,
+      "stdout": [],
+      "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...\nerror: strategy failed when given only the first 6 bars (ValueError: could not broadcast input array from shape (0,) into shape (2,)); the look-ahead check needs it to run on any prefix of the data",
+      "result_file_written": false
+    },
+    "ma_cross_shift1": {
+      "command": "perpmath backtest ma_cross_shift1 --symbol BTCUSDT --interval 15m --config research/how-to-backtest/ma-cross-shift1.config.json --out research/how-to-backtest/ma-cross-shift1-btcusdt.json",
+      "exit_code": 1,
+      "stdout": [],
+      "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...\nerror: signals.side at bar 55 (2025-11-19T01:15:00Z) changes when bars after bar 55 are removed: the strategy uses future data",
+      "result_file_written": false
+    }
+  }
+}

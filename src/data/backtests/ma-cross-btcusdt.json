@@ -2,15 +2,15 @@
   "slug": "ma-cross-btcusdt",
   "source": {
     "file": "ma-cross-btcusdt.json",
-    "sha256": "13c4163eb9c20bf25c917704ed3e251fd13585384a79fd676aed0924e59af84b",
+    "sha256": "88d193471dd8e53417ce498ff41f8533955e7482e3221dc2bfb92810cb125da4",
     "engine": "perpmath",
-    "engine_version": "0.1.0",
+    "engine_version": "0.2.2",
     "trades_dropped": true
   },
   "schema_version": 1,
   "package": "perpmath",
-  "package_version": "0.1.0",
-  "generated_at": "2026-11-18T11:40:46Z",
+  "package_version": "0.2.2",
+  "generated_at": "2026-11-21T18:47:34Z",
   "strategy": "ma_cross",
   "symbol": "BTCUSDT",
   "interval": "15m",
@@ -55,7 +55,18 @@
     "same_bar_stop_and_target": "stop first",
     "lookahead_check": {
       "passed": true,
-      "shortened_runs": 9
+      "method": "signal_cuts",
+      "shortened_runs": 5243,
+      "signal_bars": 835,
+      "signal_bars_checked": 835,
+      "signal_bars_checked_pct": 100,
+      "signal_bars_sampled": false,
+      "other_bars": 34204,
+      "other_bars_checked": 4408,
+      "other_bars_checked_pct": 12.89,
+      "other_bars_sampled": true,
+      "leading_bars_all_checked": 4000,
+      "sample_seed": 20261122
     }
   },
   "split": {

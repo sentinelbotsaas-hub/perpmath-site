@@ -2,15 +2,15 @@
   "slug": "breaker-block-btcusdt",
   "source": {
     "file": "breaker-block-btcusdt.json",
-    "sha256": "e0c8b0a69fe8d99e8e8d362ed832191781c1c5305f1e2e084654b5037bd2bdb2",
+    "sha256": "ac14634c547bf70e7d96986fcc7edbd21b8321e3deaec8faa32fedf334a55958",
     "engine": "perpmath",
-    "engine_version": "0.2.1",
+    "engine_version": "0.2.2",
     "trades_dropped": true
   },
   "schema_version": 1,
   "package": "perpmath",
-  "package_version": "0.2.1",
-  "generated_at": "2026-11-21T17:35:26Z",
+  "package_version": "0.2.2",
+  "generated_at": "2026-11-21T18:48:32Z",
   "strategy": "breaker_block",
   "symbol": "BTCUSDT",
   "interval": "15m",
@@ -59,7 +59,18 @@
     "same_bar_stop_and_target": "stop first",
     "lookahead_check": {
       "passed": true,
-      "shortened_runs": 9
+      "method": "signal_cuts",
+      "shortened_runs": 4851,
+      "signal_bars": 384,
+      "signal_bars_checked": 384,
+      "signal_bars_checked_pct": 100,
+      "signal_bars_sampled": false,
+      "other_bars": 34655,
+      "other_bars_checked": 4467,
+      "other_bars_checked_pct": 12.89,
+      "other_bars_sampled": true,
+      "leading_bars_all_checked": 4000,
+      "sample_seed": 20261122
     }
   },
   "split": {

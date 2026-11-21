@@ -2,15 +2,15 @@
   "slug": "grid-btcusdt",
   "source": {
     "file": "grid-btcusdt.json",
-    "sha256": "86ebaca8a94fedada2a19a0c014c46e2be8eaf7cee5df08a204ec0dd7a7e1188",
+    "sha256": "0465d240b11fea4257ae9683e7bd28567e6b352715995b1a638c57e91e1d068f",
     "engine": "perpmath",
-    "engine_version": "0.2.0",
+    "engine_version": "0.2.2",
     "fills_dropped": true
   },
   "schema_version": 1,
   "package": "perpmath",
-  "package_version": "0.2.0",
-  "generated_at": "2026-11-19T12:44:26Z",
+  "package_version": "0.2.2",
+  "generated_at": "2026-11-21T18:48:40Z",
   "strategy": "grid",
   "symbol": "BTCUSDT",
   "interval": "15m",
@@ -72,7 +72,16 @@
     "intrabar_path": "worst_of_two",
     "lookahead_check": {
       "passed": true,
-      "shortened_runs": 9
+      "method": "fill_cuts",
+      "shortened_runs": 549,
+      "fill_bars": 1658,
+      "fill_bars_checked": 105,
+      "fill_bars_checked_pct": 6.33,
+      "other_bars": 33381,
+      "other_bars_checked": 444,
+      "other_bars_checked_pct": 1.33,
+      "leading_bars_all_checked": 500,
+      "sample_seed": 20261122
     }
   },
   "assumptions": [

@@ -2,15 +2,15 @@
   "slug": "fvg-btcusdt",
   "source": {
     "file": "fvg-btcusdt.json",
-    "sha256": "c166b12869d350c2bc62efc7452adeac826e105d9ff4c2e9d1244de3e29bfc5f",
+    "sha256": "d3ab95326d63fa31803ba7db4cd4886e5477c79bc4bb9fe53e003ec0d97a493e",
     "engine": "perpmath",
-    "engine_version": "0.1.0",
+    "engine_version": "0.2.2",
     "trades_dropped": true
   },
   "schema_version": 1,
   "package": "perpmath",
-  "package_version": "0.1.0",
-  "generated_at": "2026-11-18T11:40:45Z",
+  "package_version": "0.2.2",
+  "generated_at": "2026-11-21T18:47:26Z",
   "strategy": "fvg",
   "symbol": "BTCUSDT",
   "interval": "15m",
@@ -56,7 +56,18 @@
     "same_bar_stop_and_target": "stop first",
     "lookahead_check": {
       "passed": true,
-      "shortened_runs": 9
+      "method": "signal_cuts",
+      "shortened_runs": 5945,
+      "signal_bars": 1592,
+      "signal_bars_checked": 1592,
+      "signal_bars_checked_pct": 100,
+      "signal_bars_sampled": false,
+      "other_bars": 33447,
+      "other_bars_checked": 4353,
+      "other_bars_checked_pct": 13.01,
+      "other_bars_sampled": true,
+      "leading_bars_all_checked": 4000,
+      "sample_seed": 20261122
     }
   },
   "split": {

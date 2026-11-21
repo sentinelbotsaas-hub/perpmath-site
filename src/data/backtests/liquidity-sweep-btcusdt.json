@@ -2,15 +2,15 @@
   "slug": "liquidity-sweep-btcusdt",
   "source": {
     "file": "liquidity-sweep-btcusdt.json",
-    "sha256": "79d9beec0dbe872a3fca167f90e11069ef68d5d465af6caf995df699d9dbc57c",
+    "sha256": "17e960b0d41d835c63bb2d24185146985f3aab1a3b6a5276757c669f998f1ca0",
     "engine": "perpmath",
-    "engine_version": "0.1.0",
+    "engine_version": "0.2.2",
     "trades_dropped": true
   },
   "schema_version": 1,
   "package": "perpmath",
-  "package_version": "0.1.0",
-  "generated_at": "2026-11-18T11:40:45Z",
+  "package_version": "0.2.2",
+  "generated_at": "2026-11-21T18:47:32Z",
   "strategy": "liquidity_sweep",
   "symbol": "BTCUSDT",
   "interval": "15m",
@@ -55,7 +55,18 @@
     "same_bar_stop_and_target": "stop first",
     "lookahead_check": {
       "passed": true,
-      "shortened_runs": 9
+      "method": "signal_cuts",
+      "shortened_runs": 7511,
+      "signal_bars": 3374,
+      "signal_bars_checked": 3374,
+      "signal_bars_checked_pct": 100,
+      "signal_bars_sampled": false,
+      "other_bars": 31665,
+      "other_bars_checked": 4137,
+      "other_bars_checked_pct": 13.06,
+      "other_bars_sampled": true,
+      "leading_bars_all_checked": 4000,
+      "sample_seed": 20261122
     }
   },
   "split": {

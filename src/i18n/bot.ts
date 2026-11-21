@@ -99,7 +99,7 @@ export const bot = defineStrings({
       },
       lookahead: {
         head: 'Look-ahead check',
-        body: 'Before simulating, the strategy is run again on shortened copies of the data. If any decision changes when later bars are removed, the run stops with an error. It cannot catch a strategy that gets future prices from somewhere other than the data it is given.',
+        body: 'Before simulating, the strategy is run again on shortened copies of the data, cut after every bar that produced a signal, after each of the first 4,000 bars and after 500 sampled later bars. If a decision changes once the later bars are gone, the run stops with an error. A peek that only removes signals is caught by sampling beyond the first 4,000 bars; the every-bar mode checks them all. A strategy that gets future prices from outside the data it is given is not caught.',
       },
       metrics:
         'Each part reports its trades, win rate, average R, a t-statistic, total return and max drawdown. Under {min} trades the block is flagged as too small a sample. A value that cannot be computed is written as null, never as 0.',
@@ -297,7 +297,7 @@ export const bot = defineStrings({
       },
       lookahead: {
         head: '偷看未來檢查',
-        body: '模擬之前，策略會先在截短的資料上重跑幾次。拿掉後面的 K 線之後，只要前面任何一個決定有變，回測就會報錯停下來。策略如果從資料以外的地方取得未來價格，這個檢查抓不到。',
+        body: '模擬之前，策略會先在截短的資料上重跑：每一根出過訊號的 K 線後面切一次，前 4,000 根逐根切，之後再抽 500 根。拿掉後面的 K 線之後，只要前面的決定有變，回測就會報錯停下來。只會拿掉訊號的偷看，4,000 根之後是靠抽樣抓的，every-bar 模式才會每一根都查。策略如果從資料以外的地方取得未來價格，這個檢查抓不到。',
       },
       metrics:
         '兩段各自報告交易筆數、勝率、平均 R、t 值、總報酬率與最大回撤。交易少於 {min} 筆時，那一段會被標成樣本太小。算不出來的值一律寫成 null，不會寫成 0。',
