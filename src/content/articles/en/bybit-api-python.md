@@ -12,7 +12,7 @@ tldr: "Bybit's V5 market endpoints need no key: one urllib request returns candl
 ---
 
 <!-- unique:firsthand-data -->
-Ask Bybit for 15-minute candles with `interval=15m` and it answers `retCode 0`, `retMsg "OK"` and an empty list. No error, no hint that the right value is `15`. We ran into that and two more silent failures while running every request in this article against the live API, 76 HTTP requests in 21 seconds starting at 17:26 UTC on 21 November 2026 (already the 22nd in Taipei, where the script ran). The answers are printed below, shortened where they are long.
+What does Bybit answer when you ask for 15-minute candles with `interval=15m`? `retCode 0`, `retMsg "OK"` and an empty list. No error, no hint that the right value is `15`. We ran into that and two more silent failures while running every request in this article against the live API, 76 HTTP requests in 21 seconds starting at 17:26 UTC on 21 November 2026 (already the 22nd in Taipei, where the script ran). The answers are printed below, shortened where they are long.
 
 Everything uses Python's standard library. The script, its transcript and the raw responses are in this site's source under `research/bybit-api-python/`.
 
@@ -287,17 +287,17 @@ We did not see those headers. None of the public answers carried one (the header
 | `10000` `10016` | server timeout, server error | GET: retry. POST: see below |
 | `110072` | duplicate `orderLinkId` | the order exists, look it up |
 
-For the "stop" rows a retry cannot help: the same key and the same signature will be refused again. The error list gives two more causes for HTTP 403 besides the rate limit, a request from a US IP address and a GET sent with an empty JSON body. The engine groups the same codes in [bybit.py](https://github.com/sentinelbotsaas-hub/perpmath/blob/85ee44e58a12eace4cd6645331d0d3ca74197da9/src/perpmath/live/bybit.py#L51-L54). We have seen `10001`, `10002`, `10003` and the HTTP 401 on the wire. The rest of the table is documentation that we have not triggered.
+For the "stop" rows a retry cannot help: an unchanged key and signature will be refused again. The error list gives two more causes for HTTP 403 besides the rate limit, a request from a US IP address and a GET sent with an empty JSON body. The engine groups these codes in [bybit.py](https://github.com/sentinelbotsaas-hub/perpmath/blob/85ee44e58a12eace4cd6645331d0d3ca74197da9/src/perpmath/live/bybit.py#L51-L54). We have seen `10001`, `10002`, `10003` and the HTTP 401 on the wire. The rest of the table is documentation that we have not triggered.
 
 ## Why does orderLinkId matter, and why not resend a timed-out POST?
 
-A POST that times out has an unknown outcome: the order may exist. Sending it again can open the position twice, and `orderLinkId` is what turns the retry into a lookup.
+When a POST times out you don't know what became of it: the order may exist. Sending it again can open the position twice, and `orderLinkId` is what turns the retry into a lookup.
 
 The [create-order reference](https://bybit-exchange.github.io/docs/v5/order/create-order) (checked 22 November 2026) describes `orderLinkId` as your own order ID, at most 36 characters of letters, digits, dashes and underscores, and unique. It also says the call is asynchronous: a success answer means the order was accepted for processing, and its status has to be confirmed separately.
 
-Put those together and the safe sequence writes itself. Build the ID from things that do not change between attempts. The engine uses strategy, a hash of the settings, the bar's open time, direction and action, giving IDs shaped like `pm-macross-3fa9c1-1763467200-LE1` (see [order_link_id](https://github.com/sentinelbotsaas-hub/perpmath/blob/85ee44e58a12eace4cd6645331d0d3ca74197da9/src/perpmath/live/executor.py#L117)). Look the ID up before sending. If the POST gets no answer, look it up again before doing anything else, and resend only with the same ID. If Bybit answers `110072`, the first attempt arrived and the order is yours to adopt. GETs are safe to repeat and POSTs are not, so the engine's client retries the first kind and never the second.
+Those two facts fix the safe sequence. Build the ID from things that do not change between attempts. The engine uses strategy, a hash of the settings, the bar's open time, direction and action, giving IDs shaped like `pm-macross-3fa9c1-1763467200-LE1` (see [order_link_id](https://github.com/sentinelbotsaas-hub/perpmath/blob/85ee44e58a12eace4cd6645331d0d3ca74197da9/src/perpmath/live/executor.py#L117)). Look the ID up before sending. If the POST gets no answer, look it up again before doing anything else, and resend only with the same ID. If Bybit answers `110072`, the first attempt arrived and the order is yours to adopt. GETs are safe to repeat and POSTs are not, so the engine's client retries the first kind and never the second.
 
-One correction to my own table above: `10000` and `10016` on a POST belong with the timeout case, whatever the word "error" suggests. Treat any order request without a clear refusal as possibly placed.
+I have to correct my own table above: `10000` and `10016` on a POST belong with the timeout case, whatever the word "error" suggests. Treat any order request without a clear refusal as possibly placed.
 
 <!-- unique:field-note -->
 Field note, 22 November 2026: that order path is tested against a fake server we wrote from Bybit's documentation. It has never placed an order with a real testnet key, and nothing in this article should be read as a tested order flow.
@@ -308,7 +308,7 @@ Trading only. A script that places orders has no use for withdrawal or transfer 
 
 The [API key information endpoint](https://bybit-exchange.github.io/docs/v5/user/apikey-info) (checked 22 November 2026), `GET /v5/user/query-api`, reports what a key can do: `readOnly` (0 or 1), the bound `ips`, and a `permissions` object whose `Wallet` group can hold `AccountTransfer`, `SubMemberTransfer` and `Withdraw`. For USDT perpetuals the needed entries are `Order` and `Position` under `ContractTrade`. Bybit's [API FAQ](https://bybit-exchange.github.io/docs/faq) (same date) adds that a key with no bound IP address expires after 90 days.
 
-The engine calls that endpoint before it looks at positions or sends any order, and [refuses to start](https://github.com/sentinelbotsaas-hub/perpmath/blob/85ee44e58a12eace4cd6645331d0d3ca74197da9/src/perpmath/live/executor.py#L276) with a key that can withdraw or transfer, with a read-only key, or with one lacking contract order permission. Same caveat as before: that check has run against our fake server's answers, not against a real key's.
+The engine calls that endpoint before it looks at positions or sends any order, and [refuses to start](https://github.com/sentinelbotsaas-hub/perpmath/blob/85ee44e58a12eace4cd6645331d0d3ca74197da9/src/perpmath/live/executor.py#L276) if the key can withdraw or transfer, if it is read-only, or if it has no contract order permission. Same caveat as before: that check has run against our fake server's answers, not against a real key's.
 
 To try any of this without money, the paths above work unchanged on the testnet. What the testnet is good for, and how far its prices sit from the real market, is in [the Bybit testnet article](/learn/bybit-testnet/). The runner that uses these calls is described on the [bot page](/bot/). It trades on the testnet only and ships no profitable strategy; the [backtests](/backtests/) show its three examples losing money. perpmath is an independent project and is not endorsed by Bybit; what the site earns from Bybit links is on the [disclosure page](/disclosure/).
 

@@ -12,13 +12,13 @@ tldr: "A liquidity sweep is a bar that trades through a prior high or low and cl
 ---
 
 <!-- unique:firsthand-data -->
-In one year of BTCUSDT 15-minute candles, a bar took out the previous 20-bar high or low and closed back inside 3,374 times, a little over nine times a day. Trading against each of those pokes, with the stop behind the wick and a target at twice the risk, turned 10,000 USDT into 602.28 in the first 70% of the year. We then ran 18 more versions of the rule. Every one of them lost as well.
+3,374 times in one year of BTCUSDT 15-minute candles, a bar took out the previous 20-bar high or low and closed back inside. That is a little over nine times a day. Trading against each of those pokes, with the stop behind the wick and a target at twice the risk, turned 10,000 USDT into 602.28 in the first 70% of the year. We then ran 18 more versions of the rule. Every one of them lost as well.
 
 ## What is a liquidity sweep?
 
 A liquidity sweep is a move in which price trades through an obvious prior high or low and then fails to stay beyond it. "Liquidity" means the orders resting there. A stop-loss above a high is a buy order waiting to happen, and so is a breakout entry, so a push through the high finds plenty to trade against.
 
-The term comes from the ICT and smart money vocabulary, the same family as the [fair value gap](/learn/fair-value-gap/). In that telling the sweep is the trap before the real move: breakout buyers get filled at the top, shorts get stopped out, and price turns. What a chart can show is narrower. A level broke and the break failed. Who did it, and whether they meant to, isn't on the chart.
+It is a term from ICT and smart money trading, like the [fair value gap](/learn/fair-value-gap/). In that telling the sweep is the trap before the real move: breakout buyers get filled at the top, shorts get stopped out, and price turns. What a chart can show is narrower. A level broke and the break failed. Who did it, and whether they meant to, isn't on the chart.
 
 ## Where do the usual definitions stop being checkable?
 
@@ -33,7 +33,7 @@ They agree on the story and leave out the three numbers a program needs: how man
 Put side by side, they disagree on things that change which candles count. TMGM says a wick is not enough; LiteFinance treats the long wick as the tell. FXOpen and LiteFinance assert intent; LuxAlgo's FAQ says the phrase "stop hunt" implies an intent no chart can prove. Even the neighbouring term points both ways. For FXOpen a "liquidity grab" goes only slightly beyond the level while a sweep can stay beyond it for a while, TMGM reports that some traders use "grab" for the faster single-candle event, and LiteFinance says the grab is the broader concept. None of the four gives a lookback, a distance or a time limit.
 
 <!-- unique:firsthand-data -->
-Those omissions are not small. On our 35,040 bars, 6,402 bars (18.27%) traded beyond the prior 20-bar high or low. Only 3,374 of them, 52.7%, closed back inside. An "any poke counts" reading and a "close back inside" reading therefore differ by a factor of 1.9 on the same chart. The lookback matters as much: the same year holds 5,177 sweeps with a 10-bar lookback, 3,374 with 20, 1,909 with 50 and 1,228 with 100.
+Those omissions are not small. On our 35,040 bars, 6,402 bars (18.27%) traded beyond the prior 20-bar high or low. Only 3,374 of them, 52.7%, closed back inside. An "any poke counts" reading and a "close back inside" reading therefore differ by a factor of 1.9 on one chart. The lookback matters as much: that year holds 5,177 sweeps with a 10-bar lookback, 3,374 with 20, 1,909 with 50 and 1,228 with 100.
 
 ## A liquidity sweep rule a program can check
 
@@ -52,19 +52,19 @@ stop:    short: the sweep bar's high + 0.1 x ATR(14)
 target:  2 x risk from the fill price
 ```
 
-Everything is decided on a bar's close and filled at the next bar's open, with a market order. One position at a time; a signal that arrives while a trade is open is ignored. The ATR is the simple average of the last 14 true ranges.
+The rule decides when a bar closes and fills with a market order at the open of the bar after it. It holds one position at a time, so a signal that arrives while a trade is open is ignored. ATR here is the plain average of the 14 most recent true ranges.
 
-So the three missing numbers are filled in like this: the level is the 20-bar extreme, any distance through it counts, and price has to be back inside by the close of the same bar. The engine's README says the parameters in `configs/liquidity_sweep.json` were fixed once, before the first run on real data, and calls them one reasonable choice, not the definition.
+So the three missing numbers are filled in like this: the level is the 20-bar extreme, any distance through it counts, and price has to be back inside by the close of that bar. According to the engine's README, the parameters in `configs/liquidity_sweep.json` were set once, ahead of any run on real data; it calls them one reasonable choice, not the definition.
 
 <!-- unique:field-note -->
 Two things this rule leaves out on purpose. It has no judgement about which highs are "obvious" and no confirmation step (displacement, a structure break on a lower timeframe) that stricter readings add. And it has one quirk we found while counting on 22 November 2026: 10 of the 3,374 signal bars traded through both the prior high and the prior low and closed beyond one of them. The rule reads those as a sweep of the other side. Ten bars don't move the result, but they are in it.
 
 The idea is older than the vocabulary. LuxAlgo's entry on [Turtle Soup](https://www.luxalgo.com/library/concept/turtle-soup/) (checked 22 November 2026) credits Laurence Connors and Linda Raschke's 1995 book Street Smarts with a rule-defined fade of failed 20-day breakouts. We haven't read the book, so that attribution rests on LuxAlgo's page.
 
-## What the one-year backtest shows
+## One year of BTCUSDT: what the rule did
 
 <!-- unique:firsthand-data -->
-It lost in both periods, and by too much to be bad luck. The data is BTCUSDT 15-minute candles from Bybit's public [kline endpoint](https://bybit-exchange.github.io/docs/v5/market/kline), from 11:30 UTC on 18 November 2025 to 11:30 UTC on 18 November 2026: 35,040 bars, none missing. The first 70% is in-sample and the rest, from 31 July 2026, is out-of-sample. The full report with the equity curve is on the [liquidity sweep backtest page](/backtests/liquidity-sweep-btcusdt/).
+Both periods lost, and the losses are too large to put down to bad luck. We used the 35,040 BTCUSDT 15-minute candles that Bybit's public [kline endpoint](https://bybit-exchange.github.io/docs/v5/market/kline) returns for 11:30 UTC on 18 November 2025 to 11:30 UTC on 18 November 2026, with none missing. In-sample is the first 70%, and out-of-sample starts on 31 July 2026. The full report with the equity curve is on the [liquidity sweep backtest page](/backtests/liquidity-sweep-btcusdt/).
 
 | Sample | Trades | Win rate | Avg R | t-stat | Total return | Max drawdown |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -73,12 +73,12 @@ It lost in both periods, and by too much to be bad luck. The data is BTCUSDT 15-
 
 Of the 10,000 USDT each period started with, 602.28 was left in-sample and 3,097.46 out-of-sample.
 
-Costs in that run: 0.055% per side, the VIP 0 taker rate for perpetuals in Bybit's [fee table](https://www.bybit.com/en/help-center/article/Trading-Fee-Structure) (page last updated 20 November 2026, checked 22 November 2026), plus 0.02% slippage on every fill. The slippage is an assumption, not a measurement. Each trade uses 100% of equity with no leverage, and funding is not modelled.
+Every fill was charged 0.055%, which Bybit's [fee table](https://www.bybit.com/en/help-center/article/Trading-Fee-Structure) (page last updated 20 November 2026, checked 22 November 2026) lists as the VIP 0 taker rate for perpetuals, and moved 0.02% against the trade as slippage. We assumed that slippage figure and did not measure it. Position size is 100% of equity with no leverage. Funding is left out.
 
-The t-statistic is a [one-sample t-test](https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm) of per-trade net returns against zero. An absolute value under 2 can't be told apart from zero; these are -10.91 and -8.48. The test treats trades as independent, which flatters it, so trust the sign more than the decimals.
+The t-statistic comes from a [one-sample t-test](https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm), which asks whether the average net return per trade differs from zero. When its absolute value is under 2 the answer is "can't tell"; these are -10.91 and -8.48. Trades are assumed to be independent, and that assumption flatters the test, so trust the sign more than the decimals.
 
 <!-- unique:original-calc -->
-With a 2R target the win rate needed to break even before costs is 33.33%. The rule won 29.16% and 28.20%. Longs and shorts were equally bad: in-sample, 823 longs won 28.68% and 816 shorts won 29.66%; out-of-sample it was 27.15% of 361 longs and 29.36% of 327 shorts. In-sample 1,157 trades ended at the stop and 481 at the target, and the average trade lasted 1.91 hours.
+A 2R target breaks even, before costs, at a win rate of 33.33%. The rule won 29.16% and 28.20%. Longs and shorts were equally bad: in-sample, 823 longs won 28.68% and 816 shorts won 29.66%; out-of-sample it was 27.15% of 361 longs and 29.36% of 327 shorts. In-sample 1,157 trades ended at the stop and 481 at the target, and the average trade lasted 1.91 hours.
 
 <!-- unique:original-calc -->
 What's left after a 93.98% loss needs a 1,560.4% gain to get back to the start. The [drawdown calculator](/tools/drawdown-calculator/) does that sum for any figure.
@@ -89,7 +89,7 @@ What's left after a 93.98% loss needs a 1,560.4% gain to get back to the start. 
 Most of it, and there is no profit underneath. We reran the same candles, parameters and split date with the fee and slippage set to zero (engine 0.2.0, 22 November 2026). The average trade went from -0.169% of notional to -0.017% in-sample and from -0.169% to -0.021% out-of-sample. Total return became -27.12% on 1,679 trades and -14.58% on 712, with t-statistics of -1.14 and -1.11. That is a rule that does nothing measurable, slightly on the wrong side.
 
 <!-- unique:original-calc -->
-The gap between the two runs is 0.152 and 0.148 points per trade, which is the assumed round trip of 0.15% (two fees, two fills of slippage). Costs bite this hard on a sweep fade for a structural reason: the stop sits just behind the wick, so the risk is tiny. The median distance from entry to stop was 0.296% of price in-sample and 0.234% out-of-sample, which makes the round trip 0.51R and 0.64R. On 244 of the 1,639 in-sample trades the stop was closer than the cost of the trade itself. The account paid 6,395.45 USDT in fees on its way down from 10,000.
+The gap between the two runs is 0.152 and 0.148 points per trade, which is the assumed round trip of 0.15% (two fees, two fills of slippage). Costs bite this hard on a sweep fade for a structural reason: the stop sits just behind the wick, so the risk on each trade is very small. Entry and stop were a median 0.296% of price apart in-sample and 0.234% out-of-sample, which makes the round trip 0.51R and 0.64R. For 244 of the 1,639 in-sample trades, the trade's own cost was larger than the distance to its stop. The account paid 6,395.45 USDT in fees on its way down from 10,000.
 
 ## All 19 settings: the sensitivity table
 
@@ -121,7 +121,7 @@ In the table, BTC, ETH and SOL are the USDT perpetuals, and "Settings" reads loo
 | SOL 1h | 20 / 0.1 / 2R | -57.91% / -4.11% | -2.33 / -0.06 | 458 / 182 | -0.17 / 1.18 |
 
 <!-- unique:original-calc -->
-After costs, 0 of the 38 blocks is positive. Returns run from -96.93% to -4.11%. On 15-minute bars every block has a t-statistic below -2. The 1-hour rows are less clear cut: four of their six blocks lose with a t-statistic between -2 and 0, so on that timeframe the honest reading is "lost, and not provably different from zero".
+After costs, 0 of the 38 blocks is positive. Returns run from -96.93% to -4.11%. On 15-minute bars every block has a t-statistic below -2. The 1-hour rows are less clear cut: four of their six blocks lose with a t-statistic between -2 and 0, so on that timeframe the reading is "lost, and not provably different from zero".
 
 <!-- unique:original-calc -->
 My first reading of this table was wrong. Going down the BTC 15m rows, a longer lookback and a wider stop shrink the loss from -93.98% to -50.89%, which looks like the rule getting better. It isn't. The average trade loses between 0.15% and 0.23% of notional in every one of the 14 BTCUSDT 15-minute rows, in both samples. The rows near the bottom lose less only by trading less: 412 times against 1,639. Fewer trades means fewer payments of the same toll.
@@ -165,9 +165,9 @@ The first group is 11.85% of the trades and it is the whole screenshot gallery: 
 
 This is the look-ahead problem in its most ordinary form, and the reason the engine refuses to run a strategy whose signals change when later bars are removed. Our guide on [how to backtest a trading strategy](/learn/how-to-backtest-a-trading-strategy/) covers that check and the other ways a test fools its author.
 
-## Limits of this test, and how to rerun it
+## What this test can't tell you, and the commands to rerun it
 
-The year was a falling one: BTCUSDT went from 91,423.0 to 64,124.5 (-29.86%), ETHUSDT fell 41.33% and SOLUSDT 46.03%. All three coins come from the same twelve months, so they are not three independent tests. The engine fills at the next open, assumes the stop is hit first when a bar touches both stop and target, and ignores funding.
+The year was a falling one: BTCUSDT went from 91,423.0 to 64,124.5 (-29.86%), ETHUSDT fell 41.33% and SOLUSDT 46.03%. All three coins come from the same twelve months, so they are not three independent tests. The engine fills at the next open and leaves funding out, and when one bar reaches both the stop and the target it counts the stop.
 
 Nothing here tests a discretionary sweep trader. Someone who only takes sweeps of a daily high, or waits for a structure break after the sweep, is running a different rule, and until it is written down nobody can test it, including them. What the numbers support is narrow: the plain mechanical version had no measurable edge before costs on these markets and a heavy loss after them.
 
@@ -183,7 +183,7 @@ perpmath download BTCUSDT 15m --start 2025-11-18T11:30:00Z --end 2026-11-18T11:3
 perpmath backtest liquidity_sweep --symbol BTCUSDT --interval 15m --config configs/liquidity_sweep.json --out results/liquidity-sweep-btcusdt.json
 ```
 
-For the other rows, copy the config, change `lookback`, `stop_buffer_atr` or `r_multiple`, and download ETHUSDT, SOLUSDT or the `1h` interval the same way. Our rerun of the published setting on engine 0.2.0 gave the published metrics exactly. The engine's home on this site is the [bot section](/bot/); the [position size calculator](/tools/position-size-calculator/) shows what a 0.3% stop does to position size before you try anything of your own.
+For the other rows, copy the config, change `lookback`, `stop_buffer_atr` or `r_multiple`, and download ETHUSDT, SOLUSDT or the `1h` interval the same way. Our rerun of the published setting on engine 0.2.0 gave the published metrics exactly. There is more about the engine in the [bot section](/bot/). Before you try a variant of your own, put a 0.3% stop into the [position size calculator](/tools/position-size-calculator/) and look at the size it gives back.
 
 ## FAQ
 
@@ -211,4 +211,4 @@ None of the four we ran made money. Lookbacks of 10, 20, 50 and 100 bars all los
 
 ### Does this prove liquidity sweeps don't work?
 
-No. It shows that one mechanical version lost in 38 of 38 sample blocks after costs and did nothing measurable before them, on three coins in one falling year. A sweep used as one input among several, with judgement, is a different claim. It stays untestable until someone writes the judgement down as rules.
+No. One mechanical version lost in 38 of 38 sample blocks once costs were charged, and with costs removed it showed nothing measurable, all on three coins in one falling year. A sweep used as one input among several, with judgement, is a different claim, and it stays untestable until the judgement is written down as rules. Which highs count as obvious, and what has to happen after the sweep before you enter?

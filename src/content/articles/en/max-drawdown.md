@@ -14,7 +14,7 @@ tldr: "Max drawdown is the largest fall from an earlier equity high to a later l
 <!-- unique:firsthand-data -->
 We took one backtest, one equity history, and computed its max drawdown three ways. The daily equity points said 27.02%. The list of closed trades said 28.83%. Every 15-minute bar close said 31.18%. Nothing was changed between the three except how often we looked.
 
-That gap is the reason two tools can disagree about the same strategy and both be right. This page gives the definition and a hand-worked example, then measures the gap on seven published result files, and ends with what a drawdown costs to climb out of.
+That gap is the reason two tools can disagree about the same strategy and both be right.
 
 ## What is max drawdown?
 
@@ -27,7 +27,7 @@ max drawdown       = the largest drawdown at any t
 
 Wikipedia's [drawdown article](https://en.wikipedia.org/wiki/Drawdown_%28economics%29) (checked 22 November 2026) gives the same thing in symbols: the drawdown is the decline from a historical peak, and the maximum drawdown is its maximum over the history. Two details are left to whoever writes the code. One is what counts as the first peak; in the perpmath engine the starting capital does, per the docstring of [`max_drawdown_pct`](https://github.com/sentinelbotsaas-hub/perpmath/blob/v0.2.1/src/perpmath/metrics.py#L32-L42). The other is which moments "t" runs over, and that is where the trouble starts.
 
-## How do you calculate max drawdown by hand?
+### How do you calculate max drawdown by hand?
 
 Walk the equity curve once, keep the highest value seen so far, and at each point divide the distance below that high by the high. The largest result is the max drawdown. Here is an invented six-point curve, small enough to do on paper:
 
@@ -76,13 +76,13 @@ On the other eleven rows the gap between daily points and bar closes runs from 0
 
 One rule holds whatever the curve does. The daily points are a subset of the bar closes, so the daily figure can never be the larger of the two. Closed-trade equity is a different series, not a subset: it came out above the daily figure on five rows, below it on four and level with it on three. The site's own [MA cross backtest page](/backtests/ma-cross-btcusdt/) charts the daily points and prints the engine's bar-close figure next to them, which is how the two numbers ended up on one page.
 
-## How much deeper is the intrabar drawdown?
+### How much deeper is the intrabar drawdown?
 
 <!-- unique:firsthand-data -->
-On these twelve runs, between 0.00 and 0.12 percentage points deeper than the bar-close figure. We marked each open position at the worst price its bar reached, the low for a long and the high for a short, and kept the peaks at bar closes. The biggest change was break of structure in-sample, from 53.72% to 53.84%.
+On these twelve runs, between 0.00 and 0.12 percentage points deeper than the bar-close figure. We marked each open position at the worst price its bar reached, the low for a long and the high for a short, and kept the peaks at bar closes.
 
 <!-- unique:original-calc -->
-I expected more. Then the reason turned out to be sitting in the rules. Every one of these trades has a stop, so the worst price inside a bar is capped; the positions are 100% of equity with no leverage; and a 15-minute BTC bar is small next to a 30% to 90% drawdown. An outer bound, where the peak is also taken at the best price inside a bar, adds at most 0.31 points (MA cross out-of-sample, 31.49%).
+I expected more, and I was wrong. The reason turned out to be sitting in the rules. Every one of these trades has a stop, so the worst price inside a bar is capped; the positions are 100% of equity with no leverage; and a 15-minute BTC bar is small next to a 30% to 90% drawdown. An outer bound, where the peak is also taken at the best price inside a bar, adds at most 0.31 points (MA cross out-of-sample, 31.49%).
 
 Two limits on that measurement. Candles don't record whether the high or the low came first, so the outer bound assumes the worst order and is not something that happened. And the mark carries no exit fee or slippage. We have not measured a leveraged strategy or hourly bars, where the same arithmetic should produce a larger gap, so treat "about a tenth of a point" as a fact about these files only.
 
@@ -91,7 +91,7 @@ Two limits on that measurement. Candles don't record whether the high or the low
 A curve built from realised profit alone can show almost no drawdown while the account is deep under water. Grid bots are the clearest case, since they close winners and keep losers open.
 
 <!-- unique:firsthand-data -->
-The engine's shipped grid result (neutral, 50 cells, no leverage) completed 669 round trips in-sample, and not one of them closed at a loss. Add up realised profit minus fees fill by fill and the worst dip before the final close is 0.36 USDT on about 11,000, a max drawdown of 0.0033%. The same run marked to market at every bar close had a max drawdown of 12.52%, and 11.75% on daily points. The difference was inventory: 0.084 BTC bought on the way down, closed at the end of the sample for a loss of 953.84 USDT.
+The engine's shipped grid result (neutral, 50 cells, no leverage) completed 669 round trips in-sample, and not one of them closed at a loss. Add up realised profit minus fees fill by fill and the worst dip before the final close is 0.36 USDT on about 11,000, a max drawdown of 0.0033%. That run, marked to market at every bar close, had a max drawdown of 12.52%, and 11.75% on daily points. The difference was inventory: 0.084 BTC bought on the way down, closed at the end of the sample for a loss of 953.84 USDT.
 
 | Grid sample | Realised only | Daily points | Bar closes (published) | Range across intrabar paths |
 | --- | --- | --- | --- | --- |
@@ -125,9 +125,9 @@ gain needed to recover = d / (1 - d)        d = drawdown as a fraction
 <!-- unique:original-calc -->
 Put the sampling gap through that formula and it gets wider. The MA cross drawdown of 27.02% on daily points needs a 37.03% gain; the 31.18% from bar closes needs 45.30%. A 4.16-point difference in the drawdown became an 8.27-point difference in the climb back. At the far end, the liquidity sweep's 94.35% needs 1,671.39%. Any other value can be tried on the [drawdown calculator](/tools/drawdown-calculator/), which also turns a losing streak into a drawdown.
 
-## How long does a drawdown last?
+### How long does a drawdown last?
 
-Depth is half of it. The other half is duration: the time between one equity high and the next, often called time under water. Depth says how much it hurt and duration says for how long you had to keep going without a new high.
+Depth is half of it. The other half is duration: the time between one equity high and the next, often called time under water.
 
 <!-- unique:firsthand-data -->
 For the losing strategies the answer is "nearly always". The MA cross in-sample made its last equity high at 16:45 UTC on 5 December 2025 and spent the remaining 237.3 days of a 254.5-day sample below it. FVG in-sample was under water for 254 of those days.
@@ -154,12 +154,12 @@ This also changes how the in-sample and out-of-sample columns should be read. Th
 
 A caution about how far this goes. All six strategies lose money, and a losing curve is the case where drawdown grows fastest. Magdon-Ismail and Atiya's paper [An Analysis of the Maximum Drawdown Risk Measure](https://www.cs.rpi.edu/~magdon/ps/journal/drawdown_RISK04.pdf) (checked 22 November 2026) derives the expected max drawdown of a Brownian motion with drift, and finds it grows in proportion to time for a losing process, with the square root of time at break-even, and with the logarithm of time for a profitable one. Slower, then, for a strategy that works, and still growing.
 
-## Calmar ratio and MAR ratio
+### Calmar ratio and MAR ratio
 
 Both ratios divide a return by a max drawdown, and they differ in the window they use. According to Wikipedia's [Calmar ratio article](https://en.wikipedia.org/wiki/Calmar_ratio) (checked 22 November 2026), the Calmar ratio was created by Terry W. Young and published in the trade journal Futures in 1991; it is the average annual rate of return over the last 36 months divided by the max drawdown over those 36 months. The MAR ratio, popularised by the newsletter Managed Account Reports, uses the compound annual return and the max drawdown since inception. We have not read the 1991 article itself.
 
 <!-- unique:original-calc -->
-The window is not a technicality. The grid result gives an annualised return of 4.57% and a 12.52% drawdown in-sample, a ratio of 0.37. Out-of-sample the same settings give 15.18% and 7.31%, a ratio of 2.08. Neither is a Calmar ratio; the samples are 254.5 and 110.5 days, far short of 36 months. They show a return-over-drawdown figure moving by a factor of more than five between two neighbouring periods of one strategy. The paper above notes that the common practice is to compare Calmar ratios over intervals of equal length, typically three years.
+The window is not a technicality. The grid result gives an annualised return of 4.57% and a 12.52% drawdown in-sample, a ratio of 0.37. Out-of-sample the same settings give 15.18% and 7.31%, a ratio of 2.08. Neither is a Calmar ratio; the samples are 254.5 and 110.5 days, far short of 36 months. They show a return-over-drawdown figure moving by a factor of more than five between two neighbouring periods of one strategy.
 
 ## Reading a max drawdown in someone else's backtest
 
@@ -182,14 +182,6 @@ There is no threshold that makes one good. The recovery table is the practical g
 
 <!-- unique:firsthand-data -->
 No. It is measured from a high, not from the start. The MA cross out-of-sample ended down 18.46% and had a max drawdown of 31.18%, since it first rose to 10,796.25 and fell from there.
-
-### Does max drawdown include open positions?
-
-It depends on the tool, and you have to check. The perpmath engine marks open positions to market at every bar close. A figure built from closed trades does not include them until they close.
-
-### Why does my exchange or bot show a smaller drawdown than my own calculation?
-
-Usually it samples less often or counts realised profit only. In our grid example those two choices gave 0.0033% and 12.52% for one run.
 
 ### Can max drawdown go down if I test more data?
 

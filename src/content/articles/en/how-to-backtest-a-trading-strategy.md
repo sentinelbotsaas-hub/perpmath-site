@@ -12,7 +12,7 @@ tldr: "To backtest a trading strategy, write the rule so a program can run it, f
 ---
 
 <!-- unique:firsthand-data -->
-One moving-average rule on one year of BTCUSDT candles gave me four results this week: -62.35%, -11.15%, +20.99% and +4,470.18%. Same rule, same data, same engine. Only the first is the honest in-sample figure. This page shows how to produce that one, and where the other three came from.
+I ran one moving-average rule on one year of BTCUSDT candles this week and came away with four results: -62.35%, -11.15%, +20.99% and +4,470.18%. Same rule, same candles. Only the first is the honest in-sample figure. This page shows how to produce that one, and where the other three came from.
 
 ## How do you backtest a trading strategy?
 
@@ -132,10 +132,10 @@ The split starts to matter the moment you choose something. To show that, we ran
 | 5/20 | 1,644 | -94.60% | -8.24 | 695 | -65.75% | -5.41 |
 
 <!-- unique:original-calc -->
-I expected the textbook picture here, the best in-sample pair falling apart out-of-sample. That's not what the table shows. The 50/100 pair ranks first in both periods, and the rank correlation between the two return columns is 0.91. For a minute that looks like a stable edge.
+I expected the textbook picture here, the best in-sample pair falling apart out-of-sample, and I was wrong. The 50/100 pair ranks first in both periods, and the rank correlation between the two return columns is 0.91. For a minute that looks like a stable edge.
 
 <!-- unique:original-calc -->
-It's a cost ranking. The five pairs with the smallest in-sample loss are exactly the five that traded least (148 to 337 trades). Slower averages cross less often, pay the 0.15% round trip less often, and lose less. Trade frequency carries over to the next period, so the ranking does too. Nothing in it is about predicting price.
+It's a cost ranking. The five pairs with the smallest in-sample loss are the five that traded least (148 to 337 trades). Slower averages cross less often, pay the 0.15% round trip less often, and lose less. Trade frequency carries over to the next period, so the ranking does too. Nothing in it is about predicting price.
 
 <!-- unique:original-calc -->
 Then there is the one positive cell: 50/100 out-of-sample, +4.88% on 116 trades, t = 0.32. Had we run 13 pairs and reported that line alone, this page would be announcing a profitable moving-average bot. Harvey, Liu and Zhu's [NBER working paper 20592](https://www.nber.org/papers/w20592) (October 2014, checked 22 November 2026) argues that after heavy data mining the usual hurdle of a t-ratio above 2.0 no longer makes sense, and puts the bar for a newly found factor above 3.0. A value of 0.32 is nowhere near either.
@@ -163,10 +163,10 @@ error: signals.side at bar 3885 changes when bars after bar 3892 are removed: th
 Exit code 1, no result file. To see what the lie was worth, our script called the simulator directly and skipped the check. That is where the 63.81% win rate and +4,470.18% after costs come from. One changed line of code.
 
 <!-- unique:firsthand-data -->
-The second version is subtler, and I have to report that the check missed it. Every decision is moved one bar earlier, so the order fills at the open of the very bar whose close produced the cross. The command line compares against 9 shortened copies, and a one-bar peek only alters the last bar of each copy, and only if a cross happens to land there. None did. The run went through marked `lookahead_check: passed`, at -38.19% in-sample where the honest rule has -62.35%. With costs off it reads +43.38% and +29.86%. Raising the number of copies to 17 caught it, 65 let it through again, 129 caught it. That's luck.
+The second version is subtler, and I have to report that the check missed it. Every decision is moved one bar earlier, so the order fills at the open of the very bar whose close produced the cross. The command line compares against 9 shortened copies, and a one-bar peek only alters the last bar of each copy, and only if a cross happens to land there. None did. The run went through marked `lookahead_check: passed`, at -38.19% in-sample where the rule as shipped has -62.35%. With costs off it reads +43.38% and +29.86%. Raising the number of copies to 17 caught it, 65 let it through again, 129 caught it. That's luck.
 
 <!-- unique:firsthand-data -->
-What did catch it every time was a stricter test in our script: cut the data right after each bar that carries an entry signal, and ask whether that bar still decides the same thing. Both peeking versions failed on their first signal. The honest rule passed all 835. So read the built-in check as a tripwire for blatant leaks. The README already says it cannot see future prices pulled in from outside the data, and sparse one-bar leaks are a second gap.
+What did catch it every time was a stricter test in our script: cut the data right after each bar that carries an entry signal, and ask whether that bar still decides the same thing. Both peeking versions failed on their first signal. The shipped rule passed all 835. So read the built-in check as a tripwire for blatant leaks. The README already says it cannot see future prices pulled in from outside the data, and sparse one-bar leaks are a second gap.
 
 ## What if one candle touches both the stop and the target?
 
@@ -187,12 +187,12 @@ Counting the out-of-sample blocks too, 75 of 4,452 trades (1.68%) left on a bar 
 
 ## How many trades does a backtest need?
 
-Enough that the average trade can be told apart from zero, which is what the t-statistic measures. It is a [one-sample t-test](https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm) (NIST handbook, checked 22 November 2026) of per-trade net returns: the mean divided by its standard error. As a rough guide, an absolute value under 2 means you can't tell the average from zero.
+Enough that the average trade can be told apart from zero, which is what the t-statistic measures. It is a [one-sample t-test](https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm) (NIST handbook, checked 22 November 2026) of per-trade net returns: the mean divided by its standard error. Roughly, when its absolute value is under 2 you can't tell the average from zero.
 
 <!-- unique:original-calc -->
-Look at what that does to our headline numbers. Out-of-sample the honest rule lost 18.46% over 263 trades, and its t-statistic is -0.68. Nearly a fifth of the account gone, and statistically it is a shrug: the average trade was -0.066%, with enough scatter that zero sits well inside the noise. The zero-cost run's +20.99% has t = 0.86. Same shrug, opposite sign. Returns compound, so they sound decisive. The t-statistic looks at the per-trade average and its spread.
+Apply that to our headline numbers. Out-of-sample the shipped rule lost 18.46% over 263 trades, and its t-statistic is -0.68. Nearly a fifth of the account gone, and statistically it is a shrug: the average trade was -0.066%, with enough scatter that zero sits well inside the noise. The zero-cost run's +20.99% has t = 0.86, the same shrug with the sign flipped. Returns compound, so they sound decisive. The t-statistic looks at the per-trade average and its spread.
 
-The in-sample -62.35% does clear the bar, at -2.95 on 572 trades, so the fair summary is "loses after costs, clearly in one period and not clearly in the other". The engine also sets `insufficient_sample` on any block with fewer than 100 trades; in the sweep above, the 50/200 pair made 84 out-of-sample trades and carries that flag. Two cautions. The test treats trades as independent, which flatters it when trades cluster. And it knows nothing about how many variants you tried first.
+The in-sample -62.35% does clear the bar, at -2.95 on 572 trades, so the fair summary is "loses after costs, clearly in one period and not clearly in the other". The engine also sets `insufficient_sample` on any block with fewer than 100 trades; in the sweep above, the 50/200 pair made 84 out-of-sample trades and carries that flag. Two cautions. It assumes trades are independent, which is generous when they cluster. And it knows nothing about how many variants you tried first.
 
 ## A checklist before you believe a backtest
 
@@ -203,7 +203,7 @@ The in-sample -62.35% does clear the bar, at -2.95 on 572 trades, so the fair su
 5. Read the trade count and the t-statistic before the total return.
 6. Can someone else rerun it? The data range, the file hash, the config and the code version belong in the result file.
 
-The engine and its testnet-only order runner are described in the [bot section](/bot/). The [position size calculator](/tools/position-size-calculator/) shows what a stop distance does to size before you test anything of your own. For a strategy that holds many positions at once, where the order of prices inside a bar matters far more than it did here, see the [grid trading bot backtest](/learn/grid-trading-bot/).
+The engine and its testnet-only order runner are described in the [bot section](/bot/). Before you test a rule of your own, put its stop distance into the [position size calculator](/tools/position-size-calculator/) and see what size comes out. For a strategy that holds many positions at once, where the order of prices inside a bar matters far more than it did here, see the [grid trading bot backtest](/learn/grid-trading-bot/).
 
 ## FAQ
 
@@ -221,10 +221,6 @@ With this engine, yes for the six shipped strategies: you edit numbers in a JSON
 <!-- unique:firsthand-data -->
 The steps are the same and three details differ. Perpetuals trade around the clock, so our 35,040 bars have no session gaps, and none of the 3,103 stop exits in the five published trade lists with a target was a gap through the stop at the open. Perpetuals charge funding, which this engine's strategy runs leave out. And costs are quoted per side: 0.055% taker at Bybit's base tier, 0.15% a round trip once you add our slippage assumption.
 
-### What is a good t-statistic for a backtest?
-
-Above 2 in absolute value is the usual floor for a single test planned in advance. After trying several variants the floor rises; Harvey, Liu and Zhu suggest 3.0 for new factors in the academic literature. Our 13-pair sweep produced nothing positive above 0.32.
-
 ### Does a profitable backtest mean the strategy will make money?
 
-No. A backtest is arithmetic on past prices under assumptions about fills and costs. Ours shows how easily the same rule reads -62.35% or +4,470.18%, and the honest run of all six rule-based strategies in the engine loses money.
+No. A backtest is arithmetic on past prices under assumptions about fills and costs. All six rule-based strategies in the engine lose money when run as shipped, and one changed line was enough to make the same rule read +4,470.18% instead of -62.35%.

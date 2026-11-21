@@ -100,7 +100,7 @@ perpmath backtest breakout --symbol BTCUSDT --interval 15m --config configs/brea
 ```
 
 <!-- unique:firsthand-data -->
-We ran exactly that on 21 November 2026 in a fresh clone of v0.2.0, on the candle file behind the engine's shipped results (35,040 bars, none missing, SHA-256 starting `ac4acc42`). The terminal printed:
+We ran those two commands on 21 November 2026 in a fresh clone of v0.2.0, on the candle file behind the engine's shipped results (35,040 bars, none missing, SHA-256 starting `ac4acc42`). The terminal printed:
 
 ```
 breakout BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
@@ -112,7 +112,7 @@ wrote results/breakout-btcusdt.json
 ```
 
 <!-- unique:original-calc -->
-It lost in both periods: 10,000 USDT became 6,520.79 in-sample and 8,068.17 out-of-sample. The t-statistics of -1.55 and -1.60 are inside the range where an average can't be told apart from zero, so the honest reading is "no measurable edge, minus costs". Fees alone came to 3,250.21 USDT in-sample against a loss of 3,479.21. The win rate, 34.34%, is a hair above the 33.33% a 2R target needs before costs, and short of what it needs after them.
+It lost in both periods: 10,000 USDT became 6,520.79 in-sample and 8,068.17 out-of-sample. The t-statistics of -1.55 and -1.60 are inside the range where an average is not distinguishable from zero, so the fair reading is "no measurable edge, minus costs". Fees alone came to 3,250.21 USDT in-sample against a loss of 3,479.21. The win rate, 34.34%, is a hair above the 33.33% a 2R target needs before costs, and short of what it needs after them.
 
 <!-- unique:firsthand-data -->
 The strategy fired far more often than it traded. In-sample it gave 791 entry signals and the engine skipped 427 of them, since a position was already open. Before any of this the engine reran `generate` on nine shortened copies of the data and confirmed that no decision changed when later bars were removed. That look-ahead check runs on every backtest; you don't opt in.
@@ -181,7 +181,7 @@ Each failure below is paired with the lines in perpmath 0.2.0 that deal with it.
 
 ### Duplicate orders
 
-A bot sends the same order twice when it forgets it already sent it. The usual cause is keeping the list of handled signals in memory only: the process restarts, the list is empty, and the same bar's signal goes out again. An earlier private runner this code was rewritten from had exactly that weakness.
+A bot sends the same order twice when it forgets it already sent it. The usual cause is keeping the list of handled signals in memory only: the process restarts, the list is empty, and that bar's signal goes out again. An earlier private runner this code was rewritten from had that weakness.
 
 <!-- unique:cross-reference -->
 The fix is an order ID that can be rebuilt from the decision alone. [`order_link_id`](https://github.com/sentinelbotsaas-hub/perpmath/blob/v0.2.0/src/perpmath/live/executor.py#L117-L132) joins the strategy name, the settings hash, the bar's open time, the direction and the action. Bybit's [create-order page](https://bybit-exchange.github.io/docs/v5/order/create-order) (checked 22 November 2026) allows a custom `orderLinkId` of up to 36 characters and requires it to be unique, and its [error list](https://bybit-exchange.github.io/docs/v5/error) has code 110072 for a duplicate. Stripe's [idempotency guide](https://docs.stripe.com/api/idempotent_requests) (checked 22 November 2026) suggests random V4 UUIDs for such keys. That works when the client remembers its key. A bot that may crash between deciding and writing things down needs a key it can derive again from nothing.
@@ -246,7 +246,7 @@ Other gaps, from the README: order status is polled over REST, not streamed over
 
 One disclosure. The runner has a `broker_id` setting for Bybit's API Broker programme, which would let the project receive a share of trading fees. It is empty by default and no broker header is sent while it is empty. Our relationship with Bybit is described on the [disclosure page](/disclosure/).
 
-The engine's home on this site is the [bot page](/bot/). Before you size anything, the [position size calculator](/tools/position-size-calculator/) shows what a 2 ATR stop does to the quantity.
+The engine's home on this site is the [bot page](/bot/). To see what a 2 ATR stop does to the quantity before you size anything, use the [position size calculator](/tools/position-size-calculator/).
 
 ## FAQ
 
