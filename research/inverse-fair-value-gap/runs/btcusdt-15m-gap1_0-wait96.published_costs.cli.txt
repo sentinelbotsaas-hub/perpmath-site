@@ -1,0 +1,11 @@
+$ perpmath backtest inverse_fvg --symbol BTCUSDT --interval 15m --config research/inverse-fair-value-gap/runs/btcusdt-15m-gap1_0-wait96.published_costs.config.json --out research/inverse-fair-value-gap/runs/btcusdt-15m-gap1_0-wait96.published_costs.json --data-dir <engine>/data
+  | look-ahead check (default): re-running the strategy on shortened data, this can take a while ...
+  | inverse_fvg BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
+  | fee 0.0550% per side, slippage 0.0200% per fill, funding not modelled
+  | look-ahead check passed: cut after 295 of 295 signal bars and 4476 of 34744 other bars (the rest not checked)
+  |                trades   win %   avg R  t-stat  return %  max DD %
+  | in_sample         168   35.71   -0.29   -1.42    -16.45     19.99
+  | out_of_sample      94   22.34   -0.85   -3.91    -22.75     23.32
+  | warning: out_of_sample: 94 trades, fewer than 100: insufficient sample
+  | wrote research/inverse-fair-value-gap/runs/btcusdt-15m-gap1_0-wait96.published_costs.json
+  exit code 0

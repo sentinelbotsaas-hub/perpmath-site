@@ -1,0 +1,2434 @@
+{
+  "article": "en/market-structure-shift",
+  "engine": {
+    "package": "perpmath",
+    "version": "0.2.2",
+    "repository": "https://github.com/sentinelbotsaas-hub/perpmath"
+  },
+  "strategies": {
+    "names": [
+      "choch_break",
+      "mss_displacement",
+      "bos_continuation"
+    ],
+    "defined_in": "research/market-structure-shift/market-structure-shift_research.py",
+    "shipped_with_engine": false,
+    "base_params": {
+      "swing_left": 5,
+      "swing_right": 5,
+      "atr_period": 14,
+      "stop_buffer_atr": 0.1,
+      "r_multiple": 2.0
+    },
+    "mss_displacement_params": {
+      "swing_left": 5,
+      "swing_right": 5,
+      "atr_period": 14,
+      "stop_buffer_atr": 0.1,
+      "r_multiple": 2.0,
+      "min_break_range_atr": 1.5
+    },
+    "parameters_fixed_on": "2026-11-21 (UTC), before the first run on real data"
+  },
+  "data": {
+    "file": "BTCUSDT-15m.csv",
+    "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+    "bars": 35040,
+    "first_bar": "2025-11-18T11:30:00Z",
+    "last_bar": "2026-11-18T11:15:00Z",
+    "missing_bars": 0
+  },
+  "split": {
+    "oos_start": "2026-07-31T00:00:00Z"
+  },
+  "costs": {
+    "published": {
+      "fee_rate": 0.00055,
+      "slippage": 0.0002
+    },
+    "round_trip_pct": 0.15,
+    "funding_modelled": false
+  },
+  "plan_note": "The eight runs were fixed before the first one. This is a sensitivity table, not a search: every row is reported and none is a recommendation.",
+  "self_checks": "passed",
+  "runs": [
+    {
+      "name": "btcusdt-15m-choch-break-swing1",
+      "strategy": "choch_break",
+      "group": "swing",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "swing_left": 1,
+        "swing_right": 1,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.2",
+      "published_costs": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 1,
+            "swing_right": 1,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing1.published_costs.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing1.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:56:17Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 6731,
+          "signal_bars": 2535,
+          "signal_bars_checked": 2535,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 32504,
+          "other_bars_checked": 4196,
+          "other_bars_checked_pct": 12.91,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 322,
+            "wins": 97,
+            "losses": 225,
+            "win_rate_pct": 30.1242,
+            "avg_r": -0.3361,
+            "avg_trade_return_pct": -0.1287,
+            "t_stat": -1.3256,
+            "t_stat_n": 322,
+            "total_return_pct": -36.9429,
+            "max_drawdown_pct": 40.6679,
+            "profit_factor": 0.7762,
+            "total_fees": 2836.83,
+            "final_equity": 6305.71,
+            "avg_bars_held": 63.81,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 224,
+              "target": 97
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 1809,
+            "skipped_in_position": 1487,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.6131
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 156,
+            "wins": 57,
+            "losses": 99,
+            "win_rate_pct": 36.5385,
+            "avg_r": -0.1373,
+            "avg_trade_return_pct": -0.0999,
+            "t_stat": -0.9948,
+            "t_stat_n": 156,
+            "total_return_pct": -15.4635,
+            "max_drawdown_pct": 20.3824,
+            "profit_factor": 0.8281,
+            "total_fees": 1695.4,
+            "final_equity": 8453.65,
+            "avg_bars_held": 55.98,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 98,
+              "target": 57
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 726,
+            "skipped_in_position": 570,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.6487
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 1,
+            "swing_right": 1,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing1.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing1.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:56:48Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 6731,
+          "signal_bars": 2535,
+          "signal_bars_checked": 2535,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 32504,
+          "other_bars_checked": 4196,
+          "other_bars_checked_pct": 12.91,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 318,
+            "wins": 104,
+            "losses": 214,
+            "win_rate_pct": 32.7044,
+            "avg_r": -0.0246,
+            "avg_trade_return_pct": 0.0402,
+            "t_stat": 0.4102,
+            "t_stat_n": 318,
+            "total_return_pct": 8.5027,
+            "max_drawdown_pct": 24.0271,
+            "profit_factor": 1.0493,
+            "total_fees": 0.0,
+            "final_equity": 10850.27,
+            "avg_bars_held": 64.81,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 214,
+              "target": 103
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 1809,
+            "skipped_in_position": 1491,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.6091
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 165,
+            "wins": 63,
+            "losses": 102,
+            "win_rate_pct": 38.1818,
+            "avg_r": 0.1501,
+            "avg_trade_return_pct": 0.0552,
+            "t_stat": 0.5847,
+            "t_stat_n": 165,
+            "total_return_pct": 8.2236,
+            "max_drawdown_pct": 16.0738,
+            "profit_factor": 1.0943,
+            "total_fees": 0.0,
+            "final_equity": 10822.36,
+            "avg_bars_held": 52.12,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 101,
+              "target": 63
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 726,
+            "skipped_in_position": 561,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.6283
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-choch-break-swing2",
+      "strategy": "choch_break",
+      "group": "swing",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "swing_left": 2,
+        "swing_right": 2,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.2",
+      "published_costs": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 2,
+            "swing_right": 2,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing2.published_costs.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing2.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:57:11Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 6004,
+          "signal_bars": 1693,
+          "signal_bars_checked": 1693,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 33346,
+          "other_bars_checked": 4311,
+          "other_bars_checked_pct": 12.93,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 217,
+            "wins": 75,
+            "losses": 142,
+            "win_rate_pct": 34.5622,
+            "avg_r": -0.1555,
+            "avg_trade_return_pct": -0.0075,
+            "t_stat": -0.0525,
+            "t_stat_n": 217,
+            "total_return_pct": -5.9951,
+            "max_drawdown_pct": 25.8802,
+            "profit_factor": 0.9595,
+            "total_fees": 2239.37,
+            "final_equity": 9400.49,
+            "avg_bars_held": 94.04,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 142,
+              "target": 74
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 1193,
+            "skipped_in_position": 976,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.8067
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 114,
+            "wins": 33,
+            "losses": 81,
+            "win_rate_pct": 28.9474,
+            "avg_r": -0.3254,
+            "avg_trade_return_pct": -0.2348,
+            "t_stat": -1.7153,
+            "t_stat_n": 114,
+            "total_return_pct": -24.4235,
+            "max_drawdown_pct": 31.6963,
+            "profit_factor": 0.678,
+            "total_fees": 1129.18,
+            "final_equity": 7557.65,
+            "avg_bars_held": 75.58,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 80,
+              "target": 33
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 500,
+            "skipped_in_position": 386,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.8118
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 2,
+            "swing_right": 2,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing2.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing2.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:57:35Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 6004,
+          "signal_bars": 1693,
+          "signal_bars_checked": 1693,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 33346,
+          "other_bars_checked": 4311,
+          "other_bars_checked_pct": 12.93,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 219,
+            "wins": 77,
+            "losses": 142,
+            "win_rate_pct": 35.1598,
+            "avg_r": 0.0502,
+            "avg_trade_return_pct": 0.1284,
+            "t_stat": 0.9167,
+            "t_stat_n": 219,
+            "total_return_pct": 26.6581,
+            "max_drawdown_pct": 17.577,
+            "profit_factor": 1.1786,
+            "total_fees": 0.0,
+            "final_equity": 12665.81,
+            "avg_bars_held": 92.69,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 142,
+              "target": 76
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 1193,
+            "skipped_in_position": 974,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.7817
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 114,
+            "wins": 33,
+            "losses": 81,
+            "win_rate_pct": 28.9474,
+            "avg_r": -0.1248,
+            "avg_trade_return_pct": -0.1024,
+            "t_stat": -0.7601,
+            "t_stat_n": 114,
+            "total_return_pct": -12.0443,
+            "max_drawdown_pct": 22.6884,
+            "profit_factor": 0.8279,
+            "total_fees": 0.0,
+            "final_equity": 8795.57,
+            "avg_bars_held": 75.48,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 80,
+              "target": 33
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 500,
+            "skipped_in_position": 386,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.792
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-choch-break-swing3",
+      "strategy": "choch_break",
+      "group": "swing",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "swing_left": 3,
+        "swing_right": 3,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.2",
+      "published_costs": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 3,
+            "swing_right": 3,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing3.published_costs.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing3.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:57:53Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 5619,
+          "signal_bars": 1262,
+          "signal_bars_checked": 1262,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 33777,
+          "other_bars_checked": 4357,
+          "other_bars_checked_pct": 12.9,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "out_of_sample: 90 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 159,
+            "wins": 56,
+            "losses": 103,
+            "win_rate_pct": 35.2201,
+            "avg_r": -0.0976,
+            "avg_trade_return_pct": 0.0668,
+            "t_stat": 0.3381,
+            "t_stat_n": 159,
+            "total_return_pct": 6.1071,
+            "max_drawdown_pct": 28.8137,
+            "profit_factor": 1.0457,
+            "total_fees": 1739.69,
+            "final_equity": 10610.71,
+            "avg_bars_held": 130.36,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 103,
+              "target": 55
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 881,
+            "skipped_in_position": 722,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.9986
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 90,
+            "wins": 24,
+            "losses": 66,
+            "win_rate_pct": 26.6667,
+            "avg_r": -0.3631,
+            "avg_trade_return_pct": -0.3451,
+            "t_stat": -2.1335,
+            "t_stat_n": 90,
+            "total_return_pct": -27.4953,
+            "max_drawdown_pct": 32.0559,
+            "profit_factor": 0.5794,
+            "total_fees": 858.39,
+            "final_equity": 7250.47,
+            "avg_bars_held": 91.37,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 65,
+              "target": 24
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 381,
+            "skipped_in_position": 291,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.8948
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 3,
+            "swing_right": 3,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing3.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing3.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:58:12Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 5619,
+          "signal_bars": 1262,
+          "signal_bars_checked": 1262,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 33777,
+          "other_bars_checked": 4357,
+          "other_bars_checked_pct": 12.9,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "out_of_sample: 89 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 161,
+            "wins": 56,
+            "losses": 105,
+            "win_rate_pct": 34.7826,
+            "avg_r": 0.0344,
+            "avg_trade_return_pct": 0.1852,
+            "t_stat": 0.957,
+            "t_stat_n": 161,
+            "total_return_pct": 28.6511,
+            "max_drawdown_pct": 24.4263,
+            "profit_factor": 1.2186,
+            "total_fees": 0.0,
+            "final_equity": 12865.11,
+            "avg_bars_held": 128.43,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 105,
+              "target": 55
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 881,
+            "skipped_in_position": 720,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.9563
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 89,
+            "wins": 24,
+            "losses": 65,
+            "win_rate_pct": 26.9663,
+            "avg_r": -0.1823,
+            "avg_trade_return_pct": -0.2114,
+            "t_stat": -1.3144,
+            "t_stat_n": 89,
+            "total_return_pct": -17.9967,
+            "max_drawdown_pct": 24.6646,
+            "profit_factor": 0.6989,
+            "total_fees": 0.0,
+            "final_equity": 8200.33,
+            "avg_bars_held": 92.81,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 64,
+              "target": 24
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 381,
+            "skipped_in_position": 292,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.863
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-choch-break-swing5",
+      "strategy": "choch_break",
+      "group": "published",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "swing_left": 5,
+        "swing_right": 5,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.2",
+      "published_costs": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 5,
+            "swing_right": 5,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing5.published_costs.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing5.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:58:26Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 5273,
+          "signal_bars": 854,
+          "signal_bars_checked": 854,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34185,
+          "other_bars_checked": 4419,
+          "other_bars_checked_pct": 12.93,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "in_sample: 88 trades, fewer than 100: insufficient sample",
+          "out_of_sample: 45 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 88,
+            "wins": 27,
+            "losses": 61,
+            "win_rate_pct": 30.6818,
+            "avg_r": -0.2113,
+            "avg_trade_return_pct": 0.1413,
+            "t_stat": 0.4076,
+            "t_stat_n": 88,
+            "total_return_pct": 8.3823,
+            "max_drawdown_pct": 24.4031,
+            "profit_factor": 1.0802,
+            "total_fees": 1042.11,
+            "final_equity": 10838.23,
+            "avg_bars_held": 242.75,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 61,
+              "target": 26
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 583,
+            "skipped_in_position": 495,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.3651
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 45,
+            "wins": 18,
+            "losses": 27,
+            "win_rate_pct": 40.0,
+            "avg_r": 0.0741,
+            "avg_trade_return_pct": -0.0252,
+            "t_stat": -0.0838,
+            "t_stat_n": 45,
+            "total_return_pct": -2.0052,
+            "max_drawdown_pct": 15.4073,
+            "profit_factor": 0.9514,
+            "total_fees": 521.57,
+            "final_equity": 9799.48,
+            "avg_bars_held": 192.71,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 26,
+              "target": 18
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 271,
+            "skipped_in_position": 226,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.026
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 5,
+            "swing_right": 5,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing5.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing5.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:58:40Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 5273,
+          "signal_bars": 854,
+          "signal_bars_checked": 854,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34185,
+          "other_bars_checked": 4419,
+          "other_bars_checked_pct": 12.93,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "in_sample: 89 trades, fewer than 100: insufficient sample",
+          "out_of_sample: 46 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 89,
+            "wins": 28,
+            "losses": 61,
+            "win_rate_pct": 31.4607,
+            "avg_r": -0.0726,
+            "avg_trade_return_pct": 0.2802,
+            "t_stat": 0.8219,
+            "t_stat_n": 89,
+            "total_return_pct": 22.8555,
+            "max_drawdown_pct": 20.0546,
+            "profit_factor": 1.2259,
+            "total_fees": 0.0,
+            "final_equity": 12285.55,
+            "avg_bars_held": 239.07,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 61,
+              "target": 27
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 583,
+            "skipped_in_position": 494,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.3395
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 46,
+            "wins": 18,
+            "losses": 28,
+            "win_rate_pct": 39.1304,
+            "avg_r": 0.1865,
+            "avg_trade_return_pct": 0.0755,
+            "t_stat": 0.2587,
+            "t_stat_n": 46,
+            "total_return_pct": 2.6316,
+            "max_drawdown_pct": 13.0281,
+            "profit_factor": 1.0679,
+            "total_fees": 0.0,
+            "final_equity": 10263.16,
+            "avg_bars_held": 188.28,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 27,
+              "target": 18
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 271,
+            "skipped_in_position": 225,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.0232
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-choch-break-swing10",
+      "strategy": "choch_break",
+      "group": "swing",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "swing_left": 10,
+        "swing_right": 10,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.2",
+      "published_costs": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 10,
+            "swing_right": 10,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing10.published_costs.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing10.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:58:50Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 4911,
+          "signal_bars": 460,
+          "signal_bars_checked": 460,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34579,
+          "other_bars_checked": 4451,
+          "other_bars_checked_pct": 12.87,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "in_sample: 69 trades, fewer than 100: insufficient sample",
+          "out_of_sample: 32 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 69,
+            "wins": 25,
+            "losses": 44,
+            "win_rate_pct": 36.2319,
+            "avg_r": 0.0052,
+            "avg_trade_return_pct": 0.121,
+            "t_stat": 0.2703,
+            "t_stat_n": 69,
+            "total_return_pct": 3.9551,
+            "max_drawdown_pct": 23.7224,
+            "profit_factor": 1.0449,
+            "total_fees": 731.01,
+            "final_equity": 10395.51,
+            "avg_bars_held": 287.14,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 43,
+              "target": 25
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 317,
+            "skipped_in_position": 248,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.6101
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 32,
+            "wins": 10,
+            "losses": 22,
+            "win_rate_pct": 31.25,
+            "avg_r": -0.1595,
+            "avg_trade_return_pct": -0.0814,
+            "t_stat": -0.1806,
+            "t_stat_n": 32,
+            "total_return_pct": -3.53,
+            "max_drawdown_pct": 13.7866,
+            "profit_factor": 0.8964,
+            "total_fees": 344.33,
+            "final_equity": 9647.0,
+            "avg_bars_held": 256.31,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 21,
+              "target": 10
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 143,
+            "skipped_in_position": 111,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.2252
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "choch_break",
+          "params": {
+            "swing_left": 10,
+            "swing_right": 10,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing10.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing10.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:59:01Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 4911,
+          "signal_bars": 460,
+          "signal_bars_checked": 460,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34579,
+          "other_bars_checked": 4451,
+          "other_bars_checked_pct": 12.87,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "in_sample: 70 trades, fewer than 100: insufficient sample",
+          "out_of_sample: 32 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 70,
+            "wins": 25,
+            "losses": 45,
+            "win_rate_pct": 35.7143,
+            "avg_r": 0.0817,
+            "avg_trade_return_pct": 0.2143,
+            "t_stat": 0.4867,
+            "t_stat_n": 70,
+            "total_return_pct": 11.1262,
+            "max_drawdown_pct": 20.9196,
+            "profit_factor": 1.1282,
+            "total_fees": 0.0,
+            "final_equity": 11112.62,
+            "avg_bars_held": 282.46,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 44,
+              "target": 25
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 317,
+            "skipped_in_position": 247,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.6033
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 32,
+            "wins": 10,
+            "losses": 22,
+            "win_rate_pct": 31.25,
+            "avg_r": -0.0449,
+            "avg_trade_return_pct": 0.0495,
+            "t_stat": 0.111,
+            "t_stat_n": 32,
+            "total_return_pct": 0.62,
+            "max_drawdown_pct": 11.1277,
+            "profit_factor": 1.0197,
+            "total_fees": 0.0,
+            "final_equity": 10062.0,
+            "avg_bars_held": 256.22,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 21,
+              "target": 10
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 143,
+            "skipped_in_position": 111,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.2052
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-mss-displacement-swing5",
+      "strategy": "mss_displacement",
+      "group": "displacement",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "swing_left": 5,
+        "swing_right": 5,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0,
+        "min_break_range_atr": 1.5
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.2",
+      "published_costs": {
+        "config": {
+          "strategy": "mss_displacement",
+          "params": {
+            "swing_left": 5,
+            "swing_right": 5,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0,
+            "min_break_range_atr": 1.5
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest mss_displacement --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing5.published_costs.config.json --out research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing5.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:59:12Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 4920,
+          "signal_bars": 454,
+          "signal_bars_checked": 454,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34585,
+          "other_bars_checked": 4466,
+          "other_bars_checked_pct": 12.91,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "out_of_sample: 59 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 135,
+            "wins": 44,
+            "losses": 91,
+            "win_rate_pct": 32.5926,
+            "avg_r": -0.1516,
+            "avg_trade_return_pct": -0.1845,
+            "t_stat": -0.904,
+            "t_stat_n": 135,
+            "total_return_pct": -24.9221,
+            "max_drawdown_pct": 36.5698,
+            "profit_factor": 0.815,
+            "total_fees": 1349.2,
+            "final_equity": 7507.79,
+            "avg_bars_held": 109.39,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 91,
+              "target": 43
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 317,
+            "skipped_in_position": 182,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.2274
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 59,
+            "wins": 18,
+            "losses": 41,
+            "win_rate_pct": 30.5085,
+            "avg_r": -0.2395,
+            "avg_trade_return_pct": -0.2577,
+            "t_stat": -1.031,
+            "t_stat_n": 59,
+            "total_return_pct": -15.0308,
+            "max_drawdown_pct": 23.4291,
+            "profit_factor": 0.7169,
+            "total_fees": 623.32,
+            "final_equity": 8496.92,
+            "avg_bars_held": 108.22,
+            "exit_reasons": {
+              "stop": 41,
+              "target": 18
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 137,
+            "skipped_in_position": 78,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.9908
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "mss_displacement",
+          "params": {
+            "swing_left": 5,
+            "swing_right": 5,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0,
+            "min_break_range_atr": 1.5
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest mss_displacement --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing5.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing5.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:59:23Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 4920,
+          "signal_bars": 454,
+          "signal_bars_checked": 454,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34585,
+          "other_bars_checked": 4466,
+          "other_bars_checked_pct": 12.91,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "out_of_sample: 60 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 135,
+            "wins": 47,
+            "losses": 88,
+            "win_rate_pct": 34.8148,
+            "avg_r": 0.0336,
+            "avg_trade_return_pct": 0.0174,
+            "t_stat": 0.0851,
+            "t_stat_n": 135,
+            "total_return_pct": -1.3719,
+            "max_drawdown_pct": 28.8348,
+            "profit_factor": 0.9897,
+            "total_fees": 0.0,
+            "final_equity": 9862.81,
+            "avg_bars_held": 109.2,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 88,
+              "target": 46
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 317,
+            "skipped_in_position": 182,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.2283
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 60,
+            "wins": 18,
+            "losses": 42,
+            "win_rate_pct": 30.0,
+            "avg_r": -0.1,
+            "avg_trade_return_pct": -0.1404,
+            "t_stat": -0.5776,
+            "t_stat_n": 60,
+            "total_return_pct": -9.0351,
+            "max_drawdown_pct": 20.4506,
+            "profit_factor": 0.8189,
+            "total_fees": 0.0,
+            "final_equity": 9096.49,
+            "avg_bars_held": 104.05,
+            "exit_reasons": {
+              "stop": 42,
+              "target": 18
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 137,
+            "skipped_in_position": 77,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.9756
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-mss-displacement-swing2",
+      "strategy": "mss_displacement",
+      "group": "displacement",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "swing_left": 2,
+        "swing_right": 2,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0,
+        "min_break_range_atr": 1.5
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.2",
+      "published_costs": {
+        "config": {
+          "strategy": "mss_displacement",
+          "params": {
+            "swing_left": 2,
+            "swing_right": 2,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0,
+            "min_break_range_atr": 1.5
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest mss_displacement --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing2.published_costs.config.json --out research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing2.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:59:37Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 5108,
+          "signal_bars": 674,
+          "signal_bars_checked": 674,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34365,
+          "other_bars_checked": 4434,
+          "other_bars_checked_pct": 12.9,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "out_of_sample: 99 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 246,
+            "wins": 85,
+            "losses": 161,
+            "win_rate_pct": 34.5528,
+            "avg_r": -0.1486,
+            "avg_trade_return_pct": -0.1893,
+            "t_stat": -1.8099,
+            "t_stat_n": 246,
+            "total_return_pct": -39.2883,
+            "max_drawdown_pct": 43.9282,
+            "profit_factor": 0.7412,
+            "total_fees": 2081.52,
+            "final_equity": 6071.17,
+            "avg_bars_held": 51.55,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 161,
+              "target": 84
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 466,
+            "skipped_in_position": 220,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.8418
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 99,
+            "wins": 36,
+            "losses": 63,
+            "win_rate_pct": 36.3636,
+            "avg_r": -0.1616,
+            "avg_trade_return_pct": -0.1168,
+            "t_stat": -0.8674,
+            "t_stat_n": 99,
+            "total_return_pct": -11.7054,
+            "max_drawdown_pct": 25.9618,
+            "profit_factor": 0.7945,
+            "total_fees": 1016.18,
+            "final_equity": 8829.46,
+            "avg_bars_held": 60.41,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 63,
+              "target": 35
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 208,
+            "skipped_in_position": 109,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.7147
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "mss_displacement",
+          "params": {
+            "swing_left": 2,
+            "swing_right": 2,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0,
+            "min_break_range_atr": 1.5
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest mss_displacement --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing2.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing2.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T19:59:53Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 5108,
+          "signal_bars": 674,
+          "signal_bars_checked": 674,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34365,
+          "other_bars_checked": 4434,
+          "other_bars_checked_pct": 12.9,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "out_of_sample: 99 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 246,
+            "wins": 87,
+            "losses": 159,
+            "win_rate_pct": 35.3659,
+            "avg_r": 0.0569,
+            "avg_trade_return_pct": -0.0542,
+            "t_stat": -0.5255,
+            "t_stat_n": 246,
+            "total_return_pct": -15.2299,
+            "max_drawdown_pct": 28.6543,
+            "profit_factor": 0.9011,
+            "total_fees": 0.0,
+            "final_equity": 8477.01,
+            "avg_bars_held": 51.04,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 159,
+              "target": 86
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 466,
+            "skipped_in_position": 220,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.8218
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 99,
+            "wins": 37,
+            "losses": 62,
+            "win_rate_pct": 37.3737,
+            "avg_r": 0.1089,
+            "avg_trade_return_pct": 0.0297,
+            "t_stat": 0.2239,
+            "t_stat_n": 99,
+            "total_return_pct": 2.1171,
+            "max_drawdown_pct": 19.3148,
+            "profit_factor": 1.0419,
+            "total_fees": 0.0,
+            "final_equity": 10211.71,
+            "avg_bars_held": 59.8,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 62,
+              "target": 36
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 208,
+            "skipped_in_position": 109,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 0.6946
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-bos-continuation-swing5",
+      "strategy": "bos_continuation",
+      "group": "comparison",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "swing_left": 5,
+        "swing_right": 5,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.2",
+      "published_costs": {
+        "config": {
+          "strategy": "bos_continuation",
+          "params": {
+            "swing_left": 5,
+            "swing_right": 5,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest bos_continuation --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-bos-continuation-swing5.published_costs.config.json --out research/market-structure-shift/runs/btcusdt-15m-bos-continuation-swing5.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T20:00:06Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 5192,
+          "signal_bars": 776,
+          "signal_bars_checked": 776,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34263,
+          "other_bars_checked": 4416,
+          "other_bars_checked_pct": 12.89,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "out_of_sample: 56 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 151,
+            "wins": 49,
+            "losses": 102,
+            "win_rate_pct": 32.4503,
+            "avg_r": -0.1731,
+            "avg_trade_return_pct": -0.3353,
+            "t_stat": -1.6121,
+            "t_stat_n": 151,
+            "total_return_pct": -42.6438,
+            "max_drawdown_pct": 48.3659,
+            "profit_factor": 0.6908,
+            "total_fees": 1243.48,
+            "final_equity": 5735.62,
+            "avg_bars_held": 121.26,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 102,
+              "target": 48
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 544,
+            "skipped_in_position": 393,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.1528
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 56,
+            "wins": 14,
+            "losses": 42,
+            "win_rate_pct": 25.0,
+            "avg_r": -0.4219,
+            "avg_trade_return_pct": -0.5802,
+            "t_stat": -2.0006,
+            "t_stat_n": 56,
+            "total_return_pct": -28.7416,
+            "max_drawdown_pct": 37.7395,
+            "profit_factor": 0.4941,
+            "total_fees": 517.19,
+            "final_equity": 7125.84,
+            "avg_bars_held": 152.11,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 42,
+              "target": 13
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 232,
+            "skipped_in_position": 176,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.0989
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "bos_continuation",
+          "params": {
+            "swing_left": 5,
+            "swing_right": 5,
+            "atr_period": 14,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "perpmath backtest bos_continuation --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-bos-continuation-swing5.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-bos-continuation-swing5.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T20:00:20Z",
+        "lookahead_check": {
+          "passed": true,
+          "method": "signal_cuts",
+          "shortened_runs": 5192,
+          "signal_bars": 776,
+          "signal_bars_checked": 776,
+          "signal_bars_checked_pct": 100.0,
+          "signal_bars_sampled": false,
+          "other_bars": 34263,
+          "other_bars_checked": 4416,
+          "other_bars_checked_pct": 12.89,
+          "other_bars_sampled": true,
+          "leading_bars_all_checked": 4000,
+          "sample_seed": 20261122
+        },
+        "warnings": [
+          "out_of_sample: 56 trades, fewer than 100: insufficient sample"
+        ],
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 146,
+            "wins": 49,
+            "losses": 97,
+            "win_rate_pct": 33.5616,
+            "avg_r": -0.005,
+            "avg_trade_return_pct": -0.1941,
+            "t_stat": -0.912,
+            "t_stat_n": 146,
+            "total_return_pct": -28.2034,
+            "max_drawdown_pct": 41.4721,
+            "profit_factor": 0.7977,
+            "total_fees": 0.0,
+            "final_equity": 7179.66,
+            "avg_bars_held": 127.86,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 97,
+              "target": 48
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 544,
+            "skipped_in_position": 398,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.2305
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 56,
+            "wins": 14,
+            "losses": 42,
+            "win_rate_pct": 25.0,
+            "avg_r": -0.2783,
+            "avg_trade_return_pct": -0.4441,
+            "t_stat": -1.5457,
+            "t_stat_n": 56,
+            "total_return_pct": -23.0483,
+            "max_drawdown_pct": 34.7323,
+            "profit_factor": 0.5678,
+            "total_fees": 0.0,
+            "final_equity": 7695.17,
+            "avg_bars_held": 152.11,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 42,
+              "target": 13
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 232,
+            "skipped_in_position": 176,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "entry_to_stop_pct_of_price_median": 1.0789
+        }
+      }
+    }
+  ],
+  "breaks_by_swing_size": [
+    {
+      "swing_bars_each_side": 1,
+      "breaks": 4899,
+      "breaks_per_day": 13.42,
+      "continuations_same_direction": 2363,
+      "reversals_opposite_direction": 2535,
+      "reversals_pct_of_labelled": 51.76,
+      "reversals_per_day": 6.95,
+      "streaks": 2536,
+      "streak_length_mean": 1.93,
+      "streak_length_median": 1.0,
+      "streak_length_max": 13,
+      "streaks_of_one_break": 1278,
+      "streaks_of_one_break_pct": 50.39,
+      "streaks_of_three_or_more_pct": 22.56
+    },
+    {
+      "swing_bars_each_side": 2,
+      "breaks": 3205,
+      "breaks_per_day": 8.78,
+      "continuations_same_direction": 1511,
+      "reversals_opposite_direction": 1693,
+      "reversals_pct_of_labelled": 52.84,
+      "reversals_per_day": 4.64,
+      "streaks": 1694,
+      "streak_length_mean": 1.89,
+      "streak_length_median": 1.0,
+      "streak_length_max": 11,
+      "streaks_of_one_break": 889,
+      "streaks_of_one_break_pct": 52.48,
+      "streaks_of_three_or_more_pct": 21.55
+    },
+    {
+      "swing_bars_each_side": 3,
+      "breaks": 2416,
+      "breaks_per_day": 6.62,
+      "continuations_same_direction": 1152,
+      "reversals_opposite_direction": 1263,
+      "reversals_pct_of_labelled": 52.3,
+      "reversals_per_day": 3.46,
+      "streaks": 1264,
+      "streak_length_mean": 1.91,
+      "streak_length_median": 1.0,
+      "streak_length_max": 14,
+      "streaks_of_one_break": 646,
+      "streaks_of_one_break_pct": 51.11,
+      "streaks_of_three_or_more_pct": 21.91
+    },
+    {
+      "swing_bars_each_side": 5,
+      "breaks": 1631,
+      "breaks_per_day": 4.47,
+      "continuations_same_direction": 776,
+      "reversals_opposite_direction": 854,
+      "reversals_pct_of_labelled": 52.39,
+      "reversals_per_day": 2.34,
+      "streaks": 855,
+      "streak_length_mean": 1.91,
+      "streak_length_median": 1,
+      "streak_length_max": 11,
+      "streaks_of_one_break": 449,
+      "streaks_of_one_break_pct": 52.51,
+      "streaks_of_three_or_more_pct": 21.64
+    },
+    {
+      "swing_bars_each_side": 10,
+      "breaks": 890,
+      "breaks_per_day": 2.44,
+      "continuations_same_direction": 429,
+      "reversals_opposite_direction": 460,
+      "reversals_pct_of_labelled": 51.74,
+      "reversals_per_day": 1.26,
+      "streaks": 461,
+      "streak_length_mean": 1.93,
+      "streak_length_median": 1,
+      "streak_length_max": 14,
+      "streaks_of_one_break": 237,
+      "streaks_of_one_break_pct": 51.41,
+      "streaks_of_three_or_more_pct": 23.43
+    }
+  ],
+  "published_swing_size": {
+    "params": {
+      "swing_left": 5,
+      "swing_right": 5,
+      "atr_period": 14,
+      "stop_buffer_atr": 0.1,
+      "r_multiple": 2.0,
+      "min_break_range_atr": 1.5
+    },
+    "bars": 35040,
+    "breaks": {
+      "total": 1631,
+      "up": 801,
+      "down": 830,
+      "continuations": 776,
+      "reversals": 854,
+      "reversals_up": 427,
+      "reversals_down": 427,
+      "matches_break_of_structure_summary": true,
+      "halves_plus_first_equal_engine_bos_signals": true
+    },
+    "displacement": {
+      "threshold_true_range_over_atr": 1.5,
+      "reversals_with_displacement": 454,
+      "reversals_with_displacement_pct": 53.16,
+      "continuations_with_displacement": 450,
+      "continuations_with_displacement_pct": 57.99,
+      "breaking_bar_range_over_atr_median_reversals": 1.5603
+    },
+    "forward": {
+      "reversals_all": {
+        "breaks": 854,
+        "after_4_bars": {
+          "breaks_with_data": 854,
+          "mean_move_pct": -0.0097,
+          "moved_further_pct": 46.49,
+          "closed_back_through_level_pct": 54.1
+        },
+        "after_20_bars": {
+          "breaks_with_data": 852,
+          "mean_move_pct": -0.056,
+          "moved_further_pct": 44.95,
+          "closed_back_through_level_pct": 77.46
+        },
+        "after_96_bars": {
+          "breaks_with_data": 850,
+          "mean_move_pct": -0.0196,
+          "moved_further_pct": 48.71,
+          "closed_back_through_level_pct": 89.53
+        }
+      },
+      "reversals_with_displacement": {
+        "breaks": 454,
+        "after_4_bars": {
+          "breaks_with_data": 454,
+          "mean_move_pct": -0.0048,
+          "moved_further_pct": 45.81,
+          "closed_back_through_level_pct": 47.36
+        },
+        "after_20_bars": {
+          "breaks_with_data": 453,
+          "mean_move_pct": -0.0709,
+          "moved_further_pct": 44.81,
+          "closed_back_through_level_pct": 70.64
+        },
+        "after_96_bars": {
+          "breaks_with_data": 452,
+          "mean_move_pct": -0.0557,
+          "moved_further_pct": 48.01,
+          "closed_back_through_level_pct": 85.84
+        }
+      },
+      "reversals_without_displacement": {
+        "breaks": 400,
+        "after_4_bars": {
+          "breaks_with_data": 400,
+          "mean_move_pct": -0.0153,
+          "moved_further_pct": 47.25,
+          "closed_back_through_level_pct": 61.75
+        },
+        "after_20_bars": {
+          "breaks_with_data": 399,
+          "mean_move_pct": -0.039,
+          "moved_further_pct": 45.11,
+          "closed_back_through_level_pct": 85.21
+        },
+        "after_96_bars": {
+          "breaks_with_data": 398,
+          "mean_move_pct": 0.0214,
+          "moved_further_pct": 49.5,
+          "closed_back_through_level_pct": 93.72
+        }
+      },
+      "continuations_all": {
+        "breaks": 776,
+        "after_4_bars": {
+          "breaks_with_data": 776,
+          "mean_move_pct": -0.0303,
+          "moved_further_pct": 43.56,
+          "closed_back_through_level_pct": 56.44
+        },
+        "after_20_bars": {
+          "breaks_with_data": 776,
+          "mean_move_pct": 0.028,
+          "moved_further_pct": 46.65,
+          "closed_back_through_level_pct": 75.64
+        },
+        "after_96_bars": {
+          "breaks_with_data": 776,
+          "mean_move_pct": 0.0668,
+          "moved_further_pct": 48.84,
+          "closed_back_through_level_pct": 86.73
+        }
+      },
+      "continuations_with_displacement": {
+        "breaks": 450,
+        "after_4_bars": {
+          "breaks_with_data": 450,
+          "mean_move_pct": -0.03,
+          "moved_further_pct": 43.78,
+          "closed_back_through_level_pct": 49.56
+        },
+        "after_20_bars": {
+          "breaks_with_data": 450,
+          "mean_move_pct": 0.0241,
+          "moved_further_pct": 47.33,
+          "closed_back_through_level_pct": 72.22
+        },
+        "after_96_bars": {
+          "breaks_with_data": 450,
+          "mean_move_pct": 0.0732,
+          "moved_further_pct": 49.78,
+          "closed_back_through_level_pct": 85.11
+        }
+      }
+    },
+    "forward_note": "Moves are measured from the open of the bar after the break to the close h bars after the break, in the break's direction, before costs. Windows overlap, so these describe the chart; they are not independent trades and no t-statistic is given."
+  },
+  "published_trades": {
+    "choch_break": {
+      "in_sample": {
+        "long": {
+          "trades": 38,
+          "wins": 10,
+          "win_rate_pct": 26.32,
+          "avg_r": -0.3535,
+          "avg_trade_return_pct": -0.0049,
+          "sum_of_trade_returns_pct": -0.1872
+        },
+        "short": {
+          "trades": 50,
+          "wins": 17,
+          "win_rate_pct": 34.0,
+          "avg_r": -0.1033,
+          "avg_trade_return_pct": 0.2525,
+          "sum_of_trade_returns_pct": 12.6257
+        },
+        "by_exit_reason": {
+          "end": {
+            "trades": 1,
+            "wins": 1,
+            "win_rate_pct": 100.0,
+            "avg_r": 0.4907,
+            "avg_trade_return_pct": 1.7799,
+            "sum_of_trade_returns_pct": 1.7799
+          },
+          "stop": {
+            "trades": 61,
+            "wins": 0,
+            "win_rate_pct": 0.0,
+            "avg_r": -1.1253,
+            "avg_trade_return_pct": -1.5697,
+            "sum_of_trade_returns_pct": -95.753
+          },
+          "target": {
+            "trades": 26,
+            "wins": 26,
+            "win_rate_pct": 100.0,
+            "avg_r": 1.9061,
+            "avg_trade_return_pct": 4.0928,
+            "sum_of_trade_returns_pct": 106.4116
+          }
+        },
+        "entry_to_stop_pct_of_price": {
+          "min": 0.3397,
+          "median": 1.3651,
+          "max": 9.0165
+        },
+        "round_trip_cost_in_r_at_median_stop": 0.1099,
+        "avg_hours_held": 60.69,
+        "funding_settlements_per_average_trade_at_8h": 7.59
+      },
+      "out_of_sample": {
+        "long": {
+          "trades": 26,
+          "wins": 8,
+          "win_rate_pct": 30.77,
+          "avg_r": -0.2041,
+          "avg_trade_return_pct": -0.2201,
+          "sum_of_trade_returns_pct": -5.7231
+        },
+        "short": {
+          "trades": 19,
+          "wins": 10,
+          "win_rate_pct": 52.63,
+          "avg_r": 0.4549,
+          "avg_trade_return_pct": 0.2414,
+          "sum_of_trade_returns_pct": 4.5875
+        },
+        "by_exit_reason": {
+          "end": {
+            "trades": 1,
+            "wins": 0,
+            "win_rate_pct": 0.0,
+            "avg_r": -0.4781,
+            "avg_trade_return_pct": -1.1916,
+            "sum_of_trade_returns_pct": -1.1916
+          },
+          "stop": {
+            "trades": 26,
+            "wins": 0,
+            "win_rate_pct": 0.0,
+            "avg_r": -1.132,
+            "avg_trade_return_pct": -1.443,
+            "sum_of_trade_returns_pct": -37.5171
+          },
+          "target": {
+            "trades": 18,
+            "wins": 18,
+            "win_rate_pct": 100.0,
+            "avg_r": 1.847,
+            "avg_trade_return_pct": 2.0874,
+            "sum_of_trade_returns_pct": 37.5731
+          }
+        },
+        "entry_to_stop_pct_of_price": {
+          "min": 0.3574,
+          "median": 1.026,
+          "max": 3.7883
+        },
+        "round_trip_cost_in_r_at_median_stop": 0.1462,
+        "avg_hours_held": 48.18,
+        "funding_settlements_per_average_trade_at_8h": 6.02
+      }
+    },
+    "bos_continuation": {
+      "in_sample": {
+        "long": {
+          "trades": 67,
+          "wins": 19,
+          "win_rate_pct": 28.36,
+          "avg_r": -0.325,
+          "avg_trade_return_pct": -0.3813,
+          "sum_of_trade_returns_pct": -25.5463
+        },
+        "short": {
+          "trades": 84,
+          "wins": 30,
+          "win_rate_pct": 35.71,
+          "avg_r": -0.0519,
+          "avg_trade_return_pct": -0.2986,
+          "sum_of_trade_returns_pct": -25.0807
+        },
+        "by_exit_reason": {
+          "end": {
+            "trades": 1,
+            "wins": 1,
+            "win_rate_pct": 100.0,
+            "avg_r": 0.2076,
+            "avg_trade_return_pct": 0.5855,
+            "sum_of_trade_returns_pct": 0.5855
+          },
+          "stop": {
+            "trades": 102,
+            "wins": 0,
+            "win_rate_pct": 0.0,
+            "avg_r": -1.1342,
+            "avg_trade_return_pct": -1.767,
+            "sum_of_trade_returns_pct": -180.2363
+          },
+          "target": {
+            "trades": 48,
+            "wins": 48,
+            "win_rate_pct": 100.0,
+            "avg_r": 1.8613,
+            "avg_trade_return_pct": 2.688,
+            "sum_of_trade_returns_pct": 129.0238
+          }
+        },
+        "entry_to_stop_pct_of_price": {
+          "min": 0.1509,
+          "median": 1.1528,
+          "max": 7.3333
+        },
+        "round_trip_cost_in_r_at_median_stop": 0.1301,
+        "avg_hours_held": 30.32,
+        "funding_settlements_per_average_trade_at_8h": 3.79
+      },
+      "out_of_sample": {
+        "long": {
+          "trades": 26,
+          "wins": 7,
+          "win_rate_pct": 26.92,
+          "avg_r": -0.329,
+          "avg_trade_return_pct": -0.6112,
+          "sum_of_trade_returns_pct": -15.8905
+        },
+        "short": {
+          "trades": 30,
+          "wins": 7,
+          "win_rate_pct": 23.33,
+          "avg_r": -0.5025,
+          "avg_trade_return_pct": -0.5534,
+          "sum_of_trade_returns_pct": -16.6012
+        },
+        "by_exit_reason": {
+          "end": {
+            "trades": 1,
+            "wins": 1,
+            "win_rate_pct": 100.0,
+            "avg_r": 0.3476,
+            "avg_trade_return_pct": 0.8001,
+            "sum_of_trade_returns_pct": 0.8001
+          },
+          "stop": {
+            "trades": 42,
+            "wins": 0,
+            "win_rate_pct": 0.0,
+            "avg_r": -1.1457,
+            "avg_trade_return_pct": -1.5869,
+            "sum_of_trade_returns_pct": -66.6488
+          },
+          "target": {
+            "trades": 13,
+            "wins": 13,
+            "win_rate_pct": 100.0,
+            "avg_r": 1.8574,
+            "avg_trade_return_pct": 2.5659,
+            "sum_of_trade_returns_pct": 33.357
+          }
+        },
+        "entry_to_stop_pct_of_price": {
+          "min": 0.229,
+          "median": 1.0989,
+          "max": 5.3182
+        },
+        "round_trip_cost_in_r_at_median_stop": 0.1365,
+        "avg_hours_held": 38.03,
+        "funding_settlements_per_average_trade_at_8h": 4.75
+      }
+    }
+  },
+  "shipped_break_of_structure_for_comparison": {
+    "file": "<engine>/results/break-of-structure-btcusdt.json",
+    "engine_version": "0.2.2",
+    "in_sample": {
+      "trades": 149,
+      "wins": 47,
+      "losses": 102,
+      "win_rate_pct": 31.5436,
+      "avg_r": -0.1721,
+      "avg_trade_return_pct": -0.3452,
+      "t_stat": -1.5717,
+      "t_stat_n": 149,
+      "total_return_pct": -43.3416,
+      "max_drawdown_pct": 53.719,
+      "profit_factor": 0.7178,
+      "total_fees": 1263.1,
+      "final_equity": 5665.84,
+      "avg_bars_held": 147.54,
+      "exit_reasons": {
+        "end": 1,
+        "stop": 102,
+        "target": 46
+      },
+      "insufficient_sample": false
+    },
+    "out_of_sample": {
+      "trades": 42,
+      "wins": 17,
+      "losses": 25,
+      "win_rate_pct": 40.4762,
+      "avg_r": 0.0649,
+      "avg_trade_return_pct": -0.0461,
+      "t_stat": -0.1112,
+      "t_stat_n": 42,
+      "total_return_pct": -3.3512,
+      "max_drawdown_pct": 23.5688,
+      "profit_factor": 0.9285,
+      "total_fees": 443.82,
+      "final_equity": 9664.88,
+      "avg_bars_held": 234.26,
+      "exit_reasons": {
+        "end": 1,
+        "stop": 25,
+        "target": 16
+      },
+      "insufficient_sample": true
+    }
+  }
+}

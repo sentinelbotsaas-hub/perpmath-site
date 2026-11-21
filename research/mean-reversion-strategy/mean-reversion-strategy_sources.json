@@ -1,0 +1,61 @@
+{
+  "article": "en/mean-reversion-strategy",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the statements the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source. The only words quoted in the article are rule 8 of the Bollinger Band rules. The five-line rule in the article's code block is our own and is not taken from any of these pages.",
+  "research_sources": [
+    {
+      "name": "Poterba and Summers, Mean Reversion in Stock Prices: Evidence and Implications",
+      "url": "https://www.nber.org/papers/w2343",
+      "page_says": "NBER Working Paper 2343, issue date August 1987; published in the Journal of Financial Economics, vol. 22, pp. 27-59 (1988).",
+      "what_the_abstract_says": [
+        "Examines whether transitory components account for a large share of the variance of stock returns, using variance ratio tests.",
+        "Variance ratio tests have little power against the main alternatives to the random walk.",
+        "Finds returns positively serially correlated over short horizons and negatively autocorrelated over long horizons, in US data and in seventeen other countries."
+      ],
+      "not_used": "The paper's body was not read; the article relies on the abstract and the bibliographic data shown on the NBER page. The journal issue number is not shown on that page and is not given in the article."
+    },
+    {
+      "name": "Lo and MacKinlay, Stock Market Prices Do Not Follow Random Walks: Evidence from a Simple Specification Test",
+      "url": "https://www.nber.org/papers/w2168",
+      "page_says": "NBER Working Paper 2168, issue date February 1987; published in the Review of Financial Studies, vol. 1, no. 1, pp. 41-66 (1988).",
+      "what_the_abstract_says": [
+        "Tests the random walk hypothesis for weekly stock returns by comparing variance estimators from data sampled at different frequencies.",
+        "The random walk is strongly rejected for 1962-1985 and all sub-periods.",
+        "The rejection cannot be read as support for a mean-reverting stationary model."
+      ],
+      "not_used": "The heteroskedasticity-robust test statistic of the paper is not implemented in our script. We report plain variance ratios and compare them with the range obtained from 500 shuffles of the same returns, and say so in the article."
+    },
+    {
+      "name": "John Bollinger, Bollinger Band Rules",
+      "url": "https://www.bollingerbands.com/bollinger-band-rules",
+      "page_date": "footer: (c) Bollinger Bands 2025; no other date",
+      "what_it_says": [
+        "Rule 6: tags of the bands are tags, not signals.",
+        "Rule 8: closes outside the Bollinger Bands are initially continuation signals, not reversal signals.",
+        "Rule 9: the default parameters are 20 periods for the average and the standard deviation and two standard deviations for the width; they can be varied.",
+        "Rule 12: traditional bands are based on a simple moving average.",
+        "Rule 14: make no statistical assumptions from the standard deviation; in practice about 90%, not 95%, of the data is typically inside the bands with the default parameters."
+      ],
+      "not_specified_on_the_page": ["whether the standard deviation divides by n or by n - 1; our script divides by n and says so"]
+    }
+  ],
+  "data_and_cost_sources": [
+    {"name": "Bybit V5 kline endpoint (public)", "url": "https://bybit-exchange.github.io/docs/v5/market/kline"},
+    {"name": "Bybit trading fee structure", "url": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure",
+     "page_date": "Last updated on 2026-11-20 04:29:35 (shown on the page)",
+     "what_it_says": ["Perpetual and futures contracts, VIP 0: taker 0.0550%, maker 0.0200%."]},
+    {"name": "NIST/SEMATECH e-Handbook, one-sample t-test", "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm"},
+    {"name": "perpmath engine README at commit b1c4fd9 (version 0.2.2), section 'Writing a strategy'",
+     "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/b1c4fd990633343427fe45df30fa9c6206cd2961/README.md#writing-a-strategy"}
+  ],
+  "numbers_from_other_articles": {
+    "ma_cross_shipped_result_-62.35_and_-18.46_pct": "<engine>/README.md, 'Shipped results' table (results/ma-cross-btcusdt.json)",
+    "52_pct_of_swing_breaks_followed_by_a_break_the_other_way": "research/market-structure-shift/market-structure-shift_summary.json (breaks_by_swing_size)"
+  },
+  "not_found_or_not_done": [
+    "No published, audited record of a Bollinger Band fade on crypto perpetuals was looked for or cited; the article makes no claim about other people's results.",
+    "A limit-order version of the rule (maker fee, fill at the band) was not run. The engine has no resting limit orders.",
+    "Other mean reversion rules (RSI, VWAP distance, pairs) were not run."
+  ],
+  "author_expectation_recorded_before_the_run": "Before the first run the author's working notes expected that nearly every signal would see a close back at the mean within 96 bars and that roughly 60% of those returns would be at a better price than the entry. Measured: 100% and 67.73%."
+}

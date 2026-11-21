@@ -1,0 +1,11 @@
+$ perpmath backtest mss_displacement --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing5.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing5.zero_cost.json --data-dir <engine>/data
+  | look-ahead check (default): re-running the strategy on shortened data, this can take a while ...
+  | mss_displacement BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
+  | fee 0.0000% per side, slippage 0.0000% per fill, funding not modelled
+  | look-ahead check passed: cut after 454 of 454 signal bars and 4466 of 34585 other bars (the rest not checked)
+  |                trades   win %   avg R  t-stat  return %  max DD %
+  | in_sample         135   34.81    0.03    0.09     -1.37     28.83
+  | out_of_sample      60   30.00   -0.10   -0.58     -9.04     20.45
+  | warning: out_of_sample: 60 trades, fewer than 100: insufficient sample
+  | wrote research/market-structure-shift/runs/btcusdt-15m-mss-displacement-swing5.zero_cost.json
+  exit code 0

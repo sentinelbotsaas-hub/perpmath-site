@@ -1,0 +1,281 @@
+# Output of the run behind research/mean-reversion-strategy/mean-reversion-strategy_summary.json (engine perpmath 0.2.2).
+# Command, from the site's root folder: ../perpmath-engine/.venv/Scripts/python research/mean-reversion-strategy/mean-reversion-strategy_research.py --offline
+# The published setting was run by the engine at 2026-11-21T19:50:26Z (UTC).
+
+self-checks: passed
+engine perpmath 0.2.2; strategy 'mean_reversion_band' registered at run time from this script
+candles: BTCUSDT-15m.csv, 35040 bars, sha256 ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037
+
+$ perpmath backtest mean_reversion_band --symbol BTCUSDT --interval 15m --config research/mean-reversion-strategy/runs/btcusdt-15m-p20-sd2_0-stop2_0.published_costs.config.json --out research/mean-reversion-strategy/runs/btcusdt-15m-p20-sd2_0-stop2_0.published_costs.json --data-dir <engine>/data --lookahead every-bar
+  | look-ahead check (every-bar): re-running the strategy on shortened data, this can take a while ...
+  | mean_reversion_band BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
+  | fee 0.0550% per side, slippage 0.0200% per fill, funding not modelled
+  | look-ahead check passed: cut after 35020 of 35020 signal bars and 19 of 19 other bars
+  |                trades   win %   avg R  t-stat  return %  max DD %
+  | in_sample        1214   48.52   -0.30   -6.92    -80.76     81.49
+  | out_of_sample     517   43.71   -0.36   -5.96    -51.85     54.41
+  | wrote research/mean-reversion-strategy/runs/btcusdt-15m-p20-sd2_0-stop2_0.published_costs.json
+  exit code 0
+btcusdt-15m-p20-sd2_0-stop2_0      published_costs in 1214 trades win  48.52%   -80.76% t  -6.92 R  -0.30   out  517 trades win  43.71%   -51.85% t  -5.96 R  -0.36
+btcusdt-15m-p20-sd2_0-stop2_0      zero_cost       in 1214 trades win  53.13%    18.99% t   0.86 R   0.01   out  517 trades win  53.00%     4.60% t   0.43 R   0.03
+btcusdt-15m-p20-sd1_5-stop2_0      published_costs in 1645 trades win  48.81%   -90.52% t  -9.26 R  -0.31   out  720 trades win  43.33%   -64.63% t  -8.02 R  -0.38
+btcusdt-15m-p20-sd1_5-stop2_0      zero_cost       in 1645 trades win  56.66%    11.96% t   0.58 R  -0.00   out  720 trades win  56.94%     4.22% t   0.39 R   0.02
+btcusdt-15m-p20-sd2_5-stop2_0      published_costs in  675 trades win  44.59%   -64.27% t  -5.31 R  -0.32   out  290 trades win  41.38%   -35.56% t  -4.18 R  -0.41
+btcusdt-15m-p20-sd2_5-stop2_0      zero_cost       in  675 trades win  49.04%    -1.59% t   0.01 R  -0.02   out  290 trades win  46.90%    -0.42% t   0.01 R  -0.03
+btcusdt-15m-p20-sd3_0-stop2_0      published_costs in  287 trades win  42.86%   -37.60% t  -3.37 R  -0.34   out  126 trades win  36.51%   -18.39% t  -2.59 R  -0.42
+btcusdt-15m-p20-sd3_0-stop2_0      zero_cost       in  287 trades win  45.99%    -3.98% t  -0.23 R  -0.05   out  126 trades win  43.65%    -1.40% t  -0.15 R  -0.04
+btcusdt-15m-p50-sd2_0-stop2_0      published_costs in  687 trades win  42.79%   -59.68% t  -3.57 R  -0.30   out  291 trades win  43.99%   -23.49% t  -2.32 R  -0.32
+btcusdt-15m-p50-sd2_0-stop2_0      zero_cost       in  687 trades win  43.81%    13.09% t   0.62 R  -0.02   out  291 trades win  47.08%    18.39% t   1.55 R   0.05
+btcusdt-15m-p96-sd2_0-stop2_0      published_costs in  450 trades win  38.00%   -47.72% t  -2.75 R  -0.25   out  211 trades win  36.97%   -32.07% t  -3.30 R  -0.32
+btcusdt-15m-p96-sd2_0-stop2_0      zero_cost       in  450 trades win  38.22%     2.72% t   0.23 R   0.01   out  211 trades win  36.97%    -6.76% t  -0.55 R   0.04
+btcusdt-15m-p20-sd2_0-stop1_0      published_costs in 1378 trades win  33.16%   -87.16% t -10.62 R  -0.58   out  582 trades win  31.96%   -56.33% t  -8.43 R  -0.68
+btcusdt-15m-p20-sd2_0-stop1_0      zero_cost       in 1378 trades win  34.33%     1.60% t   0.18 R  -0.01   out  582 trades win  34.54%     4.59% t   0.51 R   0.04
+btcusdt-15m-p20-sd2_0-stop4_0      published_costs in 1070 trades win  57.10%   -68.43% t  -4.08 R  -0.13   out  452 trades win  50.66%   -48.08% t  -4.75 R  -0.20
+btcusdt-15m-p20-sd2_0-stop4_0      zero_cost       in 1070 trades win  66.45%    57.26% t   1.79 R   0.02   out  452 trades win  64.60%     2.32% t   0.24 R   0.01
+
+wrote research/mean-reversion-strategy/mean-reversion-strategy_summary.json
+{
+ "params": {
+  "period": 20,
+  "entry_sd": 2.0,
+  "atr_period": 14,
+  "stop_atr_mult": 2.0
+ },
+ "window_bars": 96,
+ "closes_with_a_band": 35021,
+ "closes_below_lower": 2145,
+ "closes_above_upper": 2043,
+ "closes_outside_pct": 11.96,
+ "normal_distribution_share_beyond_2sd_pct": 4.55,
+ "largest_abs_z": 4.2135,
+ "largest_abs_z_note": "With the population standard deviation of n values, a single value can sit at most sqrt(n - 1) standard deviations from their mean: 4.3589 for n = 20.",
+ "events": {
+  "first_closes_outside": 2140,
+  "long_side_below_lower": 1108,
+  "short_side_above_upper": 1032,
+  "events_followed": 2138,
+  "per_day": 5.86
+ },
+ "closed_back_at_mean_within_window": {
+  "events": 2138,
+  "pct": 100.0,
+  "bars_median": 12.0,
+  "bars_mean": 13.91,
+  "bars_p90": 27,
+  "within_4_bars_pct": 15.62,
+  "within_20_bars_pct": 80.26
+ },
+ "price_when_back_at_mean_vs_entry": {
+  "note": "Entry is the open after the signal bar; the exit is the open after the bar that closed back at the mean. Before costs. The stop is ignored in this block.",
+  "better_than_entry": 1448,
+  "better_than_entry_pct": 67.73,
+  "worse_or_equal": 690,
+  "worse_or_equal_pct": 32.27,
+  "mean_move_pct": 0.0087,
+  "median_move_pct": 0.2091,
+  "mean_gain_when_better_pct": 0.4584,
+  "mean_loss_when_worse_pct": -0.9349,
+  "gap_to_mean_at_signal_pct_median": 0.5104,
+  "mean_moved_toward_price_pct_median": 0.3593,
+  "round_trip_cost_pct": 0.15
+ },
+ "stop_of_rule_4": {
+  "touched_before_or_on_the_bar_back_at_mean": 937,
+  "pct_of_events": 43.83,
+  "back_at_mean_without_touching_stop": 1201,
+  "back_at_mean_without_touching_stop_pct": 56.17,
+  "of_those_better_than_entry_pct": 96.59,
+  "of_those_mean_move_pct": 0.4706
+ },
+ "worst_move_against_before_back_pct": {
+  "median": 0.4264,
+  "p90": 2.03,
+  "max": 11.8667
+ },
+ "by_side": {
+  "long_below_lower": {
+   "events": 1106,
+   "closed_back_at_mean": 1106,
+   "closed_back_at_mean_pct": 100.0,
+   "better_than_entry_pct": 67.81,
+   "mean_move_pct": 0.0146
+  },
+  "short_above_upper": {
+   "events": 1032,
+   "closed_back_at_mean": 1032,
+   "closed_back_at_mean_pct": 100.0,
+   "better_than_entry_pct": 67.64,
+   "mean_move_pct": 0.0024
+  }
+ },
+ "note": "Counts on the bars. Every event is followed, including the ones the one-position rule skipped, so the windows overlap and these are not independent trades."
+}
+{
+ "series": "log returns of 15-minute closes",
+ "returns": 35039,
+ "mean_abs_return_pct": 0.1504,
+ "median_abs_return_pct": 0.0955,
+ "after_a_big_bar": {
+  "largest_10_pct_of_bars": {
+   "bars": 3504,
+   "bar_move_at_least_pct": 0.3398,
+   "mean_bar_move_pct": 0.564,
+   "next_bar_mean_give_back_pct": 0.011,
+   "next_bar_went_the_other_way_pct": 56.93
+  },
+  "largest_5_pct_of_bars": {
+   "bars": 1752,
+   "bar_move_at_least_pct": 0.4725,
+   "mean_bar_move_pct": 0.7318,
+   "next_bar_mean_give_back_pct": 0.0072,
+   "next_bar_went_the_other_way_pct": 57.08
+  },
+  "largest_1_pct_of_bars": {
+   "bars": 351,
+   "bar_move_at_least_pct": 0.8608,
+   "mean_bar_move_pct": 1.2203,
+   "next_bar_mean_give_back_pct": -0.0253,
+   "next_bar_went_the_other_way_pct": 54.13
+  }
+ },
+ "round_trip_cost_pct": 0.15,
+ "autocorrelation": {
+  "lag_1": -0.0156,
+  "lag_2": 0.0016,
+  "lag_3": -0.0022,
+  "lag_4": -0.0197
+ },
+ "autocorrelation_band_if_independent": 0.0105,
+ "lag_1_range_in_shuffles_2_5_to_97_5": [
+  -0.01,
+  0.0111
+ ],
+ "variance_ratio": {
+  "2_bars": 0.9844,
+  "4_bars": 0.9771,
+  "16_bars": 0.9436,
+  "96_bars": 0.9487
+ },
+ "variance_ratio_range_in_shuffles_2_5_to_97_5": {
+  "2_bars": [
+   0.99,
+   1.0112
+  ],
+  "4_bars": [
+   0.9817,
+   1.0197
+  ],
+  "16_bars": [
+   0.9534,
+   1.056
+  ],
+  "96_bars": [
+   0.8824,
+   1.1138
+  ]
+ },
+ "shuffles": 500,
+ "seed": 20261122,
+ "note": "Shuffling keeps every return and destroys their order, so the range is what the statistic does when there is no dependence at all. It also destroys volatility clustering, which real returns have, so the range is narrower than a test that allowed for it would give. Read a value just outside it with that in mind."
+}
+{
+ "in_sample": {
+  "long": {
+   "trades": 624,
+   "wins": 300,
+   "win_rate_pct": 48.08,
+   "avg_r": -0.31,
+   "avg_trade_return_pct": -0.145,
+   "sum_of_trade_returns_pct": -90.5021,
+   "avg_bars_held": 6.39
+  },
+  "short": {
+   "trades": 590,
+   "wins": 289,
+   "win_rate_pct": 48.98,
+   "avg_r": -0.2821,
+   "avg_trade_return_pct": -0.1211,
+   "sum_of_trade_returns_pct": -71.4579,
+   "avg_bars_held": 7.04
+  },
+  "by_exit_reason": {
+   "signal": {
+    "trades": 669,
+    "wins": 589,
+    "win_rate_pct": 88.04,
+    "avg_r": 0.5017,
+    "avg_trade_return_pct": 0.3592,
+    "sum_of_trade_returns_pct": 240.2813,
+    "avg_bars_held": 8.65
+   },
+   "stop": {
+    "trades": 545,
+    "wins": 0,
+    "win_rate_pct": 0.0,
+    "avg_r": -1.2761,
+    "avg_trade_return_pct": -0.7381,
+    "sum_of_trade_returns_pct": -402.2413,
+    "avg_bars_held": 4.32
+   }
+  },
+  "entry_to_stop_pct_of_price_median": 0.5614,
+  "round_trip_cost_in_r_at_median_stop": 0.2672,
+  "avg_win_return_pct": 0.424,
+  "avg_loss_return_pct": -0.6587,
+  "breakeven_win_rate_pct_at_those_averages": 60.84
+ },
+ "out_of_sample": {
+  "long": {
+   "trades": 260,
+   "wins": 116,
+   "win_rate_pct": 44.62,
+   "avg_r": -0.3635,
+   "avg_trade_return_pct": -0.1582,
+   "sum_of_trade_returns_pct": -41.1199,
+   "avg_bars_held": 6.41
+  },
+  "short": {
+   "trades": 257,
+   "wins": 110,
+   "win_rate_pct": 42.8,
+   "avg_r": -0.3611,
+   "avg_trade_return_pct": -0.1214,
+   "sum_of_trade_returns_pct": -31.1892,
+   "avg_bars_held": 6.7
+  },
+  "by_exit_reason": {
+   "end": {
+    "trades": 1,
+    "wins": 0,
+    "win_rate_pct": 0.0,
+    "avg_r": -0.7272,
+    "avg_trade_return_pct": -0.4477,
+    "sum_of_trade_returns_pct": -0.4477,
+    "avg_bars_held": 3.0
+   },
+   "signal": {
+    "trades": 285,
+    "wins": 226,
+    "win_rate_pct": 79.3,
+    "avg_r": 0.4317,
+    "avg_trade_return_pct": 0.259,
+    "sum_of_trade_returns_pct": 73.8069,
+    "avg_bars_held": 8.19
+   },
+   "stop": {
+    "trades": 231,
+    "wins": 0,
+    "win_rate_pct": 0.0,
+    "avg_r": -1.3403,
+    "avg_trade_return_pct": -0.6306,
+    "sum_of_trade_returns_pct": -145.6683,
+    "avg_bars_held": 4.55
+   }
+  },
+  "entry_to_stop_pct_of_price_median": 0.4729,
+  "round_trip_cost_in_r_at_median_stop": 0.3172,
+  "avg_win_return_pct": 0.3525,
+  "avg_loss_return_pct": -0.5222,
+  "breakeven_win_rate_pct_at_those_averages": 59.7
+ }
+}

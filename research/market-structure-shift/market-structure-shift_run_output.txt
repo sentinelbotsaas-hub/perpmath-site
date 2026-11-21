@@ -1,0 +1,472 @@
+# Output of the run behind research/market-structure-shift/market-structure-shift_summary.json (engine perpmath 0.2.2).
+# Command, from the site's root folder: ../perpmath-engine/.venv/Scripts/python research/market-structure-shift/market-structure-shift_research.py --offline
+# The published setting was run by the engine at 2026-11-21T19:58:26Z (UTC).
+
+self-checks: passed
+engine perpmath 0.2.2; strategies choch_break, mss_displacement, bos_continuation registered at run time from this script
+candles: BTCUSDT-15m.csv, 35040 bars, sha256 ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037
+
+btcusdt-15m-choch-break-swing1           published_costs in  322 trades win  30.12%   -36.94% t  -1.33 R  -0.34   out  156 trades win  36.54%   -15.46% t  -0.99 R  -0.14
+btcusdt-15m-choch-break-swing1           zero_cost       in  318 trades win  32.70%     8.50% t   0.41 R  -0.02   out  165 trades win  38.18%     8.22% t   0.58 R   0.15
+btcusdt-15m-choch-break-swing2           published_costs in  217 trades win  34.56%    -6.00% t  -0.05 R  -0.16   out  114 trades win  28.95%   -24.42% t  -1.72 R  -0.33
+btcusdt-15m-choch-break-swing2           zero_cost       in  219 trades win  35.16%    26.66% t   0.92 R   0.05   out  114 trades win  28.95%   -12.04% t  -0.76 R  -0.12
+btcusdt-15m-choch-break-swing3           published_costs in  159 trades win  35.22%     6.11% t   0.34 R  -0.10   out   90 trades win  26.67%   -27.50% t  -2.13 R  -0.36
+btcusdt-15m-choch-break-swing3           zero_cost       in  161 trades win  34.78%    28.65% t   0.96 R   0.03   out   89 trades win  26.97%   -18.00% t  -1.31 R  -0.18
+$ perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing5.published_costs.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing5.published_costs.json --data-dir <engine>/data
+  | look-ahead check (default): re-running the strategy on shortened data, this can take a while ...
+  | choch_break BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
+  | fee 0.0550% per side, slippage 0.0200% per fill, funding not modelled
+  | look-ahead check passed: cut after 854 of 854 signal bars and 4419 of 34185 other bars (the rest not checked)
+  |                trades   win %   avg R  t-stat  return %  max DD %
+  | in_sample          88   30.68   -0.21    0.41      8.38     24.40
+  | out_of_sample      45   40.00    0.07   -0.08     -2.01     15.41
+  | warning: in_sample: 88 trades, fewer than 100: insufficient sample
+  | warning: out_of_sample: 45 trades, fewer than 100: insufficient sample
+  | wrote research/market-structure-shift/runs/btcusdt-15m-choch-break-swing5.published_costs.json
+  exit code 0
+btcusdt-15m-choch-break-swing5           published_costs in   88 trades win  30.68%     8.38% t   0.41 R  -0.21   out   45 trades win  40.00%    -2.01% t  -0.08 R   0.07
+btcusdt-15m-choch-break-swing5           zero_cost       in   89 trades win  31.46%    22.86% t   0.82 R  -0.07   out   46 trades win  39.13%     2.63% t   0.26 R   0.19
+btcusdt-15m-choch-break-swing10          published_costs in   69 trades win  36.23%     3.96% t   0.27 R   0.01   out   32 trades win  31.25%    -3.53% t  -0.18 R  -0.16
+btcusdt-15m-choch-break-swing10          zero_cost       in   70 trades win  35.71%    11.13% t   0.49 R   0.08   out   32 trades win  31.25%     0.62% t   0.11 R  -0.04
+btcusdt-15m-mss-displacement-swing5      published_costs in  135 trades win  32.59%   -24.92% t  -0.90 R  -0.15   out   59 trades win  30.51%   -15.03% t  -1.03 R  -0.24
+btcusdt-15m-mss-displacement-swing5      zero_cost       in  135 trades win  34.81%    -1.37% t   0.09 R   0.03   out   60 trades win  30.00%    -9.04% t  -0.58 R  -0.10
+btcusdt-15m-mss-displacement-swing2      published_costs in  246 trades win  34.55%   -39.29% t  -1.81 R  -0.15   out   99 trades win  36.36%   -11.71% t  -0.87 R  -0.16
+btcusdt-15m-mss-displacement-swing2      zero_cost       in  246 trades win  35.37%   -15.23% t  -0.53 R   0.06   out   99 trades win  37.37%     2.12% t   0.22 R   0.11
+btcusdt-15m-bos-continuation-swing5      published_costs in  151 trades win  32.45%   -42.64% t  -1.61 R  -0.17   out   56 trades win  25.00%   -28.74% t  -2.00 R  -0.42
+btcusdt-15m-bos-continuation-swing5      zero_cost       in  146 trades win  33.56%   -28.20% t  -0.91 R  -0.01   out   56 trades win  25.00%   -23.05% t  -1.55 R  -0.28
+
+wrote research/market-structure-shift/market-structure-shift_summary.json
+[
+ {
+  "swing_bars_each_side": 1,
+  "breaks": 4899,
+  "breaks_per_day": 13.42,
+  "continuations_same_direction": 2363,
+  "reversals_opposite_direction": 2535,
+  "reversals_pct_of_labelled": 51.76,
+  "reversals_per_day": 6.95,
+  "streaks": 2536,
+  "streak_length_mean": 1.93,
+  "streak_length_median": 1.0,
+  "streak_length_max": 13,
+  "streaks_of_one_break": 1278,
+  "streaks_of_one_break_pct": 50.39,
+  "streaks_of_three_or_more_pct": 22.56
+ },
+ {
+  "swing_bars_each_side": 2,
+  "breaks": 3205,
+  "breaks_per_day": 8.78,
+  "continuations_same_direction": 1511,
+  "reversals_opposite_direction": 1693,
+  "reversals_pct_of_labelled": 52.84,
+  "reversals_per_day": 4.64,
+  "streaks": 1694,
+  "streak_length_mean": 1.89,
+  "streak_length_median": 1.0,
+  "streak_length_max": 11,
+  "streaks_of_one_break": 889,
+  "streaks_of_one_break_pct": 52.48,
+  "streaks_of_three_or_more_pct": 21.55
+ },
+ {
+  "swing_bars_each_side": 3,
+  "breaks": 2416,
+  "breaks_per_day": 6.62,
+  "continuations_same_direction": 1152,
+  "reversals_opposite_direction": 1263,
+  "reversals_pct_of_labelled": 52.3,
+  "reversals_per_day": 3.46,
+  "streaks": 1264,
+  "streak_length_mean": 1.91,
+  "streak_length_median": 1.0,
+  "streak_length_max": 14,
+  "streaks_of_one_break": 646,
+  "streaks_of_one_break_pct": 51.11,
+  "streaks_of_three_or_more_pct": 21.91
+ },
+ {
+  "swing_bars_each_side": 5,
+  "breaks": 1631,
+  "breaks_per_day": 4.47,
+  "continuations_same_direction": 776,
+  "reversals_opposite_direction": 854,
+  "reversals_pct_of_labelled": 52.39,
+  "reversals_per_day": 2.34,
+  "streaks": 855,
+  "streak_length_mean": 1.91,
+  "streak_length_median": 1,
+  "streak_length_max": 11,
+  "streaks_of_one_break": 449,
+  "streaks_of_one_break_pct": 52.51,
+  "streaks_of_three_or_more_pct": 21.64
+ },
+ {
+  "swing_bars_each_side": 10,
+  "breaks": 890,
+  "breaks_per_day": 2.44,
+  "continuations_same_direction": 429,
+  "reversals_opposite_direction": 460,
+  "reversals_pct_of_labelled": 51.74,
+  "reversals_per_day": 1.26,
+  "streaks": 461,
+  "streak_length_mean": 1.93,
+  "streak_length_median": 1,
+  "streak_length_max": 14,
+  "streaks_of_one_break": 237,
+  "streaks_of_one_break_pct": 51.41,
+  "streaks_of_three_or_more_pct": 23.43
+ }
+]
+{
+ "params": {
+  "swing_left": 5,
+  "swing_right": 5,
+  "atr_period": 14,
+  "stop_buffer_atr": 0.1,
+  "r_multiple": 2.0,
+  "min_break_range_atr": 1.5
+ },
+ "bars": 35040,
+ "breaks": {
+  "total": 1631,
+  "up": 801,
+  "down": 830,
+  "continuations": 776,
+  "reversals": 854,
+  "reversals_up": 427,
+  "reversals_down": 427,
+  "matches_break_of_structure_summary": true,
+  "halves_plus_first_equal_engine_bos_signals": true
+ },
+ "displacement": {
+  "threshold_true_range_over_atr": 1.5,
+  "reversals_with_displacement": 454,
+  "reversals_with_displacement_pct": 53.16,
+  "continuations_with_displacement": 450,
+  "continuations_with_displacement_pct": 57.99,
+  "breaking_bar_range_over_atr_median_reversals": 1.5603
+ },
+ "forward": {
+  "reversals_all": {
+   "breaks": 854,
+   "after_4_bars": {
+    "breaks_with_data": 854,
+    "mean_move_pct": -0.0097,
+    "moved_further_pct": 46.49,
+    "closed_back_through_level_pct": 54.1
+   },
+   "after_20_bars": {
+    "breaks_with_data": 852,
+    "mean_move_pct": -0.056,
+    "moved_further_pct": 44.95,
+    "closed_back_through_level_pct": 77.46
+   },
+   "after_96_bars": {
+    "breaks_with_data": 850,
+    "mean_move_pct": -0.0196,
+    "moved_further_pct": 48.71,
+    "closed_back_through_level_pct": 89.53
+   }
+  },
+  "reversals_with_displacement": {
+   "breaks": 454,
+   "after_4_bars": {
+    "breaks_with_data": 454,
+    "mean_move_pct": -0.0048,
+    "moved_further_pct": 45.81,
+    "closed_back_through_level_pct": 47.36
+   },
+   "after_20_bars": {
+    "breaks_with_data": 453,
+    "mean_move_pct": -0.0709,
+    "moved_further_pct": 44.81,
+    "closed_back_through_level_pct": 70.64
+   },
+   "after_96_bars": {
+    "breaks_with_data": 452,
+    "mean_move_pct": -0.0557,
+    "moved_further_pct": 48.01,
+    "closed_back_through_level_pct": 85.84
+   }
+  },
+  "reversals_without_displacement": {
+   "breaks": 400,
+   "after_4_bars": {
+    "breaks_with_data": 400,
+    "mean_move_pct": -0.0153,
+    "moved_further_pct": 47.25,
+    "closed_back_through_level_pct": 61.75
+   },
+   "after_20_bars": {
+    "breaks_with_data": 399,
+    "mean_move_pct": -0.039,
+    "moved_further_pct": 45.11,
+    "closed_back_through_level_pct": 85.21
+   },
+   "after_96_bars": {
+    "breaks_with_data": 398,
+    "mean_move_pct": 0.0214,
+    "moved_further_pct": 49.5,
+    "closed_back_through_level_pct": 93.72
+   }
+  },
+  "continuations_all": {
+   "breaks": 776,
+   "after_4_bars": {
+    "breaks_with_data": 776,
+    "mean_move_pct": -0.0303,
+    "moved_further_pct": 43.56,
+    "closed_back_through_level_pct": 56.44
+   },
+   "after_20_bars": {
+    "breaks_with_data": 776,
+    "mean_move_pct": 0.028,
+    "moved_further_pct": 46.65,
+    "closed_back_through_level_pct": 75.64
+   },
+   "after_96_bars": {
+    "breaks_with_data": 776,
+    "mean_move_pct": 0.0668,
+    "moved_further_pct": 48.84,
+    "closed_back_through_level_pct": 86.73
+   }
+  },
+  "continuations_with_displacement": {
+   "breaks": 450,
+   "after_4_bars": {
+    "breaks_with_data": 450,
+    "mean_move_pct": -0.03,
+    "moved_further_pct": 43.78,
+    "closed_back_through_level_pct": 49.56
+   },
+   "after_20_bars": {
+    "breaks_with_data": 450,
+    "mean_move_pct": 0.0241,
+    "moved_further_pct": 47.33,
+    "closed_back_through_level_pct": 72.22
+   },
+   "after_96_bars": {
+    "breaks_with_data": 450,
+    "mean_move_pct": 0.0732,
+    "moved_further_pct": 49.78,
+    "closed_back_through_level_pct": 85.11
+   }
+  }
+ },
+ "forward_note": "Moves are measured from the open of the bar after the break to the close h bars after the break, in the break's direction, before costs. Windows overlap, so these describe the chart; they are not independent trades and no t-statistic is given."
+}
+{
+ "choch_break": {
+  "in_sample": {
+   "long": {
+    "trades": 38,
+    "wins": 10,
+    "win_rate_pct": 26.32,
+    "avg_r": -0.3535,
+    "avg_trade_return_pct": -0.0049,
+    "sum_of_trade_returns_pct": -0.1872
+   },
+   "short": {
+    "trades": 50,
+    "wins": 17,
+    "win_rate_pct": 34.0,
+    "avg_r": -0.1033,
+    "avg_trade_return_pct": 0.2525,
+    "sum_of_trade_returns_pct": 12.6257
+   },
+   "by_exit_reason": {
+    "end": {
+     "trades": 1,
+     "wins": 1,
+     "win_rate_pct": 100.0,
+     "avg_r": 0.4907,
+     "avg_trade_return_pct": 1.7799,
+     "sum_of_trade_returns_pct": 1.7799
+    },
+    "stop": {
+     "trades": 61,
+     "wins": 0,
+     "win_rate_pct": 0.0,
+     "avg_r": -1.1253,
+     "avg_trade_return_pct": -1.5697,
+     "sum_of_trade_returns_pct": -95.753
+    },
+    "target": {
+     "trades": 26,
+     "wins": 26,
+     "win_rate_pct": 100.0,
+     "avg_r": 1.9061,
+     "avg_trade_return_pct": 4.0928,
+     "sum_of_trade_returns_pct": 106.4116
+    }
+   },
+   "entry_to_stop_pct_of_price": {
+    "min": 0.3397,
+    "median": 1.3651,
+    "max": 9.0165
+   },
+   "round_trip_cost_in_r_at_median_stop": 0.1099,
+   "avg_hours_held": 60.69,
+   "funding_settlements_per_average_trade_at_8h": 7.59
+  },
+  "out_of_sample": {
+   "long": {
+    "trades": 26,
+    "wins": 8,
+    "win_rate_pct": 30.77,
+    "avg_r": -0.2041,
+    "avg_trade_return_pct": -0.2201,
+    "sum_of_trade_returns_pct": -5.7231
+   },
+   "short": {
+    "trades": 19,
+    "wins": 10,
+    "win_rate_pct": 52.63,
+    "avg_r": 0.4549,
+    "avg_trade_return_pct": 0.2414,
+    "sum_of_trade_returns_pct": 4.5875
+   },
+   "by_exit_reason": {
+    "end": {
+     "trades": 1,
+     "wins": 0,
+     "win_rate_pct": 0.0,
+     "avg_r": -0.4781,
+     "avg_trade_return_pct": -1.1916,
+     "sum_of_trade_returns_pct": -1.1916
+    },
+    "stop": {
+     "trades": 26,
+     "wins": 0,
+     "win_rate_pct": 0.0,
+     "avg_r": -1.132,
+     "avg_trade_return_pct": -1.443,
+     "sum_of_trade_returns_pct": -37.5171
+    },
+    "target": {
+     "trades": 18,
+     "wins": 18,
+     "win_rate_pct": 100.0,
+     "avg_r": 1.847,
+     "avg_trade_return_pct": 2.0874,
+     "sum_of_trade_returns_pct": 37.5731
+    }
+   },
+   "entry_to_stop_pct_of_price": {
+    "min": 0.3574,
+    "median": 1.026,
+    "max": 3.7883
+   },
+   "round_trip_cost_in_r_at_median_stop": 0.1462,
+   "avg_hours_held": 48.18,
+   "funding_settlements_per_average_trade_at_8h": 6.02
+  }
+ },
+ "bos_continuation": {
+  "in_sample": {
+   "long": {
+    "trades": 67,
+    "wins": 19,
+    "win_rate_pct": 28.36,
+    "avg_r": -0.325,
+    "avg_trade_return_pct": -0.3813,
+    "sum_of_trade_returns_pct": -25.5463
+   },
+   "short": {
+    "trades": 84,
+    "wins": 30,
+    "win_rate_pct": 35.71,
+    "avg_r": -0.0519,
+    "avg_trade_return_pct": -0.2986,
+    "sum_of_trade_returns_pct": -25.0807
+   },
+   "by_exit_reason": {
+    "end": {
+     "trades": 1,
+     "wins": 1,
+     "win_rate_pct": 100.0,
+     "avg_r": 0.2076,
+     "avg_trade_return_pct": 0.5855,
+     "sum_of_trade_returns_pct": 0.5855
+    },
+    "stop": {
+     "trades": 102,
+     "wins": 0,
+     "win_rate_pct": 0.0,
+     "avg_r": -1.1342,
+     "avg_trade_return_pct": -1.767,
+     "sum_of_trade_returns_pct": -180.2363
+    },
+    "target": {
+     "trades": 48,
+     "wins": 48,
+     "win_rate_pct": 100.0,
+     "avg_r": 1.8613,
+     "avg_trade_return_pct": 2.688,
+     "sum_of_trade_returns_pct": 129.0238
+    }
+   },
+   "entry_to_stop_pct_of_price": {
+    "min": 0.1509,
+    "median": 1.1528,
+    "max": 7.3333
+   },
+   "round_trip_cost_in_r_at_median_stop": 0.1301,
+   "avg_hours_held": 30.32,
+   "funding_settlements_per_average_trade_at_8h": 3.79
+  },
+  "out_of_sample": {
+   "long": {
+    "trades": 26,
+    "wins": 7,
+    "win_rate_pct": 26.92,
+    "avg_r": -0.329,
+    "avg_trade_return_pct": -0.6112,
+    "sum_of_trade_returns_pct": -15.8905
+   },
+   "short": {
+    "trades": 30,
+    "wins": 7,
+    "win_rate_pct": 23.33,
+    "avg_r": -0.5025,
+    "avg_trade_return_pct": -0.5534,
+    "sum_of_trade_returns_pct": -16.6012
+   },
+   "by_exit_reason": {
+    "end": {
+     "trades": 1,
+     "wins": 1,
+     "win_rate_pct": 100.0,
+     "avg_r": 0.3476,
+     "avg_trade_return_pct": 0.8001,
+     "sum_of_trade_returns_pct": 0.8001
+    },
+    "stop": {
+     "trades": 42,
+     "wins": 0,
+     "win_rate_pct": 0.0,
+     "avg_r": -1.1457,
+     "avg_trade_return_pct": -1.5869,
+     "sum_of_trade_returns_pct": -66.6488
+    },
+    "target": {
+     "trades": 13,
+     "wins": 13,
+     "win_rate_pct": 100.0,
+     "avg_r": 1.8574,
+     "avg_trade_return_pct": 2.5659,
+     "sum_of_trade_returns_pct": 33.357
+    }
+   },
+   "entry_to_stop_pct_of_price": {
+    "min": 0.229,
+    "median": 1.0989,
+    "max": 5.3182
+   },
+   "round_trip_cost_in_r_at_median_stop": 0.1365,
+   "avg_hours_held": 38.03,
+   "funding_settlements_per_average_trade_at_8h": 4.75
+  }
+ }
+}

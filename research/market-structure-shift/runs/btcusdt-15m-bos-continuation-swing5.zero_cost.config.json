@@ -1,0 +1,20 @@
+{
+  "strategy": "bos_continuation",
+  "params": {
+    "swing_left": 5,
+    "swing_right": 5,
+    "atr_period": 14,
+    "stop_buffer_atr": 0.1,
+    "r_multiple": 2.0
+  },
+  "execution": {
+    "fee_rate": 0.0,
+    "slippage": 0.0,
+    "initial_capital": 10000,
+    "notional_fraction": 1.0,
+    "max_hold_bars": null
+  },
+  "split": {
+    "oos_start": "2026-07-31"
+  }
+}

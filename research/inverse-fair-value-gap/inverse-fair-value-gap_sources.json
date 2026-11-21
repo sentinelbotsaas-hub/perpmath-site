@@ -1,0 +1,69 @@
+{
+  "article": "en/inverse-fair-value-gap",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the statements the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source. Nothing in the article is a quotation from these pages. The rule in the article's code block is our own.",
+  "definition_sources": [
+    {
+      "name": "LuxAlgo library: Inversion FVG",
+      "url": "https://www.luxalgo.com/library/concept/inversion-fvg/",
+      "page_date": "none shown (footer copyright 2020-2026)",
+      "what_it_says": [
+        "A fair value gap that failed and flipped roles; a bullish gap that price closes below becomes resistance, a bearish gap that price closes above becomes support.",
+        "A candle body closing through the far side is the common standard; a wick alone is usually read as a probe.",
+        "Conventions differ: some require the whole gap closed through, others a close beyond its midpoint.",
+        "The first return to the inverted zone is watched for rejection; the stop goes just beyond the far side; a reclaim invalidates the idea.",
+        "Describes an inversion as a hypothesis, not a guarantee, and notes that many inverted gaps are reclaimed on the first retest.",
+        "Gives no statistics and names no originator."
+      ]
+    },
+    {
+      "name": "TradingView: Inversion Fair Value Gaps (IFVG) [LuxAlgo], open-source script",
+      "url": "https://www.tradingview.com/script/8FHucjY6-Inversion-Fair-Value-Gaps-IFVG-LuxAlgo/",
+      "page_date": "published 2024-02-01",
+      "what_it_says": [
+        "Says it is based on the inversion FVG concept by ICT.",
+        "Mitigation (what turns a gap into an inversion) is a close above or below the gap area against its bias.",
+        "Signals appear when price returns to an inversion zone and rejects; a 'Signal Preference' setting chooses wick or close for the signal.",
+        "An ATR multiplier setting filters gaps by width.",
+        "States that backtesting its historical signals is incorrect because it does not take the mitigation of inversion zones into account."
+      ],
+      "not_read": "The Pine Script source was not read; only the description on the page."
+    },
+    {
+      "name": "Quantum Algo glossary: inversion fair value gap",
+      "url": "https://www.quantum-algo.com/glossary/inversion-fair-value-gap/",
+      "page_date": "Published September 21, 2026",
+      "what_it_says": [
+        "A fair value gap that price has closed through; a failed bullish gap becomes resistance and a failed bearish gap support.",
+        "Requires a candle body to close completely beyond the far side; a close inside the gap is a partial fill and a wick through with a close back inside is a sweep.",
+        "Entry on the first retest, stop beyond the gap's far edge; advises caution on a second retest.",
+        "Says inversion gaps are central to the entry logic of an ICT model, without crediting anyone with inventing the concept."
+      ],
+      "publisher_note": "Quantum Algo sells TradingView tools."
+    }
+  ],
+  "naming": {
+    "finding": "'Inversion fair value gap' (LuxAlgo library, LuxAlgo script, Quantum Algo) and 'inverse fair value gap' (for example the title of an FXOpen idea listed on TradingView's IFVG tag pages in a web search on the check date) are used for the same idea. We found no source that distinguishes them.",
+    "caveat": "The FXOpen page itself returned HTTP 404 at the address we tried, so nothing in the article is attributed to it."
+  },
+  "origin": {
+    "conclusion": "No dated, written primary source for the term was found. The LuxAlgo script attributes the concept to ICT in one phrase; none of the three pages cites a lecture or a date. The article attributes the term to nobody in particular and no wording to Michael J. Huddleston."
+  },
+  "engine_sources": [
+    {"name": "fvg.py at commit b1c4fd9 (version 0.2.2): gap definition and the five parameters reused here",
+     "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/b1c4fd990633343427fe45df30fa9c6206cd2961/src/perpmath/strategies/fvg.py"}
+  ],
+  "data_and_cost_sources": [
+    {"name": "Bybit V5 kline endpoint (public)", "url": "https://bybit-exchange.github.io/docs/v5/market/kline"},
+    {"name": "Bybit trading fee structure", "url": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure",
+     "page_date": "Last updated on 2026-11-20 04:29:35 (shown on the page)",
+     "what_it_says": ["Perpetual and futures contracts, VIP 0: taker 0.0550%, maker 0.0200%."]},
+    {"name": "NIST/SEMATECH e-Handbook, one-sample t-test", "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm"}
+  ],
+  "numbers_from_other_articles": {
+    "1930_gaps_and_1776_returned": "research/fvg_gap_stats.json (the script stops if its own gap counts and fvg outcomes differ from that file)",
+    "fair_value_gap_backtest_rows_and_zero_cost_returns": "<engine>/results/fvg-btcusdt.json and research/fvg_cost_summary.json, as quoted in en/fair-value-gap and en/ict-trading",
+    "breaker_block_in_sample_-18.44_pct": "<engine>/results/breaker-block-btcusdt.json"
+  },
+  "author_expectation_recorded_before_the_count": "Before the first run the author guessed that about 40% of gaps would be closed through within 96 bars. Measured: 74.20%."
+}
