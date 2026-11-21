@@ -5,7 +5,7 @@ description: "Build a Python trading bot for Bybit's testnet: a 25-line strategy
 date: "2026-11-24"
 lastmod: "2026-11-24"
 lang: "en"
-category: "Bots"
+category: "Trading bots"
 tags: ["trading bot", "Python", "Bybit testnet", "order handling", "backtest"]
 keywords: ["how to build a trading bot", "python trading bot", "bybit trading bot", "trading bot python"]
 tldr: "At version 0.2.0 of the open-source perpmath engine, strategy modules were 130 of 4,785 lines of Python code, 2.72%. Order handling for the Bybit testnet was 1,077 lines and its tests 707. We wrote a 25-line breakout strategy, backtested it on one year of BTCUSDT 15-minute bars (it lost 34.79% in-sample and 19.32% out-of-sample), then ran it as a dry run with no API key. Version 0.2 trades on the testnet only, and its signed requests have been tested against a fake server, never a real account."

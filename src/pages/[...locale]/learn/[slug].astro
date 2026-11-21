@@ -51,7 +51,8 @@ const category = locale === 'zh-hans' ? toHans(data.category) : data.category;
 
 // End-of-article action (PLAN_06 section 5): a backtest write-up sends the
 // reader to run it themselves; a basics lesson to the calculator, then testnet.
-const isBacktest = data.category === 'Backtests' || data.category === '回測';
+// Backtest and bot write-ups end on the open-source tool; basics end on a calculator.
+const isBacktest = ['Backtests', '回測', 'Trading bots', '交易機器人'].includes(data.category);
 
 const trail = [
   { name: c.breadcrumb.home, path: '/' },
