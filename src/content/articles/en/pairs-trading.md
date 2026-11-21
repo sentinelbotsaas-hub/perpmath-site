@@ -108,7 +108,7 @@ Before you size a strategy with this profile, put its stop loss, not its average
 Not always, and this is the part the idea glosses over. A rolling z-score can return to zero in two ways: the spread comes back to the line, or the line moves to the spread.
 
 <!-- unique:firsthand-data -->
-In-sample, 11 of the 63 trades that exited on "z back to zero" had lost money on price alone, before any cost. The z-score did what the rule waited for, and the two prices had not converged. The 7-day window had simply absorbed the new level and redrawn its line through it. After costs, 12 of the 63 "successful" reversions were losers; out-of-sample it was 9 of 28.
+In-sample, 11 of the 63 trades that exited on "z back to zero" had lost money on price alone, before any cost. The z-score did what the rule waited for, and the two prices had not converged. The 7-day window had simply absorbed the new level and redrawn its line through it. After costs, 12 of the 63 "successful" reversions were losers; out-of-sample it was 9 of 28. A single-coin [mean reversion strategy](/learn/mean-reversion-strategy/) shows the same thing: price got back to its moving average every time, and only 67.73% of those returns came at a better price than the entry.
 
 <!-- unique:original-calc -->
 The numbers from the stationarity section explain why this should be expected. The spread's measured half-life was about 11 days. Our window was 7. A line refitted on a window shorter than the time the spread takes to come back will often get to the spread first.
