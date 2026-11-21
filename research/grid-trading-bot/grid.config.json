@@ -1,0 +1,23 @@
+{
+  "strategy": "grid",
+  "params": {
+    "bounds": "in_sample_range",
+    "grid_count": 50,
+    "spacing": "geometric",
+    "direction": "neutral",
+    "leverage": 1,
+    "out_of_range": "continue"
+  },
+  "execution": {
+    "grid_fee_rate": 0.0002,
+    "taker_fee_rate": 0.00055,
+    "slippage": 0.0002,
+    "initial_capital": 10000,
+    "maintenance_margin_rate": 0.0033,
+    "intrabar_path": "worst_of_two",
+    "funding": true
+  },
+  "split": {
+    "in_sample_fraction": 0.7
+  }
+}

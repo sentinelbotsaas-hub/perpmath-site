@@ -1,0 +1,232 @@
+{
+  "question": "How much do the published results depend on assuming the stop is hit before the target when one bar touches both?",
+  "method": "replay of the engine's published trade lists; see the docstring of same_bar_replay.py",
+  "note": "ma_cross has no profit target, so the question does not arise for it",
+  "strategies": {
+    "fvg": {
+      "result_file": "perpmath-engine/results/fvg-btcusdt.json",
+      "candle_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_rule": "stop first",
+      "in_sample": {
+        "trades": 801,
+        "stop_exits": 546,
+        "ambiguous_trades": 16,
+        "ambiguous_pct_of_trades": 2.0,
+        "ambiguous_on_entry_bar": 12,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 3305.5,
+        "replayed_final_equity_stop_first": 3305.5,
+        "stop_first": {
+          "total_return_pct": -66.94,
+          "win_rate_pct": 31.46
+        },
+        "target_first": {
+          "total_return_pct": -64.1,
+          "win_rate_pct": 33.08,
+          "final_equity": 3589.76
+        },
+        "difference_pct_points": 2.84
+      },
+      "out_of_sample": {
+        "trades": 304,
+        "stop_exits": 216,
+        "ambiguous_trades": 6,
+        "ambiguous_pct_of_trades": 1.97,
+        "ambiguous_on_entry_bar": 5,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 5714.36,
+        "replayed_final_equity_stop_first": 5714.36,
+        "stop_first": {
+          "total_return_pct": -42.86,
+          "win_rate_pct": 27.96
+        },
+        "target_first": {
+          "total_return_pct": -42.19,
+          "win_rate_pct": 28.95,
+          "final_equity": 5780.75
+        },
+        "difference_pct_points": 0.66
+      }
+    },
+    "liquidity_sweep": {
+      "result_file": "perpmath-engine/results/liquidity-sweep-btcusdt.json",
+      "candle_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_rule": "stop first",
+      "in_sample": {
+        "trades": 1639,
+        "stop_exits": 1157,
+        "ambiguous_trades": 26,
+        "ambiguous_pct_of_trades": 1.59,
+        "ambiguous_on_entry_bar": 20,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 602.28,
+        "replayed_final_equity_stop_first": 602.28,
+        "stop_first": {
+          "total_return_pct": -93.98,
+          "win_rate_pct": 29.16
+        },
+        "target_first": {
+          "total_return_pct": -93.16,
+          "win_rate_pct": 30.51,
+          "final_equity": 684.0
+        },
+        "difference_pct_points": 0.82
+      },
+      "out_of_sample": {
+        "trades": 688,
+        "stop_exits": 486,
+        "ambiguous_trades": 4,
+        "ambiguous_pct_of_trades": 0.58,
+        "ambiguous_on_entry_bar": 3,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 3097.46,
+        "replayed_final_equity_stop_first": 3097.46,
+        "stop_first": {
+          "total_return_pct": -69.03,
+          "win_rate_pct": 28.2
+        },
+        "target_first": {
+          "total_return_pct": -68.65,
+          "win_rate_pct": 28.78,
+          "final_equity": 3134.77
+        },
+        "difference_pct_points": 0.37
+      }
+    },
+    "order_block": {
+      "result_file": "perpmath-engine/results/order-block-btcusdt.json",
+      "candle_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_rule": "stop first",
+      "in_sample": {
+        "trades": 325,
+        "stop_exits": 223,
+        "ambiguous_trades": 7,
+        "ambiguous_pct_of_trades": 2.15,
+        "ambiguous_on_entry_bar": 7,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 5766.69,
+        "replayed_final_equity_stop_first": 5766.69,
+        "stop_first": {
+          "total_return_pct": -42.33,
+          "win_rate_pct": 30.77
+        },
+        "target_first": {
+          "total_return_pct": -41.32,
+          "win_rate_pct": 32.31,
+          "final_equity": 5867.94
+        },
+        "difference_pct_points": 1.01
+      },
+      "out_of_sample": {
+        "trades": 141,
+        "stop_exits": 106,
+        "ambiguous_trades": 5,
+        "ambiguous_pct_of_trades": 3.55,
+        "ambiguous_on_entry_bar": 4,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 8128.92,
+        "replayed_final_equity_stop_first": 8128.92,
+        "stop_first": {
+          "total_return_pct": -18.71,
+          "win_rate_pct": 24.11
+        },
+        "target_first": {
+          "total_return_pct": -17.27,
+          "win_rate_pct": 25.53,
+          "final_equity": 8272.9
+        },
+        "difference_pct_points": 1.44
+      }
+    },
+    "break_of_structure": {
+      "result_file": "perpmath-engine/results/break-of-structure-btcusdt.json",
+      "candle_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_rule": "stop first",
+      "in_sample": {
+        "trades": 149,
+        "stop_exits": 102,
+        "ambiguous_trades": 0,
+        "ambiguous_pct_of_trades": 0.0,
+        "ambiguous_on_entry_bar": 0,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 5665.84,
+        "replayed_final_equity_stop_first": 5665.84,
+        "stop_first": {
+          "total_return_pct": -43.34,
+          "win_rate_pct": 31.54
+        },
+        "target_first": {
+          "total_return_pct": -43.34,
+          "win_rate_pct": 31.54,
+          "final_equity": 5665.84
+        },
+        "difference_pct_points": 0.0
+      },
+      "out_of_sample": {
+        "trades": 42,
+        "stop_exits": 25,
+        "ambiguous_trades": 1,
+        "ambiguous_pct_of_trades": 2.38,
+        "ambiguous_on_entry_bar": 0,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 9664.88,
+        "replayed_final_equity_stop_first": 9664.88,
+        "stop_first": {
+          "total_return_pct": -3.35,
+          "win_rate_pct": 40.48
+        },
+        "target_first": {
+          "total_return_pct": -1.49,
+          "win_rate_pct": 42.86,
+          "final_equity": 9850.93
+        },
+        "difference_pct_points": 1.86
+      }
+    },
+    "breaker_block": {
+      "result_file": "perpmath-engine/results/breaker-block-btcusdt.json",
+      "candle_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_rule": "stop first",
+      "in_sample": {
+        "trades": 243,
+        "stop_exits": 160,
+        "ambiguous_trades": 9,
+        "ambiguous_pct_of_trades": 3.7,
+        "ambiguous_on_entry_bar": 9,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 8155.75,
+        "replayed_final_equity_stop_first": 8155.75,
+        "stop_first": {
+          "total_return_pct": -18.44,
+          "win_rate_pct": 33.74
+        },
+        "target_first": {
+          "total_return_pct": -15.61,
+          "win_rate_pct": 37.04,
+          "final_equity": 8439.46
+        },
+        "difference_pct_points": 2.84
+      },
+      "out_of_sample": {
+        "trades": 120,
+        "stop_exits": 82,
+        "ambiguous_trades": 1,
+        "ambiguous_pct_of_trades": 0.83,
+        "ambiguous_on_entry_bar": 1,
+        "stops_hit_by_gap_at_open": 0,
+        "engine_final_equity": 8493.43,
+        "replayed_final_equity_stop_first": 8493.43,
+        "stop_first": {
+          "total_return_pct": -15.07,
+          "win_rate_pct": 30.83
+        },
+        "target_first": {
+          "total_return_pct": -14.9,
+          "win_rate_pct": 30.83,
+          "final_equity": 8509.78
+        },
+        "difference_pct_points": 0.16
+      }
+    }
+  }
+}
