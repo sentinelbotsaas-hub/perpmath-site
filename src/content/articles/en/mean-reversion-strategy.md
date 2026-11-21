@@ -132,7 +132,7 @@ Band width, lookback and stop are the three numbers a reader would want to chang
 
 | Lookback / band / stop | Trades in / out | Win rate in / out | Return in / out | Zero-cost return in / out | Zero-cost t in / out |
 | --- | --- | --- | --- | --- | --- |
-| 20 / 2.0 sd / 2 ATR (published) | 1,214 / 517 | 48.52% / 43.71% | -80.76% / -51.85% | +18.99% / +4.60% | 0.86 / 0.43 |
+| 20 / 2.0 sd / 2 ATR (main run) | 1,214 / 517 | 48.52% / 43.71% | -80.76% / -51.85% | +18.99% / +4.60% | 0.86 / 0.43 |
 | 20 / 1.5 sd / 2 ATR | 1,645 / 720 | 48.81% / 43.33% | -90.52% / -64.63% | +11.96% / +4.22% | 0.58 / 0.39 |
 | 20 / 2.5 sd / 2 ATR | 675 / 290 | 44.59% / 41.38% | -64.27% / -35.56% | -1.59% / -0.42% | 0.01 / 0.01 |
 | 20 / 3.0 sd / 2 ATR | 287 / 126 | 42.86% / 36.51% | -37.60% / -18.39% | -3.98% / -1.40% | -0.23 / -0.15 |
