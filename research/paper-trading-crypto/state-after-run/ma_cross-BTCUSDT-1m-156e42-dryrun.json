@@ -1,0 +1,15 @@
+{
+  "consecutive_api_errors": 0,
+  "day": null,
+  "dry_run": true,
+  "halt": null,
+  "interval": "1m",
+  "last_bar_ms": 1795294740000,
+  "orders": [],
+  "pending_order": null,
+  "position": null,
+  "run_id": "ma_cross-BTCUSDT-1m-156e42",
+  "state_version": 1,
+  "strategy": "ma_cross",
+  "symbol": "BTCUSDT"
+}

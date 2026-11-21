@@ -1,0 +1,11 @@
+2026-11-21T19:40:10Z perpmath live liquidity_sweep BTCUSDT 15m | DRY RUN (no signed requests, no orders) | state .perpmath-live\liquidity_sweep-BTCUSDT-15m-dba1e5-dryrun.json
+2026-11-21T19:40:10Z limits: order 100 USDT, max position 200 USDT, max daily loss 20 USDT, max 5 consecutive API errors, max clock skew 5000 ms
+2026-11-21T19:40:10Z clock offset to Bybit: 1008 ms (request timestamps and bar timing use Bybit's clock)
+2026-11-21T19:40:10Z bar 2026-11-21T19:15:00Z close 59083.8: no entry
+2026-11-21T19:45:02Z bar 2026-11-21T19:30:00Z close 59188.9: no entry
+2026-11-21T20:00:02Z bar 2026-11-21T19:45:00Z close 59212.1: no entry
+2026-11-21T20:15:02Z bar 2026-11-21T20:00:00Z close 59231.9: no entry
+2026-11-21T20:30:02Z bar 2026-11-21T20:15:00Z close 60307.7: short
+2026-11-21T20:30:02Z [dry run] would send POST /v5/order/create {"category":"linear","symbol":"BTCUSDT","side":"Sell","orderType":"Market","qty":"0.001","positionIdx":0,"orderLinkId":"pm-liquidit-dba1e5-1795292100-SE1","stopLoss":"60891.2","slTriggerBy":"LastPrice","tpslMode":"Full","slOrderType":"Market","takeProfit":"59140.7","tpTriggerBy":"LastPrice"}
+2026-11-21T20:45:02Z bar 2026-11-21T20:30:00Z close 60325.0: no entry
+2026-11-21T21:00:02Z bar 2026-11-21T20:45:00Z close 60344.2: no entry

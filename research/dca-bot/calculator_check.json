@@ -1,0 +1,157 @@
+{
+  "article": "en/dca-bot",
+  "base_price": 80000,
+  "mmr": 0.0033,
+  "rule_sets": {
+    "x2": {
+      "fills": [
+        {
+          "price": 80000,
+          "size": 312.5
+        },
+        {
+          "price": 78400,
+          "size": 312.5
+        },
+        {
+          "price": 76800,
+          "size": 625
+        },
+        {
+          "price": 75200,
+          "size": 1250
+        },
+        {
+          "price": 73600,
+          "size": 2500
+        },
+        {
+          "price": 72000,
+          "size": 5000
+        }
+      ],
+      "rows": [
+        {
+          "leverage": 2,
+          "average_price": 73494.6,
+          "liquidation_price": 36989.83,
+          "last_fill_to_liquidation_pct": 48.63,
+          "last_fill_to_average_pct": 2.08,
+          "unrealized_at_last_fill": -203.36,
+          "liquidated_before_fill": null
+        },
+        {
+          "leverage": 3,
+          "average_price": 73494.6,
+          "liquidation_price": 49238.93,
+          "last_fill_to_liquidation_pct": 31.61,
+          "last_fill_to_average_pct": 2.08,
+          "unrealized_at_last_fill": -203.36,
+          "liquidated_before_fill": null
+        },
+        {
+          "leverage": 5,
+          "average_price": 73494.6,
+          "liquidation_price": 59038.21,
+          "last_fill_to_liquidation_pct": 18,
+          "last_fill_to_average_pct": 2.08,
+          "unrealized_at_last_fill": -203.36,
+          "liquidated_before_fill": null
+        },
+        {
+          "leverage": 10,
+          "average_price": 73494.6,
+          "liquidation_price": 66387.67,
+          "last_fill_to_liquidation_pct": 7.79,
+          "last_fill_to_average_pct": 2.08,
+          "unrealized_at_last_fill": -203.36,
+          "liquidated_before_fill": null
+        },
+        {
+          "leverage": 20,
+          "average_price": 73494.6,
+          "liquidation_price": 70062.4,
+          "last_fill_to_liquidation_pct": 2.69,
+          "last_fill_to_average_pct": 2.08,
+          "unrealized_at_last_fill": -203.36,
+          "liquidated_before_fill": null
+        }
+      ]
+    },
+    "x1": {
+      "fills": [
+        {
+          "price": 80000,
+          "size": 1666.6666666666667
+        },
+        {
+          "price": 78400,
+          "size": 1666.6666666666667
+        },
+        {
+          "price": 76800,
+          "size": 1666.6666666666667
+        },
+        {
+          "price": 75200,
+          "size": 1666.6666666666667
+        },
+        {
+          "price": 73600,
+          "size": 1666.6666666666667
+        },
+        {
+          "price": 72000,
+          "size": 1666.6666666666667
+        }
+      ],
+      "rows": [
+        {
+          "leverage": 2,
+          "average_price": 75901.66,
+          "liquidation_price": 38201.31,
+          "last_fill_to_liquidation_pct": 46.94,
+          "last_fill_to_average_pct": 5.42,
+          "unrealized_at_last_fill": -514.04,
+          "liquidated_before_fill": null
+        },
+        {
+          "leverage": 3,
+          "average_price": 75901.66,
+          "liquidation_price": 50851.58,
+          "last_fill_to_liquidation_pct": 29.37,
+          "last_fill_to_average_pct": 5.42,
+          "unrealized_at_last_fill": -514.04,
+          "liquidated_before_fill": null
+        },
+        {
+          "leverage": 5,
+          "average_price": 75901.66,
+          "liquidation_price": 60971.8,
+          "last_fill_to_liquidation_pct": 15.32,
+          "last_fill_to_average_pct": 5.42,
+          "unrealized_at_last_fill": -514.04,
+          "liquidated_before_fill": null
+        },
+        {
+          "leverage": 10,
+          "average_price": 75901.66,
+          "liquidation_price": 68561.97,
+          "last_fill_to_liquidation_pct": 4.78,
+          "last_fill_to_average_pct": 5.42,
+          "unrealized_at_last_fill": -514.04,
+          "liquidated_before_fill": null
+        },
+        {
+          "leverage": 20,
+          "average_price": 75901.66,
+          "liquidation_price": 72357.05,
+          "last_fill_to_liquidation_pct": -0.5,
+          "last_fill_to_average_pct": 5.42,
+          "unrealized_at_last_fill": -514.04,
+          "liquidated_before_fill": 4
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,28 @@
+self-checks passed: 8 groups
+candles BTCUSDT-15m.csv sha256 ac4acc42  bars 35040  2025-11-18T11:30Z to 2026-11-18T11:15Z  out-of-sample from 2026-07-31T00:00Z
+
+== x2: base 312.5, safety [312.5, 625.0, 1250.0, 2500.0, 5000.0]
+  in_sample: completed 172  net from them 1682.82  avg 9.78  left at end -940.89  fees 99.04  funding 52.93
+    return 7.42%  max DD 15.7%  buy&hold -30.39%  lowest equity 9338.38 at 2026-02-06T00:15Z
+    longest cycle: 2026-05-25T06:15Z to 2026-07-31T00:00Z (66.74 days, end_of_sample), 5 safety orders, worst unrealized -1870.87 (-18.71% of capital), net -940.89
+    fully loaded cycles 8, days fully loaded 63.62 (25.0% of bars); by safety orders filled: 0:108, 1:27, 2:21, 3:4, 4:5, 5:7
+    leverage overlay: 2x 0/173 first None; 3x 0/173 first None; 5x 0/173 first None; 10x 2/173 first 2026-02-05T20:15Z; 20x 3/173 first 2025-11-21T12:15Z
+  out_of_sample: completed 60  net from them 323.78  avg 5.4  left at end -1386.7  fees 28.12  funding 25.76
+    return -10.63%  max DD 16.42%  buy&hold -2.96%  lowest equity 8667.8 at 2026-11-15T01:45Z
+    longest cycle: 2026-11-04T15:15Z to 2026-11-18T11:30Z (13.84 days, end_of_sample), 5 safety orders, worst unrealized -1665.19 (-16.65% of capital), net -1386.7
+    fully loaded cycles 1, days fully loaded 7.79 (7.05% of bars); by safety orders filled: 0:41, 1:8, 2:7, 3:4, 4:0, 5:0
+    leverage overlay: 2x 0/61 first None; 3x 0/61 first None; 5x 0/61 first None; 10x 1/61 first 2026-11-14T02:15Z; 20x 1/61 first 2026-11-13T00:30Z
+
+== x1: base 1666.67, safety [1666.67, 1666.67, 1666.67, 1666.67, 1666.67]
+  in_sample: completed 44  net from them 1193.34  avg 27.12  left at end -3055.67  fees 85.03  funding 74.97
+    return -18.62%  max DD 33.5%  buy&hold -30.39%  lowest equity 7454.14 at 2026-07-01T01:15Z
+    longest cycle: 2026-01-14T16:15Z to 2026-07-31T00:00Z (197.32 days, end_of_sample), 5 safety orders, worst unrealized -3748.21 (-37.48% of capital), net -3055.67
+    fully loaded cycles 2, days fully loaded 193.84 (76.16% of bars); by safety orders filled: 0:27, 1:7, 2:6, 3:1, 4:2, 5:1
+    leverage overlay: 2x 0/45 first None; 3x 1/45 first 2026-02-06T00:00Z; 5x 1/45 first 2026-02-03T18:15Z; 10x 1/45 first 2026-01-29T18:45Z; 20x 4/45 first 2025-11-21T02:45Z
+  out_of_sample: completed 47  net from them 1087.89  avg 23.15  left at end -1664.54  fees 84.84  funding 75.73
+    return -5.77%  max DD 17.37%  buy&hold -2.96%  lowest equity 9162.59 at 2026-11-15T01:45Z
+    longest cycle: 2026-10-05T01:30Z to 2026-10-21T14:45Z (16.55 days, take_profit), 4 safety orders, worst unrealized -364.58 (-3.65% of capital), net 65.34
+    fully loaded cycles 2, days fully loaded 8.3 (7.51% of bars); by safety orders filled: 0:34, 1:4, 2:6, 3:1, 4:1, 5:1
+    leverage overlay: 2x 0/48 first None; 3x 0/48 first None; 5x 0/48 first None; 10x 1/48 first 2026-11-13T03:15Z; 20x 3/48 first 2026-10-08T17:15Z
+
+wrote dca_summary.json, cycles-x2.json, cycles-x1.json

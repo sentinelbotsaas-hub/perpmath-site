@@ -1,0 +1,46 @@
+start 2026-11-21T19:46:14Z
+
+$ git clone https://github.com/sentinelbotsaas-hub/perpmath.git
+exit=0
+
+$ git log -1 --format='%h %s'
+b1c4fd9 Release 0.2.2: look-ahead check cut at signal bars, results re-run
+
+$ python --version
+Python 3.12.10
+
+$ python -m venv .venv
+exit=0
+
+$ pip install -e .
+exit=0
+
+$ pip list
+numpy==2.5.5
+perpmath==0.2.2
+installed 2026-11-21T19:46:36Z
+
+$ perpmath --version
+perpmath 0.2.2
+exit=0
+
+$ perpmath live ma_cross --symbol BTCUSDT --interval 15m --config configs/live/ma_cross.json --dry-run --once
+2026-11-21T19:46:38Z perpmath live ma_cross BTCUSDT 15m | DRY RUN (no signed requests, no orders) | state .perpmath-live\ma_cross-BTCUSDT-15m-a690e4-dryrun.json
+2026-11-21T19:46:38Z limits: order 100 USDT, max position 200 USDT, max daily loss 20 USDT, max 5 consecutive API errors, max clock skew 5000 ms
+2026-11-21T19:46:38Z clock offset to Bybit: 1014 ms (request timestamps and bar timing use Bybit's clock)
+2026-11-21T19:46:38Z bar 2026-11-21T19:30:00Z close 59188.9: no entry
+exit=0
+
+$ perpmath live ma_cross --symbol BTCUSDT --interval 15m --config configs/live/ma_cross.json   (no --dry-run, no key in the environment)
+error: set BYBIT_TESTNET_API_KEY and BYBIT_TESTNET_API_SECRET (testnet keys, trade permission only), or use --dry-run, which needs no key
+exit=1
+
+$ perpmath live ma_cross --symbol BTCUSDT --interval 15m --config configs/live/ma_cross.json --dry-run --once --mainnet
+error: perpmath 0.2 only connects to the Bybit testnet. Live (mainnet) trading is planned for 0.3 and will not be enabled before the position guard exists.
+exit=1
+
+$ sed 's/"testnet"/"mainnet"/' configs/live/ma_cross.json > mainnet-attempt.json; perpmath live ... --config mainnet-attempt.json --dry-run --once
+error: network 'mainnet' refused. perpmath 0.2 only connects to the Bybit testnet. Live (mainnet) trading is planned for 0.3 and will not be enabled before the position guard exists.
+exit=1
+
+end 2026-11-21T19:46:39Z
