@@ -87,7 +87,7 @@ Both tests use the same data: 35,040 BTCUSDT 15-minute bars from Bybit's public 
 | Liquidity sweep | Out | 688 | -0.79 | -8.48 | -69.03% | 69.31% | -14.58% |
 
 <!-- unique:original-calc -->
-The gap rule enters when price returns to the gap; the sweep rule trades against the sweep bar. Both aim for twice the risk and won 31.46% and 29.16% of their in-sample trades, short of the 33.33% that target needs. The last column is the same rules rerun with fee and slippage at zero. Its t-statistics are 0.38 and -0.97 for the gap entry and -1.14 and -1.11 for the sweep fade, all inside the band where a result can't be told apart from zero. So costs explain most of each loss, and removing them uncovers nothing.
+The gap rule enters when price returns to the gap; the sweep rule trades against the sweep bar. Both aim for twice the risk and won 31.46% and 29.16% of their in-sample trades, short of the 33.33% that target needs. The last column is the same rules rerun with fee and slippage at zero. Its t-statistics are 0.38 and -0.97 for the gap entry and -1.14 and -1.11 for the sweep fade, all inside the band where a result is indistinguishable from zero. Costs explain most of each loss, and removing them uncovers nothing.
 
 <!-- unique:firsthand-data -->
 The [fair value gap](/learn/fair-value-gap/) write-up has the detail that surprises people: price did return to 92.02% of the 1,930 gaps that passed our size filter, and trading that return still lost. The full report is the [FVG backtest](/backtests/fvg-btcusdt/).
@@ -106,7 +106,7 @@ All three are statements about swing points, and none of them is defined until "
 Market structure shift is the least settled of the three. The change of character entry says many traders use the two terms interchangeably, while others keep "market structure shift" for a stronger version: a break delivered with displacement, a forceful one-way move, right after a sweep of the trend's extreme. LuxAlgo's own address for a market structure shift page redirects to its change of character page. Our table follows the stricter reading only so the two rows differ.
 
 <!-- unique:firsthand-data -->
-In code, the whole group hangs on one parameter: how many bars on each side make a pivot. We counted them on our year of BTCUSDT 15-minute bars. With k at 2 there are 9,659 swing highs and lows, about 26 a day. With k at 20 there are 1,198, about 3 a day. My guess before counting was a handful per week at k of 20; the real figure is 23 a week. Between the two settings lies an eightfold difference from one number, so a "break of structure strategy" with k left unstated is a family of strategies. The count describes the chart and tests nothing.
+In code, the whole group hangs on one parameter: how many bars on each side make a pivot. We counted them on our year of BTCUSDT 15-minute bars. With k at 2 there are 9,659 swing highs and lows, about 26 a day. With k at 20 there are 1,198, about 3 a day. My guess before counting was a handful per week at k of 20. It was wrong: the real figure is 23 a week. Between the two settings lies an eightfold difference from one number, so a "break of structure strategy" with k left unstated is a family of strategies. The count describes the chart and tests nothing.
 
 ## Zone terms: order blocks and their failures
 
@@ -114,7 +114,7 @@ In code, the whole group hangs on one parameter: how many bars on each side make
 An order block is the last candle that closed against a move before the move took off, and the move is the part that matters. LuxAlgo's [order block entry](https://www.luxalgo.com/library/concept/bullish-bearish-order-block/) (checked 22 November 2026) says the candle alone is not the concept, lists several ways traders draw the zone (the candle's full range, its body only, its open to its extreme, sometimes refined to the midpoint), calls none of them official, and adds that no reliable hit rate exists. The TradingView script goes further on cause, describing order blocks as areas where institutional participants open positions. A chart cannot confirm who traded there.
 
 <!-- unique:cross-reference -->
-The other two zone terms are defined by failure. A [breaker block](https://www.luxalgo.com/library/concept/breaker-block/) is an order block that price traded through, after which the same zone is read in the opposite direction. LuxAlgo notes two readings in circulation: a strict one in which a sweep of a prior high or low must come first, and a looser one in which any violated order block qualifies. An [inverse fair value gap](https://www.luxalgo.com/library/concept/inversion-fvg/) is the same move applied to a gap, and the open question there is whether price must close through the whole gap or only past its midpoint.
+The other two zone terms are defined by failure. A [breaker block](https://www.luxalgo.com/library/concept/breaker-block/) is an order block that price traded through, after which that zone is read in the opposite direction. LuxAlgo notes two readings in circulation: a strict one in which a sweep of a prior high or low must come first, and a looser one in which any violated order block qualifies. An [inverse fair value gap](https://www.luxalgo.com/library/concept/inversion-fvg/) is the same move applied to a gap, and the open question there is whether price must close through the whole gap or only past its midpoint.
 
 <!-- unique:operator-view -->
 Here is the testing problem those two create, seen from the side of someone who has to write the code. A zone that holds gets counted as an order block doing its job. A zone that breaks gets renamed and counted as a breaker doing its job. Each can be coded and tested by itself, with its entry fixed in advance. What cannot be tested is a reading that picks whichever label fits once the candles are in.
@@ -143,7 +143,7 @@ Discretion first. One year of BTCUSDT 15-minute bars holds 7,176 fair value gaps
 <!-- unique:original-calc -->
 Then hindsight. Of the liquidity sweeps in our data, 11.00% had an extreme that was still untouched 96 bars later. Those are the ones that get circled on a chart. Splitting our published trades by that after-the-fact knowledge gives 275 trades that won 94.91% of the time and 2,046 that won 20.04%. Same rule, same year. The only difference is information nobody had at entry.
 
-The third is survivorship, and here we have no numbers at all. Screenshots of winning trades and testimonials are a sample chosen by outcome, and nothing public says how many losing accounts sit behind them. We found no audited record for the method and no figure for what share of people trading it make money. The TradingView script page itself says there is no supporting data on the validity of these teachings. Unknown is the honest status, and unknown is not the same as zero.
+The third is survivorship, and here we have no numbers at all. Screenshots of winning trades and testimonials are a sample chosen by outcome, and nothing public says how many losing accounts sit behind them. We found no audited record for the method and no figure for what share of people trading it make money. The TradingView script page itself says there is no supporting data on the validity of these teachings. The status is unknown, and unknown is not the same as zero.
 
 ## How do you make a discretionary concept testable?
 
@@ -160,7 +160,7 @@ By removing every decision that depends on seeing what happened next. In practic
 Our guide on [how to backtest a trading strategy](/learn/how-to-backtest-a-trading-strategy/) goes through each step with the mistakes that usually sink it. The open-source engine described in the [bot section](/bot/) enforces several of them: it refuses to run a strategy whose signals change when later bars are removed, fills at the next open, and reports a t-statistic with the trade count. All published runs are under [backtests](/backtests/).
 
 <!-- unique:original-calc -->
-Step 4 is where both of our tests died. Both rules put the stop just behind a wick or a gap, which makes it tight. The median in-sample stop was 0.323% of price away in the gap test and 0.296% in the sweep test, so a 0.15% round trip in fees and slippage cost 0.46R and 0.51R before the trade had done anything. The [position size calculator](/tools/position-size-calculator/) shows what a stop that tight does to position size, and to the fee as a share of risk.
+Step 4 is where both of our tests died. Both rules put the stop just behind a wick or a gap, which makes it tight. The median in-sample stop was 0.323% of price away in the gap test and 0.296% in the sweep test, so a 0.15% round trip in fees and slippage cost 0.46R and 0.51R before the trade had done anything. Try a stop that tight in the [position size calculator](/tools/position-size-calculator/) to see what it does to position size, and to the fee as a share of risk.
 
 ## What this page does not claim
 
@@ -173,11 +173,6 @@ It does not claim ICT trading works either. For ten of the twelve rows we have n
 ### Is ICT trading the same as smart money concepts?
 
 Close to it. ICT refers to Michael J. Huddleston's own teaching, and smart money concepts is the wider community's label for the same core ideas, sometimes with renamed terms. In practice the two names are used interchangeably.
-
-### Does ICT trading work?
-
-<!-- unique:firsthand-data -->
-Nobody has published evidence that settles it, and we haven't either. We tested mechanical versions of two concepts: the fair value gap entry lost 66.94% in-sample and the liquidity sweep fade lost 93.98%, with no measurable edge before costs. Ten other concepts are untested here. We found no audited performance record for the method.
 
 ### Who created ICT trading?
 
@@ -194,3 +189,8 @@ Direction. A break of structure takes out a swing point in the direction of the 
 ### Can ICT concepts be backtested?
 
 One at a time, yes, once each is written as a fixed rule. The combined discretionary method cannot be tested until the discretion is written down, since a test needs to know in advance which candles count.
+
+### Does ICT trading work?
+
+<!-- unique:firsthand-data -->
+Nobody has published evidence that settles it, and we haven't either. We tested mechanical versions of two concepts: the fair value gap entry lost 66.94% in-sample and the liquidity sweep fade lost 93.98%, with no measurable edge before costs. Ten other concepts are untested here. We found no audited performance record for the method.

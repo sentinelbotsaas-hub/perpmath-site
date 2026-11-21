@@ -132,10 +132,10 @@ The split starts to matter the moment you choose something. To show that, we ran
 | 5/20 | 1,644 | -94.60% | -8.24 | 695 | -65.75% | -5.41 |
 
 <!-- unique:original-calc -->
-I expected the textbook picture here, the best in-sample pair falling apart out-of-sample. That's not what the table shows. The 50/100 pair ranks first in both periods, and the rank correlation between the two return columns is 0.91. For a minute that looks like a stable edge.
+I expected the textbook picture here, the best in-sample pair falling apart out-of-sample, and I was wrong. The 50/100 pair ranks first in both periods, and the rank correlation between the two return columns is 0.91. For a minute that looks like a stable edge.
 
 <!-- unique:original-calc -->
-It's a cost ranking. The five pairs with the smallest in-sample loss are exactly the five that traded least (148 to 337 trades). Slower averages cross less often, pay the 0.15% round trip less often, and lose less. Trade frequency carries over to the next period, so the ranking does too. Nothing in it is about predicting price.
+It's a cost ranking. The five pairs with the smallest in-sample loss are the five that traded least (148 to 337 trades). Slower averages cross less often, pay the 0.15% round trip less often, and lose less. Trade frequency carries over to the next period, so the ranking does too. Nothing in it is about predicting price.
 
 <!-- unique:original-calc -->
 Then there is the one positive cell: 50/100 out-of-sample, +4.88% on 116 trades, t = 0.32. Had we run 13 pairs and reported that line alone, this page would be announcing a profitable moving-average bot. Harvey, Liu and Zhu's [NBER working paper 20592](https://www.nber.org/papers/w20592) (October 2014, checked 22 November 2026) argues that after heavy data mining the usual hurdle of a t-ratio above 2.0 no longer makes sense, and puts the bar for a newly found factor above 3.0. A value of 0.32 is nowhere near either.
@@ -187,12 +187,12 @@ Counting the out-of-sample blocks too, 75 of 4,452 trades (1.68%) left on a bar 
 
 ## How many trades does a backtest need?
 
-Enough that the average trade can be told apart from zero, which is what the t-statistic measures. It is a [one-sample t-test](https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm) (NIST handbook, checked 22 November 2026) of per-trade net returns: the mean divided by its standard error. As a rough guide, an absolute value under 2 means you can't tell the average from zero.
+Enough that the average trade can be told apart from zero, which is what the t-statistic measures. It is a [one-sample t-test](https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm) (NIST handbook, checked 22 November 2026) of per-trade net returns: the mean divided by its standard error. Roughly, when its absolute value is under 2 you can't tell the average from zero.
 
 <!-- unique:original-calc -->
-Our headline numbers don't survive it. Out-of-sample the shipped rule lost 18.46% over 263 trades, and its t-statistic is -0.68. Nearly a fifth of the account gone, and statistically it is a shrug: the average trade was -0.066%, with enough scatter that zero sits well inside the noise. The zero-cost run's +20.99% has t = 0.86, the same shrug with the sign flipped. Returns compound, so they sound decisive. The t-statistic looks at the per-trade average and its spread.
+Apply that to our headline numbers. Out-of-sample the shipped rule lost 18.46% over 263 trades, and its t-statistic is -0.68. Nearly a fifth of the account gone, and statistically it is a shrug: the average trade was -0.066%, with enough scatter that zero sits well inside the noise. The zero-cost run's +20.99% has t = 0.86, the same shrug with the sign flipped. Returns compound, so they sound decisive. The t-statistic looks at the per-trade average and its spread.
 
-The in-sample -62.35% does clear the bar, at -2.95 on 572 trades, so the fair summary is "loses after costs, clearly in one period and not clearly in the other". The engine also sets `insufficient_sample` on any block with fewer than 100 trades; in the sweep above, the 50/200 pair made 84 out-of-sample trades and carries that flag. Two cautions. The test treats trades as independent, which flatters it when trades cluster. And it knows nothing about how many variants you tried first.
+The in-sample -62.35% does clear the bar, at -2.95 on 572 trades, so the fair summary is "loses after costs, clearly in one period and not clearly in the other". The engine also sets `insufficient_sample` on any block with fewer than 100 trades; in the sweep above, the 50/200 pair made 84 out-of-sample trades and carries that flag. Two cautions. It assumes trades are independent, which is generous when they cluster. And it knows nothing about how many variants you tried first.
 
 ## A checklist before you believe a backtest
 

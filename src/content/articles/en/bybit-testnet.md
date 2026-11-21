@@ -12,9 +12,7 @@ tldr: "The Bybit testnet is a separate exchange at testnet.bybit.com with its ow
 ---
 
 <!-- unique:firsthand-data -->
-For three minutes on 21 November 2026 the last price of BTCUSDT on the Bybit testnet did not move. We read it five times between 17:27 and 17:31 UTC and got 59,660.0 each time. Over those same three minutes the real market printed 60,230.2, 60,256.4, 60,243.5, 60,268.9 and 60,133.5. The testnet was between 0.79% and 1.01% below a market it is supposed to stand in for, and it was standing still.
-
-That gap is the subject of this article. The setup steps come first, the measurements after.
+59,660.0: that was the last price of BTCUSDT on the Bybit testnet for three minutes on 21 November 2026, and it did not move. We read it five times between 17:27 and 17:31 UTC and got that figure each time. Over those same three minutes the real market printed 60,230.2, 60,256.4, 60,243.5, 60,268.9 and 60,133.5. The testnet was between 0.79% and 1.01% below a market it is supposed to stand in for, and it was standing still.
 
 ## What is the Bybit testnet?
 
@@ -22,7 +20,7 @@ It is a second, separate copy of the exchange that runs on play money. The websi
 
 Bybit's Help Center article on [registering for the testnet](https://www.bybit.com/en/help-center/article/How-to-Request-Test-Coins-on-Testnet) (last updated 16 July 2026, checked 22 November 2026) calls it a "100% replication" of the mainnet's products and services. Hold on to that phrase. For the trading screens and the API it is close to true. For prices it is not, and a second Help Center page says so itself.
 
-## How do you register and get test funds?
+### How do you register and get test funds?
 
 You register on the testnet site as if it were a new exchange, then ask for coins. According to the same Help Center article:
 
@@ -52,7 +50,7 @@ They are different products with different price sources, and the names get swap
 | Features | all but deposit and withdrawal | spot and derivatives only |
 | Access | desktop browser | web and app |
 
-The rows come from Bybit's [Demo Trading article](https://www.bybit.com/en/help-center/article/Demo-Trading) (last updated 30 October 2026, checked 22 November 2026) and its [demo trading API page](https://bybit-exchange.github.io/docs/v5/demo) (checked 22 November 2026). A demo account starts with 50,000 USDT, 50,000 USDC, 1 BTC and 1 ETH, and its orders never enter the real order book. The API page lists which order, position and account endpoints work on the demo host. It adds that demo orders are kept for 7 days, that demo keys are created while in Demo Trading mode on the mainnet site, and that the rate limit of a demo account cannot be raised. The Help Center adds that a demo account left unopened for 30 days is wiped.
+The rows come from Bybit's [Demo Trading article](https://www.bybit.com/en/help-center/article/Demo-Trading) (last updated 30 October 2026, checked 22 November 2026) and its [demo trading API page](https://bybit-exchange.github.io/docs/v5/demo) (checked 22 November 2026). A demo account starts with 50,000 USDT, 50,000 USDC, 1 BTC and 1 ETH, and its orders never enter the real order book. The API page says demo keys are created while in Demo Trading mode on the mainnet site and that demo orders are kept for 7 days. The Help Center adds that a demo account left unopened for 30 days is wiped.
 
 Here is the sentence that undercuts "100% replication". The Demo Trading article describes the testnet as operating independently of mainnet prices and warns that it may not represent live trading conditions accurately. Two pages of the same Help Center disagree on how faithful the testnet is, and the measurements below side with the second one.
 
@@ -63,7 +61,7 @@ One combination to avoid: a Demo Trading mode also exists on the testnet site. T
 
 ## How far are testnet prices from mainnet? We measured
 
-Far enough that nothing priced on the testnet carries over. We requested the same public BTCUSDT perpetual data from both hosts in the same instant, each pair of requests sent from two threads at once, with no key and no account. The scripts and every raw response are in this site's source under `research/bybit-testnet/`.
+Far enough that nothing priced on the testnet carries over. We requested public BTCUSDT perpetual data from both hosts in the same instant, each pair of requests sent from two threads at once, with no key and no account. The scripts and every raw response are in this site's source under `research/bybit-testnet/`.
 
 | BTCUSDT perpetual, 21 November 2026 | Mainnet | Testnet |
 | --- | --- | --- |
@@ -93,7 +91,7 @@ Funding is stranger. The contract rules on both networks cap BTCUSDT funding at 
 
 Open interest looks like a typo and isn't: the testnet shows 3.74 times mainnet's open interest on 0.8% of its daily volume. Play-money positions cost nothing to leave open.
 
-## How thin is the testnet order book?
+### How thin is the testnet order book?
 
 Thin enough that selling one bitcoin moves it by more than a percent. The top of the book looks normal, with a 0.1 USDT spread on both networks, and that is misleading.
 
@@ -113,7 +111,7 @@ Within 1% of the mid price the testnet held bids for 0.136 BTC in total. On main
 <!-- unique:firsthand-data -->
 The public trade feed adds one more thing. The last 1,000 mainnet trades covered between 14 and 68 seconds, depending on the snapshot. The last 1,000 testnet trades covered 50 minutes each time, a steady 19.8 to 19.9 a minute. In the first snapshot no two were more than 5.1 seconds apart, and 993 of the 1,000 were buys of a few thousandths of a bitcoin. That is my reading, not a fact I can verify: it looks like a script keeping the tape alive, not like people trading. It would explain why no candle was missing or empty in a market this quiet.
 
-Bybit's API FAQ describes the practical result. Testnet market orders can fail or be cancelled after a partial fill when the book lacks opposing orders. The page offers no sure fix and suggests limit orders, or Demo Trading on the mainnet site as a more liquid place.
+Bybit's API FAQ describes the practical result. Testnet market orders can fail or be cancelled after a partial fill when the book lacks opposing orders. The page offers no sure fix and suggests limit orders, or Demo Trading on the mainnet site as a more liquid place. The default order of the runner described further down is 100 USDT, which is 0.001 BTC at these prices, and the best bid held more than that in each of our five snapshots.
 
 ## Same strategy, different candles: do the signals match?
 
@@ -129,7 +127,7 @@ We downloaded the same 1,000 fifteen-minute candles from both hosts (07:30 UTC o
 | `liquidity_sweep` | 88 | 52 | 1 |
 
 <!-- unique:original-calc -->
-The moving-average cross fired 16 times on real candles and 22 times on testnet candles, and never on the same bar. For the fair value gap entry, 3 of 134 signal bars coincided. Whatever a testnet run of these strategies earns or loses, it is the result of trades the real market never offered. All three lose money in the engine's [published backtests](/backtests/) on mainnet data, the [moving-average cross](/backtests/ma-cross-btcusdt/) included, and nothing here changes that.
+The moving-average cross never fired on the same bar in both sets, and for the fair value gap entry 3 of 134 signal bars coincided. Whatever a testnet run of these strategies earns or loses, it is the result of trades the real market never offered. All three lose money in the engine's [published backtests](/backtests/) on mainnet data, the [moving-average cross](/backtests/ma-cross-btcusdt/) included, and nothing here changes that.
 
 ## How do you test a trading bot on the testnet without a key?
 
@@ -174,7 +172,7 @@ It verifies plumbing. Anything that depends on price, volume or other traders it
 "Mostly" needs a footnote. Tick size, minimum quantity and quantity step were the same on both networks when we read them, but the largest allowed limit order was 1,190 BTC on the testnet against 1,500 on mainnet, and the testnet listed 11 fewer contracts. The restart row covers timeouts and duplicate order IDs too: that is order bookkeeping, and it behaves the same whatever the price does.
 
 <!-- unique:operator-view -->
-I started this piece assuming the testnet was a slightly noisy copy of the market, good enough for a rough profit check. After the candle comparison I would not use a testnet P&L for anything. A green week there says the bot ran for a week. For sizing and liquidation distance, work from mainnet rules with the [position size calculator](/tools/position-size-calculator/) and the [liquidation price calculator](/tools/liquidation-price-calculator/); the first risk tier was the same on both networks, 0.33% maintenance margin up to 300,000 USDT.
+I started this piece assuming the testnet was a slightly noisy copy of the market, good enough for a rough profit check. I was wrong: after the candle comparison I would not use a testnet P&L for anything. A green week there says the bot ran for a week. For sizing and liquidation distance, work from mainnet rules with the [position size calculator](/tools/position-size-calculator/) and the [liquidation price calculator](/tools/liquidation-price-calculator/); the first risk tier matched on both networks, 0.33% maintenance margin up to 300,000 USDT.
 
 The one thing the comparison cannot rank is Demo Trading. Its prices are mainnet's, which removes the signal problem. How it fills orders that never enter a book is something we have not measured, and Bybit's pages do not describe it.
 
@@ -182,23 +180,14 @@ perpmath is independent of Bybit and not endorsed by it. How this site earns mon
 
 ## FAQ
 
-### Is the Bybit testnet free?
-
-Yes. It runs on test coins that Bybit hands out on request, and nothing on it can be withdrawn. The cost to watch for is the opposite mistake: Bybit's Help Center says real coins sent to a testnet deposit address are permanently lost.
-
 ### Can I use my mainnet API key on the testnet?
 
-No. A key works only on the environment that issued it, and Bybit's error list gives a mismatch between key and domain as the usual reason for `10003`. We sent a made-up key to the testnet and got exactly that code; the request and the answer are in [the API article](/learn/bybit-api-python/).
+No. A key works only on the environment that issued it, and Bybit's error list gives a mismatch between key and domain as the usual reason for `10003`. We sent a made-up key to the testnet and got that code back; the request and the answer are in [the API article](/learn/bybit-api-python/).
 
-### Why do my testnet market orders get cancelled or only partly filled?
+### Should I test a bot on the testnet or in Demo Trading?
 
-<!-- unique:firsthand-data -->
-The book is too thin. Bybit's API FAQ says so, and our snapshot agrees: 0.136 BTC of bids within 1% of the mid price, against 361 BTC within 0.15% on mainnet. Use small sizes or limit orders. The runner's default order of 100 USDT is 0.001 BTC at these prices, and the best bid held more than that in each of our five snapshots.
+For a first check that orders, stops and restarts behave, either works, and the testnet exposes more of the API. For anything that depends on realistic prices, Demo Trading is the closer of the two, since its candles were identical to mainnet's when we compared them. We can only show the testnet, since that is the one host our own runner supports.
 
 ### If my bot is profitable on the testnet, will it be profitable live?
 
 There is no reason to expect so. In our sample the testnet's closes were a median 1.87% from mainnet's, its volume was 0.68% of mainnet's, and the same strategy code produced signals on different bars. A testnet profit was earned in a market that does not exist anywhere else.
-
-### Should I test a bot on the testnet or in Demo Trading?
-
-For a first check that orders, stops and restarts behave, either works, and the testnet exposes more of the API. For anything that depends on realistic prices, Demo Trading is the closer of the two, since its candles were identical to mainnet's when we compared them. Our own runner supports the testnet only, so that is the one we can show.
