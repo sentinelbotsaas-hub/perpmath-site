@@ -124,7 +124,7 @@ export const riskOfRuin = defineStrings({
         { term: 'Number of trades', text: 'The horizon. The chance of touching the threshold can only rise as trades are added.' },
       ],
       sources:
-        'Sources. The gambler’s ruin formula: W. Feller, An Introduction to Probability Theory and Its Applications, vol. 1, 3rd ed. (Wiley, 1968), chapter XIV. The bounds follow from Wald’s identity (A. Wald, “On cumulative sums of random variables”, Annals of Mathematical Statistics 15, 1944) and are known in risk theory as Lundberg’s inequality: S. Asmussen and H. Albrecher, Ruin Probabilities, 2nd ed. (World Scientific, 2010).',
+        'Sources. The gambler’s ruin formula: W. Feller, An Introduction to Probability Theory and Its Applications, vol. 1, 3rd ed. (Wiley, 1968), chapter XIV. The bounds follow from Wald’s identity (A. Wald, “On cumulative sums of random variables”, Annals of Mathematical Statistics 15(3), 1944, pp. 283–296) and are known in risk theory as Lundberg’s inequality: S. Asmussen and H. Albrecher, Ruin Probabilities, 2nd ed. (World Scientific, 2010).',
       leftOut:
         'Real trades are not independent: losses tend to come together when the market changes character. The win rate and the payoff ratio are estimates from a limited sample and drift over time. Wins and losses are not all the same size, and a stop can fill beyond its price. Fees and funding are not counted. A drawdown measured from a later high is reached more often than one measured from the start. None of this is in the model, so read the figure as the risk under ideal conditions, not as an upper limit.',
     },
@@ -272,7 +272,7 @@ export const riskOfRuin = defineStrings({
         { term: '交易筆數', text: '往後看幾筆。筆數越多，碰到門檻的機率只會更高，不會更低。' },
       ],
       sources:
-        '出處。賭徒破產公式：W. Feller, An Introduction to Probability Theory and Its Applications, vol. 1, 3rd ed.（Wiley, 1968）第 XIV 章。上下界來自 Wald 恆等式（A. Wald, “On cumulative sums of random variables”, Annals of Mathematical Statistics 15, 1944），在風險理論裡稱為 Lundberg 不等式：S. Asmussen and H. Albrecher, Ruin Probabilities, 2nd ed.（World Scientific, 2010）。',
+        '出處。賭徒破產公式：W. Feller, An Introduction to Probability Theory and Its Applications, vol. 1, 3rd ed.（Wiley, 1968）第 XIV 章。上下界來自 Wald 恆等式（A. Wald, “On cumulative sums of random variables”, Annals of Mathematical Statistics 15(3), 1944, pp. 283–296），在風險理論裡稱為 Lundberg 不等式：S. Asmussen and H. Albrecher, Ruin Probabilities, 2nd ed.（World Scientific, 2010）。',
       leftOut:
         '真實的交易並不獨立：行情性質改變的時候，虧損常常接連出現。勝率和賺賠比是從有限的樣本估出來的，也會隨時間改變。每筆獲利和虧損的大小不會都一樣，停損也可能成交在比停損價更差的價格。手續費和資金費沒有算進去。從後來的高點算起的回撤，比從起始資金算起的更容易碰到。這些都不在模型裡，所以請把結果當成理想條件下的風險，不要當成上限。',
     },

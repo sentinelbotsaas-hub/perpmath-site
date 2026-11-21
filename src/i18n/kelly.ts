@@ -92,7 +92,7 @@ export const kelly = defineStrings({
         },
       ],
       sources:
-        'Sources. J. L. Kelly Jr., “A New Interpretation of Information Rate”, Bell System Technical Journal 35(4), 1956, pp. 917–926. On fractional Kelly and the cost of estimation error: E. O. Thorp, “The Kelly Criterion in Blackjack, Sports Betting, and the Stock Market”, in Handbook of Asset and Liability Management, vol. 1 (Elsevier, 2006).',
+        'Sources. The criterion is from J. L. Kelly Jr., “A New Interpretation of Information Rate”, Bell System Technical Journal 35(4), 1956, pp. 917–926, which works the even-money case. The form with a payoff ratio b used on this page, and the discussion of betting a fraction of Kelly, follow E. O. Thorp, “The Kelly Criterion in Blackjack Sports Betting, and the Stock Market”, chapter 9 of Handbook of Asset and Liability Management, vol. 1 (Elsevier, 2006), pp. 385–428, where it is written f* = (bp − q)/b with q = 1 − p.',
       leftOut:
         'Real trades do not have two fixed outcomes: wins and losses vary in size, and a stop can fill beyond its price. Fees and funding lower the payoff ratio. Positions that are open at the same time share one account. The formula also says nothing about leverage: the share is the loss at the stop, and the position that goes with it depends on how far away the stop is.',
     },
@@ -209,7 +209,7 @@ export const kelly = defineStrings({
         },
       ],
       sources:
-        '出處。J. L. Kelly Jr., “A New Interpretation of Information Rate”, Bell System Technical Journal 35(4), 1956, pp. 917–926。分數凱利與估計誤差的代價：E. O. Thorp, “The Kelly Criterion in Blackjack, Sports Betting, and the Stock Market”，收錄於 Handbook of Asset and Liability Management, vol. 1（Elsevier, 2006）。',
+        '出處。這個準則出自 J. L. Kelly Jr., “A New Interpretation of Information Rate”, Bell System Technical Journal 35(4), 1956, pp. 917–926，原文處理的是一賠一的情形。這一頁用的帶賺賠比 b 的寫法，以及只押凱利的一部分的討論，依據 E. O. Thorp, “The Kelly Criterion in Blackjack Sports Betting, and the Stock Market”，Handbook of Asset and Liability Management, vol. 1（Elsevier, 2006）第 9 章，pp. 385–428，原式寫成 f* = (bp − q)/b，其中 q = 1 − p。',
       leftOut:
         '真實的交易不會只有兩種固定的結果：每筆獲利和虧損的大小不一樣，停損也可能成交在比停損價更差的價格。手續費和資金費會拉低賺賠比。同時持有的幾個倉位共用同一個帳戶。公式也沒有提到槓桿：這個比例是停損觸發時的虧損，對應的倉位有多大，要看停損離進場價多遠。',
     },
