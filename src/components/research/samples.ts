@@ -6,10 +6,10 @@
 // hold: every value is read from `metrics` and passed through the formatters
 // in src/lib/backtests/format.ts. A value the engine could not compute stays
 // "not computed" (`na`), never 0.
-import { formatCount, formatDay, formatPct, formatSigned } from '../../lib/backtests/format';
+import { formatCount, formatDay, formatPct, formatPlus, formatSigned } from '../../lib/backtests/format';
 import { SAMPLE_KEYS } from '../../lib/backtests/types';
 import type { BacktestResult, SampleKey } from '../../lib/backtests/types';
-import { verdictOf } from '../../lib/backtests/verdict';
+import { MIN_TRADES, verdictOf } from '../../lib/backtests/verdict';
 import type { VerdictCode } from '../../lib/backtests/verdict';
 import { fmt } from '../../lib/fmt';
 
@@ -45,6 +45,12 @@ export interface SampleView {
   maxDrawdownPct: number | null;
   verdictCode: VerdictCode;
   verdict: string;
+  /**
+   * Fewer than MIN_TRADES trades (the engine's `insufficient_sample`). Every
+   * other figure of the block is then noise: the tables do not colour its
+   * average R, and the pages print thinNotices() beside it.
+   */
+  insufficient: boolean;
 }
 
 export function sampleViews(result: BacktestResult, t: SampleStrings): SampleView[] {
@@ -71,7 +77,54 @@ export function sampleViews(result: BacktestResult, t: SampleStrings): SampleVie
       maxDrawdownPct: m.max_drawdown_pct,
       verdictCode,
       verdict: t.verdict[verdictCode],
+      insufficient: verdictCode === 'insufficient',
     };
+  });
+}
+
+/** The strings of the warning, from `backtests[locale].detail.thin`. */
+export interface ThinStrings {
+  title: string;
+  body: string;
+  rUp: string;
+  why: string;
+}
+
+export interface ThinNotice {
+  key: SampleKey;
+  /** "Out-of-sample: 42 trades, too few to read". Also the short flag on /bot/. */
+  title: string;
+  /** The sentences under it, each true of this sample. */
+  lines: string[];
+}
+
+/**
+ * One warning per sample that has fewer than MIN_TRADES trades; none when
+ * both have enough. A sample this small can show an average R above zero
+ * while its equity fell (R counts every trade equally, the return is
+ * compounded on the full position), and that is said here in words, with the
+ * two figures side by side, so the positive one is never read on its own.
+ */
+export function thinNotices(result: BacktestResult, t: SampleStrings, x: ThinStrings): ThinNotice[] {
+  return SAMPLE_KEYS.flatMap((key) => {
+    const { metrics: m, signals } = result[key];
+    if (verdictOf(m) !== 'insufficient') return [];
+    const trades = formatCount(m.trades);
+    const lines = [fmt(x.body, { min: formatCount(MIN_TRADES) })];
+    if (m.avg_r !== null && m.avg_r > 0 && m.total_return_pct !== null && m.total_return_pct < 0) {
+      lines.push(
+        fmt(x.rUp, {
+          avgR: formatPlus(m.avg_r) ?? t.na,
+          loss: formatPct(Math.abs(m.total_return_pct)) ?? t.na,
+          trades,
+        }),
+      );
+    }
+    const skipped = signals.skipped_in_position;
+    if (Number.isFinite(skipped) && skipped > 0 && m.avg_bars_held !== null) {
+      lines.push(fmt(x.why, { held: formatCount(m.avg_bars_held), skipped: formatCount(skipped) }));
+    }
+    return [{ key, title: fmt(x.title, { sample: t.samples[key], trades }), lines }];
   });
 }
 

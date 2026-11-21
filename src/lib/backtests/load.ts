@@ -3,7 +3,8 @@
 // on /backtests/ appear by themselves.
 //
 // There are two kinds of file. `results` holds the signal strategies (one
-// position at a time, trades with a stop: fvg, liquidity_sweep, ma_cross).
+// position at a time, trades with a stop: fvg, liquidity_sweep, ma_cross,
+// order_block, break_of_structure, breaker_block).
 // `gridResults` holds the grid backtests, which have their own shape and
 // their own page layout. `allResults` is both, for the things they share
 // (a page address, a data period).

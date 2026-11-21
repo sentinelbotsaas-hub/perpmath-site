@@ -8,7 +8,15 @@
 //
 // `views` comes from ./samples.ts. `surface` says the table sits on a card,
 // so the pinned first column takes the card's colour.
+//
+// A sample with too few trades (the engine's `insufficient_sample`) is
+// marked in the two cells that say so: its trade count gets a warning icon,
+// its verdict already reads "Too few trades", and both take the warning
+// colour. Its average R is printed without a gain or loss colour: at that
+// size the figure is noise either way, and a green +0.06 would read as a
+// result.
 import DataTable from '../ui/DataTable.astro';
+import Icon from '../ui/Icon.astro';
 import { backtests } from '../../i18n/backtests';
 import type { Locale } from '../../i18n/config';
 import { toneOf } from './samples';
@@ -27,6 +35,7 @@ interface Props {
 
 const { locale, label, views, caption, surface = false, dense = false } = Astro.props;
 const col = backtests[locale].columns;
+const tooFew = backtests[locale].verdict.insufficient;
 
 // A share of a whole gets a depth bar at its true length (the full cell is
 // 100%); a signed figure takes the colour of its sign.
@@ -34,12 +43,14 @@ const share = (pct: number | null) => (pct === null || !Number.isFinite(pct) ? u
 const rows: Array<{
   head: string;
   cell: (v: SampleView) => string;
-  tone?: (v: SampleView) => 'positive' | 'negative' | undefined;
+  tone?: (v: SampleView) => 'positive' | 'negative' | 'warning' | undefined;
   depth?: (v: SampleView) => string | undefined;
+  /** The row whose cell carries the warning icon of a sample with too few trades. */
+  flag?: boolean;
 }> = [
-  { head: col.trades, cell: (v) => v.trades },
+  { head: col.trades, cell: (v) => v.trades, tone: (v) => (v.insufficient ? 'warning' : undefined), flag: true },
   { head: col.winRate, cell: (v) => v.winRateText, depth: (v) => share(v.winRate) },
-  { head: col.avgR, cell: (v) => v.avgR, tone: (v) => toneOf(v.avgRSign) },
+  { head: col.avgR, cell: (v) => v.avgR, tone: (v) => (v.insufficient ? undefined : toneOf(v.avgRSign)) },
   { head: col.t, cell: (v) => v.tStat },
   { head: col.maxDrawdown, cell: (v) => v.maxDrawdown, depth: (v) => share(v.maxDrawdownPct), tone: () => 'negative' },
 ];
@@ -74,7 +85,10 @@ const rows: Array<{
           {views.map((v) => {
             const depth = row.depth?.(v);
             return depth === undefined ? (
-              <td class="num" data-tone={row.tone?.(v)}>{row.cell(v)}</td>
+              <td class="num" data-tone={row.tone?.(v)}>
+                {row.flag && v.insufficient && <Icon name="triangle-alert" size={14} label={tooFew} />}
+                {row.cell(v)}
+              </td>
             ) : (
               <td class="num" data-depth data-tone={row.tone?.(v)} style={`--depth:${depth}`}>{row.cell(v)}</td>
             );
@@ -84,7 +98,7 @@ const rows: Array<{
     }
     <tr>
       <th scope="row">{col.verdict}</th>
-      {views.map((v) => <td class="bt-verdict">{v.verdict}</td>)}
+      {views.map((v) => <td class="bt-verdict" data-tone={v.insufficient ? 'warning' : undefined}>{v.verdict}</td>)}
     </tr>
   </tbody>
 </DataTable>
@@ -124,6 +138,12 @@ const rows: Array<{
     color: var(--tone, var(--color-text));
     font-size: var(--text-card);
     font-weight: var(--weight-medium);
+  }
+
+  /* The warning icon of a sample with too few trades sits on the text line. */
+  :global(.bt-compare td .icon) {
+    margin-right: var(--space-1);
+    vertical-align: -0.12em;
   }
 
   /* A verdict is a phrase, not a figure: it may wrap. */

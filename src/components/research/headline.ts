@@ -22,6 +22,8 @@ export interface HeadlineStrings {
   caption: string;
   captionPlain: string;
   captionMixed: string;
+  fundingNone: string;
+  fundingGridOnly: string;
 }
 
 export interface Headline {
@@ -37,6 +39,12 @@ export interface Headline {
   caption: string;
   /** The same, for the signal strategies alone. */
   strategyCaption: string;
+  /**
+   * The funding half of `caption` on its own, for a place that has already
+   * said fees and slippage are counted (the home page). Empty when funding is
+   * counted in every result.
+   */
+  fundingNote: string;
 }
 
 export function headline(x: HeadlineStrings, na: string): Headline {
@@ -57,6 +65,7 @@ export function headline(x: HeadlineStrings, na: string): Headline {
         : strategiesFunded || gridsFunded
           ? x.captionPlain
           : x.caption;
+  const fundingNote = caption === x.captionMixed ? x.fundingGridOnly : caption === x.caption ? x.fundingNone : '';
 
   if (code === 'grid-ranged') {
     const grid = gridResults[0];
@@ -77,6 +86,7 @@ export function headline(x: HeadlineStrings, na: string): Headline {
       sub: hasHindsightBounds(grid) ? fmt(x.subRanged, vars) : x.sub,
       caption,
       strategyCaption,
+      fundingNote,
     };
   }
   return {
@@ -88,5 +98,6 @@ export function headline(x: HeadlineStrings, na: string): Headline {
     sub: x.sub,
     caption,
     strategyCaption,
+    fundingNote,
   };
 }
