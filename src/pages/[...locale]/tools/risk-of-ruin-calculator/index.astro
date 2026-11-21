@@ -1,0 +1,373 @@
+---
+// Risk of ruin calculator. One file serves all three locales.
+// The interactive part is src/scripts/risk-of-ruin-calculator.ts; everything
+// on this page is also correct with scripting off (it shows worked example 1,
+// simulation included: the seed is fixed, so the build and the browser get
+// the same estimate).
+import Cta from '../../../../components/Cta.astro';
+import Field from '../../../../components/Field.astro';
+import CalculatorShell from '../../../../components/calc/CalculatorShell.astro';
+import DocSection from '../../../../components/calc/DocSection.astro';
+import ExampleBlock from '../../../../components/calc/ExampleBlock.astro';
+import RelatedTools from '../../../../components/calc/RelatedTools.astro';
+import ResultFlag from '../../../../components/calc/ResultFlag.astro';
+import ScaleBars from '../../../../components/calc/ScaleBars.astro';
+import SliderField from '../../../../components/calc/SliderField.astro';
+import { splitFigure } from '../../../../components/calc/calc-ui';
+import {
+  formatProbability,
+  percent,
+  signed,
+  signedPercent,
+  simulationText,
+  typedNumber,
+  typedPercent,
+} from '../../../../components/calc/figures';
+import { RUIN_START } from '../../../../components/calc/starting-values';
+import DataTable from '../../../../components/ui/DataTable.astro';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import FormulaBlock from '../../../../components/ui/FormulaBlock.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../../components/ui/PageHeader.astro';
+import { common } from '../../../../i18n/common';
+import { localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { riskOfRuin as strings } from '../../../../i18n/risk-of-ruin';
+import { calc } from '../../../../i18n/tools';
+import Base from '../../../../layouts/Base.astro';
+import { MAX_PAYOFF, MAX_TRADES, SIM_PATHS, SIM_SEED, riskOfRuin, simulateRuin } from '../../../../lib/calc/risk-of-ruin';
+import type { RuinInput } from '../../../../lib/calc/risk-of-ruin';
+import { fmt, formatNumber } from '../../../../lib/fmt';
+import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const c = common[locale];
+const ui = calc[locale];
+const PATH = '/tools/risk-of-ruin-calculator/';
+
+const simVars = { paths: formatNumber(SIM_PATHS), seed: SIM_SEED };
+
+// One case, worked with the same library the calculator uses.
+function solve(input: RuinInput) {
+  const r = riskOfRuin(input);
+  const sim = simulateRuin(input, { paths: SIM_PATHS, seed: SIM_SEED });
+  if (!r.ok || !sim) throw new Error('Worked example is invalid');
+  const up = 1 + input.payoff * input.riskPerTrade;
+  const down = 1 - input.riskPerTrade;
+  const prob = formatProbability(r.probability);
+  const vars = {
+    ...simVars,
+    win: typedPercent(input.winRate),
+    payoff: typedNumber(input.payoff),
+    risk: typedPercent(input.riskPerTrade),
+    dd: typedPercent(input.threshold),
+    n: formatNumber(input.trades),
+    p: typedNumber(input.winRate),
+    q: typedNumber(1 - input.winRate),
+    r: typedPercent(input.riskPerTrade),
+    up: typedNumber(up),
+    down: typedNumber(down),
+    round: typedNumber(up * down),
+    k: r.lossesToThreshold,
+    after: percent(down ** r.lossesToThreshold),
+    left: percent(down ** r.lossesToThreshold),
+    level: typedPercent(1 - input.threshold),
+    edge: fmt(t.ui.edge, { value: signed(r.edge) }),
+    growth: signedPercent(r.logGrowth),
+    prob,
+    sim: simulationText(sim, t.ui),
+    // How far the simulation landed from the exact figure, in its own standard errors.
+    gap: sim.standardError > 0 ? formatNumber(Math.abs(sim.estimate - r.probability) / sim.standardError, 1) : '',
+    theta: r.eventual.certain ? '' : formatNumber(r.eventual.exponent, 4),
+    lower: r.eventual.certain ? '' : formatProbability(r.eventual.lower),
+    upper: r.eventual.certain ? formatProbability(1) : formatProbability(r.eventual.upper),
+  };
+  return { input, r, sim, vars };
+}
+
+function example(title: string, s: ReturnType<typeof solve>, result: string) {
+  const lines = [
+    t.examples.workWin,
+    t.examples.workLoss,
+    t.examples.workStreak,
+    t.examples.workEdge,
+    t.examples.workGrowth,
+    t.examples.workExact,
+    t.examples.workSim,
+    s.r.eventual.certain ? t.examples.workEverCertain : t.examples.workEver,
+  ];
+  return {
+    title: fmt(title, s.vars),
+    setup: fmt(t.examples.setup, s.vars),
+    working: lines.map((line) => fmt(line, s.vars)).join('\n'),
+    result: fmt(result, s.vars),
+  };
+}
+
+const withDefaults = (change: Partial<RuinInput>): RuinInput => ({
+  winRate: RUIN_START.win / 100,
+  payoff: RUIN_START.payoff,
+  riskPerTrade: RUIN_START.risk / 100,
+  threshold: RUIN_START.dd / 100,
+  trades: RUIN_START.n,
+  ...change,
+});
+
+// Example 1 is also the starting state, and what a reader without JavaScript sees.
+const first = solve(withDefaults({}));
+const second = solve({ winRate: 0.5, payoff: 1, riskPerTrade: 0.02, threshold: 0.3, trades: 1000 });
+if (first.r.eventual.certain || !second.r.eventual.certain) throw new Error('Worked examples changed meaning');
+const ex1 = example(t.examples.first, first, t.examples.resultEdge);
+const ex2 = example(t.examples.second, second, t.examples.resultNoEdge);
+
+const start = first.r;
+const startEver = start.eventual.certain ? 1 : start.eventual.upper;
+const startFigure = splitFigure(first.vars.prob);
+
+// The table under the formulas: the exact count next to the simulation, one row per risk per trade.
+const rows = [0.01, 0.02, 0.03, 0.05, 0.1].map((riskPerTrade) => solve(withDefaults({ riskPerTrade })));
+
+const low = solve(withDefaults({ winRate: RUIN_START.win / 100 - 0.05 }));
+const half = solve(withDefaults({ riskPerTrade: RUIN_START.risk / 200 }));
+const double = solve(withDefaults({ riskPerTrade: RUIN_START.risk / 50 }));
+const short = solve(withDefaults({ trades: 50 }));
+const mistakeVars = {
+  ...first.vars,
+  winLow: low.vars.win,
+  probLow: low.vars.prob,
+  riskHalf: half.vars.risk,
+  probHalf: half.vars.prob,
+  riskDouble: double.vars.risk,
+  probDouble: double.vars.prob,
+  nShort: short.vars.n,
+  probShort: short.vars.prob,
+};
+
+// Plain data for the browser script.
+const calcData = JSON.stringify({
+  maxTrades: MAX_TRADES,
+  maxPayoff: MAX_PAYOFF,
+  paths: SIM_PATHS,
+  seed: SIM_SEED,
+  strings: t.ui,
+});
+
+// The slider covers the whole-number win rates the model accepts.
+const SLIDER = { min: 1, max: 99 };
+
+// The same trail for the visible breadcrumb and for JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+  { name: t.title, path: PATH },
+];
+const jsonLd = [softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }), breadcrumbLd(locale, trail)];
+---
+
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+      <nav class="calc-jump" aria-label={ui.onThisPage}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+      </nav>
+    </PageHeader>
+
+    <CalculatorShell
+      locale={locale}
+      data={calcData}
+      label={t.result.label}
+      figure={startFigure.value}
+      unit={startFigure.unit}
+      tightUnit={startFigure.tight}
+      sentence={fmt(t.ui.sentence, first.vars)}
+    >
+      <Fragment slot="inputs">
+        <SliderField
+          id="win"
+          class="calc-wide"
+          label={t.fields.win}
+          unit="%"
+          value={RUIN_START.win}
+          min={SLIDER.min}
+          max={SLIDER.max}
+          sliderLabel={fmt(ui.slider, { label: t.fields.win })}
+          valueText={t.ui.winText}
+          minText={fmt(t.ui.winText, { value: SLIDER.min })}
+          maxText={fmt(t.ui.winText, { value: SLIDER.max })}
+        />
+        <Field id="payoff" label={t.fields.payoff} value={RUIN_START.payoff} hint={t.fields.payoffHint} />
+        <Field id="risk" label={t.fields.risk} unit="%" value={RUIN_START.risk} hint={t.fields.riskHint} />
+        <Field id="dd" label={t.fields.dd} unit="%" value={RUIN_START.dd} hint={t.fields.ddHint} />
+        <Field
+          id="n"
+          label={t.fields.trades}
+          unit={t.fields.tradesUnit}
+          value={RUIN_START.n}
+          inputmode="numeric"
+          hint={fmt(t.fields.tradesHint, { max: formatNumber(MAX_TRADES) })}
+        />
+      </Fragment>
+
+      <Fragment slot="after-inputs">
+        <noscript><p class="fine">{fmt(t.noscript, first.vars)}</p></noscript>
+      </Fragment>
+
+      <Fragment slot="flags">
+        <ResultFlag id="calc-certain" />
+      </Fragment>
+
+      <ScaleBars
+        slot="viz"
+        id="calc-bars"
+        a={start.probability}
+        b={startEver}
+        max={1}
+        aLabel={fmt(t.ui.withinBar, first.vars)}
+        aValue={first.vars.prob}
+        bLabel={t.ui.everBar}
+        bValue={first.vars.upper}
+        caption={() => fmt(t.ui.barLabel, { ...first.vars, within: first.vars.prob })}
+      />
+
+      <Fragment slot="metrics">
+        <table class="calc-kv">
+          <caption class="visually-hidden">{t.result.caption}</caption>
+          <tbody>
+            <tr>
+              <th scope="row">{fmt(t.result.sim, simVars)}</th>
+              <td class="num" id="out-sim">{first.vars.sim}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.eventual}</th>
+              <td class="num" id="out-eventual">{fmt(t.ui.eventualRange, first.vars)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.streak}</th>
+              <td class="num" id="out-streak">{first.vars.k}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.edge}</th>
+              <td class="num" id="out-edge">{first.vars.edge}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.growth}</th>
+              <td class="num" id="out-growth">{first.vars.growth}</td>
+            </tr>
+          </tbody>
+        </table>
+      </Fragment>
+
+      <Fragment slot="assumptions">
+        <ul class="calc-assume">
+          {t.assumptions.map((line) => <li>{fmt(line, simVars)}</li>)}
+        </ul>
+      </Fragment>
+
+      <Cta
+        slot="cta"
+        locale={locale}
+        pageType="tool"
+        position="result"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+      />
+    </CalculatorShell>
+  </PageContainer>
+
+  <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+    <p>{t.formula.intro}</p>
+    <FormulaBlock formula={t.formula.balance + '\n' + t.formula.ruinLine} />
+    <p>{fmt(t.formula.notZero, first.vars)}</p>
+
+    <h3>{t.formula.exactHead}</h3>
+    <p>{t.formula.exact}</p>
+
+    <h3>{t.formula.closedHead}</h3>
+    <p>{t.formula.closed}</p>
+    <FormulaBlock formula={t.formula.classical} />
+    <p>{t.formula.bounds}</p>
+    <FormulaBlock formula={t.formula.theta + '\n' + t.formula.inequality} />
+    <p>{t.formula.certain}</p>
+
+    <h3>{t.formula.simHead}</h3>
+    <p>{fmt(t.formula.sim, simVars)}</p>
+    <DataTable locale={locale} label={t.result.label} caption={fmt(t.formula.tableCaption, first.vars)} hint>
+      <thead>
+        <tr>
+          <th scope="col">{t.formula.tableRisk}</th>
+          <th scope="col">{fmt(t.formula.tableExact, first.vars)}</th>
+          <th scope="col">{fmt(t.formula.tableSim, simVars)}</th>
+          <th scope="col">{t.formula.tableEver}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr>
+              <td class="num">{row.vars.risk}</td>
+              <td class="num">{row.vars.prob}</td>
+              <td class="num">{row.vars.sim}</td>
+              <td class="num">{row.vars.upper}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </DataTable>
+
+    <dl class="calc-terms">
+      {
+        t.formula.terms.map((item) => (
+          <div>
+            <dt>{item.term}</dt>
+            <dd>{item.text}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="fine calc-sources">{t.formula.sources}</p>
+    <Disclaimer locale={locale} kind="info" title={ui.leftOut}>
+      <p>{t.formula.leftOut}</p>
+    </Disclaimer>
+  </DocSection>
+
+  <DocSection id="worked-examples" title={t.toc.examples}>
+    <div class="calc-pair">
+      {[ex1, ex2].map((ex) => <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />)}
+    </div>
+  </DocSection>
+
+  <DocSection id="common-mistakes" title={t.toc.mistakes}>
+    <ul class="calc-mistakes">
+      {
+        t.mistakes.map((m) => (
+          <li>
+            <h3>{m.title}</h3>
+            <p>{fmt(m.text, mistakeVars)}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </DocSection>
+
+  <RelatedTools locale={locale} current="risk-of-ruin-calculator" allLabel={t.allTools} />
+
+  <script>
+    import '../../../../scripts/risk-of-ruin-calculator.ts';
+  </script>
+</Base>
+
+<style is:global>
+  /* The sources line is small print: keep it to the small-print measure. */
+  .calc-doc-body > p.calc-sources {
+    max-width: var(--measure-fine);
+  }
+</style>

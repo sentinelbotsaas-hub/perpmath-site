@@ -12,6 +12,8 @@
 // The drawdown card is the one exception: it keeps that page's first worked
 // example (30%), because the section right under this one is about 50%.
 import { ASSUMED_FEE_PCT, LEVERAGE_START, LIQUIDATION_START, POSITION_START } from '../calc/starting-values';
+import { KELLY_START, RISK_REWARD_START, RUIN_START } from '../calc/starting-values';
+import { ratioText, typedNumber, typedPercent } from '../calc/figures';
 import { TOOL_ICON } from '../calc/tool-meta';
 import SectionHeader from '../ui/SectionHeader.astro';
 import ToolCard from '../ui/ToolCard.astro';
@@ -24,6 +26,9 @@ import { drawdown } from '../../lib/calc/drawdown';
 import { floorTo, maxLeverage } from '../../lib/calc/leverage';
 import { liquidationPrice, roundToTick } from '../../lib/calc/liquidation';
 import { positionSize } from '../../lib/calc/position-size';
+import { kelly } from '../../lib/calc/kelly';
+import { riskOfRuin } from '../../lib/calc/risk-of-ruin';
+import { riskReward } from '../../lib/calc/risk-reward';
 import { fmt, formatNumber, formatPercent, tickDecimals } from '../../lib/fmt';
 import { BTCUSDT, tierOne } from '../../lib/risk-limit';
 import { getTools } from '../../lib/tools';
@@ -109,6 +114,51 @@ const examples: Partial<Record<ToolSlug, () => Example>> = {
       given: fmt(t.examples['drawdown-calculator'].given, { lost: formatPercent(r.drawdown, 0) }),
       // The unit string carries the percent sign.
       value: formatNumber(r.recoveryGain * 100, 2),
+    };
+  },
+  'risk-of-ruin-calculator': () => {
+    const s = RUIN_START;
+    const input = { winRate: s.win / 100, payoff: s.payoff, riskPerTrade: s.risk / 100, threshold: s.dd / 100, trades: s.n };
+    const r = riskOfRuin(input);
+    if (!r.ok) throw invalid('risk-of-ruin-calculator');
+    return {
+      given: fmt(t.examples['risk-of-ruin-calculator'].given, {
+        win: typedPercent(input.winRate),
+        payoff: typedNumber(input.payoff),
+        risk: typedPercent(input.riskPerTrade),
+        dd: typedPercent(input.threshold),
+        n: formatNumber(input.trades),
+      }),
+      // The unit string carries the percent sign.
+      value: formatNumber(r.probability * 100, 2),
+    };
+  },
+  'risk-reward-calculator': () => {
+    const s = RISK_REWARD_START;
+    const input = { entryPrice: s.entry, stopPrice: s.stop, targetPrice: s.target };
+    const r = riskReward({ ...input, feeRate: ASSUMED_FEE_PCT / 100 });
+    if (!r.ok) throw invalid('risk-reward-calculator');
+    return {
+      given: fmt(t.examples['risk-reward-calculator'].given, {
+        entry: formatNumber(input.entryPrice),
+        stop: formatNumber(input.stopPrice),
+        target: formatNumber(input.targetPrice),
+      }),
+      value: ratioText(r.ratio),
+    };
+  },
+  'kelly-criterion-calculator': () => {
+    const s = KELLY_START;
+    const input = { winRate: s.win / 100, payoff: s.payoff };
+    const r = kelly(input);
+    if (!r.ok || !r.bet) throw invalid('kelly-criterion-calculator');
+    return {
+      given: fmt(t.examples['kelly-criterion-calculator'].given, {
+        win: typedPercent(input.winRate),
+        payoff: typedNumber(input.payoff),
+      }),
+      // The unit string carries the percent sign.
+      value: formatNumber(r.full * 100, 2),
     };
   },
 };

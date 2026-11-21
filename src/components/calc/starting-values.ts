@@ -23,3 +23,12 @@ export const ASSUMED_FEE_PCT = 0.055;
 
 /** Drawdown calculator: a 50% drawdown; the streak mode starts at 10 losses of 2%. */
 export const DRAWDOWN_START = { mode: 'drawdown', dd: 50, n: 10, risk: 2 };
+
+/** Risk of ruin calculator: 40% wins at a payoff ratio of 2, 2% a trade; a 20% drawdown within 200 trades (worked example 1). */
+export const RUIN_START = { win: 40, payoff: 2, risk: 2, dd: 20, n: 200 };
+
+/** Risk reward calculator: the long the position size calculator opens with, and a target (worked example 1). */
+export const RISK_REWARD_START = { entry: 68000, stop: 66400, target: 72000 };
+
+/** Kelly criterion calculator: 40% wins at a payoff ratio of 2 (worked example 1). */
+export const KELLY_START = { win: 40, payoff: 2 };

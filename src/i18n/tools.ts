@@ -25,6 +25,10 @@ export const tools = defineStrings({
         name: 'Position planning',
         desc: 'Settle the leverage and the size before you open.',
       },
+      edge: {
+        name: 'Expectancy and bet size',
+        desc: 'What a win rate and a payoff ratio add up to over many trades.',
+      },
     },
     // One worked result per card, computed at build time by the calc library
     // from the same starting values as the calculator page.
@@ -50,6 +54,21 @@ export const tools = defineStrings({
         label: 'Gain needed to recover',
         value: '{needed}',
       },
+      'risk-of-ruin-calculator': {
+        setup: '{win} wins at {payoff} to 1, {risk} a trade: a {dd} drawdown within {n} trades',
+        label: 'Probability',
+        value: '{prob}',
+      },
+      'risk-reward-calculator': {
+        setup: 'Long from {entry} USDT, stop {stop}, target {target}',
+        label: 'Reward as a multiple of risk',
+        value: '{ratio}R',
+      },
+      'kelly-criterion-calculator': {
+        setup: '{win} win rate, payoff ratio {payoff}',
+        label: 'Full Kelly, share at risk',
+        value: '{full}',
+      },
     },
     plannedHead: 'In development',
     plannedNote: 'These are not built yet, and there is no date for them. They have no page until they work.',
@@ -70,6 +89,10 @@ export const tools = defineStrings({
       planning: {
         name: '倉位規劃',
         desc: '開倉之前，先決定開幾倍、開多大。',
+      },
+      edge: {
+        name: '期望值與下注大小',
+        desc: '勝率和賺賠比放在一起，長期下來代表什麼。',
       },
     },
     exampleTag: '範例',
@@ -93,6 +116,21 @@ export const tools = defineStrings({
         setup: '回撤 {lost} 之後',
         label: '回本需要的報酬',
         value: '{needed}',
+      },
+      'risk-of-ruin-calculator': {
+        setup: '勝率 {win}、賺賠比 {payoff}、每筆 {risk}：{n} 筆之內回撤 {dd}',
+        label: '發生機率',
+        value: '{prob}',
+      },
+      'risk-reward-calculator': {
+        setup: '做多，進場價 {entry} USDT，停損 {stop}，目標 {target}',
+        label: '報酬是風險的幾倍',
+        value: '{ratio}R',
+      },
+      'kelly-criterion-calculator': {
+        setup: '勝率 {win}，賺賠比 {payoff}',
+        label: '全凱利（每筆冒險的比例）',
+        value: '{full}',
       },
     },
     plannedHead: '開發中',

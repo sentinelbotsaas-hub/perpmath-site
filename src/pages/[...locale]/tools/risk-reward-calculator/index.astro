@@ -1,0 +1,336 @@
+---
+// Risk reward calculator. One file serves all three locales.
+// The interactive part is src/scripts/risk-reward-calculator.ts; everything
+// on this page is also correct with scripting off (it shows worked example 1).
+import Cta from '../../../../components/Cta.astro';
+import Field from '../../../../components/Field.astro';
+import CalculatorShell from '../../../../components/calc/CalculatorShell.astro';
+import DocSection from '../../../../components/calc/DocSection.astro';
+import ExampleBlock from '../../../../components/calc/ExampleBlock.astro';
+import RelatedTools from '../../../../components/calc/RelatedTools.astro';
+import ScaleBars from '../../../../components/calc/ScaleBars.astro';
+import { splitFigure } from '../../../../components/calc/calc-ui';
+import { amount, percent, ratioText, typedNumber, typedPercent } from '../../../../components/calc/figures';
+import { ASSUMED_FEE_PCT, RISK_REWARD_START } from '../../../../components/calc/starting-values';
+import Accordion from '../../../../components/ui/Accordion.astro';
+import DataTable from '../../../../components/ui/DataTable.astro';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import FormulaBlock from '../../../../components/ui/FormulaBlock.astro';
+import Meter from '../../../../components/ui/Meter.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../../components/ui/PageHeader.astro';
+import { common } from '../../../../i18n/common';
+import { localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { riskReward as strings } from '../../../../i18n/risk-reward';
+import { calc } from '../../../../i18n/tools';
+import Base from '../../../../layouts/Base.astro';
+import { breakevenWinRate, riskReward } from '../../../../lib/calc/risk-reward';
+import { fmt } from '../../../../lib/fmt';
+import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const c = common[locale];
+const ui = calc[locale];
+const PATH = '/tools/risk-reward-calculator/';
+
+// The one assumption on this page is the fee per side (ASSUMED_FEE_PCT, in
+// percent): the same assumed taker rate the position size calculator starts
+// with. It is shown next to its field as an assumption and the reader can
+// change it.
+const feeRate = ASSUMED_FEE_PCT / 100;
+const feePct = typedPercent(feeRate);
+
+// One worked example: everything shown is computed by the calc library.
+function solve(entry: number, stop: number, target: number) {
+  const r = riskReward({ entryPrice: entry, stopPrice: stop, targetPrice: target, feeRate });
+  if (!r.ok || r.breakevenWinRateNet === null) throw new Error('Worked example is invalid');
+  const vars = {
+    entry: typedNumber(entry),
+    stop: typedNumber(stop),
+    target: typedNumber(target),
+    fee: feePct,
+    risk: amount(r.risk),
+    reward: amount(r.reward),
+    riskPct: percent(r.riskDistance),
+    rewardPct: percent(r.rewardDistance),
+    ratio: ratioText(r.ratio),
+    be: percent(r.breakevenWinRate),
+    beNet: percent(r.breakevenWinRateNet),
+    feeStop: amount(r.feeAtStop),
+    feeTarget: amount(r.feeAtTarget),
+    netRisk: amount(r.netRisk),
+    netReward: amount(r.netReward),
+    ratioNet: ratioText(r.netRatio),
+    feeShare: percent(r.feeAtStop / r.risk),
+  };
+  return { entry, stop, target, r, beNet: r.breakevenWinRateNet, vars };
+}
+
+function example(title: string, s: ReturnType<typeof solve>, result: string) {
+  const lines = [
+    t.examples.workRisk,
+    t.examples.workReward,
+    t.examples.workRatio,
+    t.examples.workBe,
+    t.examples.workFeeStop,
+    t.examples.workFeeTarget,
+    t.examples.workNet,
+    t.examples.workBeNet,
+  ];
+  return {
+    title: fmt(title, s.vars),
+    setup: fmt(s.r.side === 'long' ? t.examples.setupLong : t.examples.setupShort, s.vars),
+    working: lines.map((line) => fmt(line, s.vars)).join('\n'),
+    result: fmt(result, s.vars),
+  };
+}
+
+// Example 1 is also the starting state, and what a reader without JavaScript sees.
+const first = solve(RISK_REWARD_START.entry, RISK_REWARD_START.stop, RISK_REWARD_START.target);
+const second = solve(68000, 68200, 67600);
+if (first.r.side !== 'long' || second.r.side !== 'short') throw new Error('Worked examples changed meaning');
+const ex1 = example(t.examples.first, first, t.examples.result);
+const ex2 = example(t.examples.second, second, t.examples.resultTight);
+
+// The same long with the target twice as far away, for the third common mistake.
+const far = solve(first.entry, first.stop, first.entry + 2 * (first.target - first.entry));
+
+const start = first.r;
+const startFigure = splitFigure(fmt(t.ui.figure, { ratio: first.vars.ratio }));
+const usdt = (n: number) => fmt(t.ui.usdt, { value: amount(n) });
+const priceShare = (n: number, fraction: number) => fmt(t.ui.priceShare, { value: amount(n), pct: percent(fraction) });
+
+// The table under the first formula: one row per ratio.
+const rows = [0.5, 1, 1.5, 2, 3, 5].map((ratio) => ({
+  ratio: fmt(t.formula.ratio, { ratio: typedNumber(ratio) }),
+  be: percent(breakevenWinRate(ratio)),
+}));
+
+const termVars = { fee: feePct };
+const mistakeVars = {
+  ...first.vars,
+  feeShare2: second.vars.feeShare,
+  be2: second.vars.be,
+  beNet2: second.vars.beNet,
+  targetFar: far.vars.target,
+  ratioFar: far.vars.ratio,
+  rewardPctFar: far.vars.rewardPct,
+};
+
+// Plain data for the browser script.
+const calcData = JSON.stringify({ strings: t.ui });
+
+// The same trail for the visible breadcrumb and for JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+  { name: t.title, path: PATH },
+];
+const jsonLd = [softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }), breadcrumbLd(locale, trail)];
+---
+
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+      <nav class="calc-jump" aria-label={ui.onThisPage}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+      </nav>
+    </PageHeader>
+
+    <CalculatorShell
+      locale={locale}
+      data={calcData}
+      label={t.result.label}
+      figure={startFigure.value}
+      unit={startFigure.unit}
+      tightUnit={startFigure.tight}
+      sentence={fmt(start.side === 'long' ? t.ui.long : t.ui.short, first.vars)}
+    >
+      <Fragment slot="inputs">
+        <Field id="entry" class="calc-wide" label={t.fields.entry} unit="USDT" value={first.entry} />
+        <Field id="stop" label={t.fields.stop} unit="USDT" value={first.stop} hint={t.fields.stopHint} />
+        <Field id="target" label={t.fields.target} unit="USDT" value={first.target} hint={t.fields.targetHint} />
+        <Accordion summary={ui.advanced} id="calc-advanced">
+          <div class="calc-fields">
+            <Field
+              id="fee"
+              class="calc-wide"
+              label={t.fields.fee}
+              unit="%"
+              value={ASSUMED_FEE_PCT}
+              hint={fmt(t.fields.feeHint, { fee: feePct })}
+            />
+          </div>
+        </Accordion>
+      </Fragment>
+
+      <Fragment slot="after-inputs">
+        <noscript><p class="fine">{t.noscript}</p></noscript>
+      </Fragment>
+
+      <ScaleBars
+        slot="viz"
+        id="calc-bars"
+        a={start.riskDistance}
+        b={start.rewardDistance}
+        aLabel={t.ui.riskBar}
+        aValue={first.vars.riskPct}
+        aTone="negative"
+        bLabel={t.ui.rewardBar}
+        bValue={first.vars.rewardPct}
+        bTone="positive"
+        caption={(layout) => fmt(t.ui.barLabel, { max: layout.maxLabel, risk: first.vars.riskPct, reward: first.vars.rewardPct })}
+      />
+
+      <Fragment slot="metrics">
+        <table class="calc-kv calc-rr">
+          <caption class="visually-hidden">{t.result.caption}</caption>
+          <tbody>
+            <tr>
+              <th scope="row">{t.result.risk}</th>
+              <td class="num" id="out-risk">{priceShare(start.risk, start.riskDistance)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.reward}</th>
+              <td class="num" id="out-reward">{priceShare(start.reward, start.rewardDistance)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.be}</th>
+              <td class="num" id="out-be">{first.vars.be}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.beNet}</th>
+              <td class="num" id="out-be-net">{first.vars.beNet}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.ratioNet}</th>
+              <td class="num" id="out-ratio-net">{fmt(t.ui.figure, { ratio: first.vars.ratioNet })}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.feeStop}</th>
+              <td class="num" id="out-fee-stop">{usdt(start.feeAtStop)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.feeTarget}</th>
+              <td class="num" id="out-fee-target">{usdt(start.feeAtTarget)}</td>
+            </tr>
+          </tbody>
+        </table>
+        {/* The break-even win rate after fees as a share of all trades: the bar's full width is 100%. */}
+        <div class="calc-share">
+          <div class="calc-share-ends" aria-hidden="true">
+            <span>{t.result.beNet} <span class="num" id="out-be-share">{first.vars.beNet}</span></span>
+            <span>{t.result.meterEnd} <span class="num">{percent(1, 0)}</span></span>
+          </div>
+          <Meter id="calc-be-meter" size="tall" value={first.beNet} label={fmt(t.ui.beMeter, { be: first.vars.beNet })} />
+        </div>
+      </Fragment>
+
+      <Fragment slot="assumptions">
+        <ul class="calc-assume">
+          {t.assumptions.map((line) => <li>{fmt(line, { fee: feePct })}</li>)}
+        </ul>
+      </Fragment>
+
+      <Cta
+        slot="cta"
+        locale={locale}
+        pageType="tool"
+        position="result"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+      />
+    </CalculatorShell>
+  </PageContainer>
+
+  <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+    <p>{t.formula.intro}</p>
+    <FormulaBlock formula={t.formula.lines.join('\n')} />
+    <p>{t.formula.why}</p>
+    <DataTable locale={locale} label={t.formula.tableBe} caption={t.formula.tableCaption}>
+      <thead>
+        <tr>
+          <th scope="col">{t.formula.tableRatio}</th>
+          <th scope="col">{t.formula.tableBe}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr>
+              <td class="num">{row.ratio}</td>
+              <td class="num">{row.be}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </DataTable>
+    <p>{t.formula.feeIntro}</p>
+    <FormulaBlock formula={t.formula.feeLines.join('\n')} />
+    <p>{t.formula.feeNote}</p>
+    <dl class="calc-terms">
+      {
+        t.formula.terms.map((item) => (
+          <div>
+            <dt>{item.term}</dt>
+            <dd>{fmt(item.text, termVars)}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="fine calc-sources">{t.formula.sources}</p>
+    <Disclaimer locale={locale} kind="info" title={ui.leftOut}>
+      <p>{t.formula.leftOut}</p>
+    </Disclaimer>
+  </DocSection>
+
+  <DocSection id="worked-examples" title={t.toc.examples}>
+    <div class="calc-pair">
+      {[ex1, ex2].map((ex) => <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />)}
+    </div>
+  </DocSection>
+
+  <DocSection id="common-mistakes" title={t.toc.mistakes}>
+    <ul class="calc-mistakes">
+      {
+        t.mistakes.map((m) => (
+          <li>
+            <h3>{m.title}</h3>
+            <p>{fmt(m.text, mistakeVars)}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </DocSection>
+
+  <RelatedTools locale={locale} current="risk-reward-calculator" allLabel={t.allTools} />
+
+  <script>
+    import '../../../../scripts/risk-reward-calculator.ts';
+  </script>
+</Base>
+
+<style is:global>
+  /* The sources line is small print: keep it to the small-print measure. */
+  .calc-doc-body > p.calc-sources {
+    max-width: var(--measure-fine);
+  }
+
+  /* Prices have no upper bound, so an amount in this table can get long.
+     Let it break onto a second line instead of leaving the panel. */
+  .calc-kv.calc-rr td {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: right;
+  }
+</style>
