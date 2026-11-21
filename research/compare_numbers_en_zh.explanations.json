@@ -1,0 +1,38 @@
+{
+  "what-is-liquidation": {
+    "only_in_en": {
+      "04:00 | clock": "Time zone. The Chinese text says more than half of the 100x longs did not last until noon Taiwan time; noon in Taiwan (UTC+8) is 04:00 UTC. Same figure behind it: 131 of 254 days within the first four hours.",
+      "2026-11-22 | date": "Date the English source pages were opened. The Chinese version was checked on 2026-11-18, which also occurs in the English text as the day the data was downloaded."
+    },
+    "only_in_zh": {
+      "早上 8 點 | taiwan clock": "Time zone. 8 in the morning Taiwan time is 00:00 UTC; the English version gives the entry time in UTC only."
+    }
+  },
+  "what-is-funding-rate": {
+    "only_in_en": {
+      "30 | %": "Not a new figure. The Chinese text writes the same fall in words (three tenths); the exact number, 30.47%, is in both versions.",
+      "2026-05-12 | date": "Last-updated date of the English page Funding-fee-calculation, read on 2026-11-22. The zh-TW page of the same article shows 2026-04-27.",
+      "2026-11-19 | date": "Last-updated date of the page Introduction-to-Funding-Rate when read on 2026-11-22 (the English and the zh-TW page now show the same date; the Chinese article was written the day before that update and cites 2026-06-05). It is also the date of Bybit's announcement of the formula change.",
+      "2026-11-22 | date": "Date the English source pages were opened. The Chinese version was checked on 2026-11-18.",
+      "2026-11-24 | date": "New fact on the source page, not in the Chinese article: the page now says an updated funding rate formula is rolled out in phases from 24 November 2026. The notice was added on 2026-11-19, after the Chinese article was written. No computed figure changes."
+    },
+    "only_in_zh": {
+      "2026-04-27 | date": "Last-updated date of the zh-TW page Funding-fee-calculation. The English page shows 2026-05-12.",
+      "2026-06-05 | date": "Last-updated date of Introduction-to-Funding-Rate as the Chinese article recorded it on 2026-11-18. The page was updated on 2026-11-19 in both languages.",
+      "下午 4 點 | taiwan clock": "Time zone. 4 in the afternoon Taiwan time is 08:00 UTC; the English version lists the settlement times in UTC only.",
+      "半夜 12 點 | taiwan clock": "Time zone. Midnight Taiwan time is 16:00 UTC; the English version lists the settlement times in UTC only.",
+      "早上 8 點 | taiwan clock": "Time zone. 8 in the morning Taiwan time is 00:00 UTC; the English version lists the settlement times in UTC only."
+    }
+  },
+  "bybit-card-cashback-fees": {
+    "only_in_en": {
+      "2026-11 | date": "The English text names the month the tier applies to (\"this month, November 2026\"); the Chinese text says \"this month\" without the name. Same fact.",
+      "2026-11-08 | date": "Last-updated date of the English pages Introduction-to-Bybit-Card-Rewards and FAQ-Bybit-Card-Rewards, read on 2026-11-22. The zh-TW pages show 2026-10-30. The tier table is the same in both.",
+      "2026-11-22 | date": "Date the English source pages were opened. The research data was read on 2026-11-19, which occurs in both versions.",
+      "2.3 | no unit": "Clause number 2.3(b) of the Asia Pacific cardholder terms, quoted in the rewritten section on regional eligibility. Recorded in research/bybit_card_2026-11-19.json; the Chinese article does not cite the clause."
+    },
+    "only_in_zh": {
+      "2026-10-30 | date": "Last-updated date of the zh-TW rewards pages. The English pages show 2026-11-08."
+    }
+  }
+}

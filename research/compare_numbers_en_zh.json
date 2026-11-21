@@ -1,0 +1,166 @@
+{
+  "what": "Dates, clock times and numbers that occur in only one language version of an article.",
+  "script": "research/compare_numbers_en_zh.py",
+  "token_format": "value | unit",
+  "articles": {
+    "what-is-liquidation": {
+      "tokens_en": 258,
+      "tokens_zh": 258,
+      "distinct_en": 114,
+      "distinct_zh": 114,
+      "shared_distinct": 106,
+      "only_in_en": {
+        "value_absent_on_other_side": [
+          {
+            "token": "04:00 | clock",
+            "why": "Time zone. The Chinese text says more than half of the 100x longs did not last until noon Taiwan time; noon in Taiwan (UTC+8) is 04:00 UTC. Same figure behind it: 131 of 254 days within the first four hours."
+          },
+          {
+            "token": "2026-11-22 | date",
+            "why": "Date the English source pages were opened. The Chinese version was checked on 2026-11-18, which also occurs in the English text as the day the data was downloaded."
+          }
+        ],
+        "same_value_other_unit_wording": [
+          "9 | days",
+          "176 | no unit",
+          "18 | no unit",
+          "189 | no unit",
+          "253 | no unit",
+          "9 | no unit"
+        ]
+      },
+      "only_in_zh": {
+        "value_absent_on_other_side": [
+          {
+            "token": "早上 8 點 | taiwan clock",
+            "why": "Time zone. 8 in the morning Taiwan time is 00:00 UTC; the English version gives the entry time in UTC only."
+          }
+        ],
+        "same_value_other_unit_wording": [
+          "18 | count",
+          "254 | count",
+          "365 | count",
+          "9 | count",
+          "176 | days",
+          "189 | days",
+          "0 | no unit"
+        ]
+      }
+    },
+    "what-is-funding-rate": {
+      "tokens_en": 271,
+      "tokens_zh": 264,
+      "distinct_en": 140,
+      "distinct_zh": 136,
+      "shared_distinct": 128,
+      "only_in_en": {
+        "value_absent_on_other_side": [
+          {
+            "token": "30 | %",
+            "why": "Not a new figure. The Chinese text writes the same fall in words (three tenths); the exact number, 30.47%, is in both versions."
+          },
+          {
+            "token": "2026-05-12 | date",
+            "why": "Last-updated date of the English page Funding-fee-calculation, read on 2026-11-22. The zh-TW page of the same article shows 2026-04-27."
+          },
+          {
+            "token": "2026-11-19 | date",
+            "why": "Last-updated date of the page Introduction-to-Funding-Rate when read on 2026-11-22 (the English and the zh-TW page now show the same date; the Chinese article was written the day before that update and cites 2026-06-05). It is also the date of Bybit's announcement of the formula change."
+          },
+          {
+            "token": "2026-11-22 | date",
+            "why": "Date the English source pages were opened. The Chinese version was checked on 2026-11-18."
+          },
+          {
+            "token": "2026-11-24 | date",
+            "why": "New fact on the source page, not in the Chinese article: the page now says an updated funding rate formula is rolled out in phases from 24 November 2026. The notice was added on 2026-11-19, after the Chinese article was written. No computed figure changes."
+          }
+        ],
+        "same_value_other_unit_wording": [
+          "1 | no unit",
+          "1018 | no unit",
+          "1095 | no unit",
+          "14 | no unit",
+          "304 | no unit",
+          "77 | no unit",
+          "791 | no unit"
+        ]
+      },
+      "only_in_zh": {
+        "value_absent_on_other_side": [
+          {
+            "token": "2026-04-27 | date",
+            "why": "Last-updated date of the zh-TW page Funding-fee-calculation. The English page shows 2026-05-12."
+          },
+          {
+            "token": "2026-06-05 | date",
+            "why": "Last-updated date of Introduction-to-Funding-Rate as the Chinese article recorded it on 2026-11-18. The page was updated on 2026-11-19 in both languages."
+          },
+          {
+            "token": "下午 4 點 | taiwan clock",
+            "why": "Time zone. 4 in the afternoon Taiwan time is 08:00 UTC; the English version lists the settlement times in UTC only."
+          },
+          {
+            "token": "半夜 12 點 | taiwan clock",
+            "why": "Time zone. Midnight Taiwan time is 16:00 UTC; the English version lists the settlement times in UTC only."
+          },
+          {
+            "token": "早上 8 點 | taiwan clock",
+            "why": "Time zone. 8 in the morning Taiwan time is 00:00 UTC; the English version lists the settlement times in UTC only."
+          }
+        ],
+        "same_value_other_unit_wording": [
+          "1018 | count",
+          "51 | count",
+          "88 | count"
+        ]
+      }
+    },
+    "bybit-card-cashback-fees": {
+      "tokens_en": 409,
+      "tokens_zh": 402,
+      "distinct_en": 156,
+      "distinct_zh": 156,
+      "shared_distinct": 150,
+      "only_in_en": {
+        "value_absent_on_other_side": [
+          {
+            "token": "2026-11 | date",
+            "why": "The English text names the month the tier applies to (\"this month, November 2026\"); the Chinese text says \"this month\" without the name. Same fact."
+          },
+          {
+            "token": "2026-11-08 | date",
+            "why": "Last-updated date of the English pages Introduction-to-Bybit-Card-Rewards and FAQ-Bybit-Card-Rewards, read on 2026-11-22. The zh-TW pages show 2026-10-30. The tier table is the same in both."
+          },
+          {
+            "token": "2026-11-22 | date",
+            "why": "Date the English source pages were opened. The research data was read on 2026-11-19, which occurs in both versions."
+          },
+          {
+            "token": "2.3 | no unit",
+            "why": "Clause number 2.3(b) of the Asia Pacific cardholder terms, quoted in the rewritten section on regional eligibility. Recorded in research/bybit_card_2026-11-19.json; the Chinese article does not cite the clause."
+          }
+        ],
+        "same_value_other_unit_wording": [
+          "1260 | EUR",
+          "75 | no unit"
+        ]
+      },
+      "only_in_zh": {
+        "value_absent_on_other_side": [
+          {
+            "token": "2026-10-30 | date",
+            "why": "Last-updated date of the zh-TW rewards pages. The English pages show 2026-11-08."
+          }
+        ],
+        "same_value_other_unit_wording": [
+          "4 | count",
+          "6 | count",
+          "75 | count",
+          "30 | days",
+          "1260 | no unit"
+        ]
+      }
+    }
+  }
+}

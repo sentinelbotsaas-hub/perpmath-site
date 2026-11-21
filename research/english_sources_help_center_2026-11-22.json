@@ -1,0 +1,318 @@
+{
+  "what": "Bybit help-center articles cited by the English articles: does the /en/ page exist, and what date does it carry.",
+  "fetched_at": "2026-11-21T17:39:54Z",
+  "pages": [
+    {
+      "slug": "UTA-Trading-Rules-Liquidation-Process",
+      "cited_by": [
+        "what-is-liquidation"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/UTA-Trading-Rules-Liquidation-Process",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/UTA-Trading-Rules-Liquidation-Process",
+        "title": "Trading Rules: Liquidation Process (Unified Trading Account) - Help Center",
+        "page_last_updated": "2026-10-15 15:34:40",
+        "body_characters": 32245
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/UTA-Trading-Rules-Liquidation-Process",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/UTA-Trading-Rules-Liquidation-Process",
+        "title": "交易規則：強平流程 (統一交易帳戶) - 幫助中心",
+        "page_last_updated": "2026-10-15 15:34:40",
+        "body_characters": 15124
+      },
+      "english_page_exists": true,
+      "same_last_updated": true
+    },
+    {
+      "slug": "Maintenance-Margin-USDT-Contract",
+      "cited_by": [
+        "what-is-liquidation"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/Maintenance-Margin-USDT-Contract",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/Maintenance-Margin-USDT-Contract",
+        "title": "Maintenance Margin (USDT Perpetual and Expiry Contracts) - Help Center",
+        "page_last_updated": "2026-04-16 05:25:23",
+        "body_characters": 7226
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/Maintenance-Margin-USDT-Contract",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/Maintenance-Margin-USDT-Contract",
+        "title": "維持保證金 (USDT 永續與交割合約) - 幫助中心",
+        "page_last_updated": "2026-04-16 05:25:23",
+        "body_characters": 3274
+      },
+      "english_page_exists": true,
+      "same_last_updated": true
+    },
+    {
+      "slug": "Mark-Price-Calculation-Perpetual-Expiry-Contracts",
+      "cited_by": [
+        "what-is-liquidation"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/Mark-Price-Calculation-Perpetual-Expiry-Contracts",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/Mark-Price-Calculation-Perpetual-Expiry-Contracts",
+        "title": "Mark Price (Perpetual and Expiry Contracts) - Help Center",
+        "page_last_updated": "2026-09-04 10:32:20",
+        "body_characters": 4614
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/Mark-Price-Calculation-Perpetual-Expiry-Contracts",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/Mark-Price-Calculation-Perpetual-Expiry-Contracts",
+        "title": "標記價格（永續合約與交割合約） - 幫助中心",
+        "page_last_updated": "2026-09-04 10:32:20",
+        "body_characters": 1413
+      },
+      "english_page_exists": true,
+      "same_last_updated": true
+    },
+    {
+      "slug": "Funding-fee-calculation",
+      "cited_by": [
+        "what-is-funding-rate"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/Funding-fee-calculation",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/Funding-fee-calculation",
+        "title": "Funding Fee Calculation - Help Center",
+        "page_last_updated": "2026-05-12 12:38:20",
+        "body_characters": 17118
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/Funding-fee-calculation",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/Funding-fee-calculation",
+        "title": "資金費用計算 - 幫助中心",
+        "page_last_updated": "2026-04-27 13:34:41",
+        "body_characters": 5817
+      },
+      "english_page_exists": true,
+      "same_last_updated": false
+    },
+    {
+      "slug": "Introduction-to-Funding-Rate",
+      "cited_by": [
+        "what-is-funding-rate"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/Introduction-to-Funding-Rate",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/Introduction-to-Funding-Rate",
+        "title": "Introduction to Funding Rate - Help Center",
+        "page_last_updated": "2026-11-19 09:53:35",
+        "body_characters": 4731
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/Introduction-to-Funding-Rate",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/Introduction-to-Funding-Rate",
+        "title": "資金費率介紹 - 幫助中心",
+        "page_last_updated": "2026-11-19 09:53:35",
+        "body_characters": 1556
+      },
+      "english_page_exists": true,
+      "same_last_updated": true
+    },
+    {
+      "slug": "Introduction-to-Bybit-Card-Rewards",
+      "cited_by": [
+        "bybit-card-cashback-fees"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/Introduction-to-Bybit-Card-Rewards",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/Introduction-to-Bybit-Card-Rewards",
+        "title": "Introduction to Bybit Card Rewards - Help Center",
+        "page_last_updated": "2026-11-08 16:57:54",
+        "body_characters": 12687
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/Introduction-to-Bybit-Card-Rewards",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/Introduction-to-Bybit-Card-Rewards",
+        "title": "Bybit Card 獎勵簡介 - 幫助中心",
+        "page_last_updated": "2026-10-30 06:16:36",
+        "body_characters": 5005
+      },
+      "english_page_exists": true,
+      "same_last_updated": false
+    },
+    {
+      "slug": "FAQ-Bybit-Card-Rewards",
+      "cited_by": [
+        "bybit-card-cashback-fees"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/FAQ-Bybit-Card-Rewards",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/FAQ-Bybit-Card-Rewards",
+        "title": "FAQ — Bybit Card Rewards - Help Center",
+        "page_last_updated": "2026-11-08 19:32:30",
+        "body_characters": 13577
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/FAQ-Bybit-Card-Rewards",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/FAQ-Bybit-Card-Rewards",
+        "title": "常見問題 - Bybit Card 獎勵 - 幫助中心",
+        "page_last_updated": "2026-10-30 06:44:59",
+        "body_characters": 4443
+      },
+      "english_page_exists": true,
+      "same_last_updated": false
+    },
+    {
+      "slug": "Introduction-to-Bybit-VIP-Program",
+      "cited_by": [
+        "bybit-card-cashback-fees"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/Introduction-to-Bybit-VIP-Program",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/Introduction-to-Bybit-VIP-Program",
+        "title": "Introduction to the VIP Program - Help Center",
+        "page_last_updated": "2026-10-23 02:08:33",
+        "body_characters": 4981
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/Introduction-to-Bybit-VIP-Program",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/Introduction-to-Bybit-VIP-Program",
+        "title": "Bybit VIP 計畫介紹 - 幫助中心",
+        "page_last_updated": "2026-10-23 02:08:33",
+        "body_characters": 2187
+      },
+      "english_page_exists": true,
+      "same_last_updated": true
+    },
+    {
+      "slug": "Fees-and-Spending-Limits-Bybit-Card",
+      "cited_by": [
+        "bybit-card-cashback-fees"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/Fees-and-Spending-Limits-Bybit-Card",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/Fees-and-Spending-Limits-Bybit-Card",
+        "title": "Fees and Limits (Bybit Card) - Help Center",
+        "page_last_updated": "2026-11-06 06:05:26",
+        "body_characters": 10495
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/Fees-and-Spending-Limits-Bybit-Card",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/Fees-and-Spending-Limits-Bybit-Card",
+        "title": "費用與限額 (Bybit 卡) - 幫助中心",
+        "page_last_updated": "2026-11-06 06:05:26",
+        "body_characters": 4859
+      },
+      "english_page_exists": true,
+      "same_last_updated": true
+    },
+    {
+      "slug": "FAQ-Bybit-Card-General-Inquiries",
+      "cited_by": [
+        "bybit-card-cashback-fees"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/FAQ-Bybit-Card-General-Inquiries",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/FAQ-Bybit-Card-General-Inquiries",
+        "title": "FAQ — Bybit Card General Inquiries - Help Center",
+        "page_last_updated": "2026-09-03 01:47:45",
+        "body_characters": 21132
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/FAQ-Bybit-Card-General-Inquiries",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/FAQ-Bybit-Card-General-Inquiries",
+        "title": "常見問題 - Bybit 卡一般諮詢 - 幫助中心",
+        "page_last_updated": "2026-09-03 01:47:45",
+        "body_characters": 7186
+      },
+      "english_page_exists": true,
+      "same_last_updated": true
+    },
+    {
+      "slug": "How-Bybit-Card-Transactions-Work",
+      "cited_by": [
+        "bybit-card-cashback-fees"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/How-Bybit-Card-Transactions-Work",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/How-Bybit-Card-Transactions-Work",
+        "title": "How Bybit Card Transactions Work - Help Center",
+        "page_last_updated": "2026-10-05 14:21:21",
+        "body_characters": 3507
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/How-Bybit-Card-Transactions-Work",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/How-Bybit-Card-Transactions-Work",
+        "title": "Bybit Card 交易運作方式 - 幫助中心",
+        "page_last_updated": "2026-10-05 14:21:21",
+        "body_characters": 1323
+      },
+      "english_page_exists": true,
+      "same_last_updated": true
+    },
+    {
+      "slug": "Introduction-to-Bybit-Card",
+      "cited_by": [
+        "bybit-card-cashback-fees"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/Introduction-to-Bybit-Card",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/Introduction-to-Bybit-Card",
+        "title": "Introduction to Bybit Card - Help Center",
+        "page_last_updated": "2026-06-10 14:53:29",
+        "body_characters": 2924
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/Introduction-to-Bybit-Card",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/Introduction-to-Bybit-Card",
+        "title": "Bybit 卡介紹 - 幫助中心",
+        "page_last_updated": "2026-06-10 14:47:35",
+        "body_characters": 994
+      },
+      "english_page_exists": true,
+      "same_last_updated": false
+    },
+    {
+      "slug": "How-to-Apply-for-Bybit-Card",
+      "cited_by": [
+        "bybit-card-cashback-fees"
+      ],
+      "en": {
+        "url": "https://www.bybit.com/en/help-center/article/How-to-Apply-for-Bybit-Card",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/en/help-center/article/How-to-Apply-for-Bybit-Card",
+        "title": "How to Get Started with Bybit Card - Help Center",
+        "page_last_updated": "2026-06-10 14:21:56",
+        "body_characters": 21078
+      },
+      "zh-TW": {
+        "url": "https://www.bybit.com/zh-TW/help-center/article/How-to-Apply-for-Bybit-Card",
+        "http_status": 200,
+        "final_url": "https://www.bybit.com/zh-TW/help-center/article/How-to-Apply-for-Bybit-Card",
+        "title": "如何開始使用 Bybit 卡 - 幫助中心",
+        "page_last_updated": "2026-06-10 14:21:56",
+        "body_characters": 7058
+      },
+      "english_page_exists": true,
+      "same_last_updated": true
+    }
+  ]
+}
