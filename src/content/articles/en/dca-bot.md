@@ -92,7 +92,7 @@ Sorting the in-sample cycles by how many safety orders they needed shows where t
 ## The cycle that got stuck
 
 <!-- unique:firsthand-data -->
-On 25 May 2026 at 06:15 UTC the bot opened its 173rd cycle at 77,321.76. A little over eight days later all five safety orders had filled and the average stood at 71,047.95. Price kept going. It reached 57,755.8 on 1 July, 25.30% below the base order, and at that moment the position showed a paper loss of 1,870.87 USDT, 18.71% of the account. The in-sample period ended on 31 July with the cycle 66.74 days old, 58.62 of them fully loaded, and the position was sold at 64,738.15 for a loss of 940.89.
+On 25 May 2026 at 06:15 UTC the bot opened its 173rd cycle at 77,321.76. A little over eight days later all five safety orders had filled and the average stood at 71,047.95. Price kept going. It reached 57,755.8 on 1 July, 25.30% below the base order, and at that moment the position showed a paper loss of 1,870.87 USDT, 18.71% of the account. The in-sample period ended at the close of 30 July with the cycle 66.74 days old, 58.62 of them fully loaded, and the position was sold at 64,738.15 for a loss of 940.89.
 
 <!-- unique:field-note -->
 I have to qualify that loss, since part of it is my own cut. The split date was fixed in advance, and it happened to fall while the bot was under water. So after seeing the result I ran the same rules over the whole year in one piece (`full_year.py`, and yes, that is a look taken afterwards). Left alone, the position reached its take profit on 20 August 2026, after 87.11 days. It netted 28.05 USDT: the 1% target on 10,000 is about 100, and 65.80 of that had gone to funding while it waited.

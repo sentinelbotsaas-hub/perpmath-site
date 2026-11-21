@@ -30,7 +30,7 @@ A backtest tests rules against history. A practice account tests you, or your bo
 | Fees and slippage | Assumed | Charged in play money | Often not computed |
 | Needs an account | No | Yes | No |
 
-**Backtest.** It is the only one of the three that can cover a year in seconds, and the only one whose every assumption is written down where you can change it. The method, and four ways it goes wrong, are in [how to backtest a trading strategy](/learn/how-to-backtest-a-trading-strategy/).
+**Backtest.** It is the only one of the three that can cover a year in seconds, and the only one whose every assumption is written down where you can change it. The method, and five ways it goes wrong, are in [how to backtest a trading strategy](/learn/how-to-backtest-a-trading-strategy/).
 
 **Demo or testnet account.** On Bybit these are two products. Its [Demo Trading article](https://www.bybit.com/en/help-center/article/Demo-Trading) (last updated 30 October 2026, checked 22 November 2026) says a demo account follows mainnet price movements and that its executed orders do not enter the real order book, while testnet orders trade inside the testnet's own book and move its prices. We measured how far that separate book drifts from the real market in [Bybit testnet](/learn/bybit-testnet/) and will not repeat the figures. We did not open either kind of account for this article, so nothing below comes from clicking through a demo screen.
 
