@@ -123,7 +123,7 @@ cd ../perpmath-site
 ../perpmath-engine/.venv/Scripts/python research/walk-forward-analysis/walk_forward.py
 ```
 
-Linux 或 macOS 的資料夾是 `.venv/bin/`。K 線檔的 SHA-256 要和引擎公開結果裡記的那一個相同，不然腳本會停下來。碰真實資料之前，它還會先拿幾個手算得出答案的小例子檢查自己的算術：兩個視窗分別是 +10% 與 -50%，接起來必須是 -45%、回撤 58.33%。整次執行在一台桌機上大約五分鐘，大部分花在引擎偷看未來的檢查。結果寫到 `research/walk-forward-analysis/walk_forward.json`，裡面有每一輪、每一組的訓練區段與測試區段。
+Linux 或 macOS 的資料夾是 `.venv/bin/`。K 線檔的 SHA-256 要和引擎公開結果裡記的那一個相同，不然腳本會停下來。碰真實資料之前，它還會先拿幾個手算得出答案的小例子檢查自己的算術：兩個視窗分別是 +10% 與 -50%，接起來必須是 -45%；第二個視窗是先漲 20% 才跌下來的，接起來的回撤必須是 58.33%。整次執行在一台桌機上大約五分鐘，大部分花在引擎偷看未來的檢查。結果寫到 `research/walk-forward-analysis/walk_forward.json`，裡面有每一輪、每一組的訓練區段與測試區段。
 
 想換成自己的規則，照引擎 README 寫的方式註冊策略，再改參數清單。引擎和它那個只連測試網的下單程式，介紹在[機器人專區](/zh-hant/bot/)；所有隨附的結果都在[回測頁](/zh-hant/backtests/)。
 

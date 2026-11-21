@@ -123,7 +123,7 @@ cd ../perpmath-site
 ../perpmath-engine/.venv/Scripts/python research/walk-forward-analysis/walk_forward.py
 ```
 
-On Linux or macOS the folder is `.venv/bin/`. The script stops unless the candle file's SHA-256 matches the one in the engine's published result. It also checks its own arithmetic on small cases worked by hand before it touches real data: two windows of +10% and -50% must join to -45% with a 58.33% drawdown. The run took about five minutes on a desktop PC, most of it the engine's look-ahead check. Results land in `research/walk-forward-analysis/walk_forward.json`, with every pair's training and test block for every fold.
+On Linux or macOS the folder is `.venv/bin/`. The script stops unless the candle file's SHA-256 matches the one in the engine's published result. It also checks its own arithmetic on small cases worked by hand before it touches real data: two windows of +10% and -50% must join to -45%, and because the second one rises 20% before it falls, the joined drawdown must be 58.33%. The run took about five minutes on a desktop PC, most of it the engine's look-ahead check. Results land in `research/walk-forward-analysis/walk_forward.json`, with every pair's training and test block for every fold.
 
 To try it on a rule of your own, register the strategy the way the engine's README describes and change the grid. The engine and its testnet-only order runner are described on the [bot page](/bot/), and all shipped results are under [backtests](/backtests/).
 

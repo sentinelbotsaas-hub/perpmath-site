@@ -142,7 +142,7 @@ The script also runs eight neighbouring combinations, and we label them for what
 | 2,880 bars | 2.5 | 16 | -8.30% | -1.21 | 10 | +2.11% | 0.45 |
 
 <!-- unique:original-calc -->
-Seventeen of eighteen cells are negative. The one positive cell rests on 10 trades and is noise. The pattern across rows is the one the [backtesting guide](/learn/how-to-backtest-a-trading-strategy/) found for moving averages: the more often a setting trades, the more it loses. The 2-day window is the only one with enough trades to read (five of its six cells have 100 or more), and it reads clearly, with t-statistics between -2.83 and -3.65. With costs removed those three rows return +19.09%, +4.96% and +3.87% in-sample and -2.41%, -4.79% and -4.15% out-of-sample. A reader hunting for the setting that works would stop at the in-sample +19.09% and be wrong by the next period.
+Seventeen of eighteen cells are negative. The one positive cell rests on 10 trades and is noise. The pattern across rows is the one the [backtesting guide](/learn/how-to-backtest-a-trading-strategy/) found for moving averages: the more often a setting trades, the more it loses. The 2-day window is the only one where most cells have enough trades to read (five of its six have 100 or more), and it reads clearly, with t-statistics between -2.83 and -3.65. With costs removed those three rows return +19.09%, +4.96% and +3.87% in-sample and -2.41%, -4.79% and -4.15% out-of-sample. A reader hunting for the setting that works would stop at the in-sample +19.09% and be wrong by the next period.
 
 Choosing among settings like these on past data and judging them on the next stretch is exactly what [walk-forward analysis](/learn/walk-forward-analysis/) formalises. We have not done that for this pair.
 
