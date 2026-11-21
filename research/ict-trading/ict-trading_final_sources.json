@@ -1,0 +1,4637 @@
+{
+ "article": [
+  "en/ict-trading",
+  "zh-hant/ict-trading"
+ ],
+ "checked_on": "2026-11-22",
+ "what": "Source of every first-hand figure on the ICT hub page after the two parallel updates were merged, and the outcome of comparing each figure with its source file.",
+ "method": [
+  "Results table and map table, both languages: each cell compared with the result file or research summary.",
+  "Running text: the source value must round to the printed figure, and the figure must occur in both versions.",
+  "Derived statements (counts such as 'eight of the ten'): recomputed from the same source values.",
+  "en against zh-hant: every date, clock time and number tokenised with research/compare_numbers_en_zh.py."
+ ],
+ "notes": [
+  "The comparison was run by a one-off script that is not in the repository; each entry names the file and the place in it, so any line can be redone by hand.",
+  "research/ict-trading/ict-trading_status.json and ict-trading_status.py date from the first version of the page and still list two backtested concepts. Their counts (swing points, gaps, sweeps, stop distances) are still the source of the figures quoted from them; their status list is superseded by status_of_the_twelve below.",
+  "Figures quoted from outside sources (clock windows, 40 ticks, 15 pips, 30 to 90 minutes) are not in this file.",
+  "The busiest three-hour block (09:00 to 12:00) and the regrouping of trades by entry hour were both made after the first run of the kill zones script; the page says so."
+ ],
+ "status_of_the_twelve": {
+  "backtest_with_100_or_more_trades_in_both_samples": [
+   "fair value gap",
+   "liquidity sweep",
+   "order block",
+   "breaker block",
+   "inverse fair value gap"
+  ],
+  "backtest_in_sample_readable_out_of_sample_under_100_trades": [
+   "break of structure (42)",
+   "market structure shift, displacement version (59)",
+   "judas swing (76)"
+  ],
+  "backtest_under_100_trades_in_both_samples_on_15m": [
+   "change of character (88 / 45)",
+   "silver bullet (50 / 21); readable on 5m (300 / 144) and 1m (2,447 / 1,116)"
+  ],
+  "counted_not_backtested": [
+   "kill zones",
+   "power of 3"
+  ]
+ },
+ "summary": {
+  "table_and_text_checks": 550,
+  "table_and_text_mismatches": 0,
+  "derived_statements": 18,
+  "derived_mismatches": 0,
+  "en_zh_distinct_tokens": [
+   255,
+   276
+  ],
+  "values_only_in_en": [],
+  "values_only_in_zh": []
+ },
+ "derived": [
+  {
+   "what": "15m rules with >= 100 trades in-sample",
+   "statement": "eight of the ten",
+   "computed": [
+    "bb",
+    "bos",
+    "fvg",
+    "ifvg",
+    "judas",
+    "mss",
+    "ob",
+    "sweep"
+   ],
+   "ok": true
+  },
+  {
+   "what": "all eight lost in-sample after costs",
+   "statement": "all eight lost",
+   "computed": true,
+   "ok": true
+  },
+  {
+   "what": "smallest and largest in-sample loss among the eight",
+   "statement": "18.44% (breaker) to 93.98% (sweep)",
+   "computed": [
+    "bb",
+    "sweep"
+   ],
+   "ok": true
+  },
+  {
+   "what": "in-sample losses with |t| >= 2",
+   "statement": "five statistically clear",
+   "computed": [
+    "fvg",
+    "ifvg",
+    "judas",
+    "ob",
+    "sweep"
+   ],
+   "ok": true
+  },
+  {
+   "what": "in-sample losses with |t| < 2",
+   "statement": "three cannot be told apart from zero",
+   "computed": [
+    "bb",
+    "bos",
+    "mss"
+   ],
+   "ok": true
+  },
+  {
+   "what": "15m rules with >= 100 trades out-of-sample",
+   "statement": "five lost again",
+   "computed": [
+    "bb",
+    "fvg",
+    "ifvg",
+    "ob",
+    "sweep"
+   ],
+   "ok": true
+  },
+  {
+   "what": "those five lost out-of-sample",
+   "statement": "lost again",
+   "computed": true,
+   "ok": true
+  },
+  {
+   "what": "15m rules under 100 trades out-of-sample",
+   "statement": "the other five made too few",
+   "computed": [
+    "bos",
+    "choch",
+    "judas",
+    "mss",
+    "sb15"
+   ],
+   "ok": true
+  },
+  {
+   "what": "zero-cost t-statistics of the nine rules other than the silver bullet",
+   "statement": "eighteen, from -1.46 to 1.30",
+   "computed": [
+    18,
+    -1.46,
+    1.3
+   ],
+   "ok": true
+  },
+  {
+   "what": "rules whose in-sample loss mostly disappears at zero cost",
+   "statement": "seven of the rules",
+   "computed": [
+    "bb",
+    "fvg",
+    "ifvg",
+    "judas",
+    "mss",
+    "ob",
+    "sweep"
+   ],
+   "ok": true
+  },
+  {
+   "what": "break of structure: share of in-sample loss explained by costs",
+   "statement": "under a fifth",
+   "computed": true,
+   "ok": true
+  },
+  {
+   "what": "judas completion rate inside the 95% band of the replays",
+   "statement": "inside the band",
+   "computed": true,
+   "ok": true
+  },
+  {
+   "what": "taught silver bullet hours ranked among 24, 1m zero cost",
+   "statement": "4th, 15th and 24th",
+   "computed": {
+    "03:00": 4,
+    "10:00": 15,
+    "14:00": 24
+   },
+   "ok": true
+  },
+  {
+   "what": "busiest bar in UTC, winter then summer",
+   "statement": "14:30 UTC to 13:30 UTC",
+   "computed": [
+    "14:30",
+    "13:30"
+   ],
+   "ok": true
+  },
+  {
+   "what": "kill zone regrouping: window cells with negative average R",
+   "statement": "all 20",
+   "computed": [
+    20,
+    20
+   ],
+   "ok": true
+  },
+  {
+   "what": "kill zones worse in-sample and better out-of-sample, both rules",
+   "statement": "sign flips",
+   "computed": [
+    [
+     true,
+     true
+    ],
+    [
+     true,
+     true
+    ]
+   ],
+   "ok": true
+  },
+  {
+   "what": "break of structure swing sizes: runs, and blocks with >= 100 trades that lost",
+   "statement": "five members; every such block lost",
+   "computed": [
+    5,
+    true
+   ],
+   "ok": true
+  },
+  {
+   "what": "blocks with >= 100 trades above zero after costs, all runs in the eight summaries",
+   "statement": "two blocks",
+   "computed": [
+    "btcusdt-15m-choch-break-swing3 in_sample",
+    "solusdt-15m-breaker-block in_sample"
+   ],
+   "ok": true
+  }
+ ],
+ "checks": [
+  {
+   "where": "en results table: Fair value gap / in",
+   "what": "trades",
+   "shown": "801",
+   "source_value": 801,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / in",
+   "what": "avg R",
+   "shown": "-0.57",
+   "source_value": -0.5692,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / in",
+   "what": "t-stat",
+   "shown": "-4.93",
+   "source_value": -4.928,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / in",
+   "what": "return %",
+   "shown": "-66.94%",
+   "source_value": -66.945,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / in",
+   "what": "max drawdown %",
+   "shown": "66.97%",
+   "source_value": 66.9656,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / in",
+   "what": "zero-cost return %",
+   "shown": "+6.03%",
+   "source_value": 6.0342,
+   "source": "research/fvg_cost_summary.json (runs.*.zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "801",
+   "source_value": false,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / in",
+   "what": "sign of return",
+   "shown": "-66.94%",
+   "source_value": -66.945,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / out",
+   "what": "trades",
+   "shown": "304",
+   "source_value": 304,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / out",
+   "what": "avg R",
+   "shown": "-0.83",
+   "source_value": -0.8264,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / out",
+   "what": "t-stat",
+   "shown": "-5.23",
+   "source_value": -5.2277,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / out",
+   "what": "return %",
+   "shown": "-42.86%",
+   "source_value": -42.8564,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / out",
+   "what": "max drawdown %",
+   "shown": "43.19%",
+   "source_value": 43.1899,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / out",
+   "what": "zero-cost return %",
+   "shown": "-10.05%",
+   "source_value": -10.0523,
+   "source": "research/fvg_cost_summary.json (runs.*.zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "304",
+   "source_value": false,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Fair value gap / out",
+   "what": "sign of return",
+   "shown": "-42.86%",
+   "source_value": -42.8564,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / in",
+   "what": "trades",
+   "shown": "1,639",
+   "source_value": 1639,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / in",
+   "what": "avg R",
+   "shown": "-0.67",
+   "source_value": -0.6667,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / in",
+   "what": "t-stat",
+   "shown": "-10.91",
+   "source_value": -10.914,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / in",
+   "what": "return %",
+   "shown": "-93.98%",
+   "source_value": -93.9772,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / in",
+   "what": "max drawdown %",
+   "shown": "94.35%",
+   "source_value": 94.3547,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / in",
+   "what": "zero-cost return %",
+   "shown": "-27.12%",
+   "source_value": -27.1242,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json (runs[btcusdt-15m-lb20-sb0.1-r2].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "1,639",
+   "source_value": false,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / in",
+   "what": "sign of return",
+   "shown": "-93.98%",
+   "source_value": -93.9772,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / out",
+   "what": "trades",
+   "shown": "688",
+   "source_value": 688,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / out",
+   "what": "avg R",
+   "shown": "-0.79",
+   "source_value": -0.7947,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / out",
+   "what": "t-stat",
+   "shown": "-8.48",
+   "source_value": -8.4786,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / out",
+   "what": "return %",
+   "shown": "-69.03%",
+   "source_value": -69.0254,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / out",
+   "what": "max drawdown %",
+   "shown": "69.31%",
+   "source_value": 69.306,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / out",
+   "what": "zero-cost return %",
+   "shown": "-14.58%",
+   "source_value": -14.5754,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json (runs[btcusdt-15m-lb20-sb0.1-r2].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "688",
+   "source_value": false,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Liquidity sweep / out",
+   "what": "sign of return",
+   "shown": "-69.03%",
+   "source_value": -69.0254,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / in",
+   "what": "trades",
+   "shown": "325",
+   "source_value": 325,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / in",
+   "what": "avg R",
+   "shown": "-0.61",
+   "source_value": -0.6103,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / in",
+   "what": "t-stat",
+   "shown": "-3.77",
+   "source_value": -3.7699,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / in",
+   "what": "return %",
+   "shown": "-42.33%",
+   "source_value": -42.3331,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / in",
+   "what": "max drawdown %",
+   "shown": "46.92%",
+   "source_value": 46.9207,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / in",
+   "what": "zero-cost return %",
+   "shown": "-6.27%",
+   "source_value": -6.2655,
+   "source": "research/order-block/order-block_summary.json (runs[btcusdt-15m-ib3-mi2].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "325",
+   "source_value": false,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / in",
+   "what": "sign of return",
+   "shown": "-42.33%",
+   "source_value": -42.3331,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / out",
+   "what": "trades",
+   "shown": "141",
+   "source_value": 141,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / out",
+   "what": "avg R",
+   "shown": "-0.98",
+   "source_value": -0.9842,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / out",
+   "what": "t-stat",
+   "shown": "-2.49",
+   "source_value": -2.4856,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / out",
+   "what": "return %",
+   "shown": "-18.71%",
+   "source_value": -18.7108,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / out",
+   "what": "max drawdown %",
+   "shown": "24.94%",
+   "source_value": 24.94,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / out",
+   "what": "zero-cost return %",
+   "shown": "+0.54%",
+   "source_value": 0.5354,
+   "source": "research/order-block/order-block_summary.json (runs[btcusdt-15m-ib3-mi2].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "141",
+   "source_value": false,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Order block / out",
+   "what": "sign of return",
+   "shown": "-18.71%",
+   "source_value": -18.7108,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / in",
+   "what": "trades",
+   "shown": "149",
+   "source_value": 149,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / in",
+   "what": "avg R",
+   "shown": "-0.17",
+   "source_value": -0.1721,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / in",
+   "what": "t-stat",
+   "shown": "-1.57",
+   "source_value": -1.5717,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / in",
+   "what": "return %",
+   "shown": "-43.34%",
+   "source_value": -43.3416,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / in",
+   "what": "max drawdown %",
+   "shown": "53.72%",
+   "source_value": 53.719,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / in",
+   "what": "zero-cost return %",
+   "shown": "-35.56%",
+   "source_value": -35.5611,
+   "source": "research/break-of-structure/break-of-structure_summary.json (runs[btcusdt-15m-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "149",
+   "source_value": false,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / in",
+   "what": "sign of return",
+   "shown": "-43.34%",
+   "source_value": -43.3416,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / out",
+   "what": "trades",
+   "shown": "42*",
+   "source_value": 42,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / out",
+   "what": "avg R",
+   "shown": "+0.06",
+   "source_value": 0.0649,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / out",
+   "what": "t-stat",
+   "shown": "-0.11",
+   "source_value": -0.1112,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / out",
+   "what": "return %",
+   "shown": "-3.35%",
+   "source_value": -3.3512,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / out",
+   "what": "max drawdown %",
+   "shown": "23.57%",
+   "source_value": 23.5688,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / out",
+   "what": "zero-cost return %",
+   "shown": "+0.91%",
+   "source_value": 0.9068,
+   "source": "research/break-of-structure/break-of-structure_summary.json (runs[btcusdt-15m-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "42*",
+   "source_value": true,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Break of structure / out",
+   "what": "sign of return",
+   "shown": "-3.35%",
+   "source_value": -3.3512,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / in",
+   "what": "trades",
+   "shown": "243",
+   "source_value": 243,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / in",
+   "what": "avg R",
+   "shown": "-0.56",
+   "source_value": -0.5636,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / in",
+   "what": "t-stat",
+   "shown": "-1.56",
+   "source_value": -1.564,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / in",
+   "what": "return %",
+   "shown": "-18.44%",
+   "source_value": -18.4425,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / in",
+   "what": "max drawdown %",
+   "shown": "21.23%",
+   "source_value": 21.2277,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / in",
+   "what": "zero-cost return %",
+   "shown": "+16.45%",
+   "source_value": 16.4461,
+   "source": "research/breaker-block/breaker-block_summary.json (runs[btcusdt-15m-breaker-block].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "243",
+   "source_value": false,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / in",
+   "what": "sign of return",
+   "shown": "-18.44%",
+   "source_value": -18.4425,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / out",
+   "what": "trades",
+   "shown": "120",
+   "source_value": 120,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / out",
+   "what": "avg R",
+   "shown": "-0.79",
+   "source_value": -0.7896,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / out",
+   "what": "t-stat",
+   "shown": "-2.88",
+   "source_value": -2.8816,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / out",
+   "what": "return %",
+   "shown": "-15.07%",
+   "source_value": -15.0657,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / out",
+   "what": "max drawdown %",
+   "shown": "16.62%",
+   "source_value": 16.6202,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / out",
+   "what": "zero-cost return %",
+   "shown": "+0.78%",
+   "source_value": 0.778,
+   "source": "research/breaker-block/breaker-block_summary.json (runs[btcusdt-15m-breaker-block].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "120",
+   "source_value": false,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Breaker block / out",
+   "what": "sign of return",
+   "shown": "-15.07%",
+   "source_value": -15.0657,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / in",
+   "what": "trades",
+   "shown": "621",
+   "source_value": 621,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / in",
+   "what": "avg R",
+   "shown": "-0.64",
+   "source_value": -0.6403,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / in",
+   "what": "t-stat",
+   "shown": "-5.64",
+   "source_value": -5.6381,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / in",
+   "what": "return %",
+   "shown": "-63.09%",
+   "source_value": -63.0904,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / in",
+   "what": "max drawdown %",
+   "shown": "64.48%",
+   "source_value": 64.4758,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / in",
+   "what": "zero-cost return %",
+   "shown": "-9.34%",
+   "source_value": -9.3355,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "621",
+   "source_value": false,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / in",
+   "what": "sign of return",
+   "shown": "-63.09%",
+   "source_value": -63.0904,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / out",
+   "what": "trades",
+   "shown": "301",
+   "source_value": 301,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / out",
+   "what": "avg R",
+   "shown": "-1.09",
+   "source_value": -1.0875,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / out",
+   "what": "t-stat",
+   "shown": "-7.14",
+   "source_value": -7.139,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / out",
+   "what": "return %",
+   "shown": "-45.44%",
+   "source_value": -45.4402,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / out",
+   "what": "max drawdown %",
+   "shown": "45.84%",
+   "source_value": 45.8398,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / out",
+   "what": "zero-cost return %",
+   "shown": "-11.80%",
+   "source_value": -11.8002,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "301",
+   "source_value": false,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Inverse fair value gap / out",
+   "what": "sign of return",
+   "shown": "-45.44%",
+   "source_value": -45.4402,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / in",
+   "what": "trades",
+   "shown": "88*",
+   "source_value": 88,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / in",
+   "what": "avg R",
+   "shown": "-0.21",
+   "source_value": -0.2113,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / in",
+   "what": "t-stat",
+   "shown": "0.41",
+   "source_value": 0.4076,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / in",
+   "what": "return %",
+   "shown": "+8.38%",
+   "source_value": 8.3823,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / in",
+   "what": "max drawdown %",
+   "shown": "24.40%",
+   "source_value": 24.4031,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / in",
+   "what": "zero-cost return %",
+   "shown": "+22.86%",
+   "source_value": 22.8555,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "88*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / in",
+   "what": "sign of return",
+   "shown": "+8.38%",
+   "source_value": 8.3823,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / out",
+   "what": "trades",
+   "shown": "45*",
+   "source_value": 45,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / out",
+   "what": "avg R",
+   "shown": "+0.07",
+   "source_value": 0.0741,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / out",
+   "what": "t-stat",
+   "shown": "-0.08",
+   "source_value": -0.0838,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / out",
+   "what": "return %",
+   "shown": "-2.01%",
+   "source_value": -2.0052,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / out",
+   "what": "max drawdown %",
+   "shown": "15.41%",
+   "source_value": 15.4073,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / out",
+   "what": "zero-cost return %",
+   "shown": "+2.63%",
+   "source_value": 2.6316,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "45*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Change of character / out",
+   "what": "sign of return",
+   "shown": "-2.01%",
+   "source_value": -2.0052,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / in",
+   "what": "trades",
+   "shown": "135",
+   "source_value": 135,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / in",
+   "what": "avg R",
+   "shown": "-0.15",
+   "source_value": -0.1516,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / in",
+   "what": "t-stat",
+   "shown": "-0.90",
+   "source_value": -0.904,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / in",
+   "what": "return %",
+   "shown": "-24.92%",
+   "source_value": -24.9221,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / in",
+   "what": "max drawdown %",
+   "shown": "36.57%",
+   "source_value": 36.5698,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / in",
+   "what": "zero-cost return %",
+   "shown": "-1.37%",
+   "source_value": -1.3719,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "135",
+   "source_value": false,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / in",
+   "what": "sign of return",
+   "shown": "-24.92%",
+   "source_value": -24.9221,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / out",
+   "what": "trades",
+   "shown": "59*",
+   "source_value": 59,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / out",
+   "what": "avg R",
+   "shown": "-0.24",
+   "source_value": -0.2395,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / out",
+   "what": "t-stat",
+   "shown": "-1.03",
+   "source_value": -1.031,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / out",
+   "what": "return %",
+   "shown": "-15.03%",
+   "source_value": -15.0308,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / out",
+   "what": "max drawdown %",
+   "shown": "23.43%",
+   "source_value": 23.4291,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / out",
+   "what": "zero-cost return %",
+   "shown": "-9.04%",
+   "source_value": -9.0351,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "59*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Market structure shift / out",
+   "what": "sign of return",
+   "shown": "-15.03%",
+   "source_value": -15.0308,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / in",
+   "what": "trades",
+   "shown": "164",
+   "source_value": 164,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / in",
+   "what": "avg R",
+   "shown": "-0.75",
+   "source_value": -0.753,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / in",
+   "what": "t-stat",
+   "shown": "-3.74",
+   "source_value": -3.7353,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / in",
+   "what": "return %",
+   "shown": "-27.69%",
+   "source_value": -27.6862,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / in",
+   "what": "max drawdown %",
+   "shown": "28.52%",
+   "source_value": 28.5214,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / in",
+   "what": "zero-cost return %",
+   "shown": "-4.84%",
+   "source_value": -4.8421,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "164",
+   "source_value": false,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / in",
+   "what": "sign of return",
+   "shown": "-27.69%",
+   "source_value": -27.6862,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / out",
+   "what": "trades",
+   "shown": "76*",
+   "source_value": 76,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / out",
+   "what": "avg R",
+   "shown": "-0.71",
+   "source_value": -0.7118,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / out",
+   "what": "t-stat",
+   "shown": "-2.34",
+   "source_value": -2.3365,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / out",
+   "what": "return %",
+   "shown": "-10.18%",
+   "source_value": -10.1787,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / out",
+   "what": "max drawdown %",
+   "shown": "12.09%",
+   "source_value": 12.0944,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / out",
+   "what": "zero-cost return %",
+   "shown": "-0.93%",
+   "source_value": -0.9316,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "76*",
+   "source_value": true,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Judas swing / out",
+   "what": "sign of return",
+   "shown": "-10.18%",
+   "source_value": -10.1787,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / in",
+   "what": "trades",
+   "shown": "50*",
+   "source_value": 50,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / in",
+   "what": "avg R",
+   "shown": "-1.00",
+   "source_value": -0.9973,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / in",
+   "what": "t-stat",
+   "shown": "-2.86",
+   "source_value": -2.8633,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / in",
+   "what": "return %",
+   "shown": "-12.03%",
+   "source_value": -12.0251,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / in",
+   "what": "max drawdown %",
+   "shown": "14.54%",
+   "source_value": 14.5424,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / in",
+   "what": "zero-cost return %",
+   "shown": "-5.72%",
+   "source_value": -5.7227,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "50*",
+   "source_value": true,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / in",
+   "what": "sign of return",
+   "shown": "-12.03%",
+   "source_value": -12.0251,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / out",
+   "what": "trades",
+   "shown": "21*",
+   "source_value": 21,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / out",
+   "what": "avg R",
+   "shown": "-1.02",
+   "source_value": -1.0209,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / out",
+   "what": "t-stat",
+   "shown": "-3.96",
+   "source_value": -3.9623,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / out",
+   "what": "return %",
+   "shown": "-8.77%",
+   "source_value": -8.7679,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / out",
+   "what": "max drawdown %",
+   "shown": "8.85%",
+   "source_value": 8.852,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / out",
+   "what": "zero-cost return %",
+   "shown": "-6.06%",
+   "source_value": -6.0612,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "21*",
+   "source_value": true,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 15-minute / out",
+   "what": "sign of return",
+   "shown": "-8.77%",
+   "source_value": -8.7679,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / in",
+   "what": "trades",
+   "shown": "2,447",
+   "source_value": 2447,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / in",
+   "what": "avg R",
+   "shown": "-2.00",
+   "source_value": -2.0004,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / in",
+   "what": "t-stat",
+   "shown": "-38.30",
+   "source_value": -38.3013,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / in",
+   "what": "return %",
+   "shown": "-97.43%",
+   "source_value": -97.4339,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / in",
+   "what": "max drawdown %",
+   "shown": "97.45%",
+   "source_value": 97.45,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / in",
+   "what": "zero-cost return %",
+   "shown": "-2.66%",
+   "source_value": -2.6639,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "2,447",
+   "source_value": false,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / in",
+   "what": "sign of return",
+   "shown": "-97.43%",
+   "source_value": -97.4339,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / out",
+   "what": "trades",
+   "shown": "1,116",
+   "source_value": 1116,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / out",
+   "what": "avg R",
+   "shown": "-2.44",
+   "source_value": -2.4422,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / out",
+   "what": "t-stat",
+   "shown": "-30.36",
+   "source_value": -30.3634,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / out",
+   "what": "return %",
+   "shown": "-79.68%",
+   "source_value": -79.6753,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / out",
+   "what": "max drawdown %",
+   "shown": "79.72%",
+   "source_value": 79.7221,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / out",
+   "what": "zero-cost return %",
+   "shown": "+2.23%",
+   "source_value": 2.2296,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "1,116",
+   "source_value": false,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en results table: Silver bullet, 1-minute† / out",
+   "what": "sign of return",
+   "shown": "-79.68%",
+   "source_value": -79.6753,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / in",
+   "what": "trades",
+   "shown": "801",
+   "source_value": 801,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / in",
+   "what": "avg R",
+   "shown": "−0.57",
+   "source_value": -0.5692,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / in",
+   "what": "t-stat",
+   "shown": "−4.93",
+   "source_value": -4.928,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / in",
+   "what": "return %",
+   "shown": "−66.94%",
+   "source_value": -66.945,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / in",
+   "what": "max drawdown %",
+   "shown": "66.97%",
+   "source_value": 66.9656,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / in",
+   "what": "zero-cost return %",
+   "shown": "+6.03%",
+   "source_value": 6.0342,
+   "source": "research/fvg_cost_summary.json (runs.*.zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "801",
+   "source_value": false,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / in",
+   "what": "sign of return",
+   "shown": "−66.94%",
+   "source_value": -66.945,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / out",
+   "what": "trades",
+   "shown": "304",
+   "source_value": 304,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / out",
+   "what": "avg R",
+   "shown": "−0.83",
+   "source_value": -0.8264,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / out",
+   "what": "t-stat",
+   "shown": "−5.23",
+   "source_value": -5.2277,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / out",
+   "what": "return %",
+   "shown": "−42.86%",
+   "source_value": -42.8564,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / out",
+   "what": "max drawdown %",
+   "shown": "43.19%",
+   "source_value": 43.1899,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / out",
+   "what": "zero-cost return %",
+   "shown": "−10.05%",
+   "source_value": -10.0523,
+   "source": "research/fvg_cost_summary.json (runs.*.zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "304",
+   "source_value": false,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 公平價值缺口 / out",
+   "what": "sign of return",
+   "shown": "−42.86%",
+   "source_value": -42.8564,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / in",
+   "what": "trades",
+   "shown": "1,639",
+   "source_value": 1639,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / in",
+   "what": "avg R",
+   "shown": "−0.67",
+   "source_value": -0.6667,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / in",
+   "what": "t-stat",
+   "shown": "−10.91",
+   "source_value": -10.914,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / in",
+   "what": "return %",
+   "shown": "−93.98%",
+   "source_value": -93.9772,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / in",
+   "what": "max drawdown %",
+   "shown": "94.35%",
+   "source_value": 94.3547,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / in",
+   "what": "zero-cost return %",
+   "shown": "−27.12%",
+   "source_value": -27.1242,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json (runs[btcusdt-15m-lb20-sb0.1-r2].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "1,639",
+   "source_value": false,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / in",
+   "what": "sign of return",
+   "shown": "−93.98%",
+   "source_value": -93.9772,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / out",
+   "what": "trades",
+   "shown": "688",
+   "source_value": 688,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / out",
+   "what": "avg R",
+   "shown": "−0.79",
+   "source_value": -0.7947,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / out",
+   "what": "t-stat",
+   "shown": "−8.48",
+   "source_value": -8.4786,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / out",
+   "what": "return %",
+   "shown": "−69.03%",
+   "source_value": -69.0254,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / out",
+   "what": "max drawdown %",
+   "shown": "69.31%",
+   "source_value": 69.306,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / out",
+   "what": "zero-cost return %",
+   "shown": "−14.58%",
+   "source_value": -14.5754,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json (runs[btcusdt-15m-lb20-sb0.1-r2].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "688",
+   "source_value": false,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 流動性掃蕩 / out",
+   "what": "sign of return",
+   "shown": "−69.03%",
+   "source_value": -69.0254,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / in",
+   "what": "trades",
+   "shown": "325",
+   "source_value": 325,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / in",
+   "what": "avg R",
+   "shown": "−0.61",
+   "source_value": -0.6103,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / in",
+   "what": "t-stat",
+   "shown": "−3.77",
+   "source_value": -3.7699,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / in",
+   "what": "return %",
+   "shown": "−42.33%",
+   "source_value": -42.3331,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / in",
+   "what": "max drawdown %",
+   "shown": "46.92%",
+   "source_value": 46.9207,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / in",
+   "what": "zero-cost return %",
+   "shown": "−6.27%",
+   "source_value": -6.2655,
+   "source": "research/order-block/order-block_summary.json (runs[btcusdt-15m-ib3-mi2].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "325",
+   "source_value": false,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / in",
+   "what": "sign of return",
+   "shown": "−42.33%",
+   "source_value": -42.3331,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / out",
+   "what": "trades",
+   "shown": "141",
+   "source_value": 141,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / out",
+   "what": "avg R",
+   "shown": "−0.98",
+   "source_value": -0.9842,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / out",
+   "what": "t-stat",
+   "shown": "−2.49",
+   "source_value": -2.4856,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / out",
+   "what": "return %",
+   "shown": "−18.71%",
+   "source_value": -18.7108,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / out",
+   "what": "max drawdown %",
+   "shown": "24.94%",
+   "source_value": 24.94,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / out",
+   "what": "zero-cost return %",
+   "shown": "+0.54%",
+   "source_value": 0.5354,
+   "source": "research/order-block/order-block_summary.json (runs[btcusdt-15m-ib3-mi2].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "141",
+   "source_value": false,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 訂單塊 / out",
+   "what": "sign of return",
+   "shown": "−18.71%",
+   "source_value": -18.7108,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / in",
+   "what": "trades",
+   "shown": "149",
+   "source_value": 149,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / in",
+   "what": "avg R",
+   "shown": "−0.17",
+   "source_value": -0.1721,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / in",
+   "what": "t-stat",
+   "shown": "−1.57",
+   "source_value": -1.5717,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / in",
+   "what": "return %",
+   "shown": "−43.34%",
+   "source_value": -43.3416,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / in",
+   "what": "max drawdown %",
+   "shown": "53.72%",
+   "source_value": 53.719,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / in",
+   "what": "zero-cost return %",
+   "shown": "−35.56%",
+   "source_value": -35.5611,
+   "source": "research/break-of-structure/break-of-structure_summary.json (runs[btcusdt-15m-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "149",
+   "source_value": false,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / in",
+   "what": "sign of return",
+   "shown": "−43.34%",
+   "source_value": -43.3416,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / out",
+   "what": "trades",
+   "shown": "42*",
+   "source_value": 42,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / out",
+   "what": "avg R",
+   "shown": "+0.06",
+   "source_value": 0.0649,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / out",
+   "what": "t-stat",
+   "shown": "−0.11",
+   "source_value": -0.1112,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / out",
+   "what": "return %",
+   "shown": "−3.35%",
+   "source_value": -3.3512,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / out",
+   "what": "max drawdown %",
+   "shown": "23.57%",
+   "source_value": 23.5688,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / out",
+   "what": "zero-cost return %",
+   "shown": "+0.91%",
+   "source_value": 0.9068,
+   "source": "research/break-of-structure/break-of-structure_summary.json (runs[btcusdt-15m-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "42*",
+   "source_value": true,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 結構突破 / out",
+   "what": "sign of return",
+   "shown": "−3.35%",
+   "source_value": -3.3512,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / in",
+   "what": "trades",
+   "shown": "243",
+   "source_value": 243,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / in",
+   "what": "avg R",
+   "shown": "−0.56",
+   "source_value": -0.5636,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / in",
+   "what": "t-stat",
+   "shown": "−1.56",
+   "source_value": -1.564,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / in",
+   "what": "return %",
+   "shown": "−18.44%",
+   "source_value": -18.4425,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / in",
+   "what": "max drawdown %",
+   "shown": "21.23%",
+   "source_value": 21.2277,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / in",
+   "what": "zero-cost return %",
+   "shown": "+16.45%",
+   "source_value": 16.4461,
+   "source": "research/breaker-block/breaker-block_summary.json (runs[btcusdt-15m-breaker-block].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "243",
+   "source_value": false,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / in",
+   "what": "sign of return",
+   "shown": "−18.44%",
+   "source_value": -18.4425,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / out",
+   "what": "trades",
+   "shown": "120",
+   "source_value": 120,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / out",
+   "what": "avg R",
+   "shown": "−0.79",
+   "source_value": -0.7896,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / out",
+   "what": "t-stat",
+   "shown": "−2.88",
+   "source_value": -2.8816,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / out",
+   "what": "return %",
+   "shown": "−15.07%",
+   "source_value": -15.0657,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / out",
+   "what": "max drawdown %",
+   "shown": "16.62%",
+   "source_value": 16.6202,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / out",
+   "what": "zero-cost return %",
+   "shown": "+0.78%",
+   "source_value": 0.778,
+   "source": "research/breaker-block/breaker-block_summary.json (runs[btcusdt-15m-breaker-block].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "120",
+   "source_value": false,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Breaker block / out",
+   "what": "sign of return",
+   "shown": "−15.07%",
+   "source_value": -15.0657,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / in",
+   "what": "trades",
+   "shown": "621",
+   "source_value": 621,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / in",
+   "what": "avg R",
+   "shown": "−0.64",
+   "source_value": -0.6403,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / in",
+   "what": "t-stat",
+   "shown": "−5.64",
+   "source_value": -5.6381,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / in",
+   "what": "return %",
+   "shown": "−63.09%",
+   "source_value": -63.0904,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / in",
+   "what": "max drawdown %",
+   "shown": "64.48%",
+   "source_value": 64.4758,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / in",
+   "what": "zero-cost return %",
+   "shown": "−9.34%",
+   "source_value": -9.3355,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "621",
+   "source_value": false,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / in",
+   "what": "sign of return",
+   "shown": "−63.09%",
+   "source_value": -63.0904,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / out",
+   "what": "trades",
+   "shown": "301",
+   "source_value": 301,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / out",
+   "what": "avg R",
+   "shown": "−1.09",
+   "source_value": -1.0875,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / out",
+   "what": "t-stat",
+   "shown": "−7.14",
+   "source_value": -7.139,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / out",
+   "what": "return %",
+   "shown": "−45.44%",
+   "source_value": -45.4402,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / out",
+   "what": "max drawdown %",
+   "shown": "45.84%",
+   "source_value": 45.8398,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / out",
+   "what": "zero-cost return %",
+   "shown": "−11.80%",
+   "source_value": -11.8002,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "301",
+   "source_value": false,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 反向公平價值缺口 / out",
+   "what": "sign of return",
+   "shown": "−45.44%",
+   "source_value": -45.4402,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / in",
+   "what": "trades",
+   "shown": "88*",
+   "source_value": 88,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / in",
+   "what": "avg R",
+   "shown": "−0.21",
+   "source_value": -0.2113,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / in",
+   "what": "t-stat",
+   "shown": "0.41",
+   "source_value": 0.4076,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / in",
+   "what": "return %",
+   "shown": "+8.38%",
+   "source_value": 8.3823,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / in",
+   "what": "max drawdown %",
+   "shown": "24.40%",
+   "source_value": 24.4031,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / in",
+   "what": "zero-cost return %",
+   "shown": "+22.86%",
+   "source_value": 22.8555,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "88*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / in",
+   "what": "sign of return",
+   "shown": "+8.38%",
+   "source_value": 8.3823,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / out",
+   "what": "trades",
+   "shown": "45*",
+   "source_value": 45,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / out",
+   "what": "avg R",
+   "shown": "+0.07",
+   "source_value": 0.0741,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / out",
+   "what": "t-stat",
+   "shown": "−0.08",
+   "source_value": -0.0838,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / out",
+   "what": "return %",
+   "shown": "−2.01%",
+   "source_value": -2.0052,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / out",
+   "what": "max drawdown %",
+   "shown": "15.41%",
+   "source_value": 15.4073,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / out",
+   "what": "zero-cost return %",
+   "shown": "+2.63%",
+   "source_value": 2.6316,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "45*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 性質改變 / out",
+   "what": "sign of return",
+   "shown": "−2.01%",
+   "source_value": -2.0052,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / in",
+   "what": "trades",
+   "shown": "135",
+   "source_value": 135,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / in",
+   "what": "avg R",
+   "shown": "−0.15",
+   "source_value": -0.1516,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / in",
+   "what": "t-stat",
+   "shown": "−0.90",
+   "source_value": -0.904,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / in",
+   "what": "return %",
+   "shown": "−24.92%",
+   "source_value": -24.9221,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / in",
+   "what": "max drawdown %",
+   "shown": "36.57%",
+   "source_value": 36.5698,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / in",
+   "what": "zero-cost return %",
+   "shown": "−1.37%",
+   "source_value": -1.3719,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "135",
+   "source_value": false,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / in",
+   "what": "sign of return",
+   "shown": "−24.92%",
+   "source_value": -24.9221,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / out",
+   "what": "trades",
+   "shown": "59*",
+   "source_value": 59,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / out",
+   "what": "avg R",
+   "shown": "−0.24",
+   "source_value": -0.2395,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / out",
+   "what": "t-stat",
+   "shown": "−1.03",
+   "source_value": -1.031,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / out",
+   "what": "return %",
+   "shown": "−15.03%",
+   "source_value": -15.0308,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / out",
+   "what": "max drawdown %",
+   "shown": "23.43%",
+   "source_value": 23.4291,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / out",
+   "what": "zero-cost return %",
+   "shown": "−9.04%",
+   "source_value": -9.0351,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].zero_cost)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "59*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: 市場結構轉變 / out",
+   "what": "sign of return",
+   "shown": "−15.03%",
+   "source_value": -15.0308,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / in",
+   "what": "trades",
+   "shown": "164",
+   "source_value": 164,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / in",
+   "what": "avg R",
+   "shown": "−0.75",
+   "source_value": -0.753,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / in",
+   "what": "t-stat",
+   "shown": "−3.74",
+   "source_value": -3.7353,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / in",
+   "what": "return %",
+   "shown": "−27.69%",
+   "source_value": -27.6862,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / in",
+   "what": "max drawdown %",
+   "shown": "28.52%",
+   "source_value": 28.5214,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / in",
+   "what": "zero-cost return %",
+   "shown": "−4.84%",
+   "source_value": -4.8421,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "164",
+   "source_value": false,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / in",
+   "what": "sign of return",
+   "shown": "−27.69%",
+   "source_value": -27.6862,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / out",
+   "what": "trades",
+   "shown": "76*",
+   "source_value": 76,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / out",
+   "what": "avg R",
+   "shown": "−0.71",
+   "source_value": -0.7118,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / out",
+   "what": "t-stat",
+   "shown": "−2.34",
+   "source_value": -2.3365,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / out",
+   "what": "return %",
+   "shown": "−10.18%",
+   "source_value": -10.1787,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / out",
+   "what": "max drawdown %",
+   "shown": "12.09%",
+   "source_value": 12.0944,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / out",
+   "what": "zero-cost return %",
+   "shown": "−0.93%",
+   "source_value": -0.9316,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "76*",
+   "source_value": true,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Judas swing / out",
+   "what": "sign of return",
+   "shown": "−10.18%",
+   "source_value": -10.1787,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / in",
+   "what": "trades",
+   "shown": "50*",
+   "source_value": 50,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / in",
+   "what": "avg R",
+   "shown": "−1.00",
+   "source_value": -0.9973,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / in",
+   "what": "t-stat",
+   "shown": "−2.86",
+   "source_value": -2.8633,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / in",
+   "what": "return %",
+   "shown": "−12.03%",
+   "source_value": -12.0251,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / in",
+   "what": "max drawdown %",
+   "shown": "14.54%",
+   "source_value": 14.5424,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / in",
+   "what": "zero-cost return %",
+   "shown": "−5.72%",
+   "source_value": -5.7227,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "50*",
+   "source_value": true,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / in",
+   "what": "sign of return",
+   "shown": "−12.03%",
+   "source_value": -12.0251,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / out",
+   "what": "trades",
+   "shown": "21*",
+   "source_value": 21,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / out",
+   "what": "avg R",
+   "shown": "−1.02",
+   "source_value": -1.0209,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / out",
+   "what": "t-stat",
+   "shown": "−3.96",
+   "source_value": -3.9623,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / out",
+   "what": "return %",
+   "shown": "−8.77%",
+   "source_value": -8.7679,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / out",
+   "what": "max drawdown %",
+   "shown": "8.85%",
+   "source_value": 8.852,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / out",
+   "what": "zero-cost return %",
+   "shown": "−6.06%",
+   "source_value": -6.0612,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "21*",
+   "source_value": true,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（15 分鐘） / out",
+   "what": "sign of return",
+   "shown": "−8.77%",
+   "source_value": -8.7679,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / in",
+   "what": "trades",
+   "shown": "2,447",
+   "source_value": 2447,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / in",
+   "what": "avg R",
+   "shown": "−2.00",
+   "source_value": -2.0004,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / in",
+   "what": "t-stat",
+   "shown": "−38.30",
+   "source_value": -38.3013,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / in",
+   "what": "return %",
+   "shown": "−97.43%",
+   "source_value": -97.4339,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / in",
+   "what": "max drawdown %",
+   "shown": "97.45%",
+   "source_value": 97.45,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / in",
+   "what": "zero-cost return %",
+   "shown": "−2.66%",
+   "source_value": -2.6639,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "2,447",
+   "source_value": false,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / in",
+   "what": "sign of return",
+   "shown": "−97.43%",
+   "source_value": -97.4339,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / out",
+   "what": "trades",
+   "shown": "1,116",
+   "source_value": 1116,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / out",
+   "what": "avg R",
+   "shown": "−2.44",
+   "source_value": -2.4422,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / out",
+   "what": "t-stat",
+   "shown": "−30.36",
+   "source_value": -30.3634,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / out",
+   "what": "return %",
+   "shown": "−79.68%",
+   "source_value": -79.6753,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / out",
+   "what": "max drawdown %",
+   "shown": "79.72%",
+   "source_value": 79.7221,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / out",
+   "what": "zero-cost return %",
+   "shown": "+2.23%",
+   "source_value": 2.2296,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "1,116",
+   "source_value": false,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant results table: Silver bullet（1 分鐘）† / out",
+   "what": "sign of return",
+   "shown": "−79.68%",
+   "source_value": -79.6753,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en map table: Fair value gap / in",
+   "what": "return %",
+   "shown": "-66.94%",
+   "source_value": -66.945,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Fair value gap / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-66.94%",
+   "source_value": false,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Fair value gap / out",
+   "what": "return %",
+   "shown": "-42.86%",
+   "source_value": -42.8564,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Fair value gap / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-42.86%",
+   "source_value": false,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Liquidity sweep / in",
+   "what": "return %",
+   "shown": "-93.98%",
+   "source_value": -93.9772,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Liquidity sweep / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-93.98%",
+   "source_value": false,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Liquidity sweep / out",
+   "what": "return %",
+   "shown": "-69.03%",
+   "source_value": -69.0254,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Liquidity sweep / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-69.03%",
+   "source_value": false,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Order block / in",
+   "what": "return %",
+   "shown": "-42.33%",
+   "source_value": -42.3331,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Order block / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-42.33%",
+   "source_value": false,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Order block / out",
+   "what": "return %",
+   "shown": "-18.71%",
+   "source_value": -18.7108,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Order block / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-18.71%",
+   "source_value": false,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Breaker block / in",
+   "what": "return %",
+   "shown": "-18.44%",
+   "source_value": -18.4425,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Breaker block / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-18.44%",
+   "source_value": false,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Breaker block / out",
+   "what": "return %",
+   "shown": "-15.07%",
+   "source_value": -15.0657,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Breaker block / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-15.07%",
+   "source_value": false,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Break of structure / in",
+   "what": "return %",
+   "shown": "-43.34%",
+   "source_value": -43.3416,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Break of structure / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-43.34%",
+   "source_value": false,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Break of structure / out",
+   "what": "return %",
+   "shown": "-3.35%*",
+   "source_value": -3.3512,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Break of structure / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-3.35%*",
+   "source_value": true,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "en map table: Change of character / in",
+   "what": "return %",
+   "shown": "+8.38%*",
+   "source_value": 8.3823,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Change of character / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "+8.38%*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Change of character / out",
+   "what": "return %",
+   "shown": "-2.01%*",
+   "source_value": -2.0052,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Change of character / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-2.01%*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Market structure shift / in",
+   "what": "return %",
+   "shown": "-24.92%",
+   "source_value": -24.9221,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Market structure shift / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-24.92%",
+   "source_value": false,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Market structure shift / out",
+   "what": "return %",
+   "shown": "-15.03%*",
+   "source_value": -15.0308,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Market structure shift / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-15.03%*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Inverse fair value gap / in",
+   "what": "return %",
+   "shown": "-63.09%",
+   "source_value": -63.0904,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Inverse fair value gap / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-63.09%",
+   "source_value": false,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Inverse fair value gap / out",
+   "what": "return %",
+   "shown": "-45.44%",
+   "source_value": -45.4402,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Inverse fair value gap / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-45.44%",
+   "source_value": false,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "en map table: Judas swing / in",
+   "what": "return %",
+   "shown": "-27.69%",
+   "source_value": -27.6862,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en map table: Judas swing / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-27.69%",
+   "source_value": false,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en map table: Judas swing / out",
+   "what": "return %",
+   "shown": "-10.18%*",
+   "source_value": -10.1787,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en map table: Judas swing / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-10.18%*",
+   "source_value": true,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en map table: Silver bullet / in",
+   "what": "return %",
+   "shown": "-97.43%",
+   "source_value": -97.4339,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en map table: Silver bullet / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-97.43%",
+   "source_value": false,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en map table: Silver bullet / out",
+   "what": "return %",
+   "shown": "-79.68%†",
+   "source_value": -79.6753,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "en map table: Silver bullet / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "-79.68%†",
+   "source_value": false,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 公平價值缺口（FVG） / in",
+   "what": "return %",
+   "shown": "−66.94%",
+   "source_value": -66.945,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 公平價值缺口（FVG） / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−66.94%",
+   "source_value": false,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 公平價值缺口（FVG） / out",
+   "what": "return %",
+   "shown": "−42.86%",
+   "source_value": -42.8564,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 公平價值缺口（FVG） / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−42.86%",
+   "source_value": false,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 流動性掃蕩（liquidity sweep） / in",
+   "what": "return %",
+   "shown": "−93.98%",
+   "source_value": -93.9772,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 流動性掃蕩（liquidity sweep） / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−93.98%",
+   "source_value": false,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 流動性掃蕩（liquidity sweep） / out",
+   "what": "return %",
+   "shown": "−69.03%",
+   "source_value": -69.0254,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 流動性掃蕩（liquidity sweep） / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−69.03%",
+   "source_value": false,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 訂單塊（order block） / in",
+   "what": "return %",
+   "shown": "−42.33%",
+   "source_value": -42.3331,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 訂單塊（order block） / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−42.33%",
+   "source_value": false,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 訂單塊（order block） / out",
+   "what": "return %",
+   "shown": "−18.71%",
+   "source_value": -18.7108,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 訂單塊（order block） / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−18.71%",
+   "source_value": false,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Breaker block / in",
+   "what": "return %",
+   "shown": "−18.44%",
+   "source_value": -18.4425,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Breaker block / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−18.44%",
+   "source_value": false,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Breaker block / out",
+   "what": "return %",
+   "shown": "−15.07%",
+   "source_value": -15.0657,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Breaker block / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−15.07%",
+   "source_value": false,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 結構突破（BOS） / in",
+   "what": "return %",
+   "shown": "−43.34%",
+   "source_value": -43.3416,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 結構突破（BOS） / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−43.34%",
+   "source_value": false,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 結構突破（BOS） / out",
+   "what": "return %",
+   "shown": "−3.35%*",
+   "source_value": -3.3512,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 結構突破（BOS） / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−3.35%*",
+   "source_value": true,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 性質改變（CHoCH） / in",
+   "what": "return %",
+   "shown": "+8.38%*",
+   "source_value": 8.3823,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 性質改變（CHoCH） / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "+8.38%*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 性質改變（CHoCH） / out",
+   "what": "return %",
+   "shown": "−2.01%*",
+   "source_value": -2.0052,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 性質改變（CHoCH） / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−2.01%*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 市場結構轉變（MSS） / in",
+   "what": "return %",
+   "shown": "−24.92%",
+   "source_value": -24.9221,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 市場結構轉變（MSS） / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−24.92%",
+   "source_value": false,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 市場結構轉變（MSS） / out",
+   "what": "return %",
+   "shown": "−15.03%*",
+   "source_value": -15.0308,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 市場結構轉變（MSS） / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−15.03%*",
+   "source_value": true,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 反向公平價值缺口（IFVG） / in",
+   "what": "return %",
+   "shown": "−63.09%",
+   "source_value": -63.0904,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 反向公平價值缺口（IFVG） / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−63.09%",
+   "source_value": false,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 反向公平價值缺口（IFVG） / out",
+   "what": "return %",
+   "shown": "−45.44%",
+   "source_value": -45.4402,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: 反向公平價值缺口（IFVG） / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−45.44%",
+   "source_value": false,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Judas swing / in",
+   "what": "return %",
+   "shown": "−27.69%",
+   "source_value": -27.6862,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Judas swing / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−27.69%",
+   "source_value": false,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Judas swing / out",
+   "what": "return %",
+   "shown": "−10.18%*",
+   "source_value": -10.1787,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Judas swing / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−10.18%*",
+   "source_value": true,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Silver bullet / in",
+   "what": "return %",
+   "shown": "−97.43%",
+   "source_value": -97.4339,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Silver bullet / in",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−97.43%",
+   "source_value": false,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Silver bullet / out",
+   "what": "return %",
+   "shown": "−79.68%†",
+   "source_value": -79.6753,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "zh-hant map table: Silver bullet / out",
+   "what": "asterisk matches insufficient_sample",
+   "shown": "−79.68%†",
+   "source_value": false,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "FVG in-sample loss",
+   "shown": "66.94% | 66.94%",
+   "source_value": -66.945,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "sweep in-sample loss",
+   "shown": "93.98% | 93.98%",
+   "source_value": -93.9772,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "order block in-sample loss",
+   "shown": "42.33% | 42.33%",
+   "source_value": -42.3331,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "order block out-of-sample loss",
+   "shown": "18.71% | 18.71%",
+   "source_value": -18.7108,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "BOS in-sample loss",
+   "shown": "43.34% | 43.34%",
+   "source_value": -43.3416,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "BOS in-sample trades",
+   "shown": "149 trades | 149 筆",
+   "source_value": 149,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "BOS in-sample t",
+   "shown": "-1.57 | −1.57",
+   "source_value": -1.5717,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "BOS out-of-sample trades",
+   "shown": "42 trades | 42 筆",
+   "source_value": 42,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "BOS out-of-sample avg R",
+   "shown": "+0.06 | +0.06",
+   "source_value": 0.0649,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "BOS out-of-sample fall",
+   "shown": "3.35% | 3.35%",
+   "source_value": -3.3512,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "breaker in-sample loss",
+   "shown": "18.44% | 18.44%",
+   "source_value": -18.4425,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "breaker out-of-sample loss",
+   "shown": "15.07% | 15.07%",
+   "source_value": -15.0657,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "IFVG in-sample loss",
+   "shown": "63.09% | 63.09%",
+   "source_value": -63.0904,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "IFVG out-of-sample loss",
+   "shown": "45.44% | 45.44%",
+   "source_value": -45.4402,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "MSS in-sample loss",
+   "shown": "24.92% | 24.92%",
+   "source_value": -24.9221,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "MSS in-sample trades",
+   "shown": "135 trades | 135 筆",
+   "source_value": 135,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "MSS in-sample t",
+   "shown": "-0.90 | −0.90",
+   "source_value": -0.904,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "MSS out-of-sample trades",
+   "shown": "59 trades | 59 筆",
+   "source_value": 59,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "CHoCH in-sample trades",
+   "shown": "88 trades | 88 筆",
+   "source_value": 88,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "CHoCH out-of-sample trades",
+   "shown": "(45) | （45 筆）",
+   "source_value": 45,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-choch-break-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas in-sample loss",
+   "shown": "27.69% | 27.69%",
+   "source_value": -27.6862,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas in-sample trades",
+   "shown": "164 trades | 164 筆",
+   "source_value": 164,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas in-sample t",
+   "shown": "-3.74 | −3.74",
+   "source_value": -3.7353,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas out-of-sample trades",
+   "shown": "76 trades | 76 筆",
+   "source_value": 76,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 15m trades in",
+   "shown": "50 trades | 50 筆",
+   "source_value": 50,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 15m trades out",
+   "shown": "21 out-of-sample | 樣本外 21 筆",
+   "source_value": 21,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-15m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 5m trades in",
+   "shown": "300 in-sample trades | 樣本內 300 筆",
+   "source_value": 300,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-5m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 5m loss in",
+   "shown": "46.82% | 46.82%",
+   "source_value": -46.8217,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-5m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 5m trades out",
+   "shown": "144 out-of-sample trades | 樣本外 144 筆",
+   "source_value": 144,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-5m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 5m loss out",
+   "shown": "18.08% | 18.08%",
+   "source_value": -18.0786,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-5m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 5m zero-cost t in",
+   "shown": "-3.01 | −3.01",
+   "source_value": -3.0055,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-5m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m trades in",
+   "shown": "2,447 | 2,447",
+   "source_value": 2447,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m trades out",
+   "shown": "1,116 | 1,116",
+   "source_value": 1116,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m loss in",
+   "shown": "97.43% | 97.43%",
+   "source_value": -97.4339,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m loss out",
+   "shown": "79.68% | 79.68%",
+   "source_value": -79.6753,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m zero-cost return in",
+   "shown": "-2.66% | −2.66%",
+   "source_value": -2.6639,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m zero-cost return out",
+   "shown": "+2.23% | +2.23%",
+   "source_value": 2.2296,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m zero-cost t in",
+   "shown": "-0.26 | −0.26",
+   "source_value": -0.2568,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m zero-cost t out",
+   "shown": "0.49 | 0.49",
+   "source_value": 0.4881,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.zero_cost])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m median stop",
+   "shown": "0.086% | 0.086%",
+   "source_value": 0.0864,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs]) entry_to_stop_pct_of_price_median",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "silver bullet 1m cost in R",
+   "shown": "1.74 times | 1.74 倍",
+   "source_value": 1.736,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json (runs[btcusdt-1m-sb-strict.published_costs]) round_trip_cost_in_r_at_median_stop",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas median stop",
+   "shown": "0.274% | 0.274%",
+   "source_value": 0.2738,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs]) entry_to_stop_pct_of_price_median",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "win rate FVG",
+   "shown": "31.46% | 31.46%",
+   "source_value": 31.4607,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "win rate sweep",
+   "shown": "29.16% | 29.16%",
+   "source_value": 29.1641,
+   "source": "src/data/backtests/liquidity-sweep-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "win rate order block",
+   "shown": "30.77% | 30.77%",
+   "source_value": 30.7692,
+   "source": "src/data/backtests/order-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "win rate BOS",
+   "shown": "31.54% | 31.54%",
+   "source_value": 31.5436,
+   "source": "src/data/backtests/break-of-structure-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "win rate breaker",
+   "shown": "33.74% | 33.74%",
+   "source_value": 33.7449,
+   "source": "src/data/backtests/breaker-block-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "win rate IFVG",
+   "shown": "29.95% | 29.95%",
+   "source_value": 29.9517,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (runs[btcusdt-15m-gap0_5-wait96].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "win rate MSS",
+   "shown": "32.59% | 32.59%",
+   "source_value": 32.5926,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json (runs[btcusdt-15m-mss-displacement-swing5].published_costs)",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "win rate judas",
+   "shown": "28.66% | 28.66%",
+   "source_value": 28.6585,
+   "source": "research/judas-swing/judas-swing_summary.json (engine_runs[btcusdt-15m-judas-swing.published_costs])",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "break-even win rate",
+   "shown": "33.33% | 33.33%",
+   "source_value": 33.33,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json published_setting_trade_shape",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "gaps passing size filter",
+   "shown": "1,930 | 1,930",
+   "source_value": 1930,
+   "source": "research/fvg_gap_stats.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "gaps returned to",
+   "shown": "92.02% | 92.02%",
+   "source_value": 92.02,
+   "source": "research/fvg_gap_stats.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "sweep settings",
+   "shown": "19 settings | 19 組設定",
+   "source_value": 19,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json tally",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "sweep sample blocks",
+   "shown": "38 sample blocks | 38 個樣本區段",
+   "source_value": 38,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json tally",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "sweep blocks positive after costs",
+   "shown": "0 were positive | 是 0 個",
+   "source_value": 0,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json tally.published_costs",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "sweep zero-cost settings with |t|<2 in both",
+   "shown": "all 19 settings | 19 組設定在兩個樣本",
+   "source_value": 19,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json tally.zero_cost",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "order blocks in the year",
+   "shown": "801 blocks | 801 個區塊",
+   "source_value": 801,
+   "source": "research/order-block/order-block_summary.json published_settings.blocks",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "order blocks returned to within 24h",
+   "shown": "75.41% | 75.41%",
+   "source_value": 75.41,
+   "source": "research/order-block/order-block_summary.json published_settings.blocks",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "order block impulse size",
+   "shown": "2 ATR | 2 倍 ATR",
+   "source_value": 2.0,
+   "source": "research/order-block/order-block_summary.json published_settings.params",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "breaks on the chart",
+   "shown": "1,631 | 1,631",
+   "source_value": 1631,
+   "source": "research/break-of-structure/break-of-structure_summary.json published_settings.breaks",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "breaks closed back within 4 bars",
+   "shown": "55.24% | 55.24%",
+   "source_value": 55.24,
+   "source": "research/break-of-structure/break-of-structure_summary.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "order blocks closed through within 24h",
+   "shown": "59.68% | 59.68%",
+   "source_value": 59.68,
+   "source": "research/breaker-block/breaker-block_summary.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "order block signals later a breaker signal",
+   "shown": "63.60% | 63.60%",
+   "source_value": 63.6,
+   "source": "research/breaker-block/breaker-block_summary.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "gaps closed through",
+   "shown": "1,432 | 1,432",
+   "source_value": 1432,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json every_gap",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "gaps closed through, share",
+   "shown": "74.20% | 74.20%",
+   "source_value": 74.2,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json every_gap",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "gaps closed past midpoint",
+   "shown": "1,543 | 1,543",
+   "source_value": 1543,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json every_gap",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "retests on the next bar",
+   "shown": "62.75% | 62.75%",
+   "source_value": 62.75,
+   "source": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json every_gap",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "reversal breaks",
+   "shown": "854 | 854",
+   "source_value": 854,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json breaks_by_swing_size[swing 5]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "continuation breaks",
+   "shown": "776 | 776",
+   "source_value": 776,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json breaks_by_swing_size[swing 5]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "labelled breaks",
+   "shown": "1,630 | 1,630",
+   "source_value": 1630,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json breaks_by_swing_size[swing 5], sum",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "displacement filter",
+   "shown": "1.5 ATR | 1.5 倍 ATR",
+   "source_value": 1.5,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json params",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "CHoCH swing-3 in-sample return",
+   "shown": "+6.11% | 6.11%",
+   "source_value": 6.1071,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json runs[btcusdt-15m-choch-break-swing3]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "CHoCH swing-3 in-sample trades",
+   "shown": "159 trades | 159 筆",
+   "source_value": 159,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json runs[btcusdt-15m-choch-break-swing3]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "CHoCH swing-3 in-sample t",
+   "shown": "0.34 | 0.34",
+   "source_value": 0.3381,
+   "source": "research/market-structure-shift/market-structure-shift_summary.json runs[btcusdt-15m-choch-break-swing3]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "SOL breaker in-sample return",
+   "shown": "+4.81% | 4.81%",
+   "source_value": 4.8062,
+   "source": "research/breaker-block/breaker-block_summary.json runs[solusdt-15m-breaker-block]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "SOL breaker in-sample trades",
+   "shown": "231 trades | 231 筆",
+   "source_value": 231,
+   "source": "research/breaker-block/breaker-block_summary.json runs[solusdt-15m-breaker-block]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "SOL breaker in-sample t",
+   "shown": "0.34 | 0.34",
+   "source_value": 0.3422,
+   "source": "research/breaker-block/breaker-block_summary.json runs[solusdt-15m-breaker-block]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "BTCUSDT change over the year",
+   "shown": "29.86% | 29.86%",
+   "source_value": -29.86,
+   "source": "research/liquidity-sweep/liquidity-sweep_summary.json runs[0].price",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "swing points k=2",
+   "shown": "9,659 | 9,659",
+   "source_value": 9659,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "swing points k=2 per day",
+   "shown": "about 26 a day | 一天大約 26 個",
+   "source_value": 26.46,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "swing points k=20",
+   "shown": "1,198 | 1,198",
+   "source_value": 1198,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "swing points k=20 per day",
+   "shown": "about 3 a day | 一天大約 3 個",
+   "source_value": 3.28,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "swing points k=20 per week",
+   "shown": "23 a week | 一週 23 個",
+   "source_value": 23.0,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "gaps of any size",
+   "shown": "7,176 | 7,176",
+   "source_value": 7176,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "sweeps, 10-bar lookback",
+   "shown": "5,177 | 5,177",
+   "source_value": 5177,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "sweeps, 100-bar lookback",
+   "shown": "1,228 | 1,228",
+   "source_value": 1228,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "bars that poked the 20-bar level",
+   "shown": "6,402 | 6,402",
+   "source_value": 6402,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "sweeps with a close back inside",
+   "shown": "3,374 | 3,374",
+   "source_value": 3374,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "sweep extremes untouched after 96 bars",
+   "shown": "11.00% | 11.00%",
+   "source_value": 11.0,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "hindsight split: held, trades",
+   "shown": "275 trades | 275 筆",
+   "source_value": 275,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "hindsight split: held, win rate",
+   "shown": "94.91% | 94.91%",
+   "source_value": 94.91,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "hindsight split: broken, trades",
+   "shown": "2,046 | 2,046",
+   "source_value": 2046,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "hindsight split: broken, win rate",
+   "shown": "20.04% | 20.04%",
+   "source_value": 20.04,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "median stop, gap test",
+   "shown": "0.323% | 0.323%",
+   "source_value": 0.323,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "median stop, sweep test",
+   "shown": "0.296% | 0.296%",
+   "source_value": 0.2962,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "cost in R, gap test",
+   "shown": "0.46R | 0.46R",
+   "source_value": 0.46,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "cost in R, sweep test",
+   "shown": "0.51R | 0.51R",
+   "source_value": 0.51,
+   "source": "research/ict-trading/ict-trading_status.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "median stop, order block test",
+   "shown": "0.330% | 0.330%",
+   "source_value": 0.3304,
+   "source": "research/order-block/order-block_summary.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "median stop, breaker test",
+   "shown": "0.310% | 0.310%",
+   "source_value": 0.3101,
+   "source": "research/breaker-block/breaker-block_summary.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "round trip cost",
+   "shown": "0.15% | 0.15%",
+   "source_value": 0.15,
+   "source": "research/silver-bullet-strategy/silver-bullet_summary.json round_trip_cost_pct",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "bars in the data",
+   "shown": "35,040 | 35,040",
+   "source_value": 35040,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "fee per side",
+   "shown": "0.055% | 0.055%",
+   "source_value": 0.055,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "slippage per fill",
+   "shown": "0.02% | 0.02%",
+   "source_value": 0.02,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "in-sample fraction",
+   "shown": "70% | 70%",
+   "source_value": 70.0,
+   "source": "src/data/backtests/fvg-btcusdt.json",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "London window range vs average",
+   "shown": "0.83 times | 0.83 倍",
+   "source_value": 0.829,
+   "source": "research/ict-kill-zones/ict-kill-zones_summary.json windows[london_0200_0500]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "London window turnover share",
+   "shown": "9.99% | 9.99%",
+   "source_value": 9.99,
+   "source": "research/ict-kill-zones/ict-kill-zones_summary.json windows[london_0200_0500]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "London window clock share",
+   "shown": "12.5% | 12.5%",
+   "source_value": 12.5,
+   "source": "research/ict-kill-zones/ict-kill-zones_summary.json windows[london_0200_0500]",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "busiest 3h block start hour",
+   "shown": "09:00 to 12:00 | 09:00 到 12:00",
+   "source_value": 9,
+   "source": "research/ict-kill-zones/ict-kill-zones_summary.json three_hour_blocks_added_after_first_run",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "busiest 3h block range vs average",
+   "shown": "1.54 times | 1.54 倍",
+   "source_value": 1.542,
+   "source": "research/ict-kill-zones/ict-kill-zones_summary.json three_hour_blocks_added_after_first_run",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "busiest 3h block turnover",
+   "shown": "25.33% | 25.33%",
+   "source_value": 25.33,
+   "source": "research/ict-kill-zones/ict-kill-zones_summary.json three_hour_blocks_added_after_first_run",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas days counted",
+   "shown": "361 days | 361 天",
+   "source_value": 361,
+   "source": "research/judas-swing/judas-swing_summary.json new_york_midnight.all_days",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas swings",
+   "shown": "240 of 361 | 240 天",
+   "source_value": 240,
+   "source": "research/judas-swing/judas-swing_summary.json new_york_midnight.all_days",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas swings completed",
+   "shown": "53 of those | 53 次",
+   "source_value": 53,
+   "source": "research/judas-swing/judas-swing_summary.json new_york_midnight.all_days",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas completion rate",
+   "shown": "22.08% | 22.08%",
+   "source_value": 22.08,
+   "source": "research/judas-swing/judas-swing_summary.json new_york_midnight.all_days",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "judas completion, random directions",
+   "shown": "19.78% | 19.78%",
+   "source_value": 19.78,
+   "source": "research/judas-swing/judas-swing_summary.json baseline_random_directions",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "power of 3 days",
+   "shown": "37.12% | 37.12%",
+   "source_value": 37.12,
+   "source": "research/judas-swing/judas-swing_summary.json new_york_midnight.all_days",
+   "ok": true
+  },
+  {
+   "where": "text, en + zh-hant",
+   "what": "power of 3, random directions",
+   "shown": "35.13% | 35.13%",
+   "source_value": 35.13,
+   "source": "research/judas-swing/judas-swing_summary.json baseline_random_directions",
+   "ok": true
+  }
+ ]
+}
