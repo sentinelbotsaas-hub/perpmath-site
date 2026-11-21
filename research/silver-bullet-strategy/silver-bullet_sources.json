@@ -1,0 +1,70 @@
+{
+  "article": "en/silver-bullet-strategy",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the statements the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source. The rule in the article's code block is ours (the engine's fvg rule plus a clock filter), not a quotation from any of these pages.",
+  "definition_sources": [
+    {
+      "name": "TradingView open-source script: ICT Silver Bullet [LuxAlgo]",
+      "url": "https://www.tradingview.com/script/fq4wSUev-ICT-Silver-Bullet-LuxAlgo/",
+      "page_date": "published 4 July 2023, updated 6 July 2023",
+      "what_it_says": [
+        "Three windows in New York local time: London open 03:00 to 04:00, AM session 10:00 to 11:00, PM session 14:00 to 15:00.",
+        "Works with fair value gaps formed during the window; a gap that has not been retraced by the end of the session is made invisible.",
+        "Minimum distance settings: 40 ticks for index futures or indices, 15 pips for forex pairs, described as the best-case expected price delivery and not the actual entry-to-exit range.",
+        "Says to use anything below the 15-minute timeframe; its examples use the 3-minute timeframe.",
+        "No performance statistics."
+      ]
+    },
+    {
+      "name": "LuxAlgo library: Silver Bullet",
+      "url": "https://www.luxalgo.com/library/concept/silver-bullet/",
+      "page_date": "none shown",
+      "what_it_says": [
+        "An ICT setup defined by the clock: a specific one-hour window in which the trader looks for a single trade. Three windows, all anchored to New York time: 3 to 4 am, 10 to 11 am, 2 to 3 pm.",
+        "Inside the window, wait for the manipulation (a sweep of a mapped liquidity pool, or a clear structure shift), then enter on a fair value gap created by displacement inside the window. If no valid gap forms before the window closes, no trade.",
+        "Stop beyond the swing that formed the manipulation, or beyond the far edge of the entry gap in tighter variants. Target: the opposing liquidity pool identified before the window.",
+        "'No audited public statistics exist, and claimed win rates circulating online should be treated as marketing until shown otherwise.'",
+        "'instruments without a meaningful New York cadence, most crypto included, fit it poorly.'",
+        "Says the model was popularized through Michael J. Huddleston's ICT content in the early 2020s. It does not give a minimum gap size or a timeframe."
+      ]
+    },
+    {
+      "name": "AudaCity Capital: ICT Silver Bullet Strategy: Windows, Setup and Execution Rules",
+      "url": "https://audacity.capital/trading-guides/ict-silver-bullet-strategy/",
+      "page_date": "Updated Sep 24, 2026",
+      "what_it_says": [
+        "Same three windows, in New York local time. 'The setup must form inside the window.' A trade can be opened during the window and take considerably longer to reach the opposite liquidity pool.",
+        "Mark liquidity on the 15-minute chart before the window; execute on a 1, 3 or 5-minute chart (its example uses 3 minutes).",
+        "Confirming a market structure shift is described as a step some sources skip.",
+        "Stop: just past the candle that created the gap, or past the swing from the sweep. Target: the opposite liquidity pool, or a fixed reward-to-risk multiple in some sources. No required ratio or stop buffer is stated as a rule.",
+        "Reports that a 55% to 65% win rate cited by another guide comes from its author's discretionary observation and does not represent any study result."
+      ]
+    },
+    {
+      "name": "TradingView open-source script: Silver Bullet ICT Strategy [TradingFinder] 10-11 AM NY Time +FVG",
+      "url": "https://www.tradingview.com/script/yjZlKGfb-Silver-Bullet-ICT-Strategy-TradingFinder-10-11-AM-NY-Time-FVG/",
+      "page_date": "published 17 November 2024",
+      "what_it_says": [
+        "Focuses on the New York AM session, 10:00 to 11:00; its 'How to Use' section speaks of windows of 9:00-10:00 and 10:00-11:00, which does not match its own introduction.",
+        "Sequence: liquidity grab beyond a session high or low, market structure shift, order block, fair value gap entry.",
+        "Says the model is most effective on lower timeframes, 15-minute or lower. No backtest results."
+      ]
+    }
+  ],
+  "not_found": [
+    "A dated primary source in which Michael J. Huddleston states the silver bullet windows and rules. The article attributes the windows to the pages above.",
+    "Any audited or independently reproducible performance record for the model. LuxAlgo's library entry says none exists.",
+    "A minimum gap size for crypto. The only sizes found are 40 ticks (index futures) and 15 pips (forex) in LuxAlgo's script."
+  ],
+  "engine_and_data_sources": [
+    {"name": "perpmath engine (open source), fvg.py", "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/b1c4fd9/src/perpmath/strategies/fvg.py"},
+    {"name": "Bybit V5 kline endpoint (public)", "url": "https://bybit-exchange.github.io/docs/v5/market/kline"},
+    {"name": "Bybit trading fee structure", "url": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure",
+     "page_date": "Last updated on 2026-11-20 04:29:35", "what_it_says": ["VIP 0, perpetual and futures contracts: taker 0.0550%."]},
+    {"name": "NIST: Daylight Saving Time (DST)", "url": "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst"},
+    {"name": "NIST/SEMATECH e-Handbook: one-sample t-test", "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm"}
+  ],
+  "numbers": {
+    "everything_in_the_article": "research/silver-bullet-strategy/silver-bullet_summary.json, produced by research/silver-bullet-strategy/silver-bullet_research.py; candles by research/silver-bullet-strategy/download_candles.py"
+  }
+}

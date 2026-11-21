@@ -1,0 +1,93 @@
+{
+  "article": "en/ict-kill-zones",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the times were read from the page text. Findings are paraphrased here; the pages themselves are the source. No window is attributed to a particular lecture or year: we found no dated primary source for any of them.",
+  "kill_zone_sources": [
+    {
+      "name": "LuxAlgo library: Killzones",
+      "url": "https://www.luxalgo.com/library/concept/killzones/",
+      "page_date": "none shown",
+      "time_zone": "New York time (America/New_York)",
+      "windows": {
+        "Asian": "introduction: roughly 8:00 to 10:00 pm; calculation section: 20:00 to 00:00",
+        "London open": "02:00 to 05:00",
+        "New York AM": "07:00 to 10:00; index-futures variants use 08:30 to 11:00",
+        "London close": "10:00 to 12:00",
+        "New York PM": "1:30 to 4:00 pm (introduction only)"
+      },
+      "what_it_says": [
+        "Window boundaries differ by 30 to 90 minutes across ICT sources and platforms.",
+        "Crypto trades around the clock, yet volatility still tends to cluster near the traditional London and New York opens; test the windows on your instrument before trusting them.",
+        "The offset to other time zones drifts during the weeks when the US and UK change clocks on different dates.",
+        "No statistics are given. No originator is named beyond 'ICT (Inner Circle Trader) methodology'."
+      ]
+    },
+    {
+      "name": "LiteFinance: ICT Killzones Explained",
+      "url": "https://www.litefinance.org/blog/for-beginners/trading-strategies/ict-killzones/",
+      "page_date": "updated 12 June 2026",
+      "time_zone": "table gives UTC, BST and EDT columns",
+      "windows": {
+        "Asian": "20:00 to 23:00 EDT (00:00 to 03:00 UTC)",
+        "London": "03:00 to 06:00 EDT (07:00 to 10:00 UTC)",
+        "New York": "08:00 to 11:00 EDT (12:00 to 15:00 UTC)",
+        "London close": "11:00 to 13:00 EDT (15:00 to 17:00 UTC)"
+      },
+      "what_it_says": [
+        "The table states that its hours are displayed in daylight saving time.",
+        "It advises accounting for the switch between daylight and standard time; it does not give a winter table.",
+        "No performance statistics."
+      ],
+      "our_reading": "We treat these as New York wall-clock times, as the EDT column gives them. Read as fixed UTC hours instead, the London window would be 02:00 to 05:00 New York time in winter, which is LuxAlgo's window. The page does not say which is meant."
+    },
+    {
+      "name": "Equiti: ICT Killzones: London and New York sessions explained",
+      "url": "https://www.equiti.com/sc-en/news/trading-ideas/ict-kill-zones-explained-why-london-and-new-york-sessions-matter-to-traders/",
+      "page_date": "none shown",
+      "time_zone": "New York time",
+      "windows": {"London": "2:00 AM to 5:00 AM", "New York": "7:00 AM to 10:00 AM"},
+      "what_it_says": ["Asian session and London close are mentioned without times.", "Crypto is not mentioned.", "No statistics."]
+    },
+    {
+      "name": "TradingView open-source script: Session Killzones ICT Concept (mahirtrade)",
+      "url": "https://www.tradingview.com/script/b2jn5B1U-Session-Killzones-ICT-Concept/",
+      "page_date": "May 4 (the page shows no year)",
+      "time_zone": "New York time, automatic daylight-saving handling",
+      "windows": {"Asia": "20:00 to 00:00", "London": "02:00 to 05:00", "NY AM": "08:30 to 11:00", "NY PM": "13:30 to 16:00"}
+    },
+    {
+      "name": "TradingView open-source script: ICT Killzones + Macros [TakingProphets]",
+      "url": "https://www.tradingview.com/script/3IAWXYpA-ICT-Killzones-Macros-TakingProphets/",
+      "page_date": "published 1 February 2025, updated 23 August 2025",
+      "time_zone": "labelled EST; the page does not say whether the times follow daylight saving",
+      "windows": {"Asian range": "20:00 to 00:00", "London killzone": "02:00 to 05:00", "New York AM": "08:30 to 11:30",
+                  "New York lunch": "12:00 to 13:00 (described as the lower-volume period)", "New York PM": "13:30 to 18:00"}
+    },
+    {
+      "name": "MQL5 blog: ICT killzones: what they are and how to mark them cleanly (Hacene Harrous)",
+      "url": "https://www.mql5.com/en/blogs/post/774440",
+      "page_date": "20 August 2026",
+      "what_it_says": ["Gives no clock times and no time zone for either window. Read, not cited in the article."]
+    }
+  ],
+  "not_found": [
+    "A dated primary source (a lecture, a document) in which Michael J. Huddleston fixes the kill zone hours. The article attributes the windows to the pages above, not to him.",
+    "Any published measurement of kill-zone activity on crypto perpetuals. LuxAlgo's page asserts clustering near the London and New York opens without figures."
+  ],
+  "clock_sources": [
+    {"name": "NIST: Daylight Saving Time (DST)", "url": "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst",
+     "page_date": "last updated 9 February 2026",
+     "what_it_says": ["US daylight time begins at 2:00 a.m. on the second Sunday of March and ends at 2:00 a.m. on the first Sunday of November; in 2026, 8 March to 1 November."]},
+    {"name": "GOV.UK: When do the clocks change?", "url": "https://www.gov.uk/when-do-the-clocks-change",
+     "what_it_says": ["UK clocks go forward at 1am on the last Sunday in March and back at 2am on the last Sunday in October; in 2026, 29 March and 25 October."]},
+    {"name": "NYSE: Holidays and trading hours", "url": "https://www.nyse.com/markets/hours-calendars",
+     "what_it_says": ["Core trading session: 9:30 a.m. to 4:00 p.m. ET."]}
+  ],
+  "data_sources": [
+    {"name": "Bybit V5 kline endpoint (public)", "url": "https://bybit-exchange.github.io/docs/v5/market/kline"}
+  ],
+  "numbers": {
+    "everything_in_the_article": "research/ict-kill-zones/ict-kill-zones_summary.json, produced by research/ict-kill-zones/ict-kill-zones_research.py",
+    "trade_groups": "the engine's shipped results/fvg-btcusdt.json and results/liquidity-sweep-btcusdt.json (perpmath 0.2.2), regrouped by entry time"
+  }
+}

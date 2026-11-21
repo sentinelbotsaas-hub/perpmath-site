@@ -1,0 +1,6 @@
+# Full engine outputs with every trade can be re-created with
+# judas-swing_research.py; the summary JSON records the candle file's
+# SHA-256, both configs and both commands.
+runs/*.json
+!runs/*.config.json
+__pycache__/
