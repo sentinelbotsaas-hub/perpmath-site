@@ -1,0 +1,103 @@
+{
+  "article": "en/market-structure-shift",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the statements the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source. Nothing in the article is a quotation from these pages. The rules in the article's code block are our own, built on the engine's break_of_structure rules.",
+  "definition_sources": [
+    {
+      "name": "LuxAlgo library: Change of Character (CHoCH)",
+      "url": "https://www.luxalgo.com/library/concept/change-of-character/",
+      "page_date": "none shown (footer copyright 2020-2026)",
+      "what_it_says": [
+        "A change of character is the first structural break against the prevailing trend; a break of structure is its with-trend counterpart.",
+        "Vocabulary is not standardized: many traders use CHoCH and market structure shift interchangeably; others reserve MSS for a counter-trend break with displacement right after a liquidity sweep. Neither usage is official.",
+        "Which swing: the strictest common reading uses the higher low that produced the trend's final high; a looser one accepts any recent higher low, internal ones included, with more false alarms.",
+        "A body close beyond the level, ideally with displacement, is the usual filter.",
+        "Describes a lone change of character as failure-prone and as evidence, not confirmation."
+      ],
+      "note": "https://www.luxalgo.com/library/concept/market-structure-shift/ answers HTTP 308 with a redirect to the change-of-character page (checked with curl on 2026-11-22 local time)."
+    },
+    {
+      "name": "TMGM academy: Market Structure Shift",
+      "url": "https://www.tmgm.com/en/academy/trading-academy/market-structure-shift",
+      "page_date": "Last Updated: 5 Nov 2026",
+      "what_it_says": [
+        "A market structure shift is a change in price structure: price breaks a meaningful swing point against the existing trend.",
+        "Break of structure generally indicates continuation; the MSS / CHoCH distinction is less consistent across frameworks and some traders use the terms interchangeably.",
+        "A structural break alone can meet a broad definition; a stricter ICT-style approach adds displacement and context. A sweep is not universally required.",
+        "A body close offers clearer confirmation than a wick-only break.",
+        "No universally accepted mechanical definition of a valid MSS exists; pivot-based indicators confirm swings late, which makes historical signals look clearer than live ones."
+      ]
+    },
+    {
+      "name": "ATAS blog: Understanding Market Structure and Market Structure Shift (MSS)",
+      "url": "https://atas.net/blog/understanding-market-structure-and-market-structure-shift-mss/",
+      "page_date": "February 24, 2025 (author shown: Michael Burgstaller)",
+      "what_it_says": [
+        "MSS: price breaks a key swing high or low against the prevailing trend.",
+        "CHoCH is described as an early warning; MSS as stronger evidence, often accompanied by a fast, impulsive move.",
+        "Liquidity is context, not a requirement; the labels should not be read mechanically.",
+        "Does not say whether a candle close is needed."
+      ]
+    },
+    {
+      "name": "LiteFinance: ICT Market Structure Shift",
+      "url": "https://www.litefinance.org/blog/for-beginners/trading-strategies/ict-market-structure-shift/",
+      "page_date": "2026.11.11 (author shown: Alex Rodionov)",
+      "what_it_says": [
+        "CHoCH: a break of a significant higher low or lower high; needs neither a liquidity sweep nor displacement.",
+        "MSS: stricter criteria, typically a liquidity sweep followed by a decisive move; displacement is presented as a key feature.",
+        "A candle must close beyond the level; a wick alone is not enough.",
+        "On the sweep the page is not consistent: one section says it is not always required, another says to look for one before confirming.",
+        "Attributes the ICT methodology to Michael Huddleston; cites no specific lecture or year."
+      ]
+    },
+    {
+      "name": "Backtrex blog: Market Structure Shift vs CHoCH",
+      "url": "https://backtrex.com/en/blog/market-structure-shift-vs-choch",
+      "page_date": "published November 6, 2026, updated November 13, 2026",
+      "what_it_says": [
+        "MSS needs three things: a prior liquidity sweep, an impulsive displacement candle that leaves a fair value gap, and a candle close beyond the last major swing.",
+        "CHoCH: the first break of a swing against the dominant trend, with no displacement and no sweep required.",
+        "BOS: a break in the direction of the trend.",
+        "Refers to an official ICT definition and to Michael Huddleston without citing a lecture, a course or a date.",
+        "Presents no backtest results of its own."
+      ],
+      "publisher_note": "Backtrex sells a backtesting platform."
+    },
+    {
+      "name": "TradingView: Smart Money Concepts (SMC) [LuxAlgo], open-source script",
+      "url": "https://www.tradingview.com/script/CnB3fSph-Smart-Money-Concepts-SMC-LuxAlgo/",
+      "page_date": "first published 2022-10-11, last updated 2025-09-23",
+      "what_it_says": ["Labels BOS and CHoCH on internal and swing structure. The description does not define the difference between the two labels."],
+      "not_read": "The Pine Script source was not visible in the fetched page, so the article says nothing about how that script decides between the labels and does not cite it."
+    }
+  ],
+  "origin": {
+    "conclusion": "No dated, written primary source for 'market structure shift' or 'change of character' was found. Two of the five pages credit the method to Michael Huddleston; none cites a lecture or a date. The article attributes no wording to him."
+  },
+  "engine_sources": [
+    {"name": "break_of_structure.py at commit b1c4fd9 (version 0.2.2): swing, break, stop and target rules reused here",
+     "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/b1c4fd990633343427fe45df30fa9c6206cd2961/src/perpmath/strategies/break_of_structure.py"},
+    {"name": "README at the same commit, section 'Writing a strategy'",
+     "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/b1c4fd990633343427fe45df30fa9c6206cd2961/README.md#writing-a-strategy"}
+  ],
+  "data_and_cost_sources": [
+    {"name": "Bybit V5 kline endpoint (public)", "url": "https://bybit-exchange.github.io/docs/v5/market/kline"},
+    {"name": "Bybit trading fee structure", "url": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure",
+     "page_date": "Last updated on 2026-11-20 04:29:35 (shown on the page)",
+     "what_it_says": ["Perpetual and futures contracts, VIP 0: taker 0.0550%, maker 0.0200%."]},
+    {"name": "NIST/SEMATECH e-Handbook, one-sample t-test", "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm"}
+  ],
+  "numbers_from_other_articles": {
+    "776_continuations_and_854_reversals": "research/break-of-structure/break-of-structure_summary.json (the script stops if its own counts differ)",
+    "shipped_break_of_structure_rows_and_zero_cost_returns": "<engine>/results/break-of-structure-btcusdt.json and research/break-of-structure/break-of-structure_summary.json (run btcusdt-15m-swing5)",
+    "about_50_pct_further_along_from_any_bar": "research/break-of-structure/break-of-structure_summary.json (every_break_forward.baseline_every_bar_up / _down, after_20_bars: 50.10% and 49.89%)",
+    "faint_reversal_in_15m_returns": "research/mean-reversion-strategy/mean-reversion-strategy_summary.json (do_15m_returns_reverse)"
+  },
+  "not_coded": [
+    "The liquidity-sweep clause of the strict market structure shift definition.",
+    "A trend read from a higher timeframe, or from higher highs and higher lows over more than one break.",
+    "An entry on a retracement after the break."
+  ],
+  "author_note": "The author assumed before the run that the displacement filter could only reduce the number of trades. It raised it (88 to 135 in-sample), which was first suspected to be a bug and turned out to be the one-position rule: the filtered trades were shorter, so the rule was flat more often."
+}

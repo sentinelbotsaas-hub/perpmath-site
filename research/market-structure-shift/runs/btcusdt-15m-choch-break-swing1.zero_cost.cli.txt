@@ -1,0 +1,10 @@
+$ perpmath backtest choch_break --symbol BTCUSDT --interval 15m --config research/market-structure-shift/runs/btcusdt-15m-choch-break-swing1.zero_cost.config.json --out research/market-structure-shift/runs/btcusdt-15m-choch-break-swing1.zero_cost.json --data-dir <engine>/data
+  | look-ahead check (default): re-running the strategy on shortened data, this can take a while ...
+  | choch_break BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
+  | fee 0.0000% per side, slippage 0.0000% per fill, funding not modelled
+  | look-ahead check passed: cut after 2535 of 2535 signal bars and 4196 of 32504 other bars (the rest not checked)
+  |                trades   win %   avg R  t-stat  return %  max DD %
+  | in_sample         318   32.70   -0.02    0.41      8.50     24.03
+  | out_of_sample     165   38.18    0.15    0.58      8.22     16.07
+  | wrote research/market-structure-shift/runs/btcusdt-15m-choch-break-swing1.zero_cost.json
+  exit code 0

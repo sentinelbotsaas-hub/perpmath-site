@@ -1,0 +1,46 @@
+{
+  "article": "en/ict-trading",
+  "updated_on": "2026-11-22",
+  "what_changed": "Inverse fair value gap, change of character and market structure shift moved from 'Not yet' to tested. The counts in the description, tldr, opening paragraph, the heading and first line of the backtested section, 'What this page does not claim' and the last FAQ answer went from five tested and seven untested to eight and four. A parallel update edits the kill zone, silver bullet and judas swing rows of the same file; the counts have to be reconciled when both are merged.",
+  "lastmod_not_changed": "The frontmatter lastmod was left at 2026-11-25. The new rows belong to articles dated 2026-12-01; whoever merges should set lastmod to the day the updated page actually goes live.",
+  "sources_of_added_numbers": {
+    "inverse_fair_value_gap_rows": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (run btcusdt-15m-gap0_5-wait96, published_costs and zero_cost)",
+    "1432_of_1930_gaps_closed_through_74.20_pct_and_1543_past_midpoint": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (every_gap.closed_through_far_edge_within_wait, closed_beyond_midpoint_within_wait)",
+    "62.75_pct_of_retests_on_the_next_bar": "research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (every_gap.retest_of_inverse_gaps)",
+    "change_of_character_rows": "research/market-structure-shift/market-structure-shift_summary.json (run btcusdt-15m-choch-break-swing5)",
+    "market_structure_shift_rows": "research/market-structure-shift/market-structure-shift_summary.json (run btcusdt-15m-mss-displacement-swing5)",
+    "776_and_854": "research/market-structure-shift/market-structure-shift_summary.json (published_swing_size.breaks), equal to research/break-of-structure/break-of-structure_summary.json"
+  },
+  "table_of_eight": {
+    "in_sample_after_costs": {
+      "lost_and_statistically_clear": ["fair value gap (t -4.93)", "liquidity sweep (t -10.91)", "order block (t -3.77)", "inverse fair value gap (t -5.64)"],
+      "lost_not_distinguishable_from_zero": ["break of structure (t -1.57)", "breaker block (t -1.56)", "market structure shift, displacement version (t -0.90)"],
+      "fewer_than_100_trades": ["change of character (88 trades, +8.38%)"]
+    },
+    "out_of_sample_after_costs": {
+      "lost_with_at_least_100_trades": ["fair value gap", "liquidity sweep", "order block", "breaker block", "inverse fair value gap"],
+      "fewer_than_100_trades": ["break of structure (42)", "change of character (45)", "market structure shift (59)"]
+    },
+    "zero_cost_t_statistics_in_out": {
+      "fair_value_gap": [0.38, -0.97],
+      "liquidity_sweep": [-1.14, -1.11],
+      "order_block": [-0.38, 0.11],
+      "break_of_structure": [-1.23, 0.14],
+      "breaker_block": [1.30, 0.17],
+      "inverse_fair_value_gap": [-0.49, -1.46],
+      "change_of_character": [0.82, 0.26],
+      "market_structure_shift": [0.09, -0.58]
+    },
+    "in_sample_win_rates_pct": {"inverse_fair_value_gap": 29.95, "change_of_character": 30.68, "market_structure_shift": 32.59},
+    "costs_explain_most_of_the_in_sample_loss": {
+      "yes": ["fair value gap", "liquidity sweep", "order block", "breaker block", "inverse fair value gap (-63.09% to -9.34%)", "market structure shift (-24.92% to -1.37%)"],
+      "no": ["break of structure (-43.34% to -35.56%)"],
+      "not_applicable": ["change of character (fewer than 100 trades, positive return)"]
+    }
+  },
+  "caveats_written_into_the_article": [
+    "The market structure shift row is the displacement version; the sweep in the page's one-line rule was not coded.",
+    "Both structure rows take the trend to be the direction of the previous break.",
+    "The three new rules live in research scripts, not in the engine, and have no page under /backtests/."
+  ]
+}

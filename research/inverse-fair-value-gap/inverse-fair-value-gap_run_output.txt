@@ -1,0 +1,241 @@
+# Output of the run behind research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json (engine perpmath 0.2.2).
+# Command, from the site's root folder: ../perpmath-engine/.venv/Scripts/python research/inverse-fair-value-gap/inverse-fair-value-gap_research.py --offline
+# The published setting was run by the engine at 2026-11-21T19:56:26Z (UTC).
+
+self-checks: passed
+engine perpmath 0.2.2; strategy 'inverse_fvg' registered at run time from this script
+candles: BTCUSDT-15m.csv, 35040 bars, sha256 ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037
+
+$ perpmath backtest inverse_fvg --symbol BTCUSDT --interval 15m --config research/inverse-fair-value-gap/runs/btcusdt-15m-gap0_5-wait96.published_costs.config.json --out research/inverse-fair-value-gap/runs/btcusdt-15m-gap0_5-wait96.published_costs.json --data-dir <engine>/data
+  | look-ahead check (default): re-running the strategy on shortened data, this can take a while ...
+  | inverse_fvg BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
+  | fee 0.0550% per side, slippage 0.0200% per fill, funding not modelled
+  | look-ahead check passed: cut after 1181 of 1181 signal bars and 4379 of 33858 other bars (the rest not checked)
+  |                trades   win %   avg R  t-stat  return %  max DD %
+  | in_sample         621   29.95   -0.64   -5.64    -63.09     64.48
+  | out_of_sample     301   23.59   -1.09   -7.14    -45.44     45.84
+  | wrote research/inverse-fair-value-gap/runs/btcusdt-15m-gap0_5-wait96.published_costs.json
+  exit code 0
+btcusdt-15m-gap0_5-wait96    published_costs in  621 trades win  29.95%   -63.09% t  -5.64 R  -0.64   out  301 trades win  23.59%   -45.44% t  -7.14 R  -1.09
+btcusdt-15m-gap0_5-wait96    zero_cost       in  633 trades win  32.86%    -9.34% t  -0.49 R  -0.01   out  313 trades win  29.07%   -11.80% t  -1.46 R  -0.13
+btcusdt-15m-gap0_25-wait96   published_costs in 1132 trades win  28.18%   -84.39% t  -9.19 R  -0.81   out  510 trades win  26.08%   -55.35% t  -7.85 R  -1.09
+btcusdt-15m-gap0_25-wait96   zero_cost       in 1154 trades win  31.72%   -19.58% t  -1.02 R  -0.05   out  532 trades win  30.08%    -5.76% t  -0.55 R  -0.10
+btcusdt-15m-gap1_0-wait96    published_costs in  168 trades win  35.71%   -16.45% t  -1.42 R  -0.29   out   94 trades win  22.34%   -22.75% t  -3.91 R  -0.85
+btcusdt-15m-gap1_0-wait96    zero_cost       in  168 trades win  36.31%     4.07% t   0.40 R   0.09   out   96 trades win  26.04%    -9.61% t  -1.52 R  -0.22
+btcusdt-15m-gap0_5-wait24    published_costs in  478 trades win  29.71%   -54.52% t  -5.46 R  -0.68   out  220 trades win  22.73%   -35.67% t  -6.62 R  -1.16
+btcusdt-15m-gap0_5-wait24    zero_cost       in  484 trades win  32.85%    -9.04% t  -0.61 R  -0.01   out  225 trades win  29.33%    -7.40% t  -1.13 R  -0.12
+btcusdt-15m-gap0_5-wait288   published_costs in  694 trades win  30.69%   -62.52% t  -4.94 R  -0.60   out  321 trades win  25.86%   -43.27% t  -5.50 R  -0.94
+btcusdt-15m-gap0_5-wait288   zero_cost       in  708 trades win  33.76%     3.82% t   0.29 R   0.01   out  332 trades win  30.42%    -6.38% t  -0.61 R  -0.09
+
+wrote research/inverse-fair-value-gap/inverse-fair-value-gap_summary.json
+{
+ "params": {
+  "atr_period": 14,
+  "min_gap_atr": 0.5,
+  "max_wait_bars": 96,
+  "stop_buffer_atr": 0.1,
+  "r_multiple": 2.0
+ },
+ "bars": 35040,
+ "gaps_passing_size_filter": {
+  "total": 1930,
+  "bullish": 977,
+  "bearish": 953,
+  "matches_fvg_gap_stats_json": true
+ },
+ "closed_through_far_edge_within_wait": {
+  "gaps": 1432,
+  "pct_of_gaps": 74.2,
+  "not_closed_through": 498,
+  "bars_from_gap_to_close_through_median": 12.0,
+  "bars_from_gap_to_close_through_mean": 19.12,
+  "on_the_very_next_bar": 75,
+  "on_the_very_next_bar_pct": 5.24,
+  "within_4_bars_pct": 25.07,
+  "within_20_bars_pct": 67.46
+ },
+ "closed_beyond_midpoint_within_wait": {
+  "gaps": 1543,
+  "pct_of_gaps": 79.95,
+  "note": "The looser reading of inversion. Counted only; no strategy was run on it."
+ },
+ "retest_of_inverse_gaps": {
+  "inverse_gaps": 1432,
+  "retested_within_wait": 1337,
+  "retested_pct": 93.37,
+  "bars_from_close_through_to_retest_median": 1,
+  "retest_on_the_very_next_bar": 839,
+  "retest_on_the_very_next_bar_pct": 62.75,
+  "retest_within_4_bars_pct": 80.1,
+  "signal": 1202,
+  "signal_pct_of_inverse_gaps": 83.94,
+  "failed_closed_back_through": 135,
+  "failed_pct_of_inverse_gaps": 9.43,
+  "expired_never_retested": 93,
+  "expired_pct_of_inverse_gaps": 6.49,
+  "still_waiting_at_end_of_data": 2,
+  "signal_bars": 1181,
+  "signals_seen_by_engine": 1181,
+  "signals_ignored_while_in_a_position": 259
+ },
+ "by_side": {
+  "bullish_gap_to_bearish_inverse": {
+   "gaps": 977,
+   "closed_through": 741,
+   "closed_through_pct": 75.84,
+   "retested": 692,
+   "signal": 623,
+   "failed_on_retest": 69,
+   "expired": 47
+  },
+  "bearish_gap_to_bullish_inverse": {
+   "gaps": 953,
+   "closed_through": 691,
+   "closed_through_pct": 72.51,
+   "retested": 645,
+   "signal": 579,
+   "failed_on_retest": 66,
+   "expired": 46
+  }
+ },
+ "same_gap_under_the_fvg_return_rule": {
+  "note": "'entered', 'failed' and 'expired' are what rule 4 of the engine's fvg strategy did with the gap on its first return. A gap can give an fvg entry and, later, an inverse-gap entry in the opposite direction.",
+  "entered": {
+   "gaps": 1607,
+   "later_closed_through": 1263,
+   "later_closed_through_pct": 78.59,
+   "gave_inverse_signal": 1067,
+   "gave_inverse_signal_pct": 66.4
+  },
+  "failed": {
+   "gaps": 169,
+   "later_closed_through": 169,
+   "later_closed_through_pct": 100.0,
+   "gave_inverse_signal": 135,
+   "gave_inverse_signal_pct": 79.88
+  },
+  "expired": {
+   "gaps": 154,
+   "later_closed_through": 0,
+   "later_closed_through_pct": 0.0,
+   "gave_inverse_signal": 0,
+   "gave_inverse_signal_pct": 0.0
+  },
+  "entered_then_closed_through_bars_between_median": 7,
+  "entered_then_closed_through_on_the_same_bar_or_next": 157
+ },
+ "after_the_close_through": {
+  "inversions": 1432,
+  "after_4_bars": {
+   "with_data": 1431,
+   "mean_move_pct": 0.0046,
+   "median_move_pct": -0.0129,
+   "moved_further_pct": 47.8
+  },
+  "after_20_bars": {
+   "with_data": 1430,
+   "mean_move_pct": 0.0266,
+   "median_move_pct": -0.0103,
+   "moved_further_pct": 49.44
+  },
+  "after_96_bars": {
+   "with_data": 1428,
+   "mean_move_pct": 0.0967,
+   "median_move_pct": 0.0332,
+   "moved_further_pct": 50.35
+  }
+ },
+ "forward_note": "Moves are measured from the open after the bar that closed through the gap to the close h bars after it, in the direction of that close, before costs. Windows overlap; these describe the chart and are not trades."
+}
+{
+ "in_sample": {
+  "long": {
+   "trades": 320,
+   "wins": 88,
+   "win_rate_pct": 27.5,
+   "avg_r": -0.6891,
+   "avg_trade_return_pct": -0.1691,
+   "sum_of_trade_returns_pct": -54.116
+  },
+  "short": {
+   "trades": 301,
+   "wins": 98,
+   "win_rate_pct": 32.56,
+   "avg_r": -0.5885,
+   "avg_trade_return_pct": -0.1461,
+   "sum_of_trade_returns_pct": -43.9737
+  },
+  "by_exit_reason": {
+   "stop": {
+    "trades": 431,
+    "wins": 0,
+    "win_rate_pct": 0.0,
+    "avg_r": -1.5548,
+    "avg_trade_return_pct": -0.5191,
+    "sum_of_trade_returns_pct": -223.7451
+   },
+   "target": {
+    "trades": 190,
+    "wins": 186,
+    "win_rate_pct": 97.89,
+    "avg_r": 1.4342,
+    "avg_trade_return_pct": 0.6613,
+    "sum_of_trade_returns_pct": 125.6554
+   }
+  },
+  "entry_to_stop_pct_of_price": {
+   "min": 0.0371,
+   "median": 0.3263,
+   "max": 2.8735
+  },
+  "round_trip_cost_pct": 0.15,
+  "round_trip_cost_in_r_at_median_stop": 0.4597,
+  "trades_with_stop_closer_than_round_trip_cost": 100,
+  "avg_bars_held": 10.9
+ },
+ "out_of_sample": {
+  "long": {
+   "trades": 130,
+   "wins": 34,
+   "win_rate_pct": 26.15,
+   "avg_r": -0.991,
+   "avg_trade_return_pct": -0.1838,
+   "sum_of_trade_returns_pct": -23.8901
+  },
+  "short": {
+   "trades": 171,
+   "wins": 37,
+   "win_rate_pct": 21.64,
+   "avg_r": -1.1608,
+   "avg_trade_return_pct": -0.2122,
+   "sum_of_trade_returns_pct": -36.2837
+  },
+  "by_exit_reason": {
+   "stop": {
+    "trades": 225,
+    "wins": 0,
+    "win_rate_pct": 0.0,
+    "avg_r": -1.8692,
+    "avg_trade_return_pct": -0.416,
+    "sum_of_trade_returns_pct": -93.6092
+   },
+   "target": {
+    "trades": 76,
+    "wins": 71,
+    "win_rate_pct": 93.42,
+    "avg_r": 1.2268,
+    "avg_trade_return_pct": 0.4399,
+    "sum_of_trade_returns_pct": 33.4354
+   }
+  },
+  "entry_to_stop_pct_of_price": {
+   "min": 0.0242,
+   "median": 0.2175,
+   "max": 1.4375
+  },
+  "round_trip_cost_pct": 0.15,
+  "round_trip_cost_in_r_at_median_stop": 0.6898,
+  "trades_with_stop_closer_than_round_trip_cost": 102,
+  "avg_bars_held": 8.5
+ }
+}

@@ -1,18 +1,18 @@
 ---
 title: "ICT trading: 12 concepts written as rules, and what we tested"
 slug: "ict-trading"
-description: "ICT trading and smart money concepts as a map: 12 terms each written as a rule a program can check, where the definitions are loose, and the five we have backtested."
+description: "ICT trading and smart money concepts as a map: 12 terms each written as a rule a program can check, where the definitions are loose, and the eight we have backtested."
 date: "2026-11-25"
 lastmod: "2026-11-25"
 lang: "en"
 category: "Backtests"
 tags: ["ICT trading", "smart money concepts", "order block", "fair value gap", "liquidity sweep", "backtest"]
 keywords: ["ict trading", "smart money concepts", "ict concepts", "ict trading strategy", "smc trading"]
-tldr: "ICT trading is a way of reading price charts taught by Michael J. Huddleston under the name The Inner Circle Trader; smart money concepts (SMC) is the wider community's label for much the same vocabulary. This page writes 12 of its terms as rules a program can check and marks which ones we have backtested. Five so far, each in one mechanical form on BTCUSDT 15-minute bars from 18 November 2025 to 18 November 2026. All five lost money in-sample after costs: fair value gap 66.94%, liquidity sweep 93.98%, order block 42.33%, break of structure 43.34%, breaker block 18.44%. Out-of-sample four of them lost again, and break of structure made only 42 trades, too few to read. The other seven are untested here, and we make no claim about them either way."
+tldr: "ICT trading is a way of reading price charts taught by Michael J. Huddleston under the name The Inner Circle Trader; smart money concepts (SMC) is the wider community's label for much the same vocabulary. This page writes 12 of its terms as rules a program can check and marks which ones we have backtested. Eight so far, each in one mechanical form on BTCUSDT 15-minute bars from 18 November 2025 to 18 November 2026. Seven lost money in-sample after costs: fair value gap 66.94%, liquidity sweep 93.98%, order block 42.33%, break of structure 43.34%, breaker block 18.44%, inverse fair value gap 63.09%, and the displacement form of the market structure shift 24.92%. The eighth, a change of character rule, made 88 trades, too few to read. Out-of-sample five of them lost again, and the three structure rules made 42, 45 and 59 trades, too few to read. The other four are untested here, and we make no claim about them either way."
 ---
 
 <!-- unique:firsthand-data -->
-This page lists twelve ICT terms, and we have backtested five of them. All five lost money in-sample after costs on a year of BTCUSDT 15-minute candles, from 18.44% for the breaker block retest to 93.98% for the liquidity sweep fade. Three of those losses are statistically clear and two cannot be told apart from zero. With fees and slippage set to zero, none of the ten BTCUSDT sample blocks reached a t-statistic of 2 in either direction. For the other seven terms we have no result, so the table below says "not yet" and nothing more.
+This page lists twelve ICT terms, and we have backtested eight of them. Seven lost money in-sample after costs on a year of BTCUSDT 15-minute candles, from 18.44% for the breaker block retest to 93.98% for the liquidity sweep fade; the eighth, a change of character rule, made too few trades to read. Four of those losses are statistically clear and three cannot be told apart from zero. With fees and slippage set to zero, none of the sixteen BTCUSDT sample blocks reached a t-statistic of 2 in either direction. For the other four terms we have no result, so the table below says "not yet" and nothing more.
 
 ## What is ICT trading?
 
@@ -46,9 +46,9 @@ Each row has a rule short enough to type into a program, written for the bullish
 | Order block | `down bar, then run closes > swingHigh(k)` | which candle, move size | -42.33% / -18.71% |
 | Breaker block | `order block, then closed through` | sweep first? | -18.44% / -15.07% |
 | Break of structure | `uptrend, close > swingHigh(k)` | k, wick or close | -43.34% / -3.35%* |
-| Change of character | `uptrend, close < higherLow(k)` | which swing | Not yet |
-| Market structure shift | `CHoCH right after a sweep` | or a synonym | Not yet |
-| Inverse fair value gap | `FVG, then closed through` | gap or midpoint | Not yet |
+| Change of character | `uptrend, close < higherLow(k)` | which swing | +8.38%* / -2.01%* |
+| Market structure shift | `CHoCH right after a sweep` | or a synonym | -24.92% / -15.03%* |
+| Inverse fair value gap | `FVG, then closed through` | gap or midpoint | -63.09% / -45.44% |
 | Kill zones | `02:00 <= NY time < 05:00` | window edges | Not yet |
 | Judas swing | `sweeps session low, close > open` | size, session | Not yet |
 | Power of 3 | `low < open, close in top third` | no thresholds | Not yet |
@@ -57,6 +57,8 @@ Each row has a rule short enough to type into a program, written for the bullish
 "Not yet" means exactly that. We have not run it, and this page says nothing about whether it works.
 
 The asterisk marks a figure that should not be read as a result: out-of-sample, the break of structure rule made 42 trades, under the 100 the engine needs before it will call a sample sufficient. The rule we ran also has no definition of trend, so it trades every close beyond the latest swing, changes of character included.
+
+The same asterisk applies to the change of character row in both samples (88 and 45 trades) and to the market structure shift row out-of-sample (59 trades). Those two rows take the trend to be the direction of the previous break, and the market structure shift figure is for the version with displacement only; the sweep in the one-line rule above was not coded.
 
 ## Each ICT concept as one sentence a program can check
 
@@ -76,10 +78,10 @@ The same twelve, in full sentences, with the job each one does in the ICT accoun
 - **Power of 3.** A day that trades below its midnight open first and closes above it, in the top third of its range. Role: a three-phase template of accumulation, manipulation and distribution.
 - **Silver bullet.** The first fair value gap that forms between 10:00 and 11:00 New York time, entered when price returns to it. Role: a one-setup-per-window trade model.
 
-## The five concepts we have backtested
+## The eight concepts we have backtested
 
 <!-- unique:firsthand-data -->
-All five tests use the same data: 35,040 BTCUSDT 15-minute bars from Bybit's public endpoint, 18 November 2025 to 18 November 2026, none missing, with the first 70% in-sample and the rest (from 31 July 2026) out-of-sample. Costs are 0.055% per side plus 0.02% slippage per fill; funding is not modelled. The rules and the engine are open source in the [perpmath repository](https://github.com/sentinelbotsaas-hub/perpmath) (checked 22 November 2026).
+All eight tests use the same data: 35,040 BTCUSDT 15-minute bars from Bybit's public endpoint, 18 November 2025 to 18 November 2026, none missing, with the first 70% in-sample and the rest (from 31 July 2026) out-of-sample. Costs are 0.055% per side plus 0.02% slippage per fill; funding is not modelled. The rules and the engine are open source in the [perpmath repository](https://github.com/sentinelbotsaas-hub/perpmath) (checked 22 November 2026).
 
 | Rule tested | Sample | Trades | Avg R | t-stat | Return | Max drawdown | Zero-cost return |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -93,9 +95,15 @@ All five tests use the same data: 35,040 BTCUSDT 15-minute bars from Bybit's pub
 | Break of structure | Out | 42 | +0.06 | -0.11 | -3.35% | 23.57% | +0.91% |
 | Breaker block | In | 243 | -0.56 | -1.56 | -18.44% | 21.23% | +16.45% |
 | Breaker block | Out | 120 | -0.79 | -2.88 | -15.07% | 16.62% | +0.78% |
+| Inverse fair value gap | In | 621 | -0.64 | -5.64 | -63.09% | 64.48% | -9.34% |
+| Inverse fair value gap | Out | 301 | -1.09 | -7.14 | -45.44% | 45.84% | -11.80% |
+| Change of character | In | 88 | -0.21 | 0.41 | +8.38% | 24.40% | +22.86% |
+| Change of character | Out | 45 | +0.07 | -0.08 | -2.01% | 15.41% | +2.63% |
+| Market structure shift | In | 135 | -0.15 | -0.90 | -24.92% | 36.57% | -1.37% |
+| Market structure shift | Out | 59 | -0.24 | -1.03 | -15.03% | 23.43% | -9.04% |
 
 <!-- unique:original-calc -->
-All five rules aim for twice the risk, which needs a win rate of 33.33% before costs. In-sample they won 31.46% (gap), 29.16% (sweep), 30.77% (order block), 31.54% (break of structure) and 33.74% (breaker block) of their trades. The last column is the same rules rerun with fee and slippage at zero. Its ten t-statistics run from -1.23 to 1.30, all inside the band where a result is indistinguishable from zero. For four of the rules, costs explain most of the loss and removing them uncovers nothing. Break of structure is the exception: its stops are several times wider, costs explain under a fifth of its in-sample loss, and what is left is too noisy to call.
+All eight rules aim for twice the risk, which needs a win rate of 33.33% before costs. In-sample they won 31.46% (gap), 29.16% (sweep), 30.77% (order block), 31.54% (break of structure), 33.74% (breaker block), 29.95% (inverse gap), 30.68% (change of character) and 32.59% (market structure shift) of their trades. The last column is the same rules rerun with fee and slippage at zero. Its sixteen t-statistics run from -1.46 to 1.30, all inside the band where a result is indistinguishable from zero. For six of the rules, costs explain most of the loss and removing them uncovers nothing. Break of structure is the exception: its stops are several times wider, costs explain under a fifth of its in-sample loss, and what is left is too noisy to call. The change of character rule has too few trades for the question to be asked.
 
 <!-- unique:firsthand-data -->
 The [fair value gap](/learn/fair-value-gap/) write-up has the detail that surprises people: price did return to 92.02% of the 1,930 gaps that passed our size filter, and trading that return still lost. The full report is the [FVG backtest](/backtests/fvg-btcusdt/).
@@ -111,6 +119,12 @@ The [break of structure](/learn/break-of-structure/) rule follows a close beyond
 
 <!-- unique:firsthand-data -->
 The [breaker block](/learn/breaker-block/) rule takes those same 801 order blocks, waits for a close through one, and enters on the first retest in the direction of that close. It lost 18.44% in-sample, which cannot be told apart from zero, and 15.07% out-of-sample, which can. The report is the [breaker block backtest](/backtests/breaker-block-btcusdt/).
+
+<!-- unique:firsthand-data -->
+The [inverse fair value gap](/learn/inverse-fair-value-gap/) rule waits for a close through the whole of a fair value gap and enters on the first retest, in the direction of that close. Of the year's 1,930 gaps, 1,432 (74.20%) were closed through within 24 hours, and 62.75% of the retests came on the very next bar. It lost 63.09% and 45.44%, close to what the gap rule itself lost. This rule is written in that article's research script and is not among the engine's shipped strategies, so it has no page under backtests.
+
+<!-- unique:firsthand-data -->
+The [market structure shift](/learn/market-structure-shift/) article tests two rules on the break of structure swings, both taking the trend to be the direction of the previous break. The change of character rule trades only breaks against that direction: 854 of the year's 1,630 labelled breaks, which became 88 and 45 trades, too few to read in either sample. The market structure shift rule adds a displacement filter (a breaking bar of at least 1.5 ATR) and leaves out the sweep; it lost 24.92% in-sample over 135 trades with a t-statistic of -0.90, and made 59 trades out-of-sample. Both are in that article's research script, not in the engine.
 
 Each result covers one mechanical reading of one concept, on crypto perpetuals, in a year when BTCUSDT fell 29.86%. None of them tests a trader who combines several of these ideas with judgement.
 
@@ -131,7 +145,7 @@ In code, the whole group hangs on one parameter: how many bars on each side make
 An order block is the last candle that closed against a move before the move took off, and the move is the part that matters. LuxAlgo's [order block entry](https://www.luxalgo.com/library/concept/bullish-bearish-order-block/) (checked 22 November 2026) says the candle alone is not the concept, lists several ways traders draw the zone (the candle's full range, its body only, its open to its extreme, sometimes refined to the midpoint), calls none of them official, and adds that no reliable hit rate exists. The TradingView script goes further on cause, describing order blocks as areas where institutional participants open positions. A chart cannot confirm who traded there.
 
 <!-- unique:cross-reference -->
-The other two zone terms are defined by failure. A [breaker block](https://www.luxalgo.com/library/concept/breaker-block/) is an order block that price traded through, after which that zone is read in the opposite direction. LuxAlgo notes two readings in circulation: a strict one in which a sweep of a prior high or low must come first, and a looser one in which any violated order block qualifies. An [inverse fair value gap](https://www.luxalgo.com/library/concept/inversion-fvg/) is the same move applied to a gap, and the open question there is whether price must close through the whole gap or only past its midpoint.
+The other two zone terms are defined by failure. A [breaker block](https://www.luxalgo.com/library/concept/breaker-block/) is an order block that price traded through, after which that zone is read in the opposite direction. LuxAlgo notes two readings in circulation: a strict one in which a sweep of a prior high or low must come first, and a looser one in which any violated order block qualifies. An [inverse fair value gap](https://www.luxalgo.com/library/concept/inversion-fvg/) is the same move applied to a gap, and the open question there is whether price must close through the whole gap or only past its midpoint. On our chart the two readings give 1,432 and 1,543 inverted gaps out of 1,930.
 
 <!-- unique:operator-view -->
 Here is the testing problem those two create, seen from the side of someone who has to write the code. A zone that holds gets counted as an order block doing its job. A zone that breaks gets renamed and counted as a breaker doing its job. Each can be coded and tested by itself, with its entry fixed in advance, and we have now done both. On our chart 59.68% of order blocks were closed through within 24 hours of forming, and of the blocks that gave an order block entry signal, 63.60% later gave a [breaker block](/learn/breaker-block/) signal in the opposite direction. What cannot be tested is a reading that picks whichever label fits once the candles are in.
@@ -181,9 +195,9 @@ Step 4 is where the gap and sweep tests died. Both rules put the stop just behin
 
 ## What this page does not claim
 
-It does not claim ICT trading fails. Five of twelve concepts have been tested, each in one mechanical form, on one year of crypto data. That is thin ground for a verdict on a method whose own home page speaks to forex traders and which is used with discretion.
+It does not claim ICT trading fails. Eight of twelve concepts have been tested, each in one mechanical form, on one year of crypto data. That is thin ground for a verdict on a method whose own home page speaks to forex traders and which is used with discretion.
 
-It does not claim ICT trading works either. For seven of the twelve rows we have nothing, and for the method as a whole we found no verified record. When we publish another test, its row in the table changes and this page's date changes with it.
+It does not claim ICT trading works either. For four of the twelve rows we have nothing, and for the method as a whole we found no verified record. When we publish another test, its row in the table changes and this page's date changes with it.
 
 ## FAQ
 
@@ -201,7 +215,7 @@ The most cited set, in New York time, is 02:00 to 05:00 for the London open and 
 
 ### What is the difference between a break of structure and a change of character?
 
-Direction. A break of structure takes out a swing point in the direction of the existing trend. A change of character is the first break against it. Both depend on how a swing is defined, which the terms themselves don't settle. The break of structure rule we backtested does not separate the two.
+Direction. A break of structure takes out a swing point in the direction of the existing trend. A change of character is the first break against it. Both depend on how a swing is defined, which the terms themselves don't settle. The break of structure rule we backtested does not separate the two. A later test that does, taking the previous break as the trend, counted 776 breaks of structure and 854 changes of character in the year.
 
 ### Can ICT concepts be backtested?
 
@@ -210,4 +224,4 @@ One at a time, yes, once each is written as a fixed rule. The combined discretio
 ### Does ICT trading work?
 
 <!-- unique:firsthand-data -->
-Nobody has published evidence that settles it, and we haven't either. We tested mechanical versions of five concepts on BTCUSDT 15-minute bars. All five lost money in-sample after costs, from 18.44% for the breaker block retest to 93.98% for the liquidity sweep fade, and none showed a measurable edge with costs removed. Seven other concepts are untested here. We found no audited performance record for the method.
+Nobody has published evidence that settles it, and we haven't either. We tested mechanical versions of eight concepts on BTCUSDT 15-minute bars. Seven lost money in-sample after costs, from 18.44% for the breaker block retest to 93.98% for the liquidity sweep fade, the eighth made too few trades to read, and none showed a measurable edge with costs removed. Four other concepts are untested here. We found no audited performance record for the method.

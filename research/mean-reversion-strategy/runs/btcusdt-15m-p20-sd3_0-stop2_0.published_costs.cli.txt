@@ -1,0 +1,10 @@
+$ perpmath backtest mean_reversion_band --symbol BTCUSDT --interval 15m --config research/mean-reversion-strategy/runs/btcusdt-15m-p20-sd3_0-stop2_0.published_costs.config.json --out research/mean-reversion-strategy/runs/btcusdt-15m-p20-sd3_0-stop2_0.published_costs.json --data-dir <engine>/data
+  | look-ahead check (default): re-running the strategy on shortened data, this can take a while ...
+  | mean_reversion_band BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
+  | fee 0.0550% per side, slippage 0.0200% per fill, funding not modelled
+  | look-ahead check passed: cut after 7543 of 35020 signal bars and 19 of 19 other bars (the rest not checked)
+  |                trades   win %   avg R  t-stat  return %  max DD %
+  | in_sample         287   42.86   -0.34   -3.37    -37.60     38.00
+  | out_of_sample     126   36.51   -0.42   -2.59    -18.39     18.77
+  | wrote research/mean-reversion-strategy/runs/btcusdt-15m-p20-sd3_0-stop2_0.published_costs.json
+  exit code 0
