@@ -14,6 +14,8 @@ import {
   LIQUIDATION_START,
   POSITION_START,
 } from '../../../components/calc/starting-values';
+import { KELLY_START, RISK_REWARD_START, RUIN_START } from '../../../components/calc/starting-values';
+import { formatProbability, ratioText, typedNumber, typedPercent } from '../../../components/calc/figures';
 import { splitFigure } from '../../../components/calc/calc-ui';
 import { TOOL_GROUP, TOOL_GROUPS, TOOL_ICON } from '../../../components/calc/tool-meta';
 import PageContainer from '../../../components/ui/PageContainer.astro';
@@ -29,6 +31,9 @@ import { drawdown } from '../../../lib/calc/drawdown';
 import { floorTo, maxLeverage } from '../../../lib/calc/leverage';
 import { liquidationPrice, roundToTick } from '../../../lib/calc/liquidation';
 import { positionSize } from '../../../lib/calc/position-size';
+import { kelly } from '../../../lib/calc/kelly';
+import { riskOfRuin } from '../../../lib/calc/risk-of-ruin';
+import { riskReward } from '../../../lib/calc/risk-reward';
 import { fmt, formatNumber, formatPercent, tickDecimals } from '../../../lib/fmt';
 import { BTCUSDT, tierOne } from '../../../lib/risk-limit';
 import { breadcrumbLd } from '../../../lib/seo';
@@ -102,6 +107,33 @@ function worked(slug: ToolSlug): Record<string, string | number> | null {
   if (slug === 'drawdown-calculator') {
     const r = drawdown({ mode: 'drawdown', drawdown: DRAWDOWN_START.dd / 100 });
     return r.ok ? { lost: percent(r.drawdown), needed: percent(r.recoveryGain) } : null;
+  }
+  if (slug === 'risk-of-ruin-calculator') {
+    const s = RUIN_START;
+    const input = { winRate: s.win / 100, payoff: s.payoff, riskPerTrade: s.risk / 100, threshold: s.dd / 100, trades: s.n };
+    const r = riskOfRuin(input);
+    return r.ok
+      ? {
+          win: typedPercent(input.winRate),
+          payoff: typedNumber(s.payoff),
+          risk: typedPercent(input.riskPerTrade),
+          dd: typedPercent(input.threshold),
+          n: formatNumber(s.n),
+          prob: formatProbability(r.probability),
+        }
+      : null;
+  }
+  if (slug === 'risk-reward-calculator') {
+    const s = RISK_REWARD_START;
+    const r = riskReward({ entryPrice: s.entry, stopPrice: s.stop, targetPrice: s.target, feeRate: ASSUMED_FEE_PCT / 100 });
+    return r.ok
+      ? { entry: formatNumber(s.entry), stop: formatNumber(s.stop), target: formatNumber(s.target), ratio: ratioText(r.ratio) }
+      : null;
+  }
+  if (slug === 'kelly-criterion-calculator') {
+    const s = KELLY_START;
+    const r = kelly({ winRate: s.win / 100, payoff: s.payoff });
+    return r.ok && r.bet ? { win: typedPercent(s.win / 100), payoff: typedNumber(s.payoff), full: percent(r.full) } : null;
   }
   return null;
 }

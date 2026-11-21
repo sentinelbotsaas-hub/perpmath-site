@@ -44,7 +44,7 @@ export const toolIndex = defineStrings<ToolCopy>({
     },
     'risk-of-ruin-calculator': {
       name: 'Risk of ruin calculator',
-      question: 'How likely am I to empty the account?',
+      question: 'How likely is my account to fall to a given drawdown?',
     },
     'risk-reward-calculator': {
       name: 'Risk reward calculator',
@@ -86,7 +86,7 @@ export const toolIndex = defineStrings<ToolCopy>({
     },
     'risk-of-ruin-calculator': {
       name: '破產風險計算機',
-      question: '照我的勝率和單筆風險，把帳戶賠光的機率有多高？',
+      question: '照我的勝率和單筆風險，帳戶跌到某個回撤門檻的機率有多高？',
     },
     'risk-reward-calculator': {
       name: '風險報酬比計算機',

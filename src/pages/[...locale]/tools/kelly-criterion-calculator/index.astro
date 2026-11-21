@@ -1,0 +1,341 @@
+---
+// Kelly criterion calculator. One file serves all three locales.
+// The interactive part is src/scripts/kelly-calculator.ts; everything on this
+// page is also correct with scripting off (it shows worked example 1).
+import Cta from '../../../../components/Cta.astro';
+import Field from '../../../../components/Field.astro';
+import CalculatorShell from '../../../../components/calc/CalculatorShell.astro';
+import DocSection from '../../../../components/calc/DocSection.astro';
+import ExampleBlock from '../../../../components/calc/ExampleBlock.astro';
+import Metric from '../../../../components/calc/Metric.astro';
+import RelatedTools from '../../../../components/calc/RelatedTools.astro';
+import ScaleBars from '../../../../components/calc/ScaleBars.astro';
+import SliderField from '../../../../components/calc/SliderField.astro';
+import { splitFigure } from '../../../../components/calc/calc-ui';
+import { amount, formatProbability, percent, signed, signedPercent, typedNumber, typedPercent } from '../../../../components/calc/figures';
+import { KELLY_START } from '../../../../components/calc/starting-values';
+import DataTable from '../../../../components/ui/DataTable.astro';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import FormulaBlock from '../../../../components/ui/FormulaBlock.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../../components/ui/PageHeader.astro';
+import { common } from '../../../../i18n/common';
+import { localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { kelly as strings } from '../../../../i18n/kelly';
+import { calc } from '../../../../i18n/tools';
+import Base from '../../../../layouts/Base.astro';
+import { MAX_PAYOFF, growthAt, kelly } from '../../../../lib/calc/kelly';
+import { ruinWithin } from '../../../../lib/calc/risk-of-ruin';
+import { fmt, formatNumber } from '../../../../lib/fmt';
+import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const c = common[locale];
+const ui = calc[locale];
+const PATH = '/tools/kelly-criterion-calculator/';
+
+/**
+ * How far the "true" win rate is set below the typed one to show what an
+ * overestimate costs: five points. An illustration, shown with its number.
+ */
+const WIN_RATE_SHIFT = 0.05;
+
+/** The raw formula result in a working line, with a real minus sign: -0.05 -> "−5%". */
+const rawPercent = (fraction: number) => (fraction < 0 ? `−${typedPercent(-fraction)}` : typedPercent(fraction));
+
+// One case, worked with the same library the calculator uses.
+function solve(winRate: number, payoff: number) {
+  const r = kelly({ winRate, payoff });
+  if (!r.ok) throw new Error('Worked example is invalid');
+  const vars = {
+    win: typedPercent(winRate),
+    payoff: typedNumber(payoff),
+    p: typedNumber(winRate),
+    q: typedNumber(1 - winRate),
+    edge: fmt(t.ui.edge, { value: signed(r.edge) }),
+    raw: rawPercent(r.raw),
+    full: percent(r.full),
+    half: percent(r.half),
+    quarter: percent(r.quarter),
+    up: typedNumber(1 + payoff * r.full),
+    down: typedNumber(1 - r.full),
+    growth: signedPercent(r.growthFull),
+    noBet: t.ui.noBet,
+  };
+  return { winRate, payoff, r, vars };
+}
+
+// Example 1 is also the starting state, and what a reader without JavaScript sees.
+const first = solve(KELLY_START.win / 100, KELLY_START.payoff);
+const second = solve(0.3, 2);
+if (!first.r.bet || second.r.bet) throw new Error('Worked examples changed meaning');
+const start = first.r;
+
+const ACCOUNT = 10000;
+const ex1 = {
+  title: fmt(t.examples.first, first.vars),
+  setup: fmt(t.examples.setup, first.vars),
+  working: [t.examples.workEdge, t.examples.workKelly, t.examples.workHalf, t.examples.workQuarter, t.examples.workGrowth]
+    .map((line) => fmt(line, first.vars))
+    .join('\n'),
+  result: fmt(t.examples.resultBet, { ...first.vars, account: formatNumber(ACCOUNT), amount: amount(ACCOUNT * start.full) }),
+};
+const ex2 = {
+  title: fmt(t.examples.second, second.vars),
+  setup: fmt(t.examples.setup, second.vars),
+  working: [t.examples.workEdge, t.examples.workKelly].map((line) => fmt(line, second.vars)).join('\n'),
+  result: fmt(t.examples.resultNoBet, second.vars),
+};
+
+// The table under the formula: growth at multiples of full Kelly, for the starting example.
+const rows = [0.25, 0.5, 1, 1.5, 2, 2.5].map((m) => ({
+  multiple: fmt(t.formula.multiple, { m: typedNumber(m) }),
+  share: percent(m * start.full),
+  growth: signedPercent(growthAt(first.winRate, first.payoff, m * start.full)),
+}));
+
+// What an overestimated win rate costs: the starting example with the true rate five points lower.
+const lowWin = first.winRate - WIN_RATE_SHIFT;
+const low = solve(lowWin, first.payoff);
+const lowVars = {
+  winLow: low.vars.win,
+  fullLow: low.r.bet ? low.vars.full : t.ui.noBet,
+  growthLow: signedPercent(growthAt(lowWin, first.payoff, start.full)),
+};
+
+// The drawdowns that come with it, from the risk of ruin model under the same assumptions.
+const DD = { threshold: 0.5, trades: 200 };
+const ddAt = (riskPerTrade: number) => formatProbability(ruinWithin({ winRate: first.winRate, payoff: first.payoff, riskPerTrade, ...DD }));
+const STOP_DISTANCE = 0.02;
+
+const estimateVars = { ...first.vars, ...lowVars, keepHalf: percent(start.growthHalf / start.growthFull, 1) };
+const mistakeVars = {
+  ...first.vars,
+  ...lowVars,
+  stopPct: typedPercent(STOP_DISTANCE),
+  mult: typedNumber(start.full / STOP_DISTANCE),
+  growthDouble: signedPercent(growthAt(first.winRate, first.payoff, 2 * start.full)),
+  growthOver: signedPercent(growthAt(first.winRate, first.payoff, 2.5 * start.full)),
+  dd: typedPercent(DD.threshold),
+  n: formatNumber(DD.trades),
+  ddProb: ddAt(start.full),
+  ddProbHalf: ddAt(start.half),
+};
+
+const startFigure = splitFigure(first.vars.full);
+
+// Plain data for the browser script.
+const calcData = JSON.stringify({ maxPayoff: MAX_PAYOFF, shift: WIN_RATE_SHIFT, strings: t.ui });
+
+// The slider covers the whole-number win rates the formula accepts.
+const SLIDER = { min: 1, max: 99 };
+
+// The same trail for the visible breadcrumb and for JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+  { name: t.title, path: PATH },
+];
+const jsonLd = [softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }), breadcrumbLd(locale, trail)];
+---
+
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+      <nav class="calc-jump" aria-label={ui.onThisPage}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+      </nav>
+    </PageHeader>
+
+    <CalculatorShell
+      locale={locale}
+      data={calcData}
+      label={t.result.label}
+      figure={startFigure.value}
+      unit={startFigure.unit}
+      tightUnit={startFigure.tight}
+      sentence={fmt(t.ui.sentence, first.vars)}
+    >
+      <Fragment slot="inputs">
+        <SliderField
+          id="win"
+          class="calc-wide"
+          label={t.fields.win}
+          unit="%"
+          value={KELLY_START.win}
+          min={SLIDER.min}
+          max={SLIDER.max}
+          sliderLabel={fmt(ui.slider, { label: t.fields.win })}
+          valueText={t.ui.winText}
+          minText={fmt(t.ui.winText, { value: SLIDER.min })}
+          maxText={fmt(t.ui.winText, { value: SLIDER.max })}
+        />
+        <Field id="payoff" class="calc-wide" label={t.fields.payoff} value={KELLY_START.payoff} hint={t.fields.payoffHint} />
+      </Fragment>
+
+      <Fragment slot="after-inputs">
+        <noscript><p class="fine">{fmt(t.noscript, first.vars)}</p></noscript>
+      </Fragment>
+
+      <ScaleBars
+        slot="viz"
+        id="calc-bars"
+        a={start.full}
+        b={start.half}
+        max={1}
+        aLabel={t.ui.fullBar}
+        aValue={first.vars.full}
+        bLabel={t.ui.halfBar}
+        bValue={first.vars.half}
+        caption={() => fmt(t.ui.barLabel, first.vars)}
+      />
+
+      <Fragment slot="metrics">
+        <div class="calc-metrics">
+          <Metric label={t.result.half} value={first.vars.half} valueId="out-half" />
+          <Metric label={t.result.quarter} value={first.vars.quarter} valueId="out-quarter" />
+          <Metric label={t.result.edge} value={first.vars.edge} valueId="out-edge" />
+        </div>
+        <table class="calc-kv calc-kelly-growth">
+          <caption class="visually-hidden">{t.result.caption}</caption>
+          <tbody>
+            <tr>
+              <th scope="row">{t.result.growthFull}</th>
+              <td class="num" id="out-growth-full">{first.vars.growth}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.growthHalf}</th>
+              <td class="num" id="out-growth-half">{signedPercent(start.growthHalf)}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.growthQuarter}</th>
+              <td class="num" id="out-growth-quarter">{signedPercent(start.growthQuarter)}</td>
+            </tr>
+            <tr>
+              <th scope="row" id="out-low-label">{fmt(t.ui.lowLabel, { win: lowVars.winLow })}</th>
+              <td class="num" id="out-low">{lowVars.fullLow}</td>
+            </tr>
+            <tr>
+              <th scope="row" id="out-low-growth-label">{fmt(t.ui.lowGrowthLabel, { win: lowVars.winLow, full: first.vars.full })}</th>
+              <td class="num" id="out-low-growth">{lowVars.growthLow}</td>
+            </tr>
+          </tbody>
+        </table>
+      </Fragment>
+
+      <Fragment slot="assumptions">
+        <ul class="calc-assume">
+          {t.assumptions.map((line) => <li>{line}</li>)}
+        </ul>
+      </Fragment>
+
+      <Cta
+        slot="cta"
+        locale={locale}
+        pageType="tool"
+        position="result"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+      />
+    </CalculatorShell>
+  </PageContainer>
+
+  <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+    <p>{t.formula.intro}</p>
+    <FormulaBlock formula={t.formula.kelly + '\n' + t.formula.fractions} />
+    <dl class="calc-terms">
+      {
+        t.formula.terms.map((item) => (
+          <div>
+            <dt>{item.term}</dt>
+            <dd>{item.text}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p>{t.formula.where}</p>
+    <FormulaBlock formula={t.formula.growth} />
+    <p>{t.formula.max}</p>
+    <DataTable locale={locale} label={t.formula.tableGrowth} caption={fmt(t.formula.tableCaption, first.vars)}>
+      <thead>
+        <tr>
+          <th scope="col">{t.formula.tableMultiple}</th>
+          <th scope="col">{t.formula.tableShare}</th>
+          <th scope="col">{t.formula.tableGrowth}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr>
+              <td class="num">{row.multiple}</td>
+              <td class="num">{row.share}</td>
+              <td class="num">{row.growth}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </DataTable>
+    <p>{fmt(t.formula.negative, first.vars)}</p>
+
+    <h3>{t.formula.estimateHead}</h3>
+    <p>{fmt(t.formula.estimate, estimateVars)}</p>
+
+    <p class="fine calc-sources">{t.formula.sources}</p>
+    <Disclaimer locale={locale} kind="info" title={ui.leftOut}>
+      <p>{t.formula.leftOut}</p>
+    </Disclaimer>
+  </DocSection>
+
+  <DocSection id="worked-examples" title={t.toc.examples}>
+    <div class="calc-pair">
+      {[ex1, ex2].map((ex) => <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />)}
+    </div>
+  </DocSection>
+
+  <DocSection id="common-mistakes" title={t.toc.mistakes}>
+    <ul class="calc-mistakes">
+      {
+        t.mistakes.map((m) => (
+          <li>
+            <h3>{m.title}</h3>
+            <p>{fmt(m.text, mistakeVars)}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </DocSection>
+
+  <RelatedTools locale={locale} current="kelly-criterion-calculator" allLabel={t.allTools} />
+
+  <script>
+    import '../../../../scripts/kelly-calculator.ts';
+  </script>
+</Base>
+
+<style is:global>
+  /* The sources line is small print: keep it to the small-print measure. */
+  .calc-doc-body > p.calc-sources {
+    max-width: var(--measure-fine);
+  }
+
+  /* The growth table follows a row of bare metrics inside one block. */
+  .calc-kv.calc-kelly-growth {
+    margin-top: var(--space-6);
+  }
+
+  /* Long row labels: let them wrap, keep the figure on one line beside them. */
+  .calc-kv.calc-kelly-growth th {
+    padding-right: var(--space-4);
+  }
+</style>
