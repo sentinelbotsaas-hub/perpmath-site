@@ -1,0 +1,217 @@
+{
+  "orderbook_snapshot_1": {
+    "mainnet": {
+      "at": "2026-11-21T17:27:35Z",
+      "bid_levels": 500,
+      "ask_levels": 500,
+      "lowest_bid": 60142.3,
+      "highest_ask": 60329.3,
+      "total_bid_btc_returned": 361.418,
+      "total_ask_btc_returned": 313.12,
+      "market_sell": {
+        "0.001": {
+          "avg_price": 60230.2,
+          "pct_vs_best_bid": 0.0
+        },
+        "0.01": {
+          "avg_price": 60230.2,
+          "pct_vs_best_bid": 0.0
+        },
+        "0.1": {
+          "avg_price": 60230.2,
+          "pct_vs_best_bid": 0.0
+        },
+        "1": {
+          "avg_price": 60230.2,
+          "pct_vs_best_bid": 0.0
+        },
+        "10": {
+          "avg_price": 60225.96,
+          "pct_vs_best_bid": -0.007
+        }
+      },
+      "market_buy": {
+        "0.001": {
+          "avg_price": 60230.3,
+          "pct_vs_best_ask": 0.0
+        },
+        "0.01": {
+          "avg_price": 60230.3,
+          "pct_vs_best_ask": -0.0
+        },
+        "0.1": {
+          "avg_price": 60230.3,
+          "pct_vs_best_ask": 0.0
+        },
+        "1": {
+          "avg_price": 60230.3,
+          "pct_vs_best_ask": 0.0
+        },
+        "10": {
+          "avg_price": 60238.46,
+          "pct_vs_best_ask": 0.0135
+        }
+      }
+    },
+    "testnet": {
+      "at": "2026-11-21T17:27:35Z",
+      "bid_levels": 444,
+      "ask_levels": 500,
+      "lowest_bid": 156.1,
+      "highest_ask": 67053.6,
+      "total_bid_btc_returned": 229.676,
+      "total_ask_btc_returned": 147.533,
+      "market_sell": {
+        "0.001": {
+          "avg_price": 59659.9,
+          "pct_vs_best_bid": 0.0
+        },
+        "0.01": {
+          "avg_price": 59659.9,
+          "pct_vs_best_bid": 0.0
+        },
+        "0.1": {
+          "avg_price": 59536.22,
+          "pct_vs_best_bid": -0.2073
+        },
+        "1": {
+          "avg_price": 58802.81,
+          "pct_vs_best_bid": -1.4366
+        },
+        "10": {
+          "avg_price": 58084.1,
+          "pct_vs_best_bid": -2.6413
+        }
+      },
+      "market_buy": {
+        "0.001": {
+          "avg_price": 59660.0,
+          "pct_vs_best_ask": 0.0
+        },
+        "0.01": {
+          "avg_price": 59660.0,
+          "pct_vs_best_ask": 0.0
+        },
+        "0.1": {
+          "avg_price": 59660.0,
+          "pct_vs_best_ask": 0.0
+        },
+        "1": {
+          "avg_price": 60063.0,
+          "pct_vs_best_ask": 0.6755
+        },
+        "10": {
+          "avg_price": 60968.65,
+          "pct_vs_best_ask": 2.1935
+        }
+      }
+    }
+  },
+  "recent_trades": {
+    "mainnet": {
+      "snapshot_1_trades": 1000,
+      "snapshot_1_span_seconds": 32.1,
+      "snapshot_1_from": "2026-11-21T17:27:02Z",
+      "snapshot_1_to": "2026-11-21T17:27:35Z",
+      "distinct_prices": 302,
+      "min_price": 60190.2,
+      "max_price": 60255.5,
+      "median_gap_seconds": 0.0,
+      "max_gap_seconds": 2.0,
+      "buy_side_trades": 596,
+      "btc": 41.093,
+      "span_seconds_each_snapshot": [
+        32.1,
+        50.8,
+        68.4,
+        49.8,
+        14.4
+      ]
+    },
+    "testnet": {
+      "snapshot_1_trades": 1000,
+      "snapshot_1_span_seconds": 3014.1,
+      "snapshot_1_from": "2026-11-21T16:37:20Z",
+      "snapshot_1_to": "2026-11-21T17:27:34Z",
+      "distinct_prices": 131,
+      "min_price": 59644.8,
+      "max_price": 59660.0,
+      "median_gap_seconds": 3.323,
+      "max_gap_seconds": 5.1,
+      "buy_side_trades": 993,
+      "btc": 4.197,
+      "span_seconds_each_snapshot": [
+        3014.1,
+        3017.5,
+        3019.8,
+        3021.7,
+        3024.3
+      ]
+    }
+  },
+  "last_price_five_snapshots": {
+    "mainnet": [
+      60230.2,
+      60256.4,
+      60243.5,
+      60268.9,
+      60133.5
+    ],
+    "testnet": [
+      59660.0,
+      59660.0,
+      59660.0,
+      59660.0,
+      59660.0
+    ]
+  },
+  "open_interest_snapshot_1": {
+    "mainnet": {
+      "open_interest_btc": 68018.487,
+      "volume24h_btc": 188153.6,
+      "open_interest_over_24h_volume": 0.36
+    },
+    "testnet": {
+      "open_interest_btc": 254543.267,
+      "volume24h_btc": 1510.002,
+      "open_interest_over_24h_volume": 168.57
+    }
+  },
+  "open_interest_ratio_testnet_to_mainnet": 3.74,
+  "volume24h_ratio_testnet_to_mainnet": 0.00803,
+  "kline_15m_200": {
+    "mainnet": {
+      "unchanged_closes": 0,
+      "abs_return_over_1pct": 9,
+      "median_abs_return_pct": 0.2101,
+      "biggest_move_pct": -2.5712,
+      "biggest_move_bar": "2026-11-21T03:30:00Z",
+      "bars_under_2_btc": 0
+    },
+    "testnet": {
+      "unchanged_closes": 51,
+      "abs_return_over_1pct": 12,
+      "median_abs_return_pct": 0.0309,
+      "biggest_move_pct": -2.5427,
+      "biggest_move_bar": "2026-11-21T03:30:00Z",
+      "bars_under_2_btc": 166
+    },
+    "return_pairs": 199,
+    "pairs_both_moved": 148,
+    "same_direction_of_both_moved": 88
+  },
+  "funding_last_90": {
+    "mainnet": {
+      "at_plus_0.333pct": 0,
+      "at_minus_0.333pct": 0,
+      "median_pct": 0.00579,
+      "abs_over_0.05pct": 0
+    },
+    "testnet": {
+      "at_plus_0.333pct": 12,
+      "at_minus_0.333pct": 10,
+      "median_pct": 0.01,
+      "abs_over_0.05pct": 37
+    }
+  }
+}

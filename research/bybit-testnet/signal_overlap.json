@@ -1,0 +1,56 @@
+{
+  "engine_version": "0.2.0",
+  "symbol": "BTCUSDT",
+  "interval": "15m",
+  "bars": 1000,
+  "range": [
+    "2026-11-11T07:30:00Z",
+    "2026-11-21T17:30:00Z"
+  ],
+  "fetched_at": "2026-11-21T17:31:38Z",
+  "strategies": {
+    "fvg": {
+      "params": {
+        "atr_period": 14,
+        "min_gap_atr": 0.5,
+        "max_wait_bars": 96,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "mainnet_entry_signals": 42,
+      "testnet_entry_signals": 96,
+      "same_bar_same_direction": 3,
+      "same_bar_opposite_direction": 1,
+      "bars_with_a_signal_on_either": 134,
+      "agreement_pct_of_either": 2.24
+    },
+    "liquidity_sweep": {
+      "params": {
+        "lookback": 20,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "mainnet_entry_signals": 88,
+      "testnet_entry_signals": 52,
+      "same_bar_same_direction": 1,
+      "same_bar_opposite_direction": 0,
+      "bars_with_a_signal_on_either": 139,
+      "agreement_pct_of_either": 0.72
+    },
+    "ma_cross": {
+      "params": {
+        "fast_period": 20,
+        "slow_period": 50,
+        "atr_period": 14,
+        "stop_atr_mult": 2.0
+      },
+      "mainnet_entry_signals": 16,
+      "testnet_entry_signals": 22,
+      "same_bar_same_direction": 0,
+      "same_bar_opposite_direction": 0,
+      "bars_with_a_signal_on_either": 38,
+      "agreement_pct_of_either": 0.0
+    }
+  }
+}

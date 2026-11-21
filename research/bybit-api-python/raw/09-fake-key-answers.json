@@ -1,0 +1,86 @@
+{
+ "testnet_offset_ms": 884,
+ "answers": [
+  {
+   "label": "no auth headers",
+   "path": "/v5/user/query-api",
+   "shift_ms": 0,
+   "recv_window": 5000,
+   "http_status": 200,
+   "body": "{\"retCode\":10001,\"retMsg\":\"Request parameter error: apiKey is missing\",\"result\":{},\"retExtInfo\":{},\"time\":1795281988731}",
+   "limit_headers": {}
+  },
+  {
+   "label": "fake key, timestamp on time",
+   "path": "/v5/user/query-api",
+   "shift_ms": 0,
+   "recv_window": 5000,
+   "http_status": 200,
+   "body": "{\"retCode\":10003,\"retMsg\":\"API key is invalid.\",\"result\":{},\"retExtInfo\":{},\"time\":1795281989341}",
+   "limit_headers": {}
+  },
+  {
+   "label": "timestamp 4.0 s behind",
+   "path": "/v5/user/query-api",
+   "shift_ms": -4000,
+   "recv_window": 5000,
+   "http_status": 200,
+   "body": "{\"retCode\":10003,\"retMsg\":\"API key is invalid.\",\"result\":{},\"retExtInfo\":{},\"time\":1795281989943}",
+   "limit_headers": {}
+  },
+  {
+   "label": "timestamp 6.0 s behind",
+   "path": "/v5/user/query-api",
+   "shift_ms": -6000,
+   "recv_window": 5000,
+   "http_status": 200,
+   "body": "{\"retCode\":10002,\"retMsg\":\"invalid request, please check your server timestamp or recv_window param: req_timestamp[1795281984494],server_timestamp[1795281990543],recv_window[5000]\",\"result\":{},\"retExtInfo\":{},\"time\":1795281990543}",
+   "limit_headers": {}
+  },
+  {
+   "label": "timestamp 0.5 s ahead",
+   "path": "/v5/user/query-api",
+   "shift_ms": 500,
+   "recv_window": 5000,
+   "http_status": 200,
+   "body": "{\"retCode\":10003,\"retMsg\":\"API key is invalid.\",\"result\":{},\"retExtInfo\":{},\"time\":1795281991152}",
+   "limit_headers": {}
+  },
+  {
+   "label": "timestamp 1.5 s ahead",
+   "path": "/v5/user/query-api",
+   "shift_ms": 1500,
+   "recv_window": 5000,
+   "http_status": 200,
+   "body": "{\"retCode\":10002,\"retMsg\":\"invalid request, please check your server timestamp or recv_window param: req_timestamp[1795281993203],server_timestamp[1795281991748],recv_window[5000]\",\"result\":{},\"retExtInfo\":{},\"time\":1795281991748}",
+   "limit_headers": {}
+  },
+  {
+   "label": "6.0 s behind, recv_window 10000",
+   "path": "/v5/user/query-api",
+   "shift_ms": -6000,
+   "recv_window": 10000,
+   "http_status": 200,
+   "body": "{\"retCode\":10003,\"retMsg\":\"API key is invalid.\",\"result\":{},\"retExtInfo\":{},\"time\":1795281992364}",
+   "limit_headers": {}
+  },
+  {
+   "label": "1.5 s ahead, recv_window 10000",
+   "path": "/v5/user/query-api",
+   "shift_ms": 1500,
+   "recv_window": 10000,
+   "http_status": 200,
+   "body": "{\"retCode\":10002,\"retMsg\":\"invalid request, please check your server timestamp or recv_window param: req_timestamp[1795281994416],server_timestamp[1795281992962],recv_window[10000]\",\"result\":{},\"retExtInfo\":{},\"time\":1795281992962}",
+   "limit_headers": {}
+  },
+  {
+   "label": "fake key on /v5/position/list",
+   "path": "/v5/position/list",
+   "shift_ms": 0,
+   "recv_window": 5000,
+   "http_status": 401,
+   "body": "",
+   "limit_headers": {}
+  }
+ ]
+}

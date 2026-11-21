@@ -1,0 +1,11 @@
+{
+ "timestamp": 1795281600000,
+ "api_key": "FAKEKEY0000000000",
+ "secret": "FAKESECRET-not-a-real-secret-0000000",
+ "get_string": "1795281600000FAKEKEY00000000005000category=linear&symbol=BTCUSDT",
+ "get_sign": "d410389680b571cf1181fcff2bcfae0cfec777c1b7ed354b2c9de4638b70bdd9",
+ "post_body": "{\"category\":\"linear\",\"symbol\":\"BTCUSDT\",\"side\":\"Buy\",\"orderType\":\"Market\",\"qty\":\"0.001\",\"positionIdx\":0,\"orderLinkId\":\"demo-1795281600-LE1\"}",
+ "post_string": "1795281600000FAKEKEY00000000005000{\"category\":\"linear\",\"symbol\":\"BTCUSDT\",\"side\":\"Buy\",\"orderType\":\"Market\",\"qty\":\"0.001\",\"positionIdx\":0,\"orderLinkId\":\"demo-1795281600-LE1\"}",
+ "post_sign": "89715eb5de523bdd0377f338350da0a8dbc4fd87e16ff2d46cf436649e1ae785",
+ "matches_perpmath_engine": true
+}

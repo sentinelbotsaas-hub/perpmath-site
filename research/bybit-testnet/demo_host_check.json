@@ -1,0 +1,45 @@
+{
+  "checked_at": "2026-11-21T17:33:51Z",
+  "range": [
+    "2026-11-21T05:00:00Z",
+    "2026-11-21T17:30:00Z"
+  ],
+  "candles": {
+    "demo_rows_identical_to_mainnet": 50,
+    "testnet_rows_identical_to_mainnet": 0,
+    "rows": {
+      "mainnet": 50,
+      "demo": 50,
+      "testnet": 50
+    }
+  },
+  "ticker": {
+    "mainnet": {
+      "lastPrice": "60050.00",
+      "markPrice": "60048.80",
+      "indexPrice": "60082.80",
+      "fundingRate": "-0.00005071",
+      "volume24h": "187920.7190",
+      "openInterest": "67898.076",
+      "server_time": "2026-11-21T17:33:51Z"
+    },
+    "demo": {
+      "lastPrice": "60050.00",
+      "markPrice": "60048.80",
+      "indexPrice": "60083.14",
+      "fundingRate": "-0.00005071",
+      "volume24h": "187920.7190",
+      "openInterest": "67898.076",
+      "server_time": "2026-11-21T17:33:51Z"
+    },
+    "testnet": {
+      "lastPrice": "59662.10",
+      "markPrice": "59662.10",
+      "indexPrice": "60082.80",
+      "fundingRate": "-0.00333",
+      "volume24h": "1510.1250",
+      "openInterest": "254542.625",
+      "server_time": "2026-11-21T17:33:51Z"
+    }
+  }
+}

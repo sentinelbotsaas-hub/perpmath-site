@@ -1,0 +1,48 @@
+{
+ "interval='15m'": {
+  "params": {
+   "category": "linear",
+   "symbol": "BTCUSDT",
+   "interval": "15m",
+   "limit": 3
+  },
+  "http_status": 200,
+  "body": "{\"retCode\":0,\"retMsg\":\"OK\",\"result\":{\"symbol\":\"BTCUSDT\",\"category\":\"linear\",\"list\":[]},\"retExtInfo\":{},\"time\":1795281985135}\n"
+ },
+ "start/end in seconds": {
+  "params": {
+   "category": "linear",
+   "symbol": "BTCUSDT",
+   "interval": "15",
+   "start": 1795195572,
+   "end": 1795281972,
+   "limit": 3
+  },
+  "http_status": 200,
+  "body": "{\"retCode\":0,\"retMsg\":\"OK\",\"result\":{\"symbol\":\"BTCUSDT\",\"category\":\"linear\",\"list\":[]},\"retExtInfo\":{},\"time\":1795281985239}\n"
+ },
+ "symbol='btcusdt'": {
+  "params": {
+   "category": "linear",
+   "symbol": "btcusdt",
+   "interval": "15",
+   "limit": 3
+  },
+  "http_status": 200,
+  "body": "{\"retCode\":10001,\"retMsg\":\"params error: Symbol Is Invalid\",\"result\":{},\"retExtInfo\":{},\"time\":1795281985340}\n"
+ },
+ "symbol='BTCUSD_NOPE'": {
+  "params": {
+   "category": "linear",
+   "symbol": "BTCUSD_NOPE",
+   "interval": "15",
+   "limit": 3
+  },
+  "http_status": 200,
+  "body": "{\"retCode\":10001,\"retMsg\":\"params error: Symbol Is Invalid\",\"result\":{},\"retExtInfo\":{},\"time\":1795281985431}\n"
+ },
+ "wrong path /v5/market/klines": {
+  "http_status": 404,
+  "body": ""
+ }
+}
