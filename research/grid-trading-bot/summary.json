@@ -1,0 +1,4429 @@
+{
+  "article": "en/grid-trading-bot",
+  "engine": {
+    "package": "perpmath",
+    "version": "0.2.1",
+    "repository": "https://github.com/sentinelbotsaas-hub/perpmath"
+  },
+  "published_result_file": "perpmath-engine/results/grid-btcusdt.json",
+  "published_result_written_by_version": "0.2.0",
+  "published_generated_at": "2026-11-19T12:44:26Z",
+  "checks": "all 15m runs used the candle and funding files whose sha256 is in the published result; the rerun of the shipped config is identical to the published file except generated_at and package_version",
+  "funding_file_sha256": "b6d36484ea73f19b41f15a204fb0965d2403060f9047135c258bbda45ba69292",
+  "runs": {
+    "shipped": {
+      "grid": {
+        "lower": 57755.8,
+        "upper": 97963.2,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 1,
+        "out_of_range": "continue",
+        "cell_notional": 200.0,
+        "cell_width_pct_min": 1.0623,
+        "cell_width_pct_max": 1.0623
+      },
+      "split": {
+        "oos_start": "2026-07-31T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 64738.14978,
+        "metrics": {
+          "total_return_pct": 3.1659,
+          "max_drawdown_pct": 12.5168,
+          "final_equity": 10316.59,
+          "fills": 1371,
+          "grid_fills": 1370,
+          "market_fills": 1,
+          "round_trips": 669,
+          "trading_pnl": 412.71,
+          "total_fees": 58.04,
+          "grid_fees": 55.04,
+          "market_fees": 3.0,
+          "funding_paid": 38.09,
+          "funding_events": 731,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 6878.1,
+          "avg_position_notional": 3318.88
+        },
+        "buy_and_hold": {
+          "return_pct": -29.2964,
+          "max_drawdown_pct": 40.4682,
+          "funding_paid": 109.68,
+          "return_with_funding_pct": -30.3932
+        },
+        "breakdown": {
+          "round_trips_counted": 669,
+          "round_trip_gross_pnl": 1366.58,
+          "avg_gross_pnl_per_round_trip": 2.0427,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -953.84,
+              "quantity": 0.084146,
+              "net_quantity": 0.084146
+            }
+          },
+          "leftover_position_pnl": -953.84,
+          "fees": 58.04,
+          "funding_paid": 38.09,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 316.59,
+          "check_sum": 316.61,
+          "largest_net_position": {
+            "abs_quantity": 0.116834,
+            "net_quantity": 0.116834,
+            "time": "2026-06-25T13:45:00Z",
+            "price": 58381.036502,
+            "fill_n": 1246
+          },
+          "time_net_long_pct": 89.0,
+          "time_net_short_pct": 6.7,
+          "time_net_flat_pct": 4.4,
+          "lowest_daily_close_equity": {
+            "t": "2026-02-06T00:00:00Z",
+            "equity": 9324.24
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-05-11T00:00:00Z",
+            "equity": 10935.29
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "start_price": 64751.1,
+        "end_price_from_last_fill_or_none": 64111.6751,
+        "metrics": {
+          "total_return_pct": 4.3692,
+          "max_drawdown_pct": 7.307,
+          "final_equity": 10436.92,
+          "fills": 396,
+          "grid_fills": 395,
+          "market_fills": 1,
+          "round_trips": 197,
+          "trading_pnl": 398.79,
+          "total_fees": 15.85,
+          "grid_fees": 15.74,
+          "market_fees": 0.11,
+          "funding_paid": -53.98,
+          "funding_events": 310,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 6483.77,
+          "avg_position_notional": 3461.87
+        },
+        "buy_and_hold": {
+          "return_pct": -1.1168,
+          "max_drawdown_pct": 28.8692,
+          "funding_paid": 184.24,
+          "return_with_funding_pct": -2.9591
+        },
+        "breakdown": {
+          "round_trips_counted": 197,
+          "round_trip_gross_pnl": 399.09,
+          "avg_gross_pnl_per_round_trip": 2.0259,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -0.29,
+              "quantity": 0.003116,
+              "net_quantity": 0.003116
+            }
+          },
+          "leftover_position_pnl": -0.29,
+          "fees": 15.85,
+          "funding_paid": -53.98,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 436.92,
+          "check_sum": 436.93,
+          "largest_net_position": {
+            "abs_quantity": 0.074327,
+            "net_quantity": -0.074327,
+            "time": "2026-09-21T20:15:00Z",
+            "price": 87195.340198,
+            "fill_n": 190
+          },
+          "time_net_long_pct": 14.2,
+          "time_net_short_pct": 79.2,
+          "time_net_flat_pct": 6.6,
+          "lowest_daily_close_equity": {
+            "t": "2026-09-22T00:00:00Z",
+            "equity": 9342.19
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-11-18T11:30:00Z",
+            "equity": 10436.92
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 4.6974,
+            "max_drawdown_pct": 12.1462,
+            "round_trips": 747,
+            "grid_fills": 1526,
+            "total_fees": 64.31,
+            "funding_paid": 38.09,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 4.7782,
+            "max_drawdown_pct": 7.1322,
+            "round_trips": 218,
+            "grid_fills": 437,
+            "total_fees": 17.52,
+            "funding_paid": -54.03,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 4.5987,
+            "max_drawdown_pct": 12.157,
+            "round_trips": 742,
+            "grid_fills": 1516,
+            "total_fees": 63.91,
+            "funding_paid": 38.05,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 4.7578,
+            "max_drawdown_pct": 7.0552,
+            "round_trips": 217,
+            "grid_fills": 435,
+            "total_fees": 17.44,
+            "funding_paid": -53.95,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 6.0909,
+            "max_drawdown_pct": 11.7982,
+            "round_trips": 818,
+            "grid_fills": 1668,
+            "total_fees": 70.02,
+            "funding_paid": 38.06,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 5.1473,
+            "max_drawdown_pct": 6.8998,
+            "round_trips": 237,
+            "grid_fills": 475,
+            "total_fees": 19.04,
+            "funding_paid": -54.0,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 2.2208,
+            "max_drawdown_pct": 12.7243,
+            "round_trips": 670,
+            "grid_fills": 1372,
+            "total_fees": 154.59,
+            "funding_paid": 38.09,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 4.0938,
+            "max_drawdown_pct": 7.4224,
+            "round_trips": 197,
+            "grid_fills": 395,
+            "total_fees": 43.4,
+            "funding_paid": -53.98,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 3.5467,
+            "max_drawdown_pct": 12.4148,
+            "round_trips": 669,
+            "grid_fills": 1370,
+            "total_fees": 58.04,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 3.8294,
+            "max_drawdown_pct": 7.5195,
+            "round_trips": 197,
+            "grid_fills": 395,
+            "total_fees": 15.85,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": false
+    },
+    "half-continue": {
+      "grid": {
+        "lower": 59888.0,
+        "upper": 97963.2,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 1,
+        "out_of_range": "continue",
+        "cell_notional": 200.0,
+        "cell_width_pct_min": 0.9891,
+        "cell_width_pct_max": 0.9891
+      },
+      "split": {
+        "oos_start": "2026-03-25T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-03-24T23:45:00Z",
+        "bars": 12146,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 70504.19634,
+        "metrics": {
+          "total_return_pct": 2.6517,
+          "max_drawdown_pct": 13.4402,
+          "final_equity": 10265.17,
+          "fills": 1001,
+          "grid_fills": 1000,
+          "market_fills": 1,
+          "round_trips": 487,
+          "trading_pnl": 314.01,
+          "total_fees": 42.69,
+          "grid_fees": 40.16,
+          "market_fees": 2.53,
+          "funding_paid": 6.15,
+          "funding_events": 359,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 6882.52,
+          "avg_position_notional": 2371.73
+        },
+        "buy_and_hold": {
+          "return_pct": -22.9942,
+          "max_drawdown_pct": 38.3543,
+          "funding_paid": 64.91,
+          "return_with_funding_pct": -23.6433
+        },
+        "breakdown": {
+          "round_trips_counted": 487,
+          "round_trip_gross_pnl": 923.45,
+          "avg_gross_pnl_per_round_trip": 1.8962,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -609.44,
+              "quantity": 0.065125,
+              "net_quantity": 0.065125
+            }
+          },
+          "leftover_position_pnl": -609.44,
+          "fees": 42.69,
+          "funding_paid": 6.15,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 265.17,
+          "check_sum": 265.17,
+          "largest_net_position": {
+            "abs_quantity": 0.114321,
+            "net_quantity": 0.114321,
+            "time": "2026-02-06T00:00:00Z",
+            "price": 60492.442876,
+            "fill_n": 568
+          },
+          "time_net_long_pct": 82.0,
+          "time_net_short_pct": 11.8,
+          "time_net_flat_pct": 6.2,
+          "lowest_daily_close_equity": {
+            "t": "2026-02-06T00:00:00Z",
+            "equity": 9239.56
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-03-17T00:00:00Z",
+            "equity": 10470.13
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-03-25T00:00:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 12288,
+        "start_price": 70518.3,
+        "end_price_from_last_fill_or_none": 64738.14978,
+        "metrics": {
+          "total_return_pct": 3.7718,
+          "max_drawdown_pct": 2.7337,
+          "final_equity": 10377.18,
+          "fills": 516,
+          "grid_fills": 515,
+          "market_fills": 1,
+          "round_trips": 253,
+          "trading_pnl": 407.7,
+          "total_fees": 21.58,
+          "grid_fees": 20.63,
+          "market_fees": 0.95,
+          "funding_paid": 8.94,
+          "funding_events": 377,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 2.6693,
+          "max_position_notional": 3239.69,
+          "avg_position_notional": 1804.77
+        },
+        "buy_and_hold": {
+          "return_pct": -8.3205,
+          "max_drawdown_pct": 29.6595,
+          "funding_paid": 58.04,
+          "return_with_funding_pct": -8.9009
+        },
+        "breakdown": {
+          "round_trips_counted": 253,
+          "round_trip_gross_pnl": 478.49,
+          "avg_gross_pnl_per_round_trip": 1.8913,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -70.78,
+              "quantity": 0.026716,
+              "net_quantity": 0.026716
+            }
+          },
+          "leftover_position_pnl": -70.78,
+          "fees": 21.58,
+          "funding_paid": 8.94,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 377.18,
+          "check_sum": 377.19,
+          "largest_net_position": {
+            "abs_quantity": 0.052535,
+            "net_quantity": 0.052535,
+            "time": "2026-06-05T16:00:00Z",
+            "price": 59899.9776,
+            "fill_n": 305
+          },
+          "time_net_long_pct": 55.8,
+          "time_net_short_pct": 42.2,
+          "time_net_flat_pct": 2.0,
+          "lowest_daily_close_equity": {
+            "t": "2026-05-11T00:00:00Z",
+            "equity": 9924.88
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-07-22T00:00:00Z",
+            "equity": 10405.63
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 4.0866,
+            "max_drawdown_pct": 12.7849,
+            "round_trips": 566,
+            "grid_fills": 1158,
+            "total_fees": 49.03,
+            "funding_paid": 6.17,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 4.0615,
+            "max_drawdown_pct": 2.7094,
+            "round_trips": 269,
+            "grid_fills": 547,
+            "total_fees": 22.86,
+            "funding_paid": 8.94,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 4.0143,
+            "max_drawdown_pct": 13.1131,
+            "round_trips": 562,
+            "grid_fills": 1150,
+            "total_fees": 48.71,
+            "funding_paid": 6.14,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 4.1524,
+            "max_drawdown_pct": 2.7079,
+            "round_trips": 274,
+            "grid_fills": 557,
+            "total_fees": 23.27,
+            "funding_paid": 8.96,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 5.3038,
+            "max_drawdown_pct": 12.5854,
+            "round_trips": 633,
+            "grid_fills": 1292,
+            "total_fees": 54.42,
+            "funding_paid": 6.15,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 4.4421,
+            "max_drawdown_pct": 2.6838,
+            "round_trips": 290,
+            "grid_fills": 589,
+            "total_fees": 24.55,
+            "funding_paid": 8.96,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 1.9657,
+            "max_drawdown_pct": 13.5856,
+            "round_trips": 488,
+            "grid_fills": 1002,
+            "total_fees": 113.19,
+            "funding_paid": 6.15,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 3.4108,
+            "max_drawdown_pct": 2.7768,
+            "round_trips": 253,
+            "grid_fills": 515,
+            "total_fees": 57.68,
+            "funding_paid": 8.94,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 2.7132,
+            "max_drawdown_pct": 13.4278,
+            "round_trips": 487,
+            "grid_fills": 1000,
+            "total_fees": 42.69,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 3.8612,
+            "max_drawdown_pct": 2.7378,
+            "round_trips": 253,
+            "grid_fills": 515,
+            "total_fees": 21.58,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": true
+    },
+    "half-stop": {
+      "grid": {
+        "lower": 59888.0,
+        "upper": 97963.2,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 1,
+        "out_of_range": "stop",
+        "cell_notional": 200.0,
+        "cell_width_pct_min": 0.9891,
+        "cell_width_pct_max": 0.9891
+      },
+      "split": {
+        "oos_start": "2026-03-25T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-03-24T23:45:00Z",
+        "bars": 12146,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 70504.19634,
+        "metrics": {
+          "total_return_pct": 2.6517,
+          "max_drawdown_pct": 13.4402,
+          "final_equity": 10265.17,
+          "fills": 1001,
+          "grid_fills": 1000,
+          "market_fills": 1,
+          "round_trips": 487,
+          "trading_pnl": 314.01,
+          "total_fees": 42.69,
+          "grid_fees": 40.16,
+          "market_fees": 2.53,
+          "funding_paid": 6.15,
+          "funding_events": 359,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 6882.52,
+          "avg_position_notional": 2371.73
+        },
+        "buy_and_hold": {
+          "return_pct": -22.9942,
+          "max_drawdown_pct": 38.3543,
+          "funding_paid": 64.91,
+          "return_with_funding_pct": -23.6433
+        },
+        "breakdown": {
+          "round_trips_counted": 487,
+          "round_trip_gross_pnl": 923.45,
+          "avg_gross_pnl_per_round_trip": 1.8962,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -609.44,
+              "quantity": 0.065125,
+              "net_quantity": 0.065125
+            }
+          },
+          "leftover_position_pnl": -609.44,
+          "fees": 42.69,
+          "funding_paid": 6.15,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 265.17,
+          "check_sum": 265.17,
+          "largest_net_position": {
+            "abs_quantity": 0.114321,
+            "net_quantity": 0.114321,
+            "time": "2026-02-06T00:00:00Z",
+            "price": 60492.442876,
+            "fill_n": 568
+          },
+          "time_net_long_pct": 82.0,
+          "time_net_short_pct": 11.8,
+          "time_net_flat_pct": 6.2,
+          "lowest_daily_close_equity": {
+            "t": "2026-02-06T00:00:00Z",
+            "equity": 9239.56
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-03-17T00:00:00Z",
+            "equity": 10470.13
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-03-25T00:00:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 12288,
+        "start_price": 70518.3,
+        "end_price_from_last_fill_or_none": 64738.14978,
+        "metrics": {
+          "total_return_pct": 2.4323,
+          "max_drawdown_pct": 4.6124,
+          "final_equity": 10243.23,
+          "fills": 306,
+          "grid_fills": 305,
+          "market_fills": 1,
+          "round_trips": 144,
+          "trading_pnl": 271.96,
+          "total_fees": 14.06,
+          "grid_fees": 12.19,
+          "market_fees": 1.87,
+          "funding_paid": 14.67,
+          "funding_events": 377,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": "2026-06-05T16:00:00Z",
+          "bars_outside_range_pct": 2.6693,
+          "max_position_notional": 3533.31,
+          "avg_position_notional": 2301.38
+        },
+        "buy_and_hold": {
+          "return_pct": -8.3205,
+          "max_drawdown_pct": 29.6595,
+          "funding_paid": 58.04,
+          "return_with_funding_pct": -8.9009
+        },
+        "breakdown": {
+          "round_trips_counted": 144,
+          "round_trip_gross_pnl": 271.63,
+          "avg_gross_pnl_per_round_trip": 1.8863,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": 0.33,
+              "quantity": 0.052535,
+              "net_quantity": 0.052535
+            }
+          },
+          "leftover_position_pnl": 0.33,
+          "fees": 14.06,
+          "funding_paid": 14.67,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 243.23,
+          "check_sum": 243.23,
+          "largest_net_position": {
+            "abs_quantity": 0.052535,
+            "net_quantity": 0.052535,
+            "time": "2026-06-05T16:00:00Z",
+            "price": 59899.9776,
+            "fill_n": 305
+          },
+          "time_net_long_pct": 55.8,
+          "time_net_short_pct": 42.2,
+          "time_net_flat_pct": 2.0,
+          "lowest_daily_close_equity": {
+            "t": "2026-05-11T00:00:00Z",
+            "equity": 9924.88
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-07-22T00:00:00Z",
+            "equity": 10340.83
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 4.0866,
+            "max_drawdown_pct": 12.7849,
+            "round_trips": 566,
+            "grid_fills": 1158,
+            "total_fees": 49.03,
+            "funding_paid": 6.17,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 2.6493,
+            "max_drawdown_pct": 4.6028,
+            "round_trips": 156,
+            "grid_fills": 329,
+            "total_fees": 15.02,
+            "funding_paid": 14.67,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 4.0143,
+            "max_drawdown_pct": 13.1131,
+            "round_trips": 562,
+            "grid_fills": 1150,
+            "total_fees": 48.71,
+            "funding_paid": 6.14,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 2.6495,
+            "max_drawdown_pct": 4.6027,
+            "round_trips": 156,
+            "grid_fills": 329,
+            "total_fees": 15.02,
+            "funding_paid": 14.67,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 5.3038,
+            "max_drawdown_pct": 12.5854,
+            "round_trips": 633,
+            "grid_fills": 1292,
+            "total_fees": 54.42,
+            "funding_paid": 6.15,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 2.8665,
+            "max_drawdown_pct": 4.5932,
+            "round_trips": 168,
+            "grid_fills": 353,
+            "total_fees": 15.98,
+            "funding_paid": 14.67,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 1.9657,
+            "max_drawdown_pct": 13.5856,
+            "round_trips": 488,
+            "grid_fills": 1002,
+            "total_fees": 113.19,
+            "funding_paid": 6.15,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 2.219,
+            "max_drawdown_pct": 4.6219,
+            "round_trips": 144,
+            "grid_fills": 305,
+            "total_fees": 35.38,
+            "funding_paid": 14.67,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 2.7132,
+            "max_drawdown_pct": 13.4278,
+            "round_trips": 487,
+            "grid_fills": 1000,
+            "total_fees": 42.69,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 2.579,
+            "max_drawdown_pct": 4.6081,
+            "round_trips": 144,
+            "grid_fills": 305,
+            "total_fees": 14.06,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": true
+    },
+    "half-close": {
+      "grid": {
+        "lower": 59888.0,
+        "upper": 97963.2,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 1,
+        "out_of_range": "close",
+        "cell_notional": 200.0,
+        "cell_width_pct_min": 0.9891,
+        "cell_width_pct_max": 0.9891
+      },
+      "split": {
+        "oos_start": "2026-03-25T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-03-24T23:45:00Z",
+        "bars": 12146,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 70504.19634,
+        "metrics": {
+          "total_return_pct": 2.6517,
+          "max_drawdown_pct": 13.4402,
+          "final_equity": 10265.17,
+          "fills": 1001,
+          "grid_fills": 1000,
+          "market_fills": 1,
+          "round_trips": 487,
+          "trading_pnl": 314.01,
+          "total_fees": 42.69,
+          "grid_fees": 40.16,
+          "market_fees": 2.53,
+          "funding_paid": 6.15,
+          "funding_events": 359,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 6882.52,
+          "avg_position_notional": 2371.73
+        },
+        "buy_and_hold": {
+          "return_pct": -22.9942,
+          "max_drawdown_pct": 38.3543,
+          "funding_paid": 64.91,
+          "return_with_funding_pct": -23.6433
+        },
+        "breakdown": {
+          "round_trips_counted": 487,
+          "round_trip_gross_pnl": 923.45,
+          "avg_gross_pnl_per_round_trip": 1.8962,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -609.44,
+              "quantity": 0.065125,
+              "net_quantity": 0.065125
+            }
+          },
+          "leftover_position_pnl": -609.44,
+          "fees": 42.69,
+          "funding_paid": 6.15,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 265.17,
+          "check_sum": 265.17,
+          "largest_net_position": {
+            "abs_quantity": 0.114321,
+            "net_quantity": 0.114321,
+            "time": "2026-02-06T00:00:00Z",
+            "price": 60492.442876,
+            "fill_n": 568
+          },
+          "time_net_long_pct": 82.0,
+          "time_net_short_pct": 11.8,
+          "time_net_flat_pct": 6.2,
+          "lowest_daily_close_equity": {
+            "t": "2026-02-06T00:00:00Z",
+            "equity": 9239.56
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-03-17T00:00:00Z",
+            "equity": 10470.13
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-03-25T00:00:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 12288,
+        "start_price": 70518.3,
+        "end_price_from_last_fill_or_none": null,
+        "metrics": {
+          "total_return_pct": 0.033,
+          "max_drawdown_pct": 2.0959,
+          "final_equity": 10003.3,
+          "fills": 306,
+          "grid_fills": 305,
+          "market_fills": 1,
+          "round_trips": 144,
+          "trading_pnl": 16.53,
+          "total_fees": 13.92,
+          "grid_fees": 12.19,
+          "market_fees": 1.73,
+          "funding_paid": -0.69,
+          "funding_events": 211,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": "2026-06-05T16:00:00Z",
+          "bars_outside_range_pct": 2.6693,
+          "max_position_notional": 3239.69,
+          "avg_position_notional": 866.11
+        },
+        "buy_and_hold": {
+          "return_pct": -8.3205,
+          "max_drawdown_pct": 29.6595,
+          "funding_paid": 58.04,
+          "return_with_funding_pct": -8.9009
+        },
+        "breakdown": {
+          "round_trips_counted": 144,
+          "round_trip_gross_pnl": 271.63,
+          "avg_gross_pnl_per_round_trip": 1.8863,
+          "non_grid_closes": {
+            "range_close": {
+              "fills": 1,
+              "pnl": -255.1,
+              "quantity": 0.052535,
+              "net_quantity": 0.052535
+            }
+          },
+          "leftover_position_pnl": -255.1,
+          "fees": 13.92,
+          "funding_paid": -0.69,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 3.3,
+          "check_sum": 3.3,
+          "largest_net_position": {
+            "abs_quantity": 0.052535,
+            "net_quantity": 0.052535,
+            "time": "2026-06-05T16:00:00Z",
+            "price": 59899.9776,
+            "fill_n": 305
+          },
+          "time_net_long_pct": 12.6,
+          "time_net_short_pct": 42.2,
+          "time_net_flat_pct": 45.2,
+          "lowest_daily_close_equity": {
+            "t": "2026-05-11T00:00:00Z",
+            "equity": 9924.88
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-06-02T00:00:00Z",
+            "equity": 10213.9
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 4.0866,
+            "max_drawdown_pct": 12.7849,
+            "round_trips": 566,
+            "grid_fills": 1158,
+            "total_fees": 49.03,
+            "funding_paid": 6.17,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 0.25,
+            "max_drawdown_pct": 2.0045,
+            "round_trips": 156,
+            "grid_fills": 329,
+            "total_fees": 14.88,
+            "funding_paid": -0.69,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 4.0143,
+            "max_drawdown_pct": 13.1131,
+            "round_trips": 562,
+            "grid_fills": 1150,
+            "total_fees": 48.71,
+            "funding_paid": 6.14,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 0.2502,
+            "max_drawdown_pct": 1.987,
+            "round_trips": 156,
+            "grid_fills": 329,
+            "total_fees": 14.88,
+            "funding_paid": -0.69,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 5.3038,
+            "max_drawdown_pct": 12.5854,
+            "round_trips": 633,
+            "grid_fills": 1292,
+            "total_fees": 54.42,
+            "funding_paid": 6.15,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 0.4672,
+            "max_drawdown_pct": 1.962,
+            "round_trips": 168,
+            "grid_fills": 353,
+            "total_fees": 15.84,
+            "funding_paid": -0.69,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 1.9657,
+            "max_drawdown_pct": 13.5856,
+            "round_trips": 488,
+            "grid_fills": 1002,
+            "total_fees": 113.19,
+            "funding_paid": 6.15,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -0.1803,
+            "max_drawdown_pct": 2.1434,
+            "round_trips": 144,
+            "grid_fills": 305,
+            "total_fees": 35.24,
+            "funding_paid": -0.69,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 2.7132,
+            "max_drawdown_pct": 13.4278,
+            "round_trips": 487,
+            "grid_fills": 1000,
+            "total_fees": 42.69,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 0.0261,
+            "max_drawdown_pct": 2.0949,
+            "round_trips": 144,
+            "grid_fills": 305,
+            "total_fees": 13.92,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": true
+    },
+    "half-continue-3x": {
+      "grid": {
+        "lower": 59888.0,
+        "upper": 97963.2,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 3,
+        "out_of_range": "continue",
+        "cell_notional": 600.0,
+        "cell_width_pct_min": 0.9891,
+        "cell_width_pct_max": 0.9891
+      },
+      "split": {
+        "oos_start": "2026-03-25T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-03-24T23:45:00Z",
+        "bars": 12146,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 70504.19634,
+        "metrics": {
+          "total_return_pct": 7.9551,
+          "max_drawdown_pct": 37.807,
+          "final_equity": 10795.51,
+          "fills": 1001,
+          "grid_fills": 1000,
+          "market_fills": 1,
+          "round_trips": 487,
+          "trading_pnl": 942.02,
+          "total_fees": 128.06,
+          "grid_fees": 120.48,
+          "market_fees": 7.58,
+          "funding_paid": 18.45,
+          "funding_events": 359,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 20647.57,
+          "avg_position_notional": 7115.2
+        },
+        "buy_and_hold": {
+          "return_pct": -22.9942,
+          "max_drawdown_pct": 38.3543,
+          "funding_paid": 64.91,
+          "return_with_funding_pct": -23.6433
+        },
+        "breakdown": {
+          "round_trips_counted": 487,
+          "round_trip_gross_pnl": 2770.34,
+          "avg_gross_pnl_per_round_trip": 5.6886,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -1828.31,
+              "quantity": 0.195376,
+              "net_quantity": 0.195376
+            }
+          },
+          "leftover_position_pnl": -1828.31,
+          "fees": 128.06,
+          "funding_paid": 18.45,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 795.51,
+          "check_sum": 795.52,
+          "largest_net_position": {
+            "abs_quantity": 0.342962,
+            "net_quantity": 0.342962,
+            "time": "2026-02-06T00:00:00Z",
+            "price": 60492.442876,
+            "fill_n": 568
+          },
+          "time_net_long_pct": 82.0,
+          "time_net_short_pct": 11.8,
+          "time_net_flat_pct": 6.2,
+          "lowest_daily_close_equity": {
+            "t": "2026-02-06T00:00:00Z",
+            "equity": 7718.67
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-03-17T00:00:00Z",
+            "equity": 11410.38
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-03-25T00:00:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 12288,
+        "start_price": 70518.3,
+        "end_price_from_last_fill_or_none": 64738.14978,
+        "metrics": {
+          "total_return_pct": 11.3153,
+          "max_drawdown_pct": 7.7408,
+          "final_equity": 11131.53,
+          "fills": 516,
+          "grid_fills": 515,
+          "market_fills": 1,
+          "round_trips": 253,
+          "trading_pnl": 1223.11,
+          "total_fees": 64.74,
+          "grid_fees": 61.89,
+          "market_fees": 2.85,
+          "funding_paid": 26.83,
+          "funding_events": 377,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 2.6693,
+          "max_position_notional": 9719.07,
+          "avg_position_notional": 5414.3
+        },
+        "buy_and_hold": {
+          "return_pct": -8.3205,
+          "max_drawdown_pct": 29.6595,
+          "funding_paid": 58.04,
+          "return_with_funding_pct": -8.9009
+        },
+        "breakdown": {
+          "round_trips_counted": 253,
+          "round_trip_gross_pnl": 1435.46,
+          "avg_gross_pnl_per_round_trip": 5.6738,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -212.35,
+              "quantity": 0.080149,
+              "net_quantity": 0.080149
+            }
+          },
+          "leftover_position_pnl": -212.35,
+          "fees": 64.74,
+          "funding_paid": 26.83,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 1131.53,
+          "check_sum": 1131.54,
+          "largest_net_position": {
+            "abs_quantity": 0.157605,
+            "net_quantity": 0.157605,
+            "time": "2026-06-05T16:00:00Z",
+            "price": 59899.9776,
+            "fill_n": 305
+          },
+          "time_net_long_pct": 55.8,
+          "time_net_short_pct": 42.2,
+          "time_net_flat_pct": 2.0,
+          "lowest_daily_close_equity": {
+            "t": "2026-05-11T00:00:00Z",
+            "equity": 9774.64
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-07-22T00:00:00Z",
+            "equity": 11216.88
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 12.2597,
+            "max_drawdown_pct": 35.7598,
+            "round_trips": 566,
+            "grid_fills": 1158,
+            "total_fees": 147.1,
+            "funding_paid": 18.5,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 12.1845,
+            "max_drawdown_pct": 7.6377,
+            "round_trips": 269,
+            "grid_fills": 547,
+            "total_fees": 68.59,
+            "funding_paid": 26.83,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 12.043,
+            "max_drawdown_pct": 36.6544,
+            "round_trips": 562,
+            "grid_fills": 1150,
+            "total_fees": 146.14,
+            "funding_paid": 18.41,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 12.4571,
+            "max_drawdown_pct": 7.6263,
+            "round_trips": 274,
+            "grid_fills": 557,
+            "total_fees": 69.8,
+            "funding_paid": 26.88,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 15.9115,
+            "max_drawdown_pct": 34.9936,
+            "round_trips": 633,
+            "grid_fills": 1292,
+            "total_fees": 163.25,
+            "funding_paid": 18.46,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 13.3262,
+            "max_drawdown_pct": 7.5248,
+            "round_trips": 290,
+            "grid_fills": 589,
+            "total_fees": 73.64,
+            "funding_paid": 26.88,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 5.897,
+            "max_drawdown_pct": 38.3969,
+            "round_trips": 488,
+            "grid_fills": 1002,
+            "total_fees": 339.56,
+            "funding_paid": 18.45,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 10.2323,
+            "max_drawdown_pct": 7.899,
+            "round_trips": 253,
+            "grid_fills": 515,
+            "total_fees": 173.05,
+            "funding_paid": 26.83,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 8.1396,
+            "max_drawdown_pct": 37.7607,
+            "round_trips": 487,
+            "grid_fills": 1000,
+            "total_fees": 128.06,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 11.5836,
+            "max_drawdown_pct": 7.7516,
+            "round_trips": 253,
+            "grid_fills": 515,
+            "total_fees": 64.74,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": false
+    },
+    "month-continue": {
+      "grid": {
+        "lower": 80607.9,
+        "upper": 94550.0,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 1,
+        "out_of_range": "continue",
+        "cell_notional": 200.0,
+        "cell_width_pct_min": 0.3196,
+        "cell_width_pct_max": 0.3196
+      },
+      "split": {
+        "oos_start": "2025-12-18T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2025-12-17T23:45:00Z",
+        "bars": 2834,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 86180.06054,
+        "metrics": {
+          "total_return_pct": 3.1706,
+          "max_drawdown_pct": 3.957,
+          "final_equity": 10317.06,
+          "fills": 1765,
+          "grid_fills": 1764,
+          "market_fills": 1,
+          "round_trips": 873,
+          "trading_pnl": 390.51,
+          "total_fees": 72.54,
+          "grid_fees": 70.62,
+          "market_fees": 1.93,
+          "funding_paid": 0.9,
+          "funding_events": 84,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 7175.19,
+          "avg_position_notional": 1635.69
+        },
+        "buy_and_hold": {
+          "return_pct": -5.8605,
+          "max_drawdown_pct": 13.611,
+          "funding_paid": 14.3,
+          "return_with_funding_pct": -6.0035
+        },
+        "breakdown": {
+          "round_trips_counted": 873,
+          "round_trip_gross_pnl": 487.61,
+          "avg_gross_pnl_per_round_trip": 0.5585,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -97.13,
+              "quantity": 0.040654,
+              "net_quantity": 0.040654
+            }
+          },
+          "leftover_position_pnl": -97.13,
+          "fees": 72.54,
+          "funding_paid": 0.9,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 317.06,
+          "check_sum": 317.04,
+          "largest_net_position": {
+            "abs_quantity": 0.08865,
+            "net_quantity": 0.08865,
+            "time": "2025-11-21T12:15:00Z",
+            "price": 80881.674848,
+            "fill_n": 326
+          },
+          "time_net_long_pct": 69.4,
+          "time_net_short_pct": 23.9,
+          "time_net_flat_pct": 6.7,
+          "lowest_daily_close_equity": {
+            "t": "2025-11-23T00:00:00Z",
+            "equity": 9941.6
+          },
+          "highest_daily_close_equity": {
+            "t": "2025-12-14T00:00:00Z",
+            "equity": 10363.06
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2025-12-18T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 32206,
+        "start_price": 86197.3,
+        "end_price_from_last_fill_or_none": 64111.6751,
+        "metrics": {
+          "total_return_pct": -3.8835,
+          "max_drawdown_pct": 11.7858,
+          "final_equity": 9611.65,
+          "fills": 2710,
+          "grid_fills": 2709,
+          "market_fills": 1,
+          "round_trips": 1344,
+          "trading_pnl": -214.45,
+          "total_fees": 110.15,
+          "grid_fees": 108.37,
+          "market_fees": 1.78,
+          "funding_paid": 63.75,
+          "funding_events": 1003,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 74.7842,
+          "max_position_notional": 6264.73,
+          "avg_position_notional": 3292.74
+        },
+        "buy_and_hold": {
+          "return_pct": -25.7329,
+          "max_drawdown_pct": 40.467,
+          "funding_paid": 239.56,
+          "return_with_funding_pct": -28.1285
+        },
+        "breakdown": {
+          "round_trips_counted": 1344,
+          "round_trip_gross_pnl": 750.16,
+          "avg_gross_pnl_per_round_trip": 0.5582,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -964.66,
+              "quantity": 0.050477,
+              "net_quantity": 0.050477
+            }
+          },
+          "leftover_position_pnl": -964.66,
+          "fees": 110.15,
+          "funding_paid": 63.75,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": -388.35,
+          "check_sum": -388.4,
+          "largest_net_position": {
+            "abs_quantity": 0.064168,
+            "net_quantity": -0.064168,
+            "time": "2026-01-13T22:00:00Z",
+            "price": 94531.09,
+            "fill_n": 837
+          },
+          "time_net_long_pct": 86.8,
+          "time_net_short_pct": 12.9,
+          "time_net_flat_pct": 0.3,
+          "lowest_daily_close_equity": {
+            "t": "2026-07-01T00:00:00Z",
+            "equity": 9131.99
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-10-22T00:00:00Z",
+            "equity": 10555.4
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 4.9845,
+            "max_drawdown_pct": 3.6813,
+            "round_trips": 1252,
+            "grid_fills": 2522,
+            "total_fees": 102.89,
+            "funding_paid": 0.89,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -1.7503,
+            "max_drawdown_pct": 11.497,
+            "round_trips": 1790,
+            "grid_fills": 3601,
+            "total_fees": 145.84,
+            "funding_paid": 63.69,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 4.907,
+            "max_drawdown_pct": 3.8255,
+            "round_trips": 1236,
+            "grid_fills": 2490,
+            "total_fees": 101.6,
+            "funding_paid": 0.96,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -1.9237,
+            "max_drawdown_pct": 11.5291,
+            "round_trips": 1754,
+            "grid_fills": 3529,
+            "total_fees": 142.95,
+            "funding_paid": 63.8,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 6.367,
+            "max_drawdown_pct": 3.6018,
+            "round_trips": 1541,
+            "grid_fills": 3100,
+            "total_fees": 126.03,
+            "funding_paid": 0.93,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -0.1539,
+            "max_drawdown_pct": 11.3394,
+            "round_trips": 2124,
+            "grid_fills": 4269,
+            "total_fees": 172.55,
+            "funding_paid": 63.75,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 1.9551,
+            "max_drawdown_pct": 4.0731,
+            "round_trips": 879,
+            "grid_fills": 1776,
+            "total_fees": 197.44,
+            "funding_paid": 0.91,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -5.7531,
+            "max_drawdown_pct": 12.0382,
+            "round_trips": 1352,
+            "grid_fills": 2725,
+            "total_fees": 301.56,
+            "funding_paid": 63.76,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 3.1796,
+            "max_drawdown_pct": 3.9574,
+            "round_trips": 873,
+            "grid_fills": 1764,
+            "total_fees": 72.54,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -3.2461,
+            "max_drawdown_pct": 11.6872,
+            "round_trips": 1344,
+            "grid_fills": 2709,
+            "total_fees": 110.15,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": true
+    },
+    "month-stop": {
+      "grid": {
+        "lower": 80607.9,
+        "upper": 94550.0,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 1,
+        "out_of_range": "stop",
+        "cell_notional": 200.0,
+        "cell_width_pct_min": 0.3196,
+        "cell_width_pct_max": 0.3196
+      },
+      "split": {
+        "oos_start": "2025-12-18T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2025-12-17T23:45:00Z",
+        "bars": 2834,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 86180.06054,
+        "metrics": {
+          "total_return_pct": 3.1706,
+          "max_drawdown_pct": 3.957,
+          "final_equity": 10317.06,
+          "fills": 1765,
+          "grid_fills": 1764,
+          "market_fills": 1,
+          "round_trips": 873,
+          "trading_pnl": 390.51,
+          "total_fees": 72.54,
+          "grid_fees": 70.62,
+          "market_fees": 1.93,
+          "funding_paid": 0.9,
+          "funding_events": 84,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 7175.19,
+          "avg_position_notional": 1635.69
+        },
+        "buy_and_hold": {
+          "return_pct": -5.8605,
+          "max_drawdown_pct": 13.611,
+          "funding_paid": 14.3,
+          "return_with_funding_pct": -6.0035
+        },
+        "breakdown": {
+          "round_trips_counted": 873,
+          "round_trip_gross_pnl": 487.61,
+          "avg_gross_pnl_per_round_trip": 0.5585,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -97.13,
+              "quantity": 0.040654,
+              "net_quantity": 0.040654
+            }
+          },
+          "leftover_position_pnl": -97.13,
+          "fees": 72.54,
+          "funding_paid": 0.9,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 317.06,
+          "check_sum": 317.04,
+          "largest_net_position": {
+            "abs_quantity": 0.08865,
+            "net_quantity": 0.08865,
+            "time": "2025-11-21T12:15:00Z",
+            "price": 80881.674848,
+            "fill_n": 326
+          },
+          "time_net_long_pct": 69.4,
+          "time_net_short_pct": 23.9,
+          "time_net_flat_pct": 6.7,
+          "lowest_daily_close_equity": {
+            "t": "2025-11-23T00:00:00Z",
+            "equity": 9941.6
+          },
+          "highest_daily_close_equity": {
+            "t": "2025-12-14T00:00:00Z",
+            "equity": 10363.06
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2025-12-18T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 32206,
+        "start_price": 86197.3,
+        "end_price_from_last_fill_or_none": 64137.3249,
+        "metrics": {
+          "total_return_pct": 19.3236,
+          "max_drawdown_pct": 14.8438,
+          "final_equity": 11932.36,
+          "fills": 572,
+          "grid_fills": 571,
+          "market_fills": 1,
+          "round_trips": 271,
+          "trading_pnl": 1834.3,
+          "total_fees": 25.07,
+          "grid_fees": 22.81,
+          "market_fees": 2.26,
+          "funding_paid": -123.13,
+          "funding_events": 1006,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": "2026-01-05T20:15:00Z",
+          "bars_outside_range_pct": 74.7842,
+          "max_position_notional": 6264.73,
+          "avg_position_notional": 4558.84
+        },
+        "buy_and_hold": {
+          "return_pct": -25.7329,
+          "max_drawdown_pct": 40.467,
+          "funding_paid": 239.56,
+          "return_with_funding_pct": -28.1285
+        },
+        "breakdown": {
+          "round_trips_counted": 271,
+          "round_trip_gross_pnl": 151.03,
+          "avg_gross_pnl_per_round_trip": 0.5573,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": 1683.26,
+              "quantity": 0.064168,
+              "net_quantity": -0.064168
+            }
+          },
+          "leftover_position_pnl": 1683.26,
+          "fees": 25.07,
+          "funding_paid": -123.13,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 1932.36,
+          "check_sum": 1932.35,
+          "largest_net_position": {
+            "abs_quantity": 0.064168,
+            "net_quantity": -0.064168,
+            "time": "2026-01-05T20:15:00Z",
+            "price": 94531.09,
+            "fill_n": 571
+          },
+          "time_net_long_pct": 0.1,
+          "time_net_short_pct": 99.9,
+          "time_net_flat_pct": 0.0,
+          "lowest_daily_close_equity": {
+            "t": "2026-01-15T00:00:00Z",
+            "equity": 9721.24
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-07-01T00:00:00Z",
+            "equity": 12197.3
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 4.9845,
+            "max_drawdown_pct": 3.6813,
+            "round_trips": 1252,
+            "grid_fills": 2522,
+            "total_fees": 102.89,
+            "funding_paid": 0.89,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 19.7632,
+            "max_drawdown_pct": 14.7906,
+            "round_trips": 363,
+            "grid_fills": 755,
+            "total_fees": 32.42,
+            "funding_paid": -123.16,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 4.907,
+            "max_drawdown_pct": 3.8255,
+            "round_trips": 1236,
+            "grid_fills": 2490,
+            "total_fees": 101.6,
+            "funding_paid": 0.96,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 19.8295,
+            "max_drawdown_pct": 14.7826,
+            "round_trips": 377,
+            "grid_fills": 783,
+            "total_fees": 33.54,
+            "funding_paid": -123.11,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 6.367,
+            "max_drawdown_pct": 3.6018,
+            "round_trips": 1541,
+            "grid_fills": 3100,
+            "total_fees": 126.03,
+            "funding_paid": 0.93,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 20.1688,
+            "max_drawdown_pct": 14.7419,
+            "round_trips": 448,
+            "grid_fills": 925,
+            "total_fees": 39.22,
+            "funding_paid": -123.14,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 1.9551,
+            "max_drawdown_pct": 4.0731,
+            "round_trips": 879,
+            "grid_fills": 1776,
+            "total_fees": 197.44,
+            "funding_paid": 0.91,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 18.9312,
+            "max_drawdown_pct": 14.8916,
+            "round_trips": 273,
+            "grid_fills": 575,
+            "total_fees": 65.43,
+            "funding_paid": -123.13,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 3.1796,
+            "max_drawdown_pct": 3.9574,
+            "round_trips": 873,
+            "grid_fills": 1764,
+            "total_fees": 72.54,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 18.0923,
+            "max_drawdown_pct": 15.3064,
+            "round_trips": 271,
+            "grid_fills": 571,
+            "total_fees": 25.07,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": true
+    },
+    "month-close": {
+      "grid": {
+        "lower": 80607.9,
+        "upper": 94550.0,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 1,
+        "out_of_range": "close",
+        "cell_notional": 200.0,
+        "cell_width_pct_min": 0.3196,
+        "cell_width_pct_max": 0.3196
+      },
+      "split": {
+        "oos_start": "2025-12-18T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2025-12-17T23:45:00Z",
+        "bars": 2834,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 86180.06054,
+        "metrics": {
+          "total_return_pct": 3.1706,
+          "max_drawdown_pct": 3.957,
+          "final_equity": 10317.06,
+          "fills": 1765,
+          "grid_fills": 1764,
+          "market_fills": 1,
+          "round_trips": 873,
+          "trading_pnl": 390.51,
+          "total_fees": 72.54,
+          "grid_fees": 70.62,
+          "market_fees": 1.93,
+          "funding_paid": 0.9,
+          "funding_events": 84,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 7175.19,
+          "avg_position_notional": 1635.69
+        },
+        "buy_and_hold": {
+          "return_pct": -5.8605,
+          "max_drawdown_pct": 13.611,
+          "funding_paid": 14.3,
+          "return_with_funding_pct": -6.0035
+        },
+        "breakdown": {
+          "round_trips_counted": 873,
+          "round_trip_gross_pnl": 487.61,
+          "avg_gross_pnl_per_round_trip": 0.5585,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -97.13,
+              "quantity": 0.040654,
+              "net_quantity": 0.040654
+            }
+          },
+          "leftover_position_pnl": -97.13,
+          "fees": 72.54,
+          "funding_paid": 0.9,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 317.06,
+          "check_sum": 317.04,
+          "largest_net_position": {
+            "abs_quantity": 0.08865,
+            "net_quantity": 0.08865,
+            "time": "2025-11-21T12:15:00Z",
+            "price": 80881.674848,
+            "fill_n": 326
+          },
+          "time_net_long_pct": 69.4,
+          "time_net_short_pct": 23.9,
+          "time_net_flat_pct": 6.7,
+          "lowest_daily_close_equity": {
+            "t": "2025-11-23T00:00:00Z",
+            "equity": 9941.6
+          },
+          "highest_daily_close_equity": {
+            "t": "2025-12-14T00:00:00Z",
+            "equity": 10363.06
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2025-12-18T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 32206,
+        "start_price": 86197.3,
+        "end_price_from_last_fill_or_none": null,
+        "metrics": {
+          "total_return_pct": -1.4055,
+          "max_drawdown_pct": 2.4408,
+          "final_equity": 9859.45,
+          "fills": 572,
+          "grid_fills": 571,
+          "market_fills": 1,
+          "round_trips": 271,
+          "trading_pnl": -118.44,
+          "total_fees": 26.15,
+          "grid_fees": 22.81,
+          "market_fees": 3.34,
+          "funding_paid": -4.05,
+          "funding_events": 56,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": "2026-01-05T20:15:00Z",
+          "bars_outside_range_pct": 74.7842,
+          "max_position_notional": 5858.09,
+          "avg_position_notional": 94.16
+        },
+        "buy_and_hold": {
+          "return_pct": -25.7329,
+          "max_drawdown_pct": 40.467,
+          "funding_paid": 239.56,
+          "return_with_funding_pct": -28.1285
+        },
+        "breakdown": {
+          "round_trips_counted": 271,
+          "round_trip_gross_pnl": 151.03,
+          "avg_gross_pnl_per_round_trip": 0.5573,
+          "non_grid_closes": {
+            "range_close": {
+              "fills": 1,
+              "pnl": -269.49,
+              "quantity": 0.064168,
+              "net_quantity": -0.064168
+            }
+          },
+          "leftover_position_pnl": -269.49,
+          "fees": 26.15,
+          "funding_paid": -4.05,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": -140.55,
+          "check_sum": -140.56,
+          "largest_net_position": {
+            "abs_quantity": 0.064168,
+            "net_quantity": -0.064168,
+            "time": "2026-01-05T20:15:00Z",
+            "price": 94531.09,
+            "fill_n": 571
+          },
+          "time_net_long_pct": 94.5,
+          "time_net_short_pct": 5.5,
+          "time_net_flat_pct": 0.0,
+          "lowest_daily_close_equity": {
+            "t": "2026-01-06T00:00:00Z",
+            "equity": 9859.45
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-01-01T00:00:00Z",
+            "equity": 10104.22
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 4.9845,
+            "max_drawdown_pct": 3.6813,
+            "round_trips": 1252,
+            "grid_fills": 2522,
+            "total_fees": 102.89,
+            "funding_paid": 0.89,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -0.9658,
+            "max_drawdown_pct": 2.4025,
+            "round_trips": 363,
+            "grid_fills": 755,
+            "total_fees": 33.5,
+            "funding_paid": -4.08,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 4.907,
+            "max_drawdown_pct": 3.8255,
+            "round_trips": 1236,
+            "grid_fills": 2490,
+            "total_fees": 101.6,
+            "funding_paid": 0.96,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -0.8996,
+            "max_drawdown_pct": 2.3552,
+            "round_trips": 377,
+            "grid_fills": 783,
+            "total_fees": 34.62,
+            "funding_paid": -4.02,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 6.367,
+            "max_drawdown_pct": 3.6018,
+            "round_trips": 1541,
+            "grid_fills": 3100,
+            "total_fees": 126.03,
+            "funding_paid": 0.93,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -0.5602,
+            "max_drawdown_pct": 2.3335,
+            "round_trips": 448,
+            "grid_fills": 925,
+            "total_fees": 40.29,
+            "funding_paid": -4.05,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 1.9551,
+            "max_drawdown_pct": 4.0731,
+            "round_trips": 879,
+            "grid_fills": 1776,
+            "total_fees": 197.44,
+            "funding_paid": 0.91,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -1.7979,
+            "max_drawdown_pct": 2.5254,
+            "round_trips": 273,
+            "grid_fills": 575,
+            "total_fees": 66.5,
+            "funding_paid": -4.05,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 3.1796,
+            "max_drawdown_pct": 3.9574,
+            "round_trips": 873,
+            "grid_fills": 1764,
+            "total_fees": 72.54,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -1.4459,
+            "max_drawdown_pct": 2.4586,
+            "round_trips": 271,
+            "grid_fills": 571,
+            "total_fees": 26.15,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": true
+    },
+    "month-continue-3x": {
+      "grid": {
+        "lower": 80607.9,
+        "upper": 94550.0,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 3,
+        "out_of_range": "continue",
+        "cell_notional": 600.0,
+        "cell_width_pct_min": 0.3196,
+        "cell_width_pct_max": 0.3196
+      },
+      "split": {
+        "oos_start": "2025-12-18T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2025-12-17T23:45:00Z",
+        "bars": 2834,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 86180.06054,
+        "metrics": {
+          "total_return_pct": 9.5118,
+          "max_drawdown_pct": 11.7805,
+          "final_equity": 10951.18,
+          "fills": 1765,
+          "grid_fills": 1764,
+          "market_fills": 1,
+          "round_trips": 873,
+          "trading_pnl": 1171.52,
+          "total_fees": 217.63,
+          "grid_fees": 211.85,
+          "market_fees": 5.78,
+          "funding_paid": 2.7,
+          "funding_events": 84,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 21525.58,
+          "avg_position_notional": 4907.07
+        },
+        "buy_and_hold": {
+          "return_pct": -5.8605,
+          "max_drawdown_pct": 13.611,
+          "funding_paid": 14.3,
+          "return_with_funding_pct": -6.0035
+        },
+        "breakdown": {
+          "round_trips_counted": 873,
+          "round_trip_gross_pnl": 1462.92,
+          "avg_gross_pnl_per_round_trip": 1.6757,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -291.38,
+              "quantity": 0.121963,
+              "net_quantity": 0.121963
+            }
+          },
+          "leftover_position_pnl": -291.38,
+          "fees": 217.63,
+          "funding_paid": 2.7,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 951.18,
+          "check_sum": 951.21,
+          "largest_net_position": {
+            "abs_quantity": 0.265951,
+            "net_quantity": 0.265951,
+            "time": "2025-11-21T12:15:00Z",
+            "price": 80881.674848,
+            "fill_n": 326
+          },
+          "time_net_long_pct": 69.4,
+          "time_net_short_pct": 23.9,
+          "time_net_flat_pct": 6.7,
+          "lowest_daily_close_equity": {
+            "t": "2025-11-23T00:00:00Z",
+            "equity": 9824.79
+          },
+          "highest_daily_close_equity": {
+            "t": "2025-12-14T00:00:00Z",
+            "equity": 11089.19
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2025-12-18T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 32206,
+        "start_price": 86197.3,
+        "end_price_from_last_fill_or_none": 64111.6751,
+        "metrics": {
+          "total_return_pct": -11.6506,
+          "max_drawdown_pct": 33.2597,
+          "final_equity": 8834.94,
+          "fills": 2710,
+          "grid_fills": 2709,
+          "market_fills": 1,
+          "round_trips": 1344,
+          "trading_pnl": -643.36,
+          "total_fees": 330.45,
+          "grid_fees": 325.11,
+          "market_fees": 5.34,
+          "funding_paid": 191.24,
+          "funding_events": 1003,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 74.7842,
+          "max_position_notional": 18794.18,
+          "avg_position_notional": 9878.23
+        },
+        "buy_and_hold": {
+          "return_pct": -25.7329,
+          "max_drawdown_pct": 40.467,
+          "funding_paid": 239.56,
+          "return_with_funding_pct": -28.1285
+        },
+        "breakdown": {
+          "round_trips_counted": 1344,
+          "round_trip_gross_pnl": 2250.63,
+          "avg_gross_pnl_per_round_trip": 1.6746,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -2893.97,
+              "quantity": 0.151432,
+              "net_quantity": 0.151432
+            }
+          },
+          "leftover_position_pnl": -2893.97,
+          "fees": 330.45,
+          "funding_paid": 191.24,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": -1165.06,
+          "check_sum": -1165.03,
+          "largest_net_position": {
+            "abs_quantity": 0.192505,
+            "net_quantity": -0.192505,
+            "time": "2026-01-05T20:15:00Z",
+            "price": 94531.09,
+            "fill_n": 571
+          },
+          "time_net_long_pct": 86.8,
+          "time_net_short_pct": 12.9,
+          "time_net_flat_pct": 0.3,
+          "lowest_daily_close_equity": {
+            "t": "2026-07-01T00:00:00Z",
+            "equity": 7395.97
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-10-22T00:00:00Z",
+            "equity": 11666.21
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 14.9534,
+            "max_drawdown_pct": 10.9246,
+            "round_trips": 1252,
+            "grid_fills": 2522,
+            "total_fees": 308.67,
+            "funding_paid": 2.66,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -5.2509,
+            "max_drawdown_pct": 31.7699,
+            "round_trips": 1790,
+            "grid_fills": 3601,
+            "total_fees": 437.51,
+            "funding_paid": 191.08,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 14.721,
+            "max_drawdown_pct": 11.3453,
+            "round_trips": 1236,
+            "grid_fills": 2490,
+            "total_fees": 304.81,
+            "funding_paid": 2.87,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -5.7711,
+            "max_drawdown_pct": 31.9026,
+            "round_trips": 1754,
+            "grid_fills": 3529,
+            "total_fees": 428.85,
+            "funding_paid": 191.4,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 19.101,
+            "max_drawdown_pct": 10.6563,
+            "round_trips": 1541,
+            "grid_fills": 3100,
+            "total_fees": 378.08,
+            "funding_paid": 2.78,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -0.4618,
+            "max_drawdown_pct": 30.8438,
+            "round_trips": 2124,
+            "grid_fills": 4269,
+            "total_fees": 517.66,
+            "funding_paid": 191.24,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 5.8652,
+            "max_drawdown_pct": 12.1516,
+            "round_trips": 879,
+            "grid_fills": 1776,
+            "total_fees": 592.32,
+            "funding_paid": 2.73,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -17.2593,
+            "max_drawdown_pct": 34.5541,
+            "round_trips": 1352,
+            "grid_fills": 2725,
+            "total_fees": 904.68,
+            "funding_paid": 191.28,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 9.5389,
+            "max_drawdown_pct": 11.7824,
+            "round_trips": 873,
+            "grid_fills": 1764,
+            "total_fees": 217.63,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -9.7382,
+            "max_drawdown_pct": 33.0523,
+            "round_trips": 1344,
+            "grid_fills": 2709,
+            "total_fees": 330.45,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": false
+    },
+    "shipped-3x": {
+      "grid": {
+        "lower": 57755.8,
+        "upper": 97963.2,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 3,
+        "out_of_range": "continue",
+        "cell_notional": 600.0,
+        "cell_width_pct_min": 1.0623,
+        "cell_width_pct_max": 1.0623
+      },
+      "split": {
+        "oos_start": "2026-07-31T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 64738.14978,
+        "metrics": {
+          "total_return_pct": 9.4976,
+          "max_drawdown_pct": 34.6847,
+          "final_equity": 10949.76,
+          "fills": 1371,
+          "grid_fills": 1370,
+          "market_fills": 1,
+          "round_trips": 669,
+          "trading_pnl": 1238.13,
+          "total_fees": 174.12,
+          "grid_fees": 165.13,
+          "market_fees": 8.99,
+          "funding_paid": 114.26,
+          "funding_events": 731,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 20634.31,
+          "avg_position_notional": 9956.63
+        },
+        "buy_and_hold": {
+          "return_pct": -29.2964,
+          "max_drawdown_pct": 40.4682,
+          "funding_paid": 109.68,
+          "return_with_funding_pct": -30.3932
+        },
+        "breakdown": {
+          "round_trips_counted": 669,
+          "round_trip_gross_pnl": 4099.68,
+          "avg_gross_pnl_per_round_trip": 6.1281,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -2861.53,
+              "quantity": 0.252437,
+              "net_quantity": 0.252437
+            }
+          },
+          "leftover_position_pnl": -2861.53,
+          "fees": 174.12,
+          "funding_paid": 114.26,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 949.76,
+          "check_sum": 949.77,
+          "largest_net_position": {
+            "abs_quantity": 0.350502,
+            "net_quantity": 0.350502,
+            "time": "2026-06-25T13:45:00Z",
+            "price": 58381.036502,
+            "fill_n": 1246
+          },
+          "time_net_long_pct": 89.0,
+          "time_net_short_pct": 6.7,
+          "time_net_flat_pct": 4.4,
+          "lowest_daily_close_equity": {
+            "t": "2026-02-06T00:00:00Z",
+            "equity": 7972.73
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-05-11T00:00:00Z",
+            "equity": 12805.87
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "start_price": 64751.1,
+        "end_price_from_last_fill_or_none": 64111.6751,
+        "metrics": {
+          "total_return_pct": 13.1077,
+          "max_drawdown_pct": 21.8124,
+          "final_equity": 11310.77,
+          "fills": 396,
+          "grid_fills": 395,
+          "market_fills": 1,
+          "round_trips": 197,
+          "trading_pnl": 1196.38,
+          "total_fees": 47.55,
+          "grid_fees": 47.22,
+          "market_fees": 0.33,
+          "funding_paid": -161.95,
+          "funding_events": 310,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 19451.3,
+          "avg_position_notional": 10385.6
+        },
+        "buy_and_hold": {
+          "return_pct": -1.1168,
+          "max_drawdown_pct": 28.8692,
+          "funding_paid": 184.24,
+          "return_with_funding_pct": -2.9591
+        },
+        "breakdown": {
+          "round_trips_counted": 197,
+          "round_trip_gross_pnl": 1197.26,
+          "avg_gross_pnl_per_round_trip": 6.0775,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -0.88,
+              "quantity": 0.009347,
+              "net_quantity": 0.009347
+            }
+          },
+          "leftover_position_pnl": -0.88,
+          "fees": 47.55,
+          "funding_paid": -161.95,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 1310.77,
+          "check_sum": 1310.78,
+          "largest_net_position": {
+            "abs_quantity": 0.22298,
+            "net_quantity": -0.22298,
+            "time": "2026-09-21T20:15:00Z",
+            "price": 87195.340198,
+            "fill_n": 190
+          },
+          "time_net_long_pct": 14.2,
+          "time_net_short_pct": 79.2,
+          "time_net_flat_pct": 6.6,
+          "lowest_daily_close_equity": {
+            "t": "2026-09-22T00:00:00Z",
+            "equity": 8026.58
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-11-18T11:30:00Z",
+            "equity": 11310.77
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 14.0921,
+            "max_drawdown_pct": 32.9553,
+            "round_trips": 747,
+            "grid_fills": 1526,
+            "total_fees": 192.93,
+            "funding_paid": 114.28,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 14.3347,
+            "max_drawdown_pct": 21.2908,
+            "round_trips": 218,
+            "grid_fills": 437,
+            "total_fees": 52.57,
+            "funding_paid": -162.1,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 13.7962,
+            "max_drawdown_pct": 34.0563,
+            "round_trips": 742,
+            "grid_fills": 1516,
+            "total_fees": 191.72,
+            "funding_paid": 114.16,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 14.2734,
+            "max_drawdown_pct": 21.0608,
+            "round_trips": 217,
+            "grid_fills": 435,
+            "total_fees": 52.33,
+            "funding_paid": -161.86,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 18.2728,
+            "max_drawdown_pct": 32.3942,
+            "round_trips": 818,
+            "grid_fills": 1668,
+            "total_fees": 210.05,
+            "funding_paid": 114.19,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 15.442,
+            "max_drawdown_pct": 20.597,
+            "round_trips": 237,
+            "grid_fills": 475,
+            "total_fees": 57.11,
+            "funding_paid": -162.0,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 6.6625,
+            "max_drawdown_pct": 35.1546,
+            "round_trips": 670,
+            "grid_fills": 1372,
+            "total_fees": 463.76,
+            "funding_paid": 114.26,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 12.2813,
+            "max_drawdown_pct": 22.1649,
+            "round_trips": 197,
+            "grid_fills": 395,
+            "total_fees": 130.19,
+            "funding_paid": -161.95,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 10.6401,
+            "max_drawdown_pct": 34.6477,
+            "round_trips": 669,
+            "grid_fills": 1370,
+            "total_fees": 174.12,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 11.4883,
+            "max_drawdown_pct": 22.4442,
+            "round_trips": 197,
+            "grid_fills": 395,
+            "total_fees": 47.55,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": false
+    },
+    "shipped-5x": {
+      "grid": {
+        "lower": 57755.8,
+        "upper": 97963.2,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 5,
+        "out_of_range": "continue",
+        "cell_notional": 1000.0,
+        "cell_width_pct_min": 1.0623,
+        "cell_width_pct_max": 1.0623
+      },
+      "split": {
+        "oos_start": "2026-07-31T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 64738.14978,
+        "metrics": {
+          "total_return_pct": 15.8293,
+          "max_drawdown_pct": 54.5118,
+          "final_equity": 11582.93,
+          "fills": 1371,
+          "grid_fills": 1370,
+          "market_fills": 1,
+          "round_trips": 669,
+          "trading_pnl": 2063.55,
+          "total_fees": 290.2,
+          "grid_fees": 275.22,
+          "market_fees": 14.98,
+          "funding_paid": 190.43,
+          "funding_events": 731,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 34390.51,
+          "avg_position_notional": 16594.38
+        },
+        "buy_and_hold": {
+          "return_pct": -29.2964,
+          "max_drawdown_pct": 40.4682,
+          "funding_paid": 109.68,
+          "return_with_funding_pct": -30.3932
+        },
+        "breakdown": {
+          "round_trips_counted": 669,
+          "round_trip_gross_pnl": 6832.78,
+          "avg_gross_pnl_per_round_trip": 10.2134,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -4769.22,
+              "quantity": 0.420728,
+              "net_quantity": 0.420728
+            }
+          },
+          "leftover_position_pnl": -4769.22,
+          "fees": 290.2,
+          "funding_paid": 190.43,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 1582.93,
+          "check_sum": 1582.93,
+          "largest_net_position": {
+            "abs_quantity": 0.58417,
+            "net_quantity": 0.58417,
+            "time": "2026-06-25T13:45:00Z",
+            "price": 58381.036502,
+            "fill_n": 1246
+          },
+          "time_net_long_pct": 89.0,
+          "time_net_short_pct": 6.7,
+          "time_net_flat_pct": 4.4,
+          "lowest_daily_close_equity": {
+            "t": "2026-02-06T00:00:00Z",
+            "equity": 6621.22
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-05-11T00:00:00Z",
+            "equity": 14676.44
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "start_price": 64751.1,
+        "end_price_from_last_fill_or_none": 64111.6751,
+        "metrics": {
+          "total_return_pct": 21.8462,
+          "max_drawdown_pct": 36.1749,
+          "final_equity": 12184.62,
+          "fills": 396,
+          "grid_fills": 395,
+          "market_fills": 1,
+          "round_trips": 197,
+          "trading_pnl": 1993.96,
+          "total_fees": 79.25,
+          "grid_fees": 78.7,
+          "market_fees": 0.55,
+          "funding_paid": -269.91,
+          "funding_events": 310,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 32418.84,
+          "avg_position_notional": 17309.33
+        },
+        "buy_and_hold": {
+          "return_pct": -1.1168,
+          "max_drawdown_pct": 28.8692,
+          "funding_paid": 184.24,
+          "return_with_funding_pct": -2.9591
+        },
+        "breakdown": {
+          "round_trips_counted": 197,
+          "round_trip_gross_pnl": 1995.43,
+          "avg_gross_pnl_per_round_trip": 10.1291,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -1.47,
+              "quantity": 0.015578,
+              "net_quantity": 0.015578
+            }
+          },
+          "leftover_position_pnl": -1.47,
+          "fees": 79.25,
+          "funding_paid": -269.91,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 2184.62,
+          "check_sum": 2184.62,
+          "largest_net_position": {
+            "abs_quantity": 0.371634,
+            "net_quantity": -0.371634,
+            "time": "2026-09-21T20:15:00Z",
+            "price": 87195.340198,
+            "fill_n": 190
+          },
+          "time_net_long_pct": 14.2,
+          "time_net_short_pct": 79.2,
+          "time_net_flat_pct": 6.6,
+          "lowest_daily_close_equity": {
+            "t": "2026-09-22T00:00:00Z",
+            "equity": 6710.97
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-11-18T11:30:00Z",
+            "equity": 12184.62
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 23.4868,
+            "max_drawdown_pct": 51.5899,
+            "round_trips": 747,
+            "grid_fills": 1526,
+            "total_fees": 321.56,
+            "funding_paid": 190.46,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 23.8911,
+            "max_drawdown_pct": 35.3097,
+            "round_trips": 218,
+            "grid_fills": 437,
+            "total_fees": 87.62,
+            "funding_paid": -270.16,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 22.9937,
+            "max_drawdown_pct": 53.3464,
+            "round_trips": 742,
+            "grid_fills": 1516,
+            "total_fees": 319.53,
+            "funding_paid": 190.26,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 23.7889,
+            "max_drawdown_pct": 34.9284,
+            "round_trips": 217,
+            "grid_fills": 435,
+            "total_fees": 87.22,
+            "funding_paid": -269.76,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 30.4547,
+            "max_drawdown_pct": 50.5461,
+            "round_trips": 818,
+            "grid_fills": 1668,
+            "total_fees": 350.09,
+            "funding_paid": 190.32,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 25.7366,
+            "max_drawdown_pct": 34.1592,
+            "round_trips": 237,
+            "grid_fills": 475,
+            "total_fees": 95.18,
+            "funding_paid": -270.01,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 11.1041,
+            "max_drawdown_pct": 55.4592,
+            "round_trips": 670,
+            "grid_fills": 1372,
+            "total_fees": 772.93,
+            "funding_paid": 190.43,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 20.4689,
+            "max_drawdown_pct": 36.7726,
+            "round_trips": 197,
+            "grid_fills": 395,
+            "total_fees": 216.99,
+            "funding_paid": -269.91,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 17.7335,
+            "max_drawdown_pct": 54.4437,
+            "round_trips": 669,
+            "grid_fills": 1370,
+            "total_fees": 290.2,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 19.1471,
+            "max_drawdown_pct": 37.2184,
+            "round_trips": 197,
+            "grid_fills": 395,
+            "total_fees": 79.25,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": false
+    },
+    "shipped-10x": {
+      "grid": {
+        "lower": 57755.8,
+        "upper": 97963.2,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 10,
+        "out_of_range": "continue",
+        "cell_notional": 2000.0,
+        "cell_width_pct_min": 1.0623,
+        "cell_width_pct_max": 1.0623
+      },
+      "split": {
+        "oos_start": "2026-07-31T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 64738.14978,
+        "metrics": {
+          "total_return_pct": 31.6585,
+          "max_drawdown_pct": 95.4218,
+          "final_equity": 13165.85,
+          "fills": 1371,
+          "grid_fills": 1370,
+          "market_fills": 1,
+          "round_trips": 669,
+          "trading_pnl": 4127.09,
+          "total_fees": 580.39,
+          "grid_fees": 550.43,
+          "market_fees": 29.96,
+          "funding_paid": 380.85,
+          "funding_events": 731,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 68781.02,
+          "avg_position_notional": 33188.75
+        },
+        "buy_and_hold": {
+          "return_pct": -29.2964,
+          "max_drawdown_pct": 40.4682,
+          "funding_paid": 109.68,
+          "return_with_funding_pct": -30.3932
+        },
+        "breakdown": {
+          "round_trips_counted": 669,
+          "round_trip_gross_pnl": 13665.51,
+          "avg_gross_pnl_per_round_trip": 20.4268,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -9538.43,
+              "quantity": 0.841457,
+              "net_quantity": 0.841457
+            }
+          },
+          "leftover_position_pnl": -9538.43,
+          "fees": 580.39,
+          "funding_paid": 380.85,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 3165.85,
+          "check_sum": 3165.84,
+          "largest_net_position": {
+            "abs_quantity": 1.16834,
+            "net_quantity": 1.16834,
+            "time": "2026-06-25T13:45:00Z",
+            "price": 58381.036502,
+            "fill_n": 1246
+          },
+          "time_net_long_pct": 89.0,
+          "time_net_short_pct": 6.7,
+          "time_net_flat_pct": 4.4,
+          "lowest_daily_close_equity": {
+            "t": "2026-02-06T00:00:00Z",
+            "equity": 3242.45
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-05-11T00:00:00Z",
+            "equity": 19352.88
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "start_price": 64751.1,
+        "end_price_from_last_fill_or_none": 64111.6751,
+        "metrics": {
+          "total_return_pct": 43.6924,
+          "max_drawdown_pct": 71.4693,
+          "final_equity": 14369.24,
+          "fills": 396,
+          "grid_fills": 395,
+          "market_fills": 1,
+          "round_trips": 197,
+          "trading_pnl": 3987.92,
+          "total_fees": 158.51,
+          "grid_fees": 157.41,
+          "market_fees": 1.1,
+          "funding_paid": -539.83,
+          "funding_events": 310,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 64837.68,
+          "avg_position_notional": 34618.66
+        },
+        "buy_and_hold": {
+          "return_pct": -1.1168,
+          "max_drawdown_pct": 28.8692,
+          "funding_paid": 184.24,
+          "return_with_funding_pct": -2.9591
+        },
+        "breakdown": {
+          "round_trips_counted": 197,
+          "round_trip_gross_pnl": 3990.87,
+          "avg_gross_pnl_per_round_trip": 20.2582,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -2.94,
+              "quantity": 0.031156,
+              "net_quantity": 0.031156
+            }
+          },
+          "leftover_position_pnl": -2.94,
+          "fees": 158.51,
+          "funding_paid": -539.83,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 4369.24,
+          "check_sum": 4369.25,
+          "largest_net_position": {
+            "abs_quantity": 0.743268,
+            "net_quantity": -0.743268,
+            "time": "2026-09-21T20:15:00Z",
+            "price": 87195.340198,
+            "fill_n": 190
+          },
+          "time_net_long_pct": 14.2,
+          "time_net_short_pct": 79.2,
+          "time_net_flat_pct": 6.6,
+          "lowest_daily_close_equity": {
+            "t": "2026-09-22T00:00:00Z",
+            "equity": 3421.94
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-11-18T11:30:00Z",
+            "equity": 14369.24
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 46.9737,
+            "max_drawdown_pct": 89.5799,
+            "round_trips": 747,
+            "grid_fills": 1526,
+            "total_fees": 643.11,
+            "funding_paid": 380.92,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 47.7822,
+            "max_drawdown_pct": 69.7599,
+            "round_trips": 218,
+            "grid_fills": 437,
+            "total_fees": 175.24,
+            "funding_paid": -540.32,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 45.9874,
+            "max_drawdown_pct": 92.746,
+            "round_trips": 742,
+            "grid_fills": 1516,
+            "total_fees": 639.06,
+            "funding_paid": 380.53,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 47.5778,
+            "max_drawdown_pct": 69.0065,
+            "round_trips": 217,
+            "grid_fills": 435,
+            "total_fees": 174.43,
+            "funding_paid": -539.52,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 60.9094,
+            "max_drawdown_pct": 87.1872,
+            "round_trips": 818,
+            "grid_fills": 1668,
+            "total_fees": 700.17,
+            "funding_paid": 380.63,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 51.4733,
+            "max_drawdown_pct": 67.4868,
+            "round_trips": 237,
+            "grid_fills": 475,
+            "total_fees": 190.36,
+            "funding_paid": -540.02,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": -100.0,
+            "max_drawdown_pct": 100.0,
+            "round_trips": 228,
+            "grid_fills": 495,
+            "total_fees": 546.03,
+            "funding_paid": 21.22,
+            "liquidated": true
+          },
+          "out_of_sample": {
+            "total_return_pct": 40.9378,
+            "max_drawdown_pct": 72.7142,
+            "round_trips": 197,
+            "grid_fills": 395,
+            "total_fees": 433.97,
+            "funding_paid": -539.83,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 35.467,
+            "max_drawdown_pct": 95.2667,
+            "round_trips": 669,
+            "grid_fills": 1370,
+            "total_fees": 580.39,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": 38.2942,
+            "max_drawdown_pct": 73.5104,
+            "round_trips": 197,
+            "grid_fills": 395,
+            "total_fees": 158.51,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": false
+    },
+    "month-continue-5x": {
+      "grid": {
+        "lower": 80607.9,
+        "upper": 94550.0,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 5,
+        "out_of_range": "continue",
+        "cell_notional": 1000.0,
+        "cell_width_pct_min": 0.3196,
+        "cell_width_pct_max": 0.3196
+      },
+      "split": {
+        "oos_start": "2025-12-18T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2025-12-17T23:45:00Z",
+        "bars": 2834,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 86180.06054,
+        "metrics": {
+          "total_return_pct": 15.8531,
+          "max_drawdown_pct": 19.4858,
+          "final_equity": 11585.31,
+          "fills": 1765,
+          "grid_fills": 1764,
+          "market_fills": 1,
+          "round_trips": 873,
+          "trading_pnl": 1952.53,
+          "total_fees": 362.71,
+          "grid_fees": 353.08,
+          "market_fees": 9.63,
+          "funding_paid": 4.51,
+          "funding_events": 84,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 35875.96,
+          "avg_position_notional": 8178.45
+        },
+        "buy_and_hold": {
+          "return_pct": -5.8605,
+          "max_drawdown_pct": 13.611,
+          "funding_paid": 14.3,
+          "return_with_funding_pct": -6.0035
+        },
+        "breakdown": {
+          "round_trips_counted": 873,
+          "round_trip_gross_pnl": 2438.16,
+          "avg_gross_pnl_per_round_trip": 2.7929,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -485.63,
+              "quantity": 0.203272,
+              "net_quantity": 0.203272
+            }
+          },
+          "leftover_position_pnl": -485.63,
+          "fees": 362.71,
+          "funding_paid": 4.51,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 1585.31,
+          "check_sum": 1585.31,
+          "largest_net_position": {
+            "abs_quantity": 0.443252,
+            "net_quantity": 0.443252,
+            "time": "2025-11-21T12:15:00Z",
+            "price": 80881.674848,
+            "fill_n": 326
+          },
+          "time_net_long_pct": 69.4,
+          "time_net_short_pct": 23.9,
+          "time_net_flat_pct": 6.7,
+          "lowest_daily_close_equity": {
+            "t": "2025-11-23T00:00:00Z",
+            "equity": 9707.98
+          },
+          "highest_daily_close_equity": {
+            "t": "2025-12-14T00:00:00Z",
+            "equity": 11815.32
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2025-12-18T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 32206,
+        "start_price": 86197.3,
+        "end_price_from_last_fill_or_none": 64111.6751,
+        "metrics": {
+          "total_return_pct": -19.4177,
+          "max_drawdown_pct": 52.3285,
+          "final_equity": 8058.23,
+          "fills": 2710,
+          "grid_fills": 2709,
+          "market_fills": 1,
+          "round_trips": 1344,
+          "trading_pnl": -1072.27,
+          "total_fees": 550.76,
+          "grid_fees": 541.86,
+          "market_fees": 8.9,
+          "funding_paid": 318.74,
+          "funding_events": 1003,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 74.7842,
+          "max_position_notional": 31323.64,
+          "avg_position_notional": 16463.72
+        },
+        "buy_and_hold": {
+          "return_pct": -25.7329,
+          "max_drawdown_pct": 40.467,
+          "funding_paid": 239.56,
+          "return_with_funding_pct": -28.1285
+        },
+        "breakdown": {
+          "round_trips_counted": 1344,
+          "round_trip_gross_pnl": 3751.02,
+          "avg_gross_pnl_per_round_trip": 2.7909,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -4823.28,
+              "quantity": 0.252386,
+              "net_quantity": 0.252386
+            }
+          },
+          "leftover_position_pnl": -4823.28,
+          "fees": 550.76,
+          "funding_paid": 318.74,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": -1941.77,
+          "check_sum": -1941.76,
+          "largest_net_position": {
+            "abs_quantity": 0.320842,
+            "net_quantity": -0.320842,
+            "time": "2026-01-05T20:15:00Z",
+            "price": 94531.09,
+            "fill_n": 571
+          },
+          "time_net_long_pct": 86.8,
+          "time_net_short_pct": 12.9,
+          "time_net_flat_pct": 0.3,
+          "lowest_daily_close_equity": {
+            "t": "2026-07-01T00:00:00Z",
+            "equity": 5659.95
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-10-22T00:00:00Z",
+            "equity": 12777.02
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 24.9223,
+            "max_drawdown_pct": 18.0131,
+            "round_trips": 1252,
+            "grid_fills": 2522,
+            "total_fees": 514.45,
+            "funding_paid": 4.43,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -8.7516,
+            "max_drawdown_pct": 49.0777,
+            "round_trips": 1790,
+            "grid_fills": 3601,
+            "total_fees": 729.18,
+            "funding_paid": 318.47,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 24.535,
+            "max_drawdown_pct": 18.6952,
+            "round_trips": 1236,
+            "grid_fills": 2490,
+            "total_fees": 508.02,
+            "funding_paid": 4.78,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -9.6185,
+            "max_drawdown_pct": 49.3411,
+            "round_trips": 1754,
+            "grid_fills": 3529,
+            "total_fees": 714.76,
+            "funding_paid": 318.99,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 31.8349,
+            "max_drawdown_pct": 17.519,
+            "round_trips": 1541,
+            "grid_fills": 3100,
+            "total_fees": 630.14,
+            "funding_paid": 4.63,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -0.7697,
+            "max_drawdown_pct": 47.0188,
+            "round_trips": 2124,
+            "grid_fills": 4269,
+            "total_fees": 862.77,
+            "funding_paid": 318.73,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 9.7753,
+            "max_drawdown_pct": 20.1411,
+            "round_trips": 879,
+            "grid_fills": 1776,
+            "total_fees": 987.2,
+            "funding_paid": 4.55,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -28.7655,
+            "max_drawdown_pct": 55.2048,
+            "round_trips": 1352,
+            "grid_fills": 2725,
+            "total_fees": 1507.8,
+            "funding_paid": 318.79,
+            "liquidated": false
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 15.8982,
+            "max_drawdown_pct": 19.4898,
+            "round_trips": 873,
+            "grid_fills": 1764,
+            "total_fees": 362.71,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -16.2303,
+            "max_drawdown_pct": 52.1013,
+            "round_trips": 1344,
+            "grid_fills": 2709,
+            "total_fees": 550.76,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": false
+    },
+    "month-continue-10x": {
+      "grid": {
+        "lower": 80607.9,
+        "upper": 94550.0,
+        "bounds_source": "in-sample lowest low and highest high",
+        "grid_count": 50,
+        "spacing": "geometric",
+        "direction": "neutral",
+        "leverage": 10,
+        "out_of_range": "continue",
+        "cell_notional": 2000.0,
+        "cell_width_pct_min": 0.3196,
+        "cell_width_pct_max": 0.3196
+      },
+      "split": {
+        "oos_start": "2025-12-18T00:00:00Z"
+      },
+      "data": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 35040,
+        "missing_bars": 0,
+        "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+      },
+      "costs": {
+        "grid_fee_rate": 0.0002,
+        "taker_fee_rate": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "round_trip_cost_pct": 0.08,
+        "funding_modelled": true,
+        "maintenance_margin_rate": 0.0033
+      },
+      "lookahead_check": {
+        "passed": true,
+        "shortened_runs": 9
+      },
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2025-12-17T23:45:00Z",
+        "bars": 2834,
+        "start_price": 91423.0,
+        "end_price_from_last_fill_or_none": 86180.06054,
+        "metrics": {
+          "total_return_pct": 31.7062,
+          "max_drawdown_pct": 38.2488,
+          "final_equity": 13170.62,
+          "fills": 1765,
+          "grid_fills": 1764,
+          "market_fills": 1,
+          "round_trips": 873,
+          "trading_pnl": 3905.06,
+          "total_fees": 725.43,
+          "grid_fees": 706.16,
+          "market_fees": 19.27,
+          "funding_paid": 9.02,
+          "funding_events": 84,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 0.0,
+          "max_position_notional": 71751.92,
+          "avg_position_notional": 16356.9
+        },
+        "buy_and_hold": {
+          "return_pct": -5.8605,
+          "max_drawdown_pct": 13.611,
+          "funding_paid": 14.3,
+          "return_with_funding_pct": -6.0035
+        },
+        "breakdown": {
+          "round_trips_counted": 873,
+          "round_trip_gross_pnl": 4876.33,
+          "avg_gross_pnl_per_round_trip": 5.5857,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -971.27,
+              "quantity": 0.406543,
+              "net_quantity": 0.406543
+            }
+          },
+          "leftover_position_pnl": -971.27,
+          "fees": 725.43,
+          "funding_paid": 9.02,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": 3170.62,
+          "check_sum": 3170.61,
+          "largest_net_position": {
+            "abs_quantity": 0.886505,
+            "net_quantity": 0.886505,
+            "time": "2025-11-21T12:15:00Z",
+            "price": 80881.674848,
+            "fill_n": 326
+          },
+          "time_net_long_pct": 69.4,
+          "time_net_short_pct": 23.9,
+          "time_net_flat_pct": 6.7,
+          "lowest_daily_close_equity": {
+            "t": "2025-11-23T00:00:00Z",
+            "equity": 9415.96
+          },
+          "highest_daily_close_equity": {
+            "t": "2025-12-14T00:00:00Z",
+            "equity": 13630.64
+          }
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2025-12-18T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 32206,
+        "start_price": 86197.3,
+        "end_price_from_last_fill_or_none": 64111.6751,
+        "metrics": {
+          "total_return_pct": -38.8353,
+          "max_drawdown_pct": 91.8041,
+          "final_equity": 6116.47,
+          "fills": 2710,
+          "grid_fills": 2709,
+          "market_fills": 1,
+          "round_trips": 1344,
+          "trading_pnl": -2144.54,
+          "total_fees": 1101.51,
+          "grid_fees": 1083.71,
+          "market_fees": 17.8,
+          "funding_paid": 637.47,
+          "funding_events": 1003,
+          "liquidated": false,
+          "liquidation_time": null,
+          "liquidation_loss": 0.0,
+          "range_exit_time": null,
+          "bars_outside_range_pct": 74.7842,
+          "max_position_notional": 62647.28,
+          "avg_position_notional": 32927.44
+        },
+        "buy_and_hold": {
+          "return_pct": -25.7329,
+          "max_drawdown_pct": 40.467,
+          "funding_paid": 239.56,
+          "return_with_funding_pct": -28.1285
+        },
+        "breakdown": {
+          "round_trips_counted": 1344,
+          "round_trip_gross_pnl": 7502.03,
+          "avg_gross_pnl_per_round_trip": 5.5819,
+          "non_grid_closes": {
+            "end": {
+              "fills": 1,
+              "pnl": -9646.57,
+              "quantity": 0.504773,
+              "net_quantity": 0.504773
+            }
+          },
+          "leftover_position_pnl": -9646.57,
+          "fees": 1101.51,
+          "funding_paid": 637.47,
+          "liquidation_loss": 0.0,
+          "net_change_in_equity": -3883.53,
+          "check_sum": -3883.52,
+          "largest_net_position": {
+            "abs_quantity": 0.641683,
+            "net_quantity": -0.641683,
+            "time": "2026-01-05T20:15:00Z",
+            "price": 94531.09,
+            "fill_n": 571
+          },
+          "time_net_long_pct": 86.8,
+          "time_net_short_pct": 12.9,
+          "time_net_flat_pct": 0.3,
+          "lowest_daily_close_equity": {
+            "t": "2026-07-01T00:00:00Z",
+            "equity": 1319.91
+          },
+          "highest_daily_close_equity": {
+            "t": "2026-10-22T00:00:00Z",
+            "equity": 15554.05
+          }
+        }
+      },
+      "comparisons": {
+        "intrabar_path=low_first": {
+          "in_sample": {
+            "total_return_pct": 49.8447,
+            "max_drawdown_pct": 35.089,
+            "round_trips": 1252,
+            "grid_fills": 2522,
+            "total_fees": 1028.89,
+            "funding_paid": 8.85,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -17.5031,
+            "max_drawdown_pct": 82.9843,
+            "round_trips": 1790,
+            "grid_fills": 3601,
+            "total_fees": 1458.35,
+            "funding_paid": 636.94,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=high_first": {
+          "in_sample": {
+            "total_return_pct": 49.0701,
+            "max_drawdown_pct": 36.3638,
+            "round_trips": 1236,
+            "grid_fills": 2490,
+            "total_fees": 1016.05,
+            "funding_paid": 9.57,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -19.237,
+            "max_drawdown_pct": 83.6238,
+            "round_trips": 1754,
+            "grid_fills": 3529,
+            "total_fees": 1429.52,
+            "funding_paid": 637.98,
+            "liquidated": false
+          }
+        },
+        "intrabar_path=best_of_two": {
+          "in_sample": {
+            "total_return_pct": 63.6698,
+            "max_drawdown_pct": 33.8855,
+            "round_trips": 1541,
+            "grid_fills": 3100,
+            "total_fees": 1260.28,
+            "funding_paid": 9.27,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -1.5393,
+            "max_drawdown_pct": 77.5009,
+            "round_trips": 2124,
+            "grid_fills": 4269,
+            "total_fees": 1725.54,
+            "funding_paid": 637.45,
+            "liquidated": false
+          }
+        },
+        "grid_fills_at_taker_fee": {
+          "in_sample": {
+            "total_return_pct": 19.5505,
+            "max_drawdown_pct": 39.735,
+            "round_trips": 879,
+            "grid_fills": 1776,
+            "total_fees": 1974.4,
+            "funding_paid": 9.09,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -100.0,
+            "max_drawdown_pct": 100.0,
+            "round_trips": 791,
+            "grid_fills": 1603,
+            "total_fees": 1761.86,
+            "funding_paid": -11.83,
+            "liquidated": true
+          }
+        },
+        "without_funding": {
+          "in_sample": {
+            "total_return_pct": 31.7963,
+            "max_drawdown_pct": 38.2607,
+            "round_trips": 873,
+            "grid_fills": 1764,
+            "total_fees": 725.43,
+            "funding_paid": null,
+            "liquidated": false
+          },
+          "out_of_sample": {
+            "total_return_pct": -32.4606,
+            "max_drawdown_pct": 91.7671,
+            "round_trips": 1344,
+            "grid_fills": 2709,
+            "total_fees": 1101.51,
+            "funding_paid": null,
+            "liquidated": false
+          }
+        }
+      },
+      "warnings": [
+        "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+      ],
+      "result_file_kept": false
+    }
+  },
+  "shipped_1m": {
+    "grid": {
+      "lower": 57755.8,
+      "upper": 97963.2,
+      "bounds_source": "in-sample lowest low and highest high",
+      "grid_count": 50,
+      "spacing": "geometric",
+      "direction": "neutral",
+      "leverage": 1,
+      "out_of_range": "continue",
+      "cell_notional": 200.0,
+      "cell_width_pct_min": 1.0623,
+      "cell_width_pct_max": 1.0623
+    },
+    "split": {
+      "oos_start": "2026-07-31T00:00:00Z"
+    },
+    "data": {
+      "first_bar": "2025-11-18T11:30:00Z",
+      "last_bar": "2026-11-18T11:29:00Z",
+      "bars": 525600,
+      "missing_bars": 0,
+      "file_sha256": "65a460da8ddc774da698a8d234cd055a0ef79bce68d7fa2470c3684aed2eac80"
+    },
+    "costs": {
+      "grid_fee_rate": 0.0002,
+      "taker_fee_rate": 0.00055,
+      "slippage_per_fill": 0.0002,
+      "round_trip_cost_pct": 0.08,
+      "funding_modelled": true,
+      "maintenance_margin_rate": 0.0033
+    },
+    "lookahead_check": {
+      "passed": true,
+      "shortened_runs": 9
+    },
+    "in_sample": {
+      "first_bar": "2025-11-18T11:30:00Z",
+      "last_bar": "2026-07-30T23:59:00Z",
+      "bars": 366510,
+      "start_price": 91423.0,
+      "end_price_from_last_fill_or_none": 64738.14978,
+      "metrics": {
+        "total_return_pct": 3.3035,
+        "max_drawdown_pct": 12.597,
+        "final_equity": 10330.35,
+        "fills": 1385,
+        "grid_fills": 1384,
+        "market_fills": 1,
+        "round_trips": 676,
+        "trading_pnl": 427.02,
+        "total_fees": 58.6,
+        "grid_fees": 55.61,
+        "market_fees": 3.0,
+        "funding_paid": 38.06,
+        "funding_events": 731,
+        "liquidated": false,
+        "liquidation_time": null,
+        "liquidation_loss": 0.0,
+        "range_exit_time": null,
+        "bars_outside_range_pct": 0.0,
+        "max_position_notional": 6887.46,
+        "avg_position_notional": 3318.87
+      },
+      "buy_and_hold": {
+        "return_pct": -29.2964,
+        "max_drawdown_pct": 40.8666,
+        "funding_paid": 109.68,
+        "return_with_funding_pct": -30.3932
+      },
+      "breakdown": {
+        "round_trips_counted": 676,
+        "round_trip_gross_pnl": 1380.89,
+        "avg_gross_pnl_per_round_trip": 2.0427,
+        "non_grid_closes": {
+          "end": {
+            "fills": 1,
+            "pnl": -953.84,
+            "quantity": 0.084146,
+            "net_quantity": 0.084146
+          }
+        },
+        "leftover_position_pnl": -953.84,
+        "fees": 58.6,
+        "funding_paid": 38.06,
+        "liquidation_loss": 0.0,
+        "net_change_in_equity": 330.35,
+        "check_sum": 330.39,
+        "largest_net_position": {
+          "abs_quantity": 0.116834,
+          "net_quantity": 0.116834,
+          "time": "2026-06-25T13:57:00Z",
+          "price": 58381.036502,
+          "fill_n": 1260
+        },
+        "time_net_long_pct": 89.0,
+        "time_net_short_pct": 6.7,
+        "time_net_flat_pct": 4.3,
+        "lowest_daily_close_equity": {
+          "t": "2026-02-06T00:00:00Z",
+          "equity": 9332.1
+        },
+        "highest_daily_close_equity": {
+          "t": "2026-05-11T00:00:00Z",
+          "equity": 10949.06
+        }
+      }
+    },
+    "out_of_sample": {
+      "first_bar": "2026-07-31T00:00:00Z",
+      "last_bar": "2026-11-18T11:29:00Z",
+      "bars": 159090,
+      "start_price": 64751.1,
+      "end_price_from_last_fill_or_none": 64111.6751,
+      "metrics": {
+        "total_return_pct": 4.3692,
+        "max_drawdown_pct": 7.3674,
+        "final_equity": 10436.92,
+        "fills": 396,
+        "grid_fills": 395,
+        "market_fills": 1,
+        "round_trips": 197,
+        "trading_pnl": 398.79,
+        "total_fees": 15.85,
+        "grid_fees": 15.74,
+        "market_fees": 0.11,
+        "funding_paid": -53.98,
+        "funding_events": 310,
+        "liquidated": false,
+        "liquidation_time": null,
+        "liquidation_loss": 0.0,
+        "range_exit_time": null,
+        "bars_outside_range_pct": 0.0,
+        "max_position_notional": 6489.82,
+        "avg_position_notional": 3461.89
+      },
+      "buy_and_hold": {
+        "return_pct": -1.1168,
+        "max_drawdown_pct": 28.9356,
+        "funding_paid": 184.24,
+        "return_with_funding_pct": -2.9591
+      },
+      "breakdown": {
+        "round_trips_counted": 197,
+        "round_trip_gross_pnl": 399.09,
+        "avg_gross_pnl_per_round_trip": 2.0259,
+        "non_grid_closes": {
+          "end": {
+            "fills": 1,
+            "pnl": -0.29,
+            "quantity": 0.003116,
+            "net_quantity": 0.003116
+          }
+        },
+        "leftover_position_pnl": -0.29,
+        "fees": 15.85,
+        "funding_paid": -53.98,
+        "liquidation_loss": 0.0,
+        "net_change_in_equity": 436.92,
+        "check_sum": 436.93,
+        "largest_net_position": {
+          "abs_quantity": 0.074327,
+          "net_quantity": -0.074327,
+          "time": "2026-09-21T20:26:00Z",
+          "price": 87195.340198,
+          "fill_n": 190
+        },
+        "time_net_long_pct": 14.2,
+        "time_net_short_pct": 79.2,
+        "time_net_flat_pct": 6.5,
+        "lowest_daily_close_equity": {
+          "t": "2026-09-22T00:00:00Z",
+          "equity": 9342.19
+        },
+        "highest_daily_close_equity": {
+          "t": "2026-11-18T11:30:00Z",
+          "equity": 10436.92
+        }
+      }
+    },
+    "comparisons": {
+      "intrabar_path=low_first": {
+        "in_sample": {
+          "total_return_pct": 3.3625,
+          "max_drawdown_pct": 12.5902,
+          "round_trips": 679,
+          "grid_fills": 1390,
+          "total_fees": 58.84,
+          "funding_paid": 38.06,
+          "liquidated": false
+        },
+        "out_of_sample": {
+          "total_return_pct": 4.4858,
+          "max_drawdown_pct": 7.3092,
+          "round_trips": 203,
+          "grid_fills": 407,
+          "total_fees": 16.33,
+          "funding_paid": -53.98,
+          "liquidated": false
+        }
+      },
+      "intrabar_path=high_first": {
+        "in_sample": {
+          "total_return_pct": 3.4212,
+          "max_drawdown_pct": 12.5521,
+          "round_trips": 682,
+          "grid_fills": 1396,
+          "total_fees": 59.08,
+          "funding_paid": 38.06,
+          "liquidated": false
+        },
+        "out_of_sample": {
+          "total_return_pct": 4.4081,
+          "max_drawdown_pct": 7.3286,
+          "round_trips": 199,
+          "grid_fills": 399,
+          "total_fees": 16.01,
+          "funding_paid": -53.98,
+          "liquidated": false
+        }
+      },
+      "intrabar_path=best_of_two": {
+        "in_sample": {
+          "total_return_pct": 3.4801,
+          "max_drawdown_pct": 12.5454,
+          "round_trips": 685,
+          "grid_fills": 1402,
+          "total_fees": 59.33,
+          "funding_paid": 38.06,
+          "liquidated": false
+        },
+        "out_of_sample": {
+          "total_return_pct": 4.5247,
+          "max_drawdown_pct": 7.2704,
+          "round_trips": 205,
+          "grid_fills": 411,
+          "total_fees": 16.49,
+          "funding_paid": -53.98,
+          "liquidated": false
+        }
+      },
+      "grid_fills_at_taker_fee": {
+        "in_sample": {
+          "total_return_pct": 2.3304,
+          "max_drawdown_pct": 12.8391,
+          "round_trips": 676,
+          "grid_fills": 1384,
+          "total_fees": 155.91,
+          "funding_paid": 38.06,
+          "liquidated": false
+        },
+        "out_of_sample": {
+          "total_return_pct": 4.0938,
+          "max_drawdown_pct": 7.4831,
+          "round_trips": 197,
+          "grid_fills": 395,
+          "total_fees": 43.4,
+          "funding_paid": -53.98,
+          "liquidated": false
+        }
+      },
+      "without_funding": {
+        "in_sample": {
+          "total_return_pct": 3.6842,
+          "max_drawdown_pct": 12.478,
+          "round_trips": 676,
+          "grid_fills": 1384,
+          "total_fees": 58.6,
+          "funding_paid": null,
+          "liquidated": false
+        },
+        "out_of_sample": {
+          "total_return_pct": 3.8294,
+          "max_drawdown_pct": 7.5799,
+          "round_trips": 197,
+          "grid_fills": 395,
+          "total_fees": 15.85,
+          "funding_paid": null,
+          "liquidated": false
+        }
+      }
+    },
+    "warnings": [
+      "in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test"
+    ]
+  },
+  "intrabar_paths": {
+    "15m": {
+      "in_sample": {
+        "worst_of_two": {
+          "total_return_pct": 3.1659,
+          "round_trips": 669
+        },
+        "low_first": {
+          "total_return_pct": 4.6974,
+          "round_trips": 747
+        },
+        "high_first": {
+          "total_return_pct": 4.5987,
+          "round_trips": 742
+        },
+        "best_of_two": {
+          "total_return_pct": 6.0909,
+          "round_trips": 818
+        }
+      },
+      "out_of_sample": {
+        "worst_of_two": {
+          "total_return_pct": 4.3692,
+          "round_trips": 197
+        },
+        "low_first": {
+          "total_return_pct": 4.7782,
+          "round_trips": 218
+        },
+        "high_first": {
+          "total_return_pct": 4.7578,
+          "round_trips": 217
+        },
+        "best_of_two": {
+          "total_return_pct": 5.1473,
+          "round_trips": 237
+        }
+      }
+    },
+    "1m": {
+      "in_sample": {
+        "worst_of_two": {
+          "total_return_pct": 3.3035,
+          "round_trips": 676
+        },
+        "low_first": {
+          "total_return_pct": 3.3625,
+          "round_trips": 679
+        },
+        "high_first": {
+          "total_return_pct": 3.4212,
+          "round_trips": 682
+        },
+        "best_of_two": {
+          "total_return_pct": 3.4801,
+          "round_trips": 685
+        }
+      },
+      "out_of_sample": {
+        "worst_of_two": {
+          "total_return_pct": 4.3692,
+          "round_trips": 197
+        },
+        "low_first": {
+          "total_return_pct": 4.4858,
+          "round_trips": 203
+        },
+        "high_first": {
+          "total_return_pct": 4.4081,
+          "round_trips": 199
+        },
+        "best_of_two": {
+          "total_return_pct": 4.5247,
+          "round_trips": 205
+        }
+      }
+    }
+  },
+  "commands": [
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid.config.json --out research/grid-trading-bot/grid-btcusdt.json",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-half-continue.config.json --out research/grid-trading-bot/grid-half-continue-btcusdt.json --end 2026-07-31",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-half-stop.config.json --out research/grid-trading-bot/grid-half-stop-btcusdt.json --end 2026-07-31",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-half-close.config.json --out research/grid-trading-bot/grid-half-close-btcusdt.json --end 2026-07-31",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-half-continue-3x.config.json --out research/grid-trading-bot/grid-half-continue-3x-btcusdt.json --end 2026-07-31",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-month-continue.config.json --out research/grid-trading-bot/grid-month-continue-btcusdt.json",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-month-stop.config.json --out research/grid-trading-bot/grid-month-stop-btcusdt.json",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-month-close.config.json --out research/grid-trading-bot/grid-month-close-btcusdt.json",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-month-continue-3x.config.json --out research/grid-trading-bot/grid-month-continue-3x-btcusdt.json",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-shipped-3x.config.json --out research/grid-trading-bot/grid-shipped-3x-btcusdt.json",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-shipped-5x.config.json --out research/grid-trading-bot/grid-shipped-5x-btcusdt.json",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-shipped-10x.config.json --out research/grid-trading-bot/grid-shipped-10x-btcusdt.json",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-month-continue-5x.config.json --out research/grid-trading-bot/grid-month-continue-5x-btcusdt.json",
+    "perpmath grid --symbol BTCUSDT --interval 15m --config research/grid-trading-bot/grid-month-continue-10x.config.json --out research/grid-trading-bot/grid-month-continue-10x-btcusdt.json"
+  ],
+  "stdout": {
+    "shipped": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 57755.8 to 97963.2, leverage 1, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         669      3.17     12.52     58.04     38.09   -30.39\nout_of_sample     197      4.37      7.31     15.85    -53.98    -2.96\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote C:\\Users\\user\\AppData\\Local\\Temp\\tmpo8cps8k6\\grid-btcusdt.json",
+    "half-continue": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-07-30T23:45:00Z\nneutral geometric, 50 cells, 59888.0 to 97963.2, leverage 1, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         487      2.65     13.44     42.69      6.15   -23.64\nout_of_sample     253      3.77      2.73     21.58      8.94    -8.90\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote D:\\scratch\\sentinel_saas_project\\perpmath-c1\\research\\grid-trading-bot\\grid-half-continue-btcusdt.json",
+    "half-stop": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-07-30T23:45:00Z\nneutral geometric, 50 cells, 59888.0 to 97963.2, leverage 1, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         487      2.65     13.44     42.69      6.15   -23.64\nout_of_sample     144      2.43      4.61     14.06     14.67    -8.90\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote D:\\scratch\\sentinel_saas_project\\perpmath-c1\\research\\grid-trading-bot\\grid-half-stop-btcusdt.json",
+    "half-close": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-07-30T23:45:00Z\nneutral geometric, 50 cells, 59888.0 to 97963.2, leverage 1, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         487      2.65     13.44     42.69      6.15   -23.64\nout_of_sample     144      0.03      2.10     13.92     -0.69    -8.90\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote D:\\scratch\\sentinel_saas_project\\perpmath-c1\\research\\grid-trading-bot\\grid-half-close-btcusdt.json",
+    "half-continue-3x": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-07-30T23:45:00Z\nneutral geometric, 50 cells, 59888.0 to 97963.2, leverage 3, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         487      7.96     37.81    128.06     18.45   -23.64\nout_of_sample     253     11.32      7.74     64.74     26.83    -8.90\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote C:\\Users\\user\\AppData\\Local\\Temp\\tmpo8cps8k6\\grid-half-continue-3x-btcusdt.json",
+    "month-continue": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 80607.9 to 94550.0, leverage 1, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         873      3.17      3.96     72.54      0.90    -6.00\nout_of_sample    1344     -3.88     11.79    110.15     63.75   -28.13\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote D:\\scratch\\sentinel_saas_project\\perpmath-c1\\research\\grid-trading-bot\\grid-month-continue-btcusdt.json",
+    "month-stop": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 80607.9 to 94550.0, leverage 1, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         873      3.17      3.96     72.54      0.90    -6.00\nout_of_sample     271     19.32     14.84     25.07   -123.13   -28.13\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote D:\\scratch\\sentinel_saas_project\\perpmath-c1\\research\\grid-trading-bot\\grid-month-stop-btcusdt.json",
+    "month-close": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 80607.9 to 94550.0, leverage 1, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         873      3.17      3.96     72.54      0.90    -6.00\nout_of_sample     271     -1.41      2.44     26.15     -4.05   -28.13\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote D:\\scratch\\sentinel_saas_project\\perpmath-c1\\research\\grid-trading-bot\\grid-month-close-btcusdt.json",
+    "month-continue-3x": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 80607.9 to 94550.0, leverage 3, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         873      9.51     11.78    217.63      2.70    -6.00\nout_of_sample    1344    -11.65     33.26    330.45    191.24   -28.13\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote C:\\Users\\user\\AppData\\Local\\Temp\\tmpo8cps8k6\\grid-month-continue-3x-btcusdt.json",
+    "shipped-3x": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 57755.8 to 97963.2, leverage 3, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         669      9.50     34.68    174.12    114.26   -30.39\nout_of_sample     197     13.11     21.81     47.55   -161.95    -2.96\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote C:\\Users\\user\\AppData\\Local\\Temp\\tmpo8cps8k6\\grid-shipped-3x-btcusdt.json",
+    "shipped-5x": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 57755.8 to 97963.2, leverage 5, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         669     15.83     54.51    290.20    190.43   -30.39\nout_of_sample     197     21.85     36.17     79.25   -269.91    -2.96\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote C:\\Users\\user\\AppData\\Local\\Temp\\tmpo8cps8k6\\grid-shipped-5x-btcusdt.json",
+    "shipped-10x": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 57755.8 to 97963.2, leverage 10, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         669     31.66     95.42    580.39    380.85   -30.39\nout_of_sample     197     43.69     71.47    158.51   -539.83    -2.96\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote C:\\Users\\user\\AppData\\Local\\Temp\\tmpo8cps8k6\\grid-shipped-10x-btcusdt.json",
+    "month-continue-5x": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 80607.9 to 94550.0, leverage 5, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         873     15.85     19.49    362.71      4.51    -6.00\nout_of_sample    1344    -19.42     52.33    550.76    318.74   -28.13\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote C:\\Users\\user\\AppData\\Local\\Temp\\tmpo8cps8k6\\grid-month-continue-5x-btcusdt.json",
+    "month-continue-10x": "grid BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nneutral geometric, 50 cells, 80607.9 to 94550.0, leverage 10, path worst_of_two\ngrid fee 0.0200%, taker fee 0.0550%, slippage 0.0200% per fill, funding modelled\n                pairs  return %  max DD %      fees   funding   hold %\nin_sample         873     31.71     38.25    725.43      9.02    -6.00\nout_of_sample    1344    -38.84     91.80   1101.51    637.47   -28.13\nwarning: in_sample: the grid bounds come from the in-sample period itself, so this block is optimistic by construction; use out_of_sample as the test\nwrote C:\\Users\\user\\AppData\\Local\\Temp\\tmpo8cps8k6\\grid-month-continue-10x-btcusdt.json"
+  }
+}

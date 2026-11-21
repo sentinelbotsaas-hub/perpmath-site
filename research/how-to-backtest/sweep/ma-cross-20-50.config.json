@@ -1,0 +1,19 @@
+{
+  "strategy": "ma_cross",
+  "params": {
+    "fast_period": 20,
+    "slow_period": 50,
+    "atr_period": 14,
+    "stop_atr_mult": 2.0
+  },
+  "execution": {
+    "fee_rate": 0.00055,
+    "slippage": 0.0002,
+    "initial_capital": 10000,
+    "notional_fraction": 1.0,
+    "max_hold_bars": null
+  },
+  "split": {
+    "in_sample_fraction": 0.7
+  }
+}

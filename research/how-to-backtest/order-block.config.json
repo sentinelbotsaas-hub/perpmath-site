@@ -1,0 +1,23 @@
+{
+  "strategy": "order_block",
+  "params": {
+    "atr_period": 14,
+    "swing_left": 5,
+    "swing_right": 5,
+    "impulse_bars": 3,
+    "min_impulse_atr": 2.0,
+    "max_wait_bars": 96,
+    "stop_buffer_atr": 0.1,
+    "r_multiple": 2.0
+  },
+  "execution": {
+    "fee_rate": 0.00055,
+    "slippage": 0.0002,
+    "initial_capital": 10000,
+    "notional_fraction": 1.0,
+    "max_hold_bars": null
+  },
+  "split": {
+    "in_sample_fraction": 0.7
+  }
+}

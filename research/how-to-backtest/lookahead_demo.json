@@ -1,0 +1,330 @@
+{
+  "article": "en/how-to-backtest-a-trading-strategy",
+  "engine_version": "0.2.1",
+  "candle_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+  "bars": 35040,
+  "split_index": 24434,
+  "honest_ma_cross": {
+    "check": [
+      {
+        "cuts": 8,
+        "shortened_runs": 9,
+        "caught": false,
+        "message": null
+      },
+      {
+        "cuts": 16,
+        "shortened_runs": 17,
+        "caught": false,
+        "message": null
+      },
+      {
+        "cuts": 32,
+        "shortened_runs": 33,
+        "caught": false,
+        "message": null
+      },
+      {
+        "cuts": 64,
+        "shortened_runs": 65,
+        "caught": false,
+        "message": null
+      },
+      {
+        "cuts": 128,
+        "shortened_runs": 129,
+        "caught": false,
+        "message": null
+      },
+      {
+        "cuts": 256,
+        "shortened_runs": 257,
+        "caught": false,
+        "message": null
+      },
+      {
+        "cuts": 512,
+        "shortened_runs": 513,
+        "caught": false,
+        "message": null
+      }
+    ],
+    "check_at_every_signal_bar": {
+      "signal_bars": 835,
+      "caught": false,
+      "cuts_run_before_catch": null,
+      "first_bar_that_changed": null,
+      "field": null
+    },
+    "unchecked": {
+      "published_costs": {
+        "in_sample": {
+          "trades": 572,
+          "win_rate_pct": 20.8042,
+          "avg_r": -0.3083,
+          "avg_trade_return_pct": -0.1623,
+          "t_stat": -2.9464,
+          "total_return_pct": -62.3527,
+          "max_drawdown_pct": 63.3341,
+          "final_equity": 3764.7316
+        },
+        "out_of_sample": {
+          "trades": 263,
+          "win_rate_pct": 19.0114,
+          "avg_r": -0.0542,
+          "avg_trade_return_pct": -0.066,
+          "t_stat": -0.6771,
+          "total_return_pct": -18.4566,
+          "max_drawdown_pct": 31.1783,
+          "final_equity": 8154.3366
+        }
+      },
+      "zero_costs": {
+        "in_sample": {
+          "trades": 572,
+          "win_rate_pct": 26.5734,
+          "avg_r": 0.0003,
+          "avg_trade_return_pct": -0.0123,
+          "t_stat": -0.2237,
+          "total_return_pct": -11.1505,
+          "max_drawdown_pct": 30.6113,
+          "final_equity": 8884.9517
+        },
+        "out_of_sample": {
+          "trades": 263,
+          "win_rate_pct": 28.8973,
+          "avg_r": 0.4129,
+          "avg_trade_return_pct": 0.084,
+          "t_stat": 0.8607,
+          "total_return_pct": 20.9897,
+          "max_drawdown_pct": 11.4376,
+          "final_equity": 12098.9691
+        }
+      }
+    }
+  },
+  "peekers": {
+    "ma_cross_centered": {
+      "what_it_does": "ma_cross, but the fast average is centred: it reads fast_period // 2 future closes.",
+      "cli": {
+        "command": "perpmath backtest ma_cross_centered --symbol BTCUSDT --interval 15m --config research/how-to-backtest/ma-cross-centered.config.json --out research/how-to-backtest/ma-cross-centered-btcusdt.json",
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "error: signals.side at bar 3885 changes when bars after bar 3892 are removed: the strategy uses future data",
+        "result_file_written": null
+      },
+      "unchecked": {
+        "published_costs": {
+          "in_sample": {
+            "trades": 478,
+            "win_rate_pct": 63.8075,
+            "avg_r": 1.3591,
+            "avg_trade_return_pct": 0.8181,
+            "t_stat": 10.0078,
+            "total_return_pct": 4470.1804,
+            "max_drawdown_pct": 7.2732,
+            "final_equity": 457018.0369
+          },
+          "out_of_sample": {
+            "trades": 214,
+            "win_rate_pct": 52.8037,
+            "avg_r": 1.2673,
+            "avg_trade_return_pct": 0.5465,
+            "t_stat": 3.8959,
+            "total_return_pct": 208.1616,
+            "max_drawdown_pct": 8.5442,
+            "final_equity": 30816.1634
+          }
+        },
+        "zero_costs": {
+          "in_sample": {
+            "trades": 478,
+            "win_rate_pct": 72.1757,
+            "avg_r": 1.7475,
+            "avg_trade_return_pct": 0.9681,
+            "t_stat": 11.8439,
+            "total_return_pct": 9202.3261,
+            "max_drawdown_pct": 6.5003,
+            "final_equity": 930232.6136
+          },
+          "out_of_sample": {
+            "trades": 214,
+            "win_rate_pct": 66.3551,
+            "avg_r": 1.8112,
+            "avg_trade_return_pct": 0.6966,
+            "t_stat": 4.9634,
+            "total_return_pct": 324.0295,
+            "max_drawdown_pct": 7.028,
+            "final_equity": 42402.9509
+          }
+        }
+      },
+      "check_by_number_of_cuts": [
+        {
+          "cuts": 8,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 3885 changes when bars after bar 3892 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 16,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 6175 changes when bars after bar 6182 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 32,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 15924 changes when bars after bar 15926 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 64,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 537 changes when bars after bar 538 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 128,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 537 changes when bars after bar 542 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 256,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 537 changes when bars after bar 544 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 512,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 537 changes when bars after bar 545 are removed: the strategy uses future data"
+        }
+      ],
+      "check_at_every_signal_bar": {
+        "signal_bars": 693,
+        "caught": true,
+        "cuts_run_before_catch": 1,
+        "first_bar_that_changed": 52,
+        "field": "side"
+      },
+      "entry_signals": 693,
+      "entry_signals_honest": 835
+    },
+    "ma_cross_shift1": {
+      "what_it_does": "ma_cross, but each decision is the honest decision of the NEXT bar.",
+      "cli": {
+        "command": "perpmath backtest ma_cross_shift1 --symbol BTCUSDT --interval 15m --config research/how-to-backtest/ma-cross-shift1.config.json --out research/how-to-backtest/ma-cross-shift1-btcusdt.json",
+        "exit_code": 0,
+        "stdout": "ma_cross_shift1 BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample         561   22.64   -0.18   -1.37    -38.19     45.51\nout_of_sample     258   19.77    0.06   -0.37    -11.81     27.90\nwrote research/how-to-backtest/ma-cross-shift1-btcusdt.json",
+        "stderr": "",
+        "result_file_written": "research/how-to-backtest/ma-cross-shift1-btcusdt.json",
+        "lookahead_check_in_result": {
+          "passed": true,
+          "shortened_runs": 9
+        }
+      },
+      "unchecked": {
+        "published_costs": {
+          "in_sample": {
+            "trades": 561,
+            "win_rate_pct": 22.6381,
+            "avg_r": -0.1761,
+            "avg_trade_return_pct": -0.0772,
+            "t_stat": -1.3726,
+            "total_return_pct": -38.1925,
+            "max_drawdown_pct": 45.5091,
+            "final_equity": 6180.7494
+          },
+          "out_of_sample": {
+            "trades": 258,
+            "win_rate_pct": 19.7674,
+            "avg_r": 0.0645,
+            "avg_trade_return_pct": -0.037,
+            "t_stat": -0.3736,
+            "total_return_pct": -11.8113,
+            "max_drawdown_pct": 27.8981,
+            "final_equity": 8818.873
+          }
+        },
+        "zero_costs": {
+          "in_sample": {
+            "trades": 559,
+            "win_rate_pct": 28.2648,
+            "avg_r": 0.2763,
+            "avg_trade_return_pct": 0.073,
+            "t_stat": 1.2948,
+            "total_return_pct": 43.3789,
+            "max_drawdown_pct": 19.9043,
+            "final_equity": 14337.8932
+          },
+          "out_of_sample": {
+            "trades": 257,
+            "win_rate_pct": 30.7393,
+            "avg_r": 0.7362,
+            "avg_trade_return_pct": 0.1134,
+            "t_stat": 1.1386,
+            "total_return_pct": 29.8588,
+            "max_drawdown_pct": 11.3449,
+            "final_equity": 12985.8759
+          }
+        }
+      },
+      "check_by_number_of_cuts": [
+        {
+          "cuts": 8,
+          "shortened_runs": 9,
+          "caught": false,
+          "message": null
+        },
+        {
+          "cuts": 16,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 24733 changes when bars after bar 24733 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 32,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 20173 changes when bars after bar 20173 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 64,
+          "shortened_runs": 65,
+          "caught": false,
+          "message": null
+        },
+        {
+          "cuts": 128,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 4073 changes when bars after bar 4073 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 256,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 4089 changes when bars after bar 4089 are removed: the strategy uses future data"
+        },
+        {
+          "cuts": 512,
+          "shortened_runs": null,
+          "caught": true,
+          "message": "signals.side at bar 5668 changes when bars after bar 5668 are removed: the strategy uses future data"
+        }
+      ],
+      "check_at_every_signal_bar": {
+        "signal_bars": 835,
+        "caught": true,
+        "cuts_run_before_catch": 1,
+        "first_bar_that_changed": 55,
+        "field": "side"
+      },
+      "entry_signals": 835,
+      "entry_signals_honest": 835
+    }
+  }
+}
