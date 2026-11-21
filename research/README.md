@@ -15,6 +15,12 @@ perpmath engine, see below). Run everything from the site's root folder.
 | `en/fair-value-gap` | `fvg_cost_rerun.py` | `fvg-btcusdt-zero-cost.json`, `fvg-btcusdt-fee-only.json`, `fvg_cost_summary.json` |
 | `en/fair-value-gap` | `fvg_gap_stats.py` | `fvg_gap_stats.json` |
 
+Articles written after these keep their scripts, configs and outputs in a
+folder named after the article: `grid-trading-bot/`, `how-to-backtest/`,
+`max-drawdown/`, `liquidity-sweep/`, `ict-trading/`, `bybit-api-python/`,
+`bybit-testnet/`, `build-a-trading-bot-python/`, `seven-strategies/`. The
+Chinese version of an article uses the same files as the English one.
+
 `bybit_public.py` holds the shared download helpers. `data/` holds the raw
 downloads exactly as Bybit returned them, as CSV.
 

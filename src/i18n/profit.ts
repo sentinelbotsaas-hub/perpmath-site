@@ -10,7 +10,7 @@ export const profit = defineStrings({
   en: {
     title: 'Crypto futures profit calculator',
     description:
-      'Profit or loss of a BTCUSDT perpetual trade at any exit price: P&L before costs, fees in and out, funding, net P&L, and the return on margin and on position value.',
+      'Profit or loss of a BTCUSDT perpetual trade at any exit price: P&L before costs, fees, funding, net P&L, and the return on margin and on position value.',
     lede: 'What a trade leaves after fees and funding, for a BTCUSDT perpetual on Bybit, isolated margin.',
     noscript:
       'The calculator needs JavaScript. What you see is the first worked example; the formula and examples below can be done on paper.',
