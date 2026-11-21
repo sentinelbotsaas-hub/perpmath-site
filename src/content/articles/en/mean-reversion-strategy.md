@@ -142,7 +142,7 @@ Band width, lookback and stop are the three numbers a reader would want to chang
 | 20 / 2.0 sd / 4 ATR | 1,070 / 452 | 57.10% / 50.66% | -68.43% / -48.08% | +57.26% / +2.32% | 1.79 / 0.24 |
 
 <!-- unique:original-calc -->
-All sixteen blocks have more than 100 trades, all sixteen lost after costs, and the mildest t-statistic among them is -2.32. A wider band loses less by trading less: the average trade lost between 0.10% and 0.16% of notional in every in-sample row, which is one round trip. At zero cost no block reaches a t-statistic of 2. The row that catches the eye is the 4 ATR stop, +57.26% in-sample at zero cost with a t of 1.79. Its out-of-sample partner is +2.32% with a t of 0.24. A wide stop buys a 57% win rate and pays for it with larger losses.
+All sixteen blocks have more than 100 trades, all sixteen lost after costs, and the mildest t-statistic among them is -2.32. A wider band loses less by trading less: the average trade lost between 0.10% and 0.16% of notional in every in-sample row, which is one round trip. At zero cost no block reaches a t-statistic of 2. The row that catches the eye is the 4 ATR stop, +57.26% in-sample at zero cost with a t of 1.79. Its out-of-sample partner is +2.32% with a t of 0.24. A wide stop buys a 57% win rate and pays for it with larger losses. One row looks contradictory and is not: at 2.5 sd the zero-cost t-statistic is +0.01 in both periods while the zero-cost return is slightly negative. The t-statistic is taken on the average per-trade return, which is a hair above zero; the total return compounds those trades, and a compounded series ends below the sum of its parts.
 
 ## What the engine does not model, and how to rerun it
 

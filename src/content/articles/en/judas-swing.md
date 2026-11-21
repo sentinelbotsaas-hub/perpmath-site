@@ -132,7 +132,7 @@ It lost money after costs and did nothing measurable before them. To check the c
 | Zero costs | In | 164 | 33.54% | +0.01 | -0.54 | -4.84% | 10.62% |
 | Zero costs | Out | 76* | 35.53% | +0.07 | -0.19 | -0.93% | 4.52% |
 
-The asterisk marks fewer than 100 trades. The engine flags that block as an insufficient sample and none of its numbers should be read, the positive average R included. In-sample is the first 70% of the year and out-of-sample starts on 31 July 2026.
+The asterisk marks fewer than 100 trades. The engine flags that block as an insufficient sample and none of its numbers should be read, the positive average R included. In-sample is the first 70% of the year and out-of-sample starts on 31 July 2026. The zero-cost in-sample row pairs an average R of +0.01 with a negative return. Average R weighs every trade equally; the t-statistic and the return are built from each trade's percentage result, and the two can disagree when stop distances differ from trade to trade.
 
 <!-- unique:original-calc -->
 Published costs are 0.055% per fill, the VIP 0 taker rate in Bybit's [fee table](https://www.bybit.com/en/help-center/article/Trading-Fee-Structure) (page last updated 20 November 2026, checked 22 November 2026), plus an assumed 0.02% of slippage per fill. The stop was a median 0.274% of price away in-sample, so the 0.15% round trip cost 0.55R before the trade had moved. With costs at zero, the in-sample win rate was 33.54% against the 33.33% that a 2R target needs to break even. The [risk-reward calculator](/tools/risk-reward-calculator/) shows that break-even arithmetic for any target.
