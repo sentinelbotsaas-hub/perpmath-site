@@ -1524,5 +1524,5 @@
     "perpmath backtest ma_cross --symbol BTCUSDT --interval 15m --config research/how-to-backtest/sweep/ma-cross-50-100.config.json --out <temp>/ma-cross-50-100.json",
     "perpmath backtest ma_cross --symbol BTCUSDT --interval 15m --config research/how-to-backtest/sweep/ma-cross-50-200.config.json --out <temp>/ma-cross-50-200.json"
   ],
-  "stdout_of_published_ma_cross_run": "ma_cross BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample         572   20.80   -0.31   -2.95    -62.35     63.33\nout_of_sample     263   19.01   -0.05   -0.68    -18.46     31.18\nwrote D:\\scratch\\sentinel_saas_project\\perpmath-c1\\research\\how-to-backtest\\ma-cross-btcusdt.json"
+  "stdout_of_published_ma_cross_run": "ma_cross BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample         572   20.80   -0.31   -2.95    -62.35     63.33\nout_of_sample     263   19.01   -0.05   -0.68    -18.46     31.18\nwrote research/how-to-backtest/ma-cross-btcusdt.json"
 }
