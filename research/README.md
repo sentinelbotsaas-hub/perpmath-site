@@ -19,7 +19,8 @@ Articles written after these keep their scripts, configs and outputs in a
 folder named after the article: `grid-trading-bot/`, `how-to-backtest/`,
 `max-drawdown/`, `liquidity-sweep/`, `ict-trading/`, `bybit-api-python/`,
 `bybit-testnet/`, `build-a-trading-bot-python/`, `seven-strategies/`,
-`order-block/`, `break-of-structure/`, `breaker-block/`. The
+`order-block/`, `break-of-structure/`, `breaker-block/`, and one folder per
+later article under its slug. The
 Chinese version of an article uses the same files as the English one.
 
 `bybit_public.py` holds the shared download helpers. `data/` holds the raw
