@@ -1,0 +1,189 @@
+# Output of the run behind research/order-block/order-block_summary.json (engine perpmath 0.2.1, run 2026-11-21 UTC).
+# Command, from the site's root folder: ../perpmath-engine/.venv/Scripts/python research/order-block/order-block_research.py
+# The text below is what the script printed; only the absolute path of the site folder is shortened to <site>.
+
+btcusdt-15m-ib3-mi2        in  325 trades   -42.33% t  -3.77   out  141 trades   -18.71% t  -2.49   zero cost   -6.27% /    0.54%
+btcusdt-15m-ib3-mi1        in  434 trades   -53.78% t  -4.92   out  205 trades   -27.38% t  -3.50   zero cost   -8.03% /   -0.27%
+btcusdt-15m-ib3-mi3        in  179 trades   -32.02% t  -3.54   out   76 trades    -0.97% t  -0.10   zero cost   -9.69% /   10.82%
+btcusdt-15m-ib2-mi2        in  398 trades   -44.24% t  -3.62   out  175 trades   -20.87% t  -2.54   zero cost    1.49% /    2.93%
+btcusdt-15m-ib4-mi2        in  225 trades   -31.85% t  -3.29   out  109 trades   -14.33% t  -2.17   zero cost   -2.96% /   -0.66%
+wrote <site>/research/order-block/order-block_summary.json
+[
+ {
+  "stage": "run_of_3_same_direction_bars",
+  "candles": 4234,
+  "pct_of_first_stage": 100.0
+ },
+ {
+  "stage": "candle_before_it_closed_the_other_way",
+  "candles": 4233,
+  "pct_of_first_stage": 99.98
+ },
+ {
+  "stage": "run_covers_2_atr",
+  "candles": 1450,
+  "pct_of_first_stage": 34.25
+ },
+ {
+  "stage": "run_closes_beyond_the_candle",
+  "candles": 1434,
+  "pct_of_first_stage": 33.87
+ },
+ {
+  "stage": "run_closes_beyond_latest_swing",
+  "candles": 801,
+  "pct_of_first_stage": 18.92
+ }
+]
+{
+ "all": {
+  "blocks": 801,
+  "entry_signal": 533,
+  "failed_on_return_bar": 71,
+  "expired_untouched": 196,
+  "data_ended_first": 1,
+  "returned_within_wait": 604,
+  "returned_pct": 75.41,
+  "entry_signal_pct_of_blocks": 66.54,
+  "failed_pct_of_returns": 11.75,
+  "bars_until_return_median": 10.0,
+  "returned_on_the_next_bar": 42,
+  "returned_on_the_next_bar_pct_of_returns": 6.95,
+  "returned_within_4_bars_pct_of_returns": 26.82
+ },
+ "bullish": {
+  "blocks": 385,
+  "entry_signal": 257,
+  "failed_on_return_bar": 37,
+  "expired_untouched": 91,
+  "data_ended_first": 0,
+  "returned_within_wait": 294,
+  "returned_pct": 76.36,
+  "entry_signal_pct_of_blocks": 66.75,
+  "failed_pct_of_returns": 12.59,
+  "bars_until_return_median": 10.0,
+  "returned_on_the_next_bar": 20,
+  "returned_on_the_next_bar_pct_of_returns": 6.8,
+  "returned_within_4_bars_pct_of_returns": 27.21
+ },
+ "bearish": {
+  "blocks": 416,
+  "entry_signal": 276,
+  "failed_on_return_bar": 34,
+  "expired_untouched": 105,
+  "data_ended_first": 1,
+  "returned_within_wait": 310,
+  "returned_pct": 74.52,
+  "entry_signal_pct_of_blocks": 66.35,
+  "failed_pct_of_returns": 10.97,
+  "bars_until_return_median": 10.0,
+  "returned_on_the_next_bar": 22,
+  "returned_on_the_next_bar_pct_of_returns": 7.1,
+  "returned_within_4_bars_pct_of_returns": 26.45
+ },
+ "zone_height_pct_of_price_median": 0.2262,
+ "zone_height_in_atr_median": 0.9351,
+ "bars_from_candle_to_block_existing_median": 3,
+ "signal_bars": 530,
+ "signal_bars_in_shipped_result": 530,
+ "note": "signal bars can be fewer than blocks with an entry signal when two blocks trigger on one bar; the shipped result counts signal bars inside each sample"
+}
+{
+ "in_sample": {
+  "fills": {
+   "trades": 325,
+   "fill_vs_zone": {
+    "beyond_near_edge": {
+     "trades": 207,
+     "pct": 63.69
+    },
+    "inside_zone": {
+     "trades": 118,
+     "pct": 36.31
+    },
+    "past_far_edge": {
+     "trades": 0,
+     "pct": 0.0
+    }
+   },
+   "risk_at_fill_over_risk_at_near_edge_median": 1.1057,
+   "entry_to_stop_pct_of_price_median": 0.3304,
+   "round_trip_cost_in_r_at_median_stop": 0.454,
+   "trades_with_stop_closer_than_round_trip_cost": 49,
+   "trades_with_r_below_minus_2": 31,
+   "stopped_on_the_entry_bar": 72
+  },
+  "long": {
+   "trades": 148,
+   "wins": 40,
+   "win_rate_pct": 27.03,
+   "avg_r": -0.7246,
+   "avg_trade_return_pct": -0.1596,
+   "exit_reasons": {
+    "end": 1,
+    "stop": 106,
+    "target": 41
+   }
+  },
+  "short": {
+   "trades": 177,
+   "wins": 60,
+   "win_rate_pct": 33.9,
+   "avg_r": -0.5148,
+   "avg_trade_return_pct": -0.1715,
+   "exit_reasons": {
+    "stop": 117,
+    "target": 60
+   }
+  },
+  "avg_hours_held": 3.44
+ },
+ "out_of_sample": {
+  "fills": {
+   "trades": 141,
+   "fill_vs_zone": {
+    "beyond_near_edge": {
+     "trades": 86,
+     "pct": 60.99
+    },
+    "inside_zone": {
+     "trades": 55,
+     "pct": 39.01
+    },
+    "past_far_edge": {
+     "trades": 0,
+     "pct": 0.0
+    }
+   },
+   "risk_at_fill_over_risk_at_near_edge_median": 1.108,
+   "entry_to_stop_pct_of_price_median": 0.262,
+   "round_trip_cost_in_r_at_median_stop": 0.5724,
+   "trades_with_stop_closer_than_round_trip_cost": 34,
+   "trades_with_r_below_minus_2": 25,
+   "stopped_on_the_entry_bar": 29
+  },
+  "long": {
+   "trades": 73,
+   "wins": 17,
+   "win_rate_pct": 23.29,
+   "avg_r": -1.0302,
+   "avg_trade_return_pct": -0.207,
+   "exit_reasons": {
+    "stop": 55,
+    "target": 18
+   }
+  },
+  "short": {
+   "trades": 68,
+   "wins": 17,
+   "win_rate_pct": 25.0,
+   "avg_r": -0.9348,
+   "avg_trade_return_pct": -0.0773,
+   "exit_reasons": {
+    "stop": 51,
+    "target": 17
+   }
+  },
+  "avg_hours_held": 3.85
+ }
+}

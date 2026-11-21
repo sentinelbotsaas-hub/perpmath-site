@@ -10,7 +10,7 @@ export const RELATED: Record<string, string[]> = {
   '/tools/position-size-calculator/': ['what-is-liquidation'],
   '/tools/drawdown-calculator/': ['max-drawdown', 'what-is-liquidation'],
   '/tools/risk-of-ruin-calculator/': ['max-drawdown', 'how-to-backtest-a-trading-strategy', 'what-is-liquidation'],
-  '/tools/risk-reward-calculator/': ['what-is-liquidation'],
+  '/tools/risk-reward-calculator/': ['order-block', 'what-is-liquidation'],
   '/tools/kelly-criterion-calculator/': ['max-drawdown', 'how-to-backtest-a-trading-strategy', 'what-is-liquidation'],
   '/tools/dca-calculator/': ['what-is-liquidation'],
   '/tools/crypto-profit-calculator/': ['what-is-funding-rate', 'what-is-liquidation'],

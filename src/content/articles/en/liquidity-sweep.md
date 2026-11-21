@@ -18,7 +18,7 @@ tldr: "A liquidity sweep is a bar that trades through a prior high or low and cl
 
 A liquidity sweep is a move in which price trades through an obvious prior high or low and then fails to stay beyond it. "Liquidity" means the orders resting there. A stop-loss above a high is a buy order waiting to happen, and so is a breakout entry, so a push through the high finds plenty to trade against.
 
-It is a term from [ICT and smart money trading](/learn/ict-trading/), like the [fair value gap](/learn/fair-value-gap/). In that telling the sweep is the trap before the real move: breakout buyers get filled at the top, shorts get stopped out, and price turns. What a chart can show is narrower. A level broke and the break failed. Who did it, and whether they meant to, isn't on the chart.
+It is a term from [ICT and smart money trading](/learn/ict-trading/), like the [fair value gap](/learn/fair-value-gap/) and the [order block](/learn/order-block/). In that telling the sweep is the trap before the real move: breakout buyers get filled at the top, shorts get stopped out, and price turns. What a chart can show is narrower. A level broke and the break failed. Who did it, and whether they meant to, isn't on the chart.
 
 ## Where do the usual definitions stop being checkable?
 
@@ -57,7 +57,7 @@ The rule decides when a bar closes and fills with a market order at the open of 
 So the three missing numbers are filled in like this: the level is the 20-bar extreme, any distance through it counts, and price has to be back inside by the close of that bar. According to the engine's README, the parameters in `configs/liquidity_sweep.json` were set once, ahead of any run on real data; it calls them one reasonable choice, not the definition.
 
 <!-- unique:field-note -->
-Two things this rule leaves out on purpose. It has no judgement about which highs are "obvious" and no confirmation step (displacement, a structure break on a lower timeframe) that stricter readings add. And it has one quirk we found while counting on 22 November 2026: 10 of the 3,374 signal bars traded through both the prior high and the prior low and closed beyond one of them. The rule reads those as a sweep of the other side. Ten bars don't move the result, but they are in it.
+Two things this rule leaves out on purpose. It has no judgement about which highs are "obvious" and no confirmation step (displacement, a [structure break](/learn/break-of-structure/) on a lower timeframe) that stricter readings add. And it has one quirk we found while counting on 22 November 2026: 10 of the 3,374 signal bars traded through both the prior high and the prior low and closed beyond one of them. The rule reads those as a sweep of the other side. Ten bars don't move the result, but they are in it.
 
 The idea is older than the vocabulary. LuxAlgo's entry on [Turtle Soup](https://www.luxalgo.com/library/concept/turtle-soup/) (checked 22 November 2026) credits Laurence Connors and Linda Raschke's 1995 book Street Smarts with a rule-defined fade of failed 20-day breakouts. We haven't read the book, so that attribution rests on LuxAlgo's page.
 

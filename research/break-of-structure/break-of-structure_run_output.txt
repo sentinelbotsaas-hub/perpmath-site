@@ -1,0 +1,299 @@
+# Output of the run behind research/break-of-structure/break-of-structure_summary.json (engine perpmath 0.2.1, run 2026-11-21 UTC).
+# Command, from the site's root folder: ../perpmath-engine/.venv/Scripts/python research/break-of-structure/break-of-structure_research.py
+# The text below is what the script printed; only the absolute path of the site folder is shortened to <site>.
+
+btcusdt-15m-swing1   published_costs in  342 trades   -62.70% t  -2.66 R  -0.34   out  142 trades   -16.11% t  -0.84 R  -0.15
+btcusdt-15m-swing1   zero_cost       in  341 trades   -33.68% t  -1.01 R  -0.10   out  155 trades    -0.52% t   0.06 R   0.15
+btcusdt-15m-swing2   published_costs in  225 trades   -19.69% t  -0.42 R  -0.14   out  105 trades    -4.04% t  -0.16 R  -0.18
+btcusdt-15m-swing2   zero_cost       in  245 trades    15.32% t   0.56 R   0.07   out  104 trades     1.64% t   0.18 R  -0.04
+btcusdt-15m-swing3   published_costs in  206 trades   -37.06% t  -1.14 R  -0.17   out   80 trades     3.91% t   0.31 R   0.03
+btcusdt-15m-swing3   zero_cost       in  212 trades   -21.90% t  -0.54 R  -0.03   out   83 trades    12.13% t   0.73 R   0.15
+btcusdt-15m-swing5   published_costs in  149 trades   -43.34% t  -1.57 R  -0.17   out   42 trades    -3.35% t  -0.11 R   0.06
+btcusdt-15m-swing5   zero_cost       in  145 trades   -35.56% t  -1.23 R  -0.10   out   43 trades     0.91% t   0.14 R   0.15
+btcusdt-15m-swing10  published_costs in   72 trades    38.22% t   1.06 R   0.17   out   21 trades    -3.67% t  -0.12 R   0.09
+btcusdt-15m-swing10  zero_cost       in   72 trades    51.29% t   1.32 R   0.26   out   21 trades    -1.05% t   0.03 R   0.17
+wrote <site>/research/break-of-structure/break-of-structure_summary.json
+{
+ "swing_highs_confirmed": 2214,
+ "swing_lows_confirmed": 2225
+}
+{
+ "total": 1631,
+ "up": 801,
+ "down": 830,
+ "with_a_valid_stop_signal": 1631,
+ "without_signal": 0,
+ "signals_in_shipped_result": 1631,
+ "signals_ignored_while_in_a_position": 1440,
+ "signals_ignored_pct": 88.29,
+ "same_direction_as_previous_break": 776,
+ "opposite_to_previous_break": 854,
+ "breaks_per_day": 4.47
+}
+{
+ "all_breaks": {
+  "breaks": 1631,
+  "after_4_bars": {
+   "breaks_with_data": 1631,
+   "mean_move_pct": -0.0194,
+   "median_move_pct": -0.0353,
+   "moved_further_pct": 45.13,
+   "closed_back_through_level": 901,
+   "closed_back_through_level_pct": 55.24
+  },
+  "after_20_bars": {
+   "breaks_with_data": 1629,
+   "mean_move_pct": -0.0156,
+   "median_move_pct": -0.0619,
+   "moved_further_pct": 45.79,
+   "closed_back_through_level": 1248,
+   "closed_back_through_level_pct": 76.61
+  },
+  "after_96_bars": {
+   "breaks_with_data": 1627,
+   "mean_move_pct": 0.024,
+   "median_move_pct": -0.0499,
+   "moved_further_pct": 48.8,
+   "closed_back_through_level": 1435,
+   "closed_back_through_level_pct": 88.2
+  }
+ },
+ "up_breaks": {
+  "breaks": 801,
+  "after_4_bars": {
+   "breaks_with_data": 801,
+   "mean_move_pct": -0.0305,
+   "median_move_pct": -0.0444,
+   "moved_further_pct": 44.32,
+   "closed_back_through_level": 447,
+   "closed_back_through_level_pct": 55.81
+  },
+  "after_20_bars": {
+   "breaks_with_data": 800,
+   "mean_move_pct": -0.0342,
+   "median_move_pct": -0.0693,
+   "moved_further_pct": 45.0,
+   "closed_back_through_level": 614,
+   "closed_back_through_level_pct": 76.75
+  },
+  "after_96_bars": {
+   "breaks_with_data": 799,
+   "mean_move_pct": -0.0277,
+   "median_move_pct": -0.0572,
+   "moved_further_pct": 48.56,
+   "closed_back_through_level": 709,
+   "closed_back_through_level_pct": 88.74
+  }
+ },
+ "down_breaks": {
+  "breaks": 830,
+  "after_4_bars": {
+   "breaks_with_data": 830,
+   "mean_move_pct": -0.0087,
+   "median_move_pct": -0.0265,
+   "moved_further_pct": 45.9,
+   "closed_back_through_level": 454,
+   "closed_back_through_level_pct": 54.7
+  },
+  "after_20_bars": {
+   "breaks_with_data": 829,
+   "mean_move_pct": 0.0023,
+   "median_move_pct": -0.0587,
+   "moved_further_pct": 46.56,
+   "closed_back_through_level": 634,
+   "closed_back_through_level_pct": 76.48
+  },
+  "after_96_bars": {
+   "breaks_with_data": 828,
+   "mean_move_pct": 0.0739,
+   "median_move_pct": -0.031,
+   "moved_further_pct": 49.03,
+   "closed_back_through_level": 726,
+   "closed_back_through_level_pct": 87.68
+  }
+ },
+ "same_direction_as_previous_break": {
+  "breaks": 776,
+  "after_4_bars": {
+   "breaks_with_data": 776,
+   "mean_move_pct": -0.0303,
+   "median_move_pct": -0.0493,
+   "moved_further_pct": 43.56,
+   "closed_back_through_level": 438,
+   "closed_back_through_level_pct": 56.44
+  },
+  "after_20_bars": {
+   "breaks_with_data": 776,
+   "mean_move_pct": 0.028,
+   "median_move_pct": -0.0546,
+   "moved_further_pct": 46.65,
+   "closed_back_through_level": 587,
+   "closed_back_through_level_pct": 75.64
+  },
+  "after_96_bars": {
+   "breaks_with_data": 776,
+   "mean_move_pct": 0.0668,
+   "median_move_pct": -0.0511,
+   "moved_further_pct": 48.84,
+   "closed_back_through_level": 673,
+   "closed_back_through_level_pct": 86.73
+  }
+ },
+ "opposite_to_previous_break": {
+  "breaks": 854,
+  "after_4_bars": {
+   "breaks_with_data": 854,
+   "mean_move_pct": -0.0097,
+   "median_move_pct": -0.0261,
+   "moved_further_pct": 46.49,
+   "closed_back_through_level": 462,
+   "closed_back_through_level_pct": 54.1
+  },
+  "after_20_bars": {
+   "breaks_with_data": 852,
+   "mean_move_pct": -0.056,
+   "median_move_pct": -0.0665,
+   "moved_further_pct": 44.95,
+   "closed_back_through_level": 660,
+   "closed_back_through_level_pct": 77.46
+  },
+  "after_96_bars": {
+   "breaks_with_data": 850,
+   "mean_move_pct": -0.0196,
+   "median_move_pct": -0.0489,
+   "moved_further_pct": 48.71,
+   "closed_back_through_level": 761,
+   "closed_back_through_level_pct": 89.53
+  }
+ },
+ "baseline_every_bar_up": {
+  "after_4_bars": {
+   "bars": 35036,
+   "mean_move_pct": -0.0029,
+   "moved_further_pct": 50.06
+  },
+  "after_20_bars": {
+   "bars": 35020,
+   "mean_move_pct": -0.0149,
+   "moved_further_pct": 50.1
+  },
+  "after_96_bars": {
+   "bars": 34944,
+   "mean_move_pct": -0.0727,
+   "moved_further_pct": 50.02
+  }
+ },
+ "baseline_every_bar_down": {
+  "after_4_bars": {
+   "bars": 35036,
+   "mean_move_pct": 0.0029,
+   "moved_further_pct": 49.91
+  },
+  "after_20_bars": {
+   "bars": 35020,
+   "mean_move_pct": 0.0149,
+   "moved_further_pct": 49.89
+  },
+  "after_96_bars": {
+   "bars": 34944,
+   "mean_move_pct": 0.0727,
+   "moved_further_pct": 49.98
+  }
+ }
+}
+{
+ "in_sample": {
+  "long": {
+   "trades": 65,
+   "wins": 17,
+   "win_rate_pct": 26.15,
+   "avg_r": -0.3489,
+   "avg_trade_return_pct": -0.552,
+   "sum_of_trade_returns_pct": -35.8773
+  },
+  "short": {
+   "trades": 84,
+   "wins": 30,
+   "win_rate_pct": 35.71,
+   "avg_r": -0.0353,
+   "avg_trade_return_pct": -0.1852,
+   "sum_of_trade_returns_pct": -15.5534
+  },
+  "entry_to_stop_pct_of_price": {
+   "min": 0.248,
+   "median": 1.4612,
+   "max": 7.3333,
+   "p10": 0.6386,
+   "p90": 3.1739
+  },
+  "round_trip_cost_in_r_at_median_stop": 0.1027,
+  "trades_with_stop_closer_than_round_trip_cost": 0,
+  "avg_hours_held": 36.88,
+  "funding_settlements_per_average_trade_at_8h": 4.61,
+  "split_by_stop_distance": {
+   "stop_at_or_under_median": {
+    "trades": 75,
+    "wins": 25,
+    "win_rate_pct": 33.33,
+    "avg_r": -0.1585,
+    "avg_trade_return_pct": -0.1174,
+    "sum_of_trade_returns_pct": -8.8015
+   },
+   "stop_over_median": {
+    "trades": 74,
+    "wins": 22,
+    "win_rate_pct": 29.73,
+    "avg_r": -0.1859,
+    "avg_trade_return_pct": -0.5761,
+    "sum_of_trade_returns_pct": -42.6292
+   }
+  }
+ },
+ "out_of_sample": {
+  "long": {
+   "trades": 21,
+   "wins": 9,
+   "win_rate_pct": 42.86,
+   "avg_r": 0.1628,
+   "avg_trade_return_pct": -0.0006,
+   "sum_of_trade_returns_pct": -0.0125
+  },
+  "short": {
+   "trades": 21,
+   "wins": 8,
+   "win_rate_pct": 38.1,
+   "avg_r": -0.0329,
+   "avg_trade_return_pct": -0.0915,
+   "sum_of_trade_returns_pct": -1.9219
+  },
+  "entry_to_stop_pct_of_price": {
+   "min": 0.3574,
+   "median": 1.4058,
+   "max": 5.3182,
+   "p10": 0.6363,
+   "p90": 2.6016
+  },
+  "round_trip_cost_in_r_at_median_stop": 0.1067,
+  "trades_with_stop_closer_than_round_trip_cost": 0,
+  "avg_hours_held": 58.56,
+  "funding_settlements_per_average_trade_at_8h": 7.32,
+  "split_by_stop_distance": {
+   "stop_at_or_under_median": {
+    "trades": 21,
+    "wins": 10,
+    "win_rate_pct": 47.62,
+    "avg_r": 0.2683,
+    "avg_trade_return_pct": 0.4042,
+    "sum_of_trade_returns_pct": 8.4872
+   },
+   "stop_over_median": {
+    "trades": 21,
+    "wins": 7,
+    "win_rate_pct": 33.33,
+    "avg_r": -0.1384,
+    "avg_trade_return_pct": -0.4963,
+    "sum_of_trade_returns_pct": -10.4216
+   }
+  }
+ }
+}

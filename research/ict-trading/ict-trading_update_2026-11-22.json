@@ -1,0 +1,38 @@
+{
+  "article": "en/ict-trading",
+  "updated_on": "2026-11-22",
+  "what_changed": "Order block, break of structure and breaker block moved from 'not backtested' to 'backtested'. The counts in the description, tldr, opening paragraph, 'What this page does not claim' and the FAQ went from two tested and ten untested to five and seven.",
+  "note": "research/ict-trading/ict-trading_status.py and ict-trading_status.json were written for the first version of the article and still list two backtested concepts. They were not edited here. Every number added to the article comes from the files below.",
+  "sources_of_added_numbers": {
+    "published_metric_blocks": [
+      "<engine>/results/order-block-btcusdt.json",
+      "<engine>/results/break-of-structure-btcusdt.json",
+      "<engine>/results/breaker-block-btcusdt.json"
+    ],
+    "zero_cost_returns_and_t_statistics": [
+      "research/order-block/order-block_summary.json (runs[0].zero_cost)",
+      "research/break-of-structure/break-of-structure_summary.json (run btcusdt-15m-swing5, zero_cost)",
+      "research/breaker-block/breaker-block_summary.json (run btcusdt-15m-breaker-block, zero_cost)",
+      "the same six figures are in research/how-to-backtest/summary.json"
+    ],
+    "801_blocks_and_75.41_pct_returned": "research/order-block/order-block_summary.json (published_settings.blocks)",
+    "1631_breaks_and_55.24_pct_closed_back_within_4_bars": "research/break-of-structure/break-of-structure_summary.json (published_settings.breaks, every_break_forward.all_breaks.after_4_bars)",
+    "59.68_pct_closed_through_and_63.60_pct_both_signals": "research/breaker-block/breaker-block_summary.json (btcusdt_15m.fate_of_every_order_block)",
+    "median_in_sample_stops_0.330_and_0.310_pct": [
+      "research/order-block/order-block_summary.json (published_settings.published_trades.in_sample.fills.entry_to_stop_pct_of_price_median)",
+      "research/breaker-block/breaker-block_summary.json (btcusdt_15m.published_breaker_trades.in_sample.entry_to_stop_pct_of_price_median)"
+    ],
+    "swing_size_table_every_block_with_100_trades_lost": "research/break-of-structure/break-of-structure_summary.json (runs)"
+  },
+  "table_of_five": {
+    "zero_cost_t_statistics_in_out": {
+      "fair_value_gap": [0.38, -0.97],
+      "liquidity_sweep": [-1.14, -1.11],
+      "order_block": [-0.38, 0.11],
+      "break_of_structure": [-1.23, 0.14],
+      "breaker_block": [1.30, 0.17]
+    },
+    "in_sample_win_rates_pct": {"fair_value_gap": 31.46, "liquidity_sweep": 29.16, "order_block": 30.77,
+                                "break_of_structure": 31.54, "breaker_block": 33.74}
+  }
+}

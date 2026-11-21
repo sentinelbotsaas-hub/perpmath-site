@@ -1,0 +1,64 @@
+{
+  "article": "en/breaker-block",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the sentences the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source. The one sentence quoted in the article's opening is TMGM's own first line. The rule in the code block is the engine's docstring restated.",
+  "definition_sources": [
+    {
+      "name": "TMGM academy: Breaker Block in Trading",
+      "url": "https://www.tmgm.com/en/academy/trading-academy/breaker-block",
+      "page_date": "Last Updated: 16 Nov 2026",
+      "what_it_says": [
+        "Opening line: a breaker block is a failed order block that has flipped sides.",
+        "The breaker block idea comes from ICT (Inner Circle Trader); teachers do not all agree on the exact rules.",
+        "A bullish breaker block comes from a failed bearish order block (the last opposite candle before the impulsive move down) and acts as support on the retest; the bearish case is the mirror.",
+        "A liquidity sweep must come first in the ICT version; a broken order block with no sweep before it is called a mitigation block. Some SMC traders call any broken order block a breaker.",
+        "Failure is confirmed by a candle body close through the order block; a wick alone may be another sweep.",
+        "Breaker blocks often fail; marking one is subjective and easier in hindsight."
+      ],
+      "which_candle": "the failed order-block candle itself (up-closing for a bullish breaker)",
+      "not_specified": ["size of the sweep", "size of the impulsive move", "how long to wait for the retest"]
+    },
+    {
+      "name": "LuxAlgo library: Breaker Block",
+      "url": "https://www.luxalgo.com/library/concept/breaker-block/",
+      "page_date": "none shown",
+      "what_it_says": [
+        "A breaker block is an order block that failed and flipped roles.",
+        "Bullish case: price runs below a prior low, then reverses and breaks back above the swing high that preceded the run; the down-closing candle or series that drove the failed move lower is the breaker. FAQ: a bullish breaker is built from down-closing candles.",
+        "Two readings circulate: the strict one requires the failing swing to first trade beyond a prior high or low (that raid separates a breaker from a mitigation block); the looser one treats any violated order block as a breaker.",
+        "Marking conventions vary (bodies only or full range). Breakers do not always hold on the retest."
+      ],
+      "which_candle": "down-closing candle or series inside the failed down-leg (for a bullish breaker)",
+      "not_specified": ["any lookback, threshold or waiting time"]
+    },
+    {
+      "name": "MQL5 blogs: Breaker Blocks: Why Most ICT Traders Draw Them Wrong (And the 3 Conditions That Make One Valid), by Diego Arribas Lopez",
+      "url": "https://www.mql5.com/en/blogs/post/773691",
+      "page_date": "18 August 2026",
+      "what_it_says": [
+        "Bullish case: the bearish candle range that formed the original swing high is the breaker, marked from its high to its low.",
+        "Three conditions: a real liquidity sweep first, displacement through structure, a first retest.",
+        "Says the sweep condition alone eliminates most of what gets labelled a breaker."
+      ],
+      "which_candle": "the bearish (down-closing) candle or candles that formed the swing high",
+      "caveat": "The post promotes the author's paid MetaTrader indicators. It shows no win rate or backtest.",
+      "not_specified": ["numeric definition of the sweep or of displacement"]
+    }
+  ],
+  "origin_conclusion": "TMGM's page says the idea comes from ICT. No dated primary source for when the term was first used was found.",
+  "engine_sources": [
+    {"name": "breaker_block.py docstring (rules and judgement calls)",
+     "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/d06236ec9fd04a5a17854aaed5477bb048ff98ad/src/perpmath/strategies/breaker_block.py"}
+  ],
+  "data_and_cost_sources": [
+    {"name": "Bybit V5 kline endpoint (public)", "url": "https://bybit-exchange.github.io/docs/v5/market/kline"},
+    {"name": "Bybit trading fee structure", "url": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure",
+     "page_date": "Last updated on 2026-11-20 04:29:35",
+     "what_it_says": ["VIP 0, perpetual and expiry contracts: taker 0.0550%, maker 0.0200%."]},
+    {"name": "NIST/SEMATECH e-Handbook: one-sample t-test", "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm"}
+  ],
+  "numbers": {
+    "published_backtest": "<engine>/results/breaker-block-btcusdt.json (perpmath 0.2.1, generated 2026-11-21T17:35:26Z)",
+    "everything_else": "research/breaker-block/breaker-block_summary.json, produced by research/breaker-block/breaker-block_research.py"
+  }
+}

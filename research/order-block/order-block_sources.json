@@ -1,0 +1,72 @@
+{
+  "article": "en/order-block",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the sentences the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source. The rule in the article's code block is the engine's docstring restated, not a quotation from any of these pages.",
+  "definition_sources": [
+    {
+      "name": "LuxAlgo library: Bullish/bearish Order Block",
+      "url": "https://www.luxalgo.com/library/concept/bullish-bearish-order-block/",
+      "page_date": "none shown",
+      "what_it_says": [
+        "An order block is the last candle that closed against a move before the move took off; a run of consecutive opposite candles can be boxed as a single zone.",
+        "The candle alone is not the concept: the move away has to show displacement, speed and range that break structure or trade through a prior swing, ideally leaving a fair value gap. A liquidity sweep before the move is a grading factor, not a requirement.",
+        "Drawing conventions vary and none is official: the candle's full high-to-low range (most common), the body only, the open to the extreme, or a refinement to the 50% mean threshold.",
+        "Entry on the return is commonly combined with a lower-timeframe change of character inside the zone; a decisive close through the entire zone invalidates the block.",
+        "No reliable universal hit rate exists; order blocks fail routinely."
+      ],
+      "not_specified": ["how many candles make the move", "how far the move must travel", "which swing must be broken and how a swing is defined"]
+    },
+    {
+      "name": "TMGM academy: Order Block in Trading",
+      "url": "https://www.tmgm.com/en/academy/trading-academy/order-block",
+      "page_date": "Last Updated: 22 Oct 2026",
+      "what_it_says": [
+        "An order block is the last opposite candle before an impulsive move; the impulsive move is described as much bigger than the candles around it, with no size given.",
+        "Marked from the candle high to the candle low, wicks included; a valid block usually comes before a break of structure and often leaves a fair value gap.",
+        "Traders enter only after the retest and a sign of confirmation; the worked example enters after a rejection candle inside the block.",
+        "Usually treated as invalid once a candle closes beyond its far edge, though tools and teachers differ.",
+        "Order blocks do not predict price and many fail; marking one is subjective and easier in hindsight.",
+        "FAQ: the concept was named and popularised by Michael J. Huddleston (Inner Circle Trader), mainly through his free online videos; the basic idea is older than ICT."
+      ],
+      "not_specified": ["size of the impulsive move", "swing definition", "how long a block stays valid"]
+    },
+    {
+      "name": "TradingView: Smart Money Concepts (SMC) [LuxAlgo], open-source script",
+      "url": "https://www.tradingview.com/script/CnB3fSph-Smart-Money-Concepts-SMC-LuxAlgo/",
+      "page_date": "published 2022-10-11",
+      "what_it_says": [
+        "Order blocks highlight areas where institutional market participants open positions.",
+        "When price breaks through an order block the indicator considers it mitigated and removes it.",
+        "States there is no supporting data regarding the validity of these teachings."
+      ]
+    }
+  ],
+  "origin": [
+    {
+      "name": "The Inner Circle Trader, home page",
+      "url": "https://www.theinnercircletrader.com/",
+      "what_it_says": ["Introduces Michael J. Huddleston as The Inner Circle Trader and links to his YouTube lectures."],
+      "does_not_say": ["The term 'order block' does not appear on the home page; no dates for when any term was introduced."],
+      "conclusion": "No dated, written primary source for the term was found. The article attributes the naming claim to TMGM's page and attributes no wording to Huddleston."
+    }
+  ],
+  "engine_sources": [
+    {"name": "order_block.py docstring (rules and judgement calls)",
+     "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/d06236ec9fd04a5a17854aaed5477bb048ff98ad/src/perpmath/strategies/order_block.py"},
+    {"name": "CHANGELOG.md, 0.2.1: parameters written down on 2026-11-21 (UTC) before the first run on real data, run once, not changed",
+     "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/d06236ec9fd04a5a17854aaed5477bb048ff98ad/CHANGELOG.md"}
+  ],
+  "data_and_cost_sources": [
+    {"name": "Bybit V5 kline endpoint (public)", "url": "https://bybit-exchange.github.io/docs/v5/market/kline"},
+    {"name": "Bybit trading fee structure", "url": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure",
+     "page_date": "Last updated on 2026-11-20 04:29:35",
+     "what_it_says": ["VIP 0, perpetual and expiry contracts: taker 0.0550%, maker 0.0200%."]},
+    {"name": "NIST/SEMATECH e-Handbook: one-sample t-test", "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm"}
+  ],
+  "numbers": {
+    "published_backtest": "<engine>/results/order-block-btcusdt.json (perpmath 0.2.1, generated 2026-11-21T17:35:25Z)",
+    "everything_else": "research/order-block/order-block_summary.json, produced by research/order-block/order-block_research.py",
+    "fair_value_gap_comparison": "92.02% and median 2 bars are from research/fvg_gap_stats.json (article en/fair-value-gap)",
+    "eth_sol_order_block_runs": "research/breaker-block/breaker-block_summary.json"
+  }
+}

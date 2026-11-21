@@ -1,0 +1,184 @@
+# Output of the run behind research/breaker-block/breaker-block_summary.json (engine perpmath 0.2.1, run 2026-11-21 UTC).
+# Command, from the site's root folder: ../perpmath-engine/.venv/Scripts/python research/breaker-block/breaker-block_research.py --download
+# The text below is what the script printed; only the absolute path of the site folder is shortened to <site>.
+
+saved 35040 bars to <site>/research/breaker-block/data/ETHUSDT-15m.csv
+range 2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z (bar open times, UTC)
+saved 35040 bars to <site>/research/breaker-block/data/SOLUSDT-15m.csv
+range 2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z (bar open times, UTC)
+btcusdt-15m-breaker-block      published_costs in  243 trades   -18.44% t  -1.56   out  120 trades   -15.07% t  -2.88
+btcusdt-15m-breaker-block      zero_cost       in  243 trades    16.45% t   1.30   out  120 trades     0.78% t   0.17
+btcusdt-15m-order-block        published_costs in  325 trades   -42.33% t  -3.77   out  141 trades   -18.71% t  -2.49
+btcusdt-15m-order-block        zero_cost       in  327 trades    -6.27% t  -0.38   out  145 trades     0.54% t   0.11
+ethusdt-15m-breaker-block      published_costs in  214 trades   -29.80% t  -2.10   out   96 trades   -13.64% t  -2.54
+ethusdt-15m-breaker-block      zero_cost       in  214 trades    -3.30% t  -0.13   out   96 trades    -1.37% t  -0.22
+ethusdt-15m-order-block        published_costs in  298 trades   -37.71% t  -2.57   out  146 trades    -0.63% t  -0.00
+ethusdt-15m-order-block        zero_cost       in  300 trades    -3.67% t  -0.13   out  146 trades    21.54% t   1.83
+solusdt-15m-breaker-block      published_costs in  231 trades     4.81% t   0.34   out  110 trades   -12.95% t  -1.75
+solusdt-15m-breaker-block      zero_cost       in  232 trades    43.94% t   2.07   out  112 trades     3.40% t   0.48
+solusdt-15m-order-block        published_costs in  308 trades   -41.27% t  -2.58   out  143 trades    -2.22% t  -0.06
+solusdt-15m-order-block        zero_cost       in  308 trades    -9.64% t  -0.42   out  144 trades    22.43% t   1.34
+wrote <site>/research/breaker-block/breaker-block_summary.json
+{
+ "order_blocks": 801,
+ "bullish": 385,
+ "bearish": 416,
+ "order_block_trade": {
+  "entry_signal": 533,
+  "failed_on_return_bar": 71,
+  "expired_untouched": 196,
+  "data_ended_first": 1
+ },
+ "closed_through_within_wait": 478,
+ "closed_through_pct_of_blocks": 59.68,
+ "never_closed_through_within_wait": 323,
+ "bars_from_block_to_close_through_median": 21.0,
+ "closed_through_on_its_return_bar": 71,
+ "breaker_retest": {
+  "entry_signal": 389,
+  "dropped_on_retest_bar": 53,
+  "expired_untouched": 36,
+  "data_ended_first": 0,
+  "retested_pct_of_breakers": 92.47,
+  "entry_signal_pct_of_breakers": 81.38,
+  "bars_from_close_through_to_retest_median": 1.0,
+  "retested_on_the_next_bar": 255,
+  "retested_on_the_next_bar_pct_of_retests": 57.69
+ },
+ "same_zone_both_labels": {
+  "blocks_with_an_order_block_entry_signal": 533,
+  "of_those_later_closed_through": 407,
+  "of_those_later_closed_through_pct": 76.36,
+  "of_those_with_a_breaker_entry_signal_too": 339,
+  "of_those_with_a_breaker_entry_signal_too_pct": 63.6
+ },
+ "strict_reading": {
+  "lookback_bars": 20,
+  "breakers_with_a_full_lookback": 478,
+  "move_ran_the_prior_extreme": 455,
+  "move_ran_the_prior_extreme_pct": 95.19
+ },
+ "signal_bars": {
+  "order_block": 530,
+  "breaker_block": 384
+ }
+}
+{
+ "in_sample": {
+  "long": {
+   "trades": 123,
+   "wins": 47,
+   "win_rate_pct": 38.21,
+   "avg_r": -0.4403,
+   "avg_trade_return_pct": -0.0307,
+   "sum_of_trade_returns_pct": -3.7781,
+   "exit_reasons": {
+    "end": 1,
+    "stop": 75,
+    "target": 47
+   }
+  },
+  "short": {
+   "trades": 120,
+   "wins": 35,
+   "win_rate_pct": 29.17,
+   "avg_r": -0.6901,
+   "avg_trade_return_pct": -0.1319,
+   "sum_of_trade_returns_pct": -15.8251,
+   "exit_reasons": {
+    "stop": 85,
+    "target": 35
+   }
+  },
+  "strict_reading_move_ran_prior_20_bar_extreme": {
+   "trades": 230,
+   "wins": 78,
+   "win_rate_pct": 33.91,
+   "avg_r": -0.5605,
+   "avg_trade_return_pct": -0.0734,
+   "sum_of_trade_returns_pct": -16.8717,
+   "exit_reasons": {
+    "end": 1,
+    "stop": 151,
+    "target": 78
+   }
+  },
+  "loose_reading_only": {
+   "trades": 13,
+   "wins": 4,
+   "win_rate_pct": 30.77,
+   "avg_r": -0.6184,
+   "avg_trade_return_pct": -0.2101,
+   "sum_of_trade_returns_pct": -2.7315,
+   "exit_reasons": {
+    "stop": 9,
+    "target": 4
+   }
+  },
+  "no_full_lookback": 0,
+  "entry_to_stop_pct_of_price_median": 0.3101,
+  "round_trip_cost_in_r_at_median_stop": 0.4838,
+  "trades_with_stop_closer_than_round_trip_cost": 45,
+  "stopped_on_the_entry_bar": 49
+ },
+ "out_of_sample": {
+  "long": {
+   "trades": 65,
+   "wins": 18,
+   "win_rate_pct": 27.69,
+   "avg_r": -0.9081,
+   "avg_trade_return_pct": -0.1551,
+   "sum_of_trade_returns_pct": -10.0844,
+   "exit_reasons": {
+    "stop": 46,
+    "target": 19
+   }
+  },
+  "short": {
+   "trades": 55,
+   "wins": 19,
+   "win_rate_pct": 34.55,
+   "avg_r": -0.6495,
+   "avg_trade_return_pct": -0.1105,
+   "sum_of_trade_returns_pct": -6.0778,
+   "exit_reasons": {
+    "stop": 36,
+    "target": 19
+   }
+  },
+  "strict_reading_move_ran_prior_20_bar_extreme": {
+   "trades": 113,
+   "wins": 37,
+   "win_rate_pct": 32.74,
+   "avg_r": -0.7231,
+   "avg_trade_return_pct": -0.1195,
+   "sum_of_trade_returns_pct": -13.5077,
+   "exit_reasons": {
+    "stop": 75,
+    "target": 38
+   }
+  },
+  "loose_reading_only": {
+   "trades": 7,
+   "wins": 0,
+   "win_rate_pct": 0.0,
+   "avg_r": -1.8629,
+   "avg_trade_return_pct": -0.3792,
+   "sum_of_trade_returns_pct": -2.6545,
+   "exit_reasons": {
+    "stop": 7
+   }
+  },
+  "no_full_lookback": 0,
+  "entry_to_stop_pct_of_price_median": 0.2586,
+  "round_trip_cost_in_r_at_median_stop": 0.5801,
+  "trades_with_stop_closer_than_round_trip_cost": 33,
+  "stopped_on_the_entry_bar": 25
+ }
+}
+btcusdt-15m-breaker-block {'first_bar': '2025-11-18T11:30:00Z', 'last_bar': '2026-11-18T11:15:00Z', 'bars': 35040, 'missing_bars': 0} {'first_open': 91423.0, 'last_close': 64124.5, 'change_pct': -29.86}
+btcusdt-15m-order-block {'first_bar': '2025-11-18T11:30:00Z', 'last_bar': '2026-11-18T11:15:00Z', 'bars': 35040, 'missing_bars': 0} {'first_open': 91423.0, 'last_close': 64124.5, 'change_pct': -29.86}
+ethusdt-15m-breaker-block {'first_bar': '2025-11-18T11:30:00Z', 'last_bar': '2026-11-18T11:15:00Z', 'bars': 35040, 'missing_bars': 0} {'first_open': 3062.17, 'last_close': 1796.54, 'change_pct': -41.33}
+ethusdt-15m-order-block {'first_bar': '2025-11-18T11:30:00Z', 'last_bar': '2026-11-18T11:15:00Z', 'bars': 35040, 'missing_bars': 0} {'first_open': 3062.17, 'last_close': 1796.54, 'change_pct': -41.33}
+solusdt-15m-breaker-block {'first_bar': '2025-11-18T11:30:00Z', 'last_bar': '2026-11-18T11:15:00Z', 'bars': 35040, 'missing_bars': 0} {'first_open': 137.98, 'last_close': 74.47, 'change_pct': -46.03}
+solusdt-15m-order-block {'first_bar': '2025-11-18T11:30:00Z', 'last_bar': '2026-11-18T11:15:00Z', 'bars': 35040, 'missing_bars': 0} {'first_open': 137.98, 'last_close': 74.47, 'change_pct': -46.03}
