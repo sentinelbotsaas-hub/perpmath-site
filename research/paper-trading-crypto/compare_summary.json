@@ -1,0 +1,645 @@
+{
+  "article": "en/paper-trading-crypto",
+  "engine_version": "0.2.2",
+  "execution_assumed_in_backtests": {
+    "fee_rate": 0.00055,
+    "slippage": 0.0002,
+    "initial_capital": 100,
+    "notional_fraction": 1.0,
+    "max_hold_bars": null
+  },
+  "history_bars": 500,
+  "runs": [
+    {
+      "strategy": "ma_cross",
+      "interval": "1m",
+      "params": {
+        "fast_period": 20,
+        "slow_period": 50,
+        "atr_period": 14,
+        "stop_atr_mult": 2.0
+      },
+      "log": "dryrun-ma_cross-1m.stdout.txt",
+      "started": "2026-11-21T19:40:10Z",
+      "clock_offset_ms": 1036,
+      "first_bar": "2026-11-21T19:39:00Z",
+      "last_bar": "2026-11-21T20:59:00Z",
+      "bars_handled": 81,
+      "last_log_line": "2026-11-21T21:00:02Z",
+      "wall_clock_minutes": 79.9,
+      "minutes_covered": 81.0,
+      "bars_expected_without_gaps": 81,
+      "seconds_from_bar_close_to_log_line": {
+        "min": 2,
+        "max": 2
+      },
+      "decisions": {
+        "long": 1,
+        "short": 0,
+        "no entry": 80
+      },
+      "bars_with_an_exit_flag": 1,
+      "orders_printed": 1,
+      "entry_orders_printed": 1,
+      "paper_closes": [
+        {
+          "logged_at": "2026-11-21T20:17:02Z",
+          "by": "stop",
+          "price": 59197.7,
+          "in_bar": "2026-11-21T20:16:00Z"
+        }
+      ],
+      "other_lines": [],
+      "candles": {
+        "testnet_file": "data-testnet/BTCUSDT-1m.csv",
+        "testnet_sha256": "6cc6f49cdfa041915a17c9239043edcc0c2bc6c0f97f5f82fc4d4729a89ce53b",
+        "mainnet_file": "data-mainnet/BTCUSDT-1m.csv",
+        "mainnet_sha256": "0e623e050e861408f31ba4f213638ae228fbe5198101e52994047fd65be0597e",
+        "first_bar": "2026-11-21T11:19:00Z",
+        "bars": 581,
+        "testnet_missing": 0,
+        "mainnet_missing": 0,
+        "testnet_bars_with_high_equal_low_in_window": 1,
+        "testnet_volume_in_window": 17.804,
+        "mainnet_volume_in_window": 1521.831
+      },
+      "replay": {
+        "bars_compared": 81,
+        "identical": 81,
+        "different": [],
+        "bars_not_in_download": [],
+        "bars_whose_close_differs": []
+      },
+      "backtest_testnet": {
+        "command": "perpmath backtest ma_cross --symbol BTCUSDT --interval 1m --config research/paper-trading-crypto/ma-cross-1m.backtest.config.json --out research/paper-trading-crypto/backtest-testnet-ma-cross-1m.json --data-dir research/paper-trading-crypto/data-testnet --start 2026-11-21T11:19:00Z --end 2026-11-21T21:00:00Z",
+        "exit_code": 0,
+        "stdout": "ma_cross BTCUSDT 1m  2026-11-21T11:19:00Z to 2026-11-21T20:59:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\nlook-ahead check passed: cut after 6 of 6 signal bars and 574 of 574 other bars\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample           5   20.00    0.63   -0.37     -0.39      1.08\nout_of_sample       1    0.00   -6.30     n/a     -0.15      0.15\nwarning: in_sample: 5 trades, fewer than 100: insufficient sample\nwarning: out_of_sample: 1 trades, fewer than 100: insufficient sample\nwrote research/paper-trading-crypto/backtest-testnet-ma-cross-1m.json",
+        "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...",
+        "result_file": "research/paper-trading-crypto/backtest-testnet-ma-cross-1m.json",
+        "window": {
+          "first_bar": "2026-11-21T19:39:00Z",
+          "last_bar": "2026-11-21T20:59:00Z",
+          "bars": 81,
+          "signals": {
+            "seen": 1,
+            "skipped_in_position": 0,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "metrics": {
+            "trades": 1,
+            "insufficient_sample": true,
+            "wins": 0,
+            "losses": 1,
+            "win_rate_pct": 0.0,
+            "avg_r": -6.2981,
+            "avg_trade_return_pct": -0.1545,
+            "t_stat": null,
+            "t_stat_n": 1,
+            "total_return_pct": -0.1545,
+            "max_drawdown_pct": 0.1545,
+            "profit_factor": 0.0,
+            "total_fees": 0.11,
+            "avg_bars_held": 24.0,
+            "final_equity": 99.85,
+            "exit_reasons": {
+              "stop": 1
+            }
+          },
+          "trades": 1
+        }
+      },
+      "dry_run_entries_against_backtest_trades": [
+        {
+          "decided_on_bar": "2026-11-21T19:51:00Z",
+          "dry_run_side": "Buy",
+          "dry_run_qty": "0.001",
+          "dry_run_reference_price": 59200.4,
+          "dry_run_stop": 59197.7,
+          "dry_run_take_profit": null,
+          "dry_run_close": {
+            "logged_at": "2026-11-21T20:17:02Z",
+            "by": "stop",
+            "price": 59197.7,
+            "in_bar": "2026-11-21T20:16:00Z"
+          },
+          "backtest_trade": {
+            "side": "long",
+            "entry_time": "2026-11-21T19:52:00Z",
+            "entry_price": 59212.24008,
+            "stop_price": 59197.714286,
+            "target_price": null,
+            "exit_time": "2026-11-21T20:16:00Z",
+            "exit_price": 59185.874743,
+            "exit_reason": "stop",
+            "bars_held": 24,
+            "fees": 0.11,
+            "pnl": -0.1545,
+            "return_pct": -0.1545,
+            "r_multiple": -6.2981
+          },
+          "entry_fill_minus_reference_pct": 0.02
+        }
+      ],
+      "backtest_trades_with_no_dry_run_order": [],
+      "backtest_mainnet": {
+        "command": "perpmath backtest ma_cross --symbol BTCUSDT --interval 1m --config research/paper-trading-crypto/ma-cross-1m.backtest.config.json --out research/paper-trading-crypto/backtest-mainnet-ma-cross-1m.json --data-dir research/paper-trading-crypto/data-mainnet --start 2026-11-21T11:19:00Z --end 2026-11-21T21:00:00Z",
+        "exit_code": 0,
+        "stdout": "ma_cross BTCUSDT 1m  2026-11-21T11:19:00Z to 2026-11-21T20:59:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\nlook-ahead check passed: cut after 14 of 14 signal bars and 566 of 566 other bars\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample          12   16.67   -0.85   -3.10     -1.98      2.43\nout_of_sample       2    0.00   -1.92  -72.29     -0.54      0.60\nwarning: in_sample: 12 trades, fewer than 100: insufficient sample\nwarning: out_of_sample: 2 trades, fewer than 100: insufficient sample\nwrote research/paper-trading-crypto/backtest-mainnet-ma-cross-1m.json",
+        "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...",
+        "result_file": "research/paper-trading-crypto/backtest-mainnet-ma-cross-1m.json",
+        "window": {
+          "signals": {
+            "seen": 2,
+            "skipped_in_position": 0,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "metrics": {
+            "trades": 2,
+            "insufficient_sample": true,
+            "wins": 0,
+            "losses": 2,
+            "win_rate_pct": 0.0,
+            "avg_r": -1.9227,
+            "avg_trade_return_pct": -0.271,
+            "t_stat": -72.2926,
+            "t_stat_n": 2,
+            "total_return_pct": -0.5412,
+            "max_drawdown_pct": 0.5973,
+            "profit_factor": 0.0,
+            "total_fees": 0.22,
+            "avg_bars_held": 14.0,
+            "final_equity": 99.46,
+            "exit_reasons": {
+              "stop": 2
+            }
+          },
+          "trades": 2
+        }
+      },
+      "entry_signals_in_window": {
+        "testnet_candles": 1,
+        "mainnet_candles": 2,
+        "same_bar_same_side": 0
+      }
+    },
+    {
+      "strategy": "liquidity_sweep",
+      "interval": "1m",
+      "params": {
+        "lookback": 20,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "log": "dryrun-liquidity_sweep-1m.stdout.txt",
+      "started": "2026-11-21T19:40:10Z",
+      "clock_offset_ms": 1020,
+      "first_bar": "2026-11-21T19:39:00Z",
+      "last_bar": "2026-11-21T20:59:00Z",
+      "bars_handled": 81,
+      "last_log_line": "2026-11-21T21:00:02Z",
+      "wall_clock_minutes": 79.9,
+      "minutes_covered": 81.0,
+      "bars_expected_without_gaps": 81,
+      "seconds_from_bar_close_to_log_line": {
+        "min": 2,
+        "max": 2
+      },
+      "decisions": {
+        "long": 1,
+        "short": 0,
+        "no entry": 80
+      },
+      "bars_with_an_exit_flag": 0,
+      "orders_printed": 1,
+      "entry_orders_printed": 1,
+      "paper_closes": [],
+      "other_lines": [],
+      "candles": {
+        "testnet_file": "data-testnet/BTCUSDT-1m.csv",
+        "testnet_sha256": "6cc6f49cdfa041915a17c9239043edcc0c2bc6c0f97f5f82fc4d4729a89ce53b",
+        "mainnet_file": "data-mainnet/BTCUSDT-1m.csv",
+        "mainnet_sha256": "0e623e050e861408f31ba4f213638ae228fbe5198101e52994047fd65be0597e",
+        "first_bar": "2026-11-21T11:19:00Z",
+        "bars": 581,
+        "testnet_missing": 0,
+        "mainnet_missing": 0,
+        "testnet_bars_with_high_equal_low_in_window": 1,
+        "testnet_volume_in_window": 17.804,
+        "mainnet_volume_in_window": 1521.831
+      },
+      "replay": {
+        "bars_compared": 81,
+        "identical": 81,
+        "different": [],
+        "bars_not_in_download": [],
+        "bars_whose_close_differs": []
+      },
+      "backtest_testnet": {
+        "command": "perpmath backtest liquidity_sweep --symbol BTCUSDT --interval 1m --config research/paper-trading-crypto/liquidity-sweep-1m.backtest.config.json --out research/paper-trading-crypto/backtest-testnet-liquidity-sweep-1m.json --data-dir research/paper-trading-crypto/data-testnet --start 2026-11-21T11:19:00Z --end 2026-11-21T21:00:00Z",
+        "exit_code": 0,
+        "stdout": "liquidity_sweep BTCUSDT 1m  2026-11-21T11:19:00Z to 2026-11-21T20:59:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\nlook-ahead check passed: cut after 5 of 5 signal bars and 575 of 575 other bars\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample           1    0.00   -0.06     n/a     -0.18      1.23\nout_of_sample       1  100.00    0.53     n/a      0.93      1.03\nwarning: in_sample: 1 trades, fewer than 100: insufficient sample\nwarning: out_of_sample: 1 trades, fewer than 100: insufficient sample\nwrote research/paper-trading-crypto/backtest-testnet-liquidity-sweep-1m.json",
+        "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...",
+        "result_file": "research/paper-trading-crypto/backtest-testnet-liquidity-sweep-1m.json",
+        "window": {
+          "first_bar": "2026-11-21T19:39:00Z",
+          "last_bar": "2026-11-21T20:59:00Z",
+          "bars": 81,
+          "signals": {
+            "seen": 1,
+            "skipped_in_position": 0,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "metrics": {
+            "trades": 1,
+            "insufficient_sample": true,
+            "wins": 1,
+            "losses": 0,
+            "win_rate_pct": 100.0,
+            "avg_r": 0.5335,
+            "avg_trade_return_pct": 0.9264,
+            "t_stat": null,
+            "t_stat_n": 1,
+            "total_return_pct": 0.9264,
+            "max_drawdown_pct": 1.0328,
+            "profit_factor": null,
+            "total_fees": 0.11,
+            "avg_bars_held": 42.0,
+            "final_equity": 100.93,
+            "exit_reasons": {
+              "end": 1
+            }
+          },
+          "trades": 1
+        }
+      },
+      "dry_run_entries_against_backtest_trades": [
+        {
+          "decided_on_bar": "2026-11-21T20:16:00Z",
+          "dry_run_side": "Buy",
+          "dry_run_qty": "0.001",
+          "dry_run_reference_price": 59701.0,
+          "dry_run_stop": 58676.0,
+          "dry_run_take_profit": 61751.0,
+          "dry_run_close": null,
+          "backtest_trade": {
+            "side": "long",
+            "entry_time": "2026-11-21T20:17:00Z",
+            "entry_price": 59712.9402,
+            "stop_price": 58676.022143,
+            "target_price": 61786.776314,
+            "exit_time": "2026-11-21T20:59:00Z",
+            "exit_price": 60332.13116,
+            "exit_reason": "end",
+            "bars_held": 42,
+            "fees": 0.1106,
+            "pnl": 0.9264,
+            "return_pct": 0.9264,
+            "r_multiple": 0.5335
+          },
+          "entry_fill_minus_reference_pct": 0.02
+        }
+      ],
+      "backtest_trades_with_no_dry_run_order": [],
+      "backtest_mainnet": {
+        "command": "perpmath backtest liquidity_sweep --symbol BTCUSDT --interval 1m --config research/paper-trading-crypto/liquidity-sweep-1m.backtest.config.json --out research/paper-trading-crypto/backtest-mainnet-liquidity-sweep-1m.json --data-dir research/paper-trading-crypto/data-mainnet --start 2026-11-21T11:19:00Z --end 2026-11-21T21:00:00Z",
+        "exit_code": 0,
+        "stdout": "liquidity_sweep BTCUSDT 1m  2026-11-21T11:19:00Z to 2026-11-21T20:59:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\nlook-ahead check passed: cut after 38 of 38 signal bars and 542 of 542 other bars\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample          24   33.33   -0.90   -2.55     -3.59      3.90\nout_of_sample       4   25.00   -2.73   -1.55     -0.43      0.43\nwarning: in_sample: 24 trades, fewer than 100: insufficient sample\nwarning: out_of_sample: 4 trades, fewer than 100: insufficient sample\nwrote research/paper-trading-crypto/backtest-mainnet-liquidity-sweep-1m.json",
+        "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...",
+        "result_file": "research/paper-trading-crypto/backtest-mainnet-liquidity-sweep-1m.json",
+        "window": {
+          "signals": {
+            "seen": 4,
+            "skipped_in_position": 0,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "metrics": {
+            "trades": 4,
+            "insufficient_sample": true,
+            "wins": 1,
+            "losses": 3,
+            "win_rate_pct": 25.0,
+            "avg_r": -2.7292,
+            "avg_trade_return_pct": -0.1071,
+            "t_stat": -1.5544,
+            "t_stat_n": 4,
+            "total_return_pct": -0.428,
+            "max_drawdown_pct": 0.428,
+            "profit_factor": 0.1878,
+            "total_fees": 0.44,
+            "avg_bars_held": 1.25,
+            "final_equity": 99.57,
+            "exit_reasons": {
+              "stop": 3,
+              "target": 1
+            }
+          },
+          "trades": 4
+        }
+      },
+      "entry_signals_in_window": {
+        "testnet_candles": 1,
+        "mainnet_candles": 4,
+        "same_bar_same_side": 0
+      }
+    },
+    {
+      "strategy": "ma_cross",
+      "interval": "15m",
+      "params": {
+        "fast_period": 20,
+        "slow_period": 50,
+        "atr_period": 14,
+        "stop_atr_mult": 2.0
+      },
+      "log": "dryrun-ma_cross-15m.stdout.txt",
+      "started": "2026-11-21T19:40:10Z",
+      "clock_offset_ms": 1031,
+      "first_bar": "2026-11-21T19:15:00Z",
+      "last_bar": "2026-11-21T20:45:00Z",
+      "bars_handled": 7,
+      "last_log_line": "2026-11-21T21:00:02Z",
+      "wall_clock_minutes": 79.9,
+      "minutes_covered": 105.0,
+      "bars_expected_without_gaps": 7,
+      "seconds_from_bar_close_to_log_line": {
+        "min": 2,
+        "max": 2
+      },
+      "decisions": {
+        "long": 0,
+        "short": 0,
+        "no entry": 7
+      },
+      "bars_with_an_exit_flag": 0,
+      "orders_printed": 0,
+      "entry_orders_printed": 0,
+      "paper_closes": [],
+      "other_lines": [],
+      "candles": {
+        "testnet_file": "data-testnet/BTCUSDT-15m.csv",
+        "testnet_sha256": "7fc24f839d7a26aaca5bd37fefe7966c941f49fb1dea6a3532f973616b3daccd",
+        "mainnet_file": "data-mainnet/BTCUSDT-15m.csv",
+        "mainnet_sha256": "1d5635573bd87f532d985ec876ee5a6bb91029b7856492b2ab4c5d43220bec0e",
+        "first_bar": "2026-11-16T14:15:00Z",
+        "bars": 507,
+        "testnet_missing": 0,
+        "mainnet_missing": 0,
+        "testnet_bars_with_high_equal_low_in_window": 0,
+        "testnet_volume_in_window": 19.836,
+        "mainnet_volume_in_window": 1798.265
+      },
+      "replay": {
+        "bars_compared": 7,
+        "identical": 7,
+        "different": [],
+        "bars_not_in_download": [],
+        "bars_whose_close_differs": []
+      },
+      "backtest_testnet": {
+        "command": "perpmath backtest ma_cross --symbol BTCUSDT --interval 15m --config research/paper-trading-crypto/ma-cross-15m.backtest.config.json --out research/paper-trading-crypto/backtest-testnet-ma-cross-15m.json --data-dir research/paper-trading-crypto/data-testnet --start 2026-11-16T14:15:00Z --end 2026-11-21T21:00:00Z",
+        "exit_code": 0,
+        "stdout": "ma_cross BTCUSDT 15m  2026-11-16T14:15:00Z to 2026-11-21T20:45:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\nlook-ahead check passed: cut after 10 of 10 signal bars and 496 of 496 other bars\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample          10   30.00    0.52    0.35      1.95      7.91\nout_of_sample       0     n/a     n/a     n/a      0.00      0.00\nwarning: in_sample: 10 trades, fewer than 100: insufficient sample\nwarning: out_of_sample: 0 trades, fewer than 100: insufficient sample\nwrote research/paper-trading-crypto/backtest-testnet-ma-cross-15m.json",
+        "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...",
+        "result_file": "research/paper-trading-crypto/backtest-testnet-ma-cross-15m.json",
+        "window": {
+          "first_bar": "2026-11-21T19:15:00Z",
+          "last_bar": "2026-11-21T20:45:00Z",
+          "bars": 7,
+          "signals": {
+            "seen": 0,
+            "skipped_in_position": 0,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "metrics": {
+            "trades": 0,
+            "insufficient_sample": true,
+            "wins": 0,
+            "losses": 0,
+            "win_rate_pct": null,
+            "avg_r": null,
+            "avg_trade_return_pct": null,
+            "t_stat": null,
+            "t_stat_n": 0,
+            "total_return_pct": 0.0,
+            "max_drawdown_pct": 0.0,
+            "profit_factor": null,
+            "total_fees": 0.0,
+            "avg_bars_held": null,
+            "final_equity": 100.0,
+            "exit_reasons": {}
+          },
+          "trades": 0
+        }
+      },
+      "dry_run_entries_against_backtest_trades": [],
+      "backtest_trades_with_no_dry_run_order": [],
+      "backtest_mainnet": {
+        "command": "perpmath backtest ma_cross --symbol BTCUSDT --interval 15m --config research/paper-trading-crypto/ma-cross-15m.backtest.config.json --out research/paper-trading-crypto/backtest-mainnet-ma-cross-15m.json --data-dir research/paper-trading-crypto/data-mainnet --start 2026-11-16T14:15:00Z --end 2026-11-21T21:00:00Z",
+        "exit_code": 0,
+        "stdout": "ma_cross BTCUSDT 15m  2026-11-16T14:15:00Z to 2026-11-21T20:45:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\nlook-ahead check passed: cut after 8 of 8 signal bars and 498 of 498 other bars\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample           8   50.00    1.27    0.99      9.35      4.60\nout_of_sample       0     n/a     n/a     n/a      0.00      0.00\nwarning: in_sample: 8 trades, fewer than 100: insufficient sample\nwarning: out_of_sample: 0 trades, fewer than 100: insufficient sample\nwrote research/paper-trading-crypto/backtest-mainnet-ma-cross-15m.json",
+        "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...",
+        "result_file": "research/paper-trading-crypto/backtest-mainnet-ma-cross-15m.json",
+        "window": {
+          "signals": {
+            "seen": 0,
+            "skipped_in_position": 0,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "metrics": {
+            "trades": 0,
+            "insufficient_sample": true,
+            "wins": 0,
+            "losses": 0,
+            "win_rate_pct": null,
+            "avg_r": null,
+            "avg_trade_return_pct": null,
+            "t_stat": null,
+            "t_stat_n": 0,
+            "total_return_pct": 0.0,
+            "max_drawdown_pct": 0.0,
+            "profit_factor": null,
+            "total_fees": 0.0,
+            "avg_bars_held": null,
+            "final_equity": 100.0,
+            "exit_reasons": {}
+          },
+          "trades": 0
+        }
+      },
+      "entry_signals_in_window": {
+        "testnet_candles": 0,
+        "mainnet_candles": 0,
+        "same_bar_same_side": 0
+      }
+    },
+    {
+      "strategy": "liquidity_sweep",
+      "interval": "15m",
+      "params": {
+        "lookback": 20,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "log": "dryrun-liquidity_sweep-15m.stdout.txt",
+      "started": "2026-11-21T19:40:10Z",
+      "clock_offset_ms": 1008,
+      "first_bar": "2026-11-21T19:15:00Z",
+      "last_bar": "2026-11-21T20:45:00Z",
+      "bars_handled": 7,
+      "last_log_line": "2026-11-21T21:00:02Z",
+      "wall_clock_minutes": 79.9,
+      "minutes_covered": 105.0,
+      "bars_expected_without_gaps": 7,
+      "seconds_from_bar_close_to_log_line": {
+        "min": 2,
+        "max": 2
+      },
+      "decisions": {
+        "long": 0,
+        "short": 1,
+        "no entry": 6
+      },
+      "bars_with_an_exit_flag": 0,
+      "orders_printed": 1,
+      "entry_orders_printed": 1,
+      "paper_closes": [],
+      "other_lines": [],
+      "candles": {
+        "testnet_file": "data-testnet/BTCUSDT-15m.csv",
+        "testnet_sha256": "7fc24f839d7a26aaca5bd37fefe7966c941f49fb1dea6a3532f973616b3daccd",
+        "mainnet_file": "data-mainnet/BTCUSDT-15m.csv",
+        "mainnet_sha256": "1d5635573bd87f532d985ec876ee5a6bb91029b7856492b2ab4c5d43220bec0e",
+        "first_bar": "2026-11-16T14:15:00Z",
+        "bars": 507,
+        "testnet_missing": 0,
+        "mainnet_missing": 0,
+        "testnet_bars_with_high_equal_low_in_window": 0,
+        "testnet_volume_in_window": 19.836,
+        "mainnet_volume_in_window": 1798.265
+      },
+      "replay": {
+        "bars_compared": 7,
+        "identical": 7,
+        "different": [],
+        "bars_not_in_download": [],
+        "bars_whose_close_differs": []
+      },
+      "backtest_testnet": {
+        "command": "perpmath backtest liquidity_sweep --symbol BTCUSDT --interval 15m --config research/paper-trading-crypto/liquidity-sweep-15m.backtest.config.json --out research/paper-trading-crypto/backtest-testnet-liquidity-sweep-15m.json --data-dir research/paper-trading-crypto/data-testnet --start 2026-11-16T14:15:00Z --end 2026-11-21T21:00:00Z",
+        "exit_code": 0,
+        "stdout": "liquidity_sweep BTCUSDT 15m  2026-11-16T14:15:00Z to 2026-11-21T20:45:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\nlook-ahead check passed: cut after 29 of 29 signal bars and 477 of 477 other bars\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample          22   18.18   -0.83   -1.18     -4.23      4.60\nout_of_sample       1    0.00   -0.21     n/a     -0.21      0.21\nwarning: in_sample: 22 trades, fewer than 100: insufficient sample\nwarning: out_of_sample: 1 trades, fewer than 100: insufficient sample\nwrote research/paper-trading-crypto/backtest-testnet-liquidity-sweep-15m.json",
+        "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...",
+        "result_file": "research/paper-trading-crypto/backtest-testnet-liquidity-sweep-15m.json",
+        "window": {
+          "first_bar": "2026-11-21T19:15:00Z",
+          "last_bar": "2026-11-21T20:45:00Z",
+          "bars": 7,
+          "signals": {
+            "seen": 1,
+            "skipped_in_position": 0,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "metrics": {
+            "trades": 1,
+            "insufficient_sample": true,
+            "wins": 0,
+            "losses": 1,
+            "win_rate_pct": 0.0,
+            "avg_r": -0.2132,
+            "avg_trade_return_pct": -0.2106,
+            "t_stat": null,
+            "t_stat_n": 1,
+            "total_return_pct": -0.2106,
+            "max_drawdown_pct": 0.2106,
+            "profit_factor": 0.0,
+            "total_fees": 0.11,
+            "avg_bars_held": 1.0,
+            "final_equity": 99.79,
+            "exit_reasons": {
+              "end": 1
+            }
+          },
+          "trades": 1
+        }
+      },
+      "dry_run_entries_against_backtest_trades": [
+        {
+          "decided_on_bar": "2026-11-21T20:15:00Z",
+          "dry_run_side": "Sell",
+          "dry_run_qty": "0.001",
+          "dry_run_reference_price": 60307.7,
+          "dry_run_stop": 60891.2,
+          "dry_run_take_profit": 59140.7,
+          "dry_run_close": null,
+          "backtest_trade": {
+            "side": "short",
+            "entry_time": "2026-11-21T20:30:00Z",
+            "entry_price": 60295.63846,
+            "stop_price": 60891.176429,
+            "target_price": 59104.562523,
+            "exit_time": "2026-11-21T20:45:00Z",
+            "exit_price": 60356.26884,
+            "exit_reason": "end",
+            "bars_held": 1,
+            "fees": 0.1101,
+            "pnl": -0.2106,
+            "return_pct": -0.2106,
+            "r_multiple": -0.2132
+          },
+          "entry_fill_minus_reference_pct": -0.02
+        }
+      ],
+      "backtest_trades_with_no_dry_run_order": [],
+      "backtest_mainnet": {
+        "command": "perpmath backtest liquidity_sweep --symbol BTCUSDT --interval 15m --config research/paper-trading-crypto/liquidity-sweep-15m.backtest.config.json --out research/paper-trading-crypto/backtest-mainnet-liquidity-sweep-15m.json --data-dir research/paper-trading-crypto/data-mainnet --start 2026-11-16T14:15:00Z --end 2026-11-21T21:00:00Z",
+        "exit_code": 0,
+        "stdout": "liquidity_sweep BTCUSDT 15m  2026-11-16T14:15:00Z to 2026-11-21T20:45:00Z\nfee 0.0550% per side, slippage 0.0200% per fill, funding not modelled\nlook-ahead check passed: cut after 41 of 41 signal bars and 465 of 465 other bars\n               trades   win %   avg R  t-stat  return %  max DD %\nin_sample          33   33.33   -0.36   -0.32     -1.97      7.10\nout_of_sample       1    0.00   -1.19     n/a     -0.19      0.19\nwarning: in_sample: 33 trades, fewer than 100: insufficient sample\nwarning: out_of_sample: 1 trades, fewer than 100: insufficient sample\nwrote research/paper-trading-crypto/backtest-mainnet-liquidity-sweep-15m.json",
+        "stderr": "look-ahead check (default): re-running the strategy on shortened data, this can take a while ...",
+        "result_file": "research/paper-trading-crypto/backtest-mainnet-liquidity-sweep-15m.json",
+        "window": {
+          "signals": {
+            "seen": 1,
+            "skipped_in_position": 0,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          },
+          "metrics": {
+            "trades": 1,
+            "insufficient_sample": true,
+            "wins": 0,
+            "losses": 1,
+            "win_rate_pct": 0.0,
+            "avg_r": -1.1868,
+            "avg_trade_return_pct": -0.192,
+            "t_stat": null,
+            "t_stat_n": 1,
+            "total_return_pct": -0.192,
+            "max_drawdown_pct": 0.192,
+            "profit_factor": 0.0,
+            "total_fees": 0.11,
+            "avg_bars_held": 0.0,
+            "final_equity": 99.81,
+            "exit_reasons": {
+              "end": 1
+            }
+          },
+          "trades": 1
+        }
+      },
+      "entry_signals_in_window": {
+        "testnet_candles": 1,
+        "mainnet_candles": 1,
+        "same_bar_same_side": 0
+      }
+    }
+  ]
+}

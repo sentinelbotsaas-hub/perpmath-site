@@ -1,0 +1,23 @@
+{
+  "consecutive_api_errors": 0,
+  "day": null,
+  "dry_run": true,
+  "halt": null,
+  "interval": "1m",
+  "last_bar_ms": 1795294740000,
+  "orders": [],
+  "pending_order": null,
+  "position": {
+    "avg_price": "59701",
+    "entry_bar_ms": 1795292220000,
+    "order_link_id": "pm-liquidit-101e58-1795292160-LE1",
+    "qty": "0.001",
+    "side": 1,
+    "stop": "58676",
+    "take_profit": "61751"
+  },
+  "run_id": "liquidity_sweep-BTCUSDT-1m-101e58",
+  "state_version": 1,
+  "strategy": "liquidity_sweep",
+  "symbol": "BTCUSDT"
+}

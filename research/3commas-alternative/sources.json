@@ -1,0 +1,116 @@
+{
+  "article": "en/3commas-alternative",
+  "read_on": "2026-11-22",
+  "note": "What each product's own pages said on the day they were read. Nothing here is a test of the product. 'not found' means the page we read did not say; it does not mean the feature is missing.",
+  "3commas": {
+    "pricing": {
+      "url": "https://3commas.io/pricing",
+      "how_read": "in a browser, with the Monthly and the Annual toggle each selected, and with 'Show all features' expanded",
+      "plans": [
+        {"name": "Starter", "per_month_billed_monthly_usd": 20, "per_month_billed_annually_usd": 15, "markets": "Spot only", "api_keys_per_exchange": 1, "active_dca_bots": 5, "active_signal_bots": 2, "active_grid_bots": 2, "open_positions": 500, "tagline": "Core bots for spot trading at 1 exchange"},
+        {"name": "Pro", "per_month_billed_monthly_usd": 50, "per_month_billed_annually_usd": 38, "markets": "Spot & Futures", "api_keys_per_exchange": 5, "active_dca_bots": 20, "active_signal_bots": 20, "active_grid_bots": 10, "open_positions": 1000},
+        {"name": "Expert", "per_month_billed_monthly_usd": 140, "per_month_billed_annually_usd": 105, "markets": "Spot & Futures", "api_keys_per_exchange": 25, "active_dca_bots": 1000, "active_signal_bots": 1000, "active_grid_bots": 1000, "open_positions": 5000, "extra": "Developers API (read and write), priority live chat"}
+      ],
+      "annual_saving_text": {"Starter": "Save $60 annually, or 3 months free", "Pro": "Save $144 annually, or 3 months free", "Expert": "Save $420 annually, or 3 months free"},
+      "all_plans_include": ["Demo Account", "Webhook execution", "9 exchanges"],
+      "feature_table_sections": ["DCA bot (incl. Backtesting, Optimiser, Trailing Stop)", "Signal bot (incl. TradingView indicator and strategy automation)", "Grid bot (incl. Backtesting, Pump Protection)", "Terminal", "Developers (Open API, MCP Server)"],
+      "free_plan": "none listed; every plan has a 'Start free trial' button",
+      "trial_length": "not found on the page",
+      "names_of_the_9_exchanges": "not found on the page",
+      "currency": "prices carry a $ sign; the page does not name the currency"
+    },
+    "security": {
+      "url": "https://3commas.io/security",
+      "statements": [
+        "Describes itself as non-custodial software; funds cannot be withdrawn from or via 3Commas.",
+        "API keys are kept in its 'Sign Center', described as secure API key storage isolated at infrastructure and access levels; 3Commas servers ask it to sign each trade request.",
+        "An IP whitelist on the exchange key can authorise official 3Commas IP addresses and block others.",
+        "'Fast Connect' can create the API key and bind it to 3Commas automatically, on exchanges that offer it.",
+        "Advises deleting the API key on the exchange's website when you stop using it."
+      ]
+    }
+  },
+  "bybit": {
+    "apikey_info": {
+      "url": "https://bybit-exchange.github.io/docs/v5/user/apikey-info",
+      "facts": [
+        "readOnly: 0 = read and write, 1 = read only",
+        "type: 1 = personal, 2 = connected to the third-party app",
+        "permissions.ContractTrade: Order, Position; permissions.Spot: SpotTrade; permissions.Wallet: AccountTransfer, SubMemberTransfer, SubMemberTransferList, Withdraw",
+        "deadlineDay / expiredAt: only for keys with no IP bound or after a password change"
+      ]
+    },
+    "create_sub_apikey": {
+      "url": "https://bybit-exchange.github.io/docs/v5/user/create-subuid-apikey",
+      "facts": ["an API key with no IP bound is invalid after 90 days", "an API key with no IP bound is invalid 7 days after the account password is changed"]
+    },
+    "faq": {
+      "url": "https://bybit-exchange.github.io/docs/faq",
+      "facts": ["An API key created without binding IP addresses expires after 90 days"]
+    },
+    "learn_guide": {
+      "url": "https://www.bybit.com/en/learn/bybit-guide/how-to-create-a-bybit-api-key",
+      "published": "2023-06-14",
+      "facts": [
+        "To connect a third-party application: create a key, choose 'Connect to Third-Party Applications', pick the application from a list, set permissions (account information, order placement, position information), then paste key and secret into the application.",
+        "The 3Commas steps follow the same route, with 3Commas chosen from the application list; Read-Only is offered for viewing only.",
+        "For another listed application the guide says choosing it from the list locks the key to that application's server IP range. It does not say this in the 3Commas steps."
+      ]
+    },
+    "help_center_create_key": {
+      "url": "https://www.bybit.com/en/help-center/article/How-to-create-your-API-key",
+      "last_updated": "2025-11-25",
+      "facts": ["Keys are created on the website only, not in the app.", "New accounts may be unable to create a key for the first 48 hours.", "The permission options are shown as screenshots, not as text."]
+    }
+  },
+  "freqtrade": {
+    "urls": ["https://www.freqtrade.io/en/stable/", "https://www.freqtrade.io/en/stable/exchanges/", "https://github.com/freqtrade/freqtrade"],
+    "licence": "GPL-3.0 (GitHub API licence field, see github_licenses.json)",
+    "futures_exchanges_listed": ["Binance", "Bitget", "Bybit", "Gate", "Hyperliquid", "Kraken", "OKX"],
+    "backtesting": "yes (docs and README)",
+    "practice_mode": "Dry-run ('Run the bot without paying money'); for Bybit also a demo-trading mode, which the docs say is incompatible with dry-run",
+    "interface": "built-in web UI and Telegram (README)",
+    "strategies": "Python with pandas",
+    "bybit_futures": "isolated margin only; sets one-way position mode on startup; API key needs Read-write, Contract - Orders, Contract - Positions; docs recommend limiting keys to your IP",
+    "price": "free; no paid tier found on the pages read"
+  },
+  "hummingbot": {
+    "urls": ["https://github.com/hummingbot/hummingbot", "https://hummingbot.org/", "https://hummingbot.org/exchanges/bybit/", "https://hummingbot.org/exchanges/"],
+    "licence": "Apache-2.0",
+    "bybit": "connectors bybit (spot) and bybit_perpetual; the perpetual connector 'supports testnet' via connect bybit_perpetual_testnet; spot has a paper-trade connector bybit_paper_trade",
+    "backtesting": "README: controller configs 'can be backtested'; the home page does not mention backtesting",
+    "practice_mode": "paper trading connectors (README quick start uses binance_paper_trade, no API key)",
+    "interface": "terminal client (TUI); a web dashboard is mentioned only for Condor, a separate project",
+    "strategies": "Python scripts and controllers",
+    "price": "free; exchanges can pay the Hummingbot Foundation for partnership (the exchanges page gives a starting figure of $50,000); the README carries exchange referral links with fee discounts",
+    "home_page_connectors_figure": 318
+  },
+  "jesse": {
+    "urls": ["https://github.com/jesse-ai/jesse", "https://docs.jesse.trade/docs/supported-exchanges", "https://docs.jesse.trade/docs/livetrade", "https://jesse.trade/pricing"],
+    "licence": "MIT (framework repository)",
+    "bybit": "Bybit USDT Perpetual, USDC Perpetual and Spot listed for backtesting and for live trading",
+    "backtesting": "yes, free",
+    "live_trading": "a pre-built plugin limited to holders of an active licence (docs). Pricing page: free plan = testnet exchanges only, paper trading 'No'; lifetime licences Basic $899, Pro $999, Enterprise $1,599",
+    "practice_mode": "paper trading, listed as 'Yes' from the Basic licence up and 'No' on the free plan",
+    "interface": "dashboard with a built-in code editor",
+    "strategies": "Python",
+    "requirements": "Python 3.10 to 3.13, PostgreSQL 10 or newer; Docker offered as the quick route"
+  },
+  "octobot": {
+    "urls": ["https://github.com/Drakkar-Software/OctoBot"],
+    "licence": "GPL-3.0 (README: GNU General Public License v3.0 or later)",
+    "bybit": "README lists Bybit spot and futures and adds: 'due to a recent update, the Bybit API will soon be available again on OctoBot'. Whether it works today: not found. The README's Bybit link is an invite (referral) link.",
+    "backtesting": "built-in backtesting engine, in a 'manual OctoBot' instance",
+    "practice_mode": "paper trading (simulator)",
+    "interface": "web interface, mobile app, Telegram",
+    "strategies": "built-in grid, DCA, TradingView, AI and index modes; Python for custom ones",
+    "price": "open-source version free to self-host; cloud prices not found (octobot.cloud refused our automated request with HTTP 403)"
+  },
+  "perpmath": {
+    "urls": ["https://github.com/sentinelbotsaas-hub/perpmath"],
+    "version": "0.2.2, commit b1c4fd9",
+    "licence": "MIT",
+    "limits": "Bybit testnet only, mainnet refused; no graphical interface; strategies are Python modules you write; signed endpoints tested against a fake server only",
+    "first_hand": "install_and_dryrun.sh and install_and_dryrun_output.txt in this folder"
+  }
+}

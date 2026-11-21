@@ -1,0 +1,13 @@
+{
+  "strategy": "ma_cross",
+  "params": {"fast_period": 20, "slow_period": 50, "atr_period": 14, "stop_atr_mult": 2.0},
+  "live": {
+    "network": "testnet",
+    "order_notional_usdt": 100,
+    "max_position_notional_usdt": 200,
+    "max_daily_loss_usdt": 20,
+    "max_consecutive_api_errors": 5,
+    "max_clock_skew_ms": 5000,
+    "broker_id": ""
+  }
+}

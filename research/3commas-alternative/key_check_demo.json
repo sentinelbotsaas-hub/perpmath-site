@@ -1,0 +1,116 @@
+{
+  "article": "en/3commas-alternative",
+  "engine_version": "0.2.2",
+  "note": "hand-made key descriptions in the documented shape; no real key, no request sent",
+  "cases": [
+    {
+      "key": "trade only, bound to an IP",
+      "accepted": true,
+      "warnings": [],
+      "refusal": null,
+      "permissions": {
+        "ContractTrade": [
+          "Order",
+          "Position"
+        ],
+        "Spot": [],
+        "Wallet": []
+      },
+      "readOnly": 0,
+      "ips": [
+        "203.0.113.7"
+      ]
+    },
+    {
+      "key": "trade only, no IP bound",
+      "accepted": true,
+      "warnings": [
+        "key is not bound to an IP address; Bybit recommends binding one"
+      ],
+      "refusal": null,
+      "permissions": {
+        "ContractTrade": [
+          "Order",
+          "Position"
+        ],
+        "Spot": [],
+        "Wallet": []
+      },
+      "readOnly": 0,
+      "ips": []
+    },
+    {
+      "key": "trade plus withdrawal",
+      "accepted": false,
+      "warnings": [],
+      "refusal": "this API key can withdraw or transfer funds (Wallet:AccountTransfer, Wallet:Withdraw). Refusing to start: create a testnet key with trade permission only, no withdrawal or transfer.",
+      "permissions": {
+        "ContractTrade": [
+          "Order",
+          "Position"
+        ],
+        "Wallet": [
+          "AccountTransfer",
+          "Withdraw"
+        ]
+      },
+      "readOnly": 0,
+      "ips": [
+        "203.0.113.7"
+      ]
+    },
+    {
+      "key": "trade plus transfer between accounts",
+      "accepted": false,
+      "warnings": [],
+      "refusal": "this API key can withdraw or transfer funds (Wallet:AccountTransfer). Refusing to start: create a testnet key with trade permission only, no withdrawal or transfer.",
+      "permissions": {
+        "ContractTrade": [
+          "Order",
+          "Position"
+        ],
+        "Wallet": [
+          "AccountTransfer"
+        ]
+      },
+      "readOnly": 0,
+      "ips": [
+        "203.0.113.7"
+      ]
+    },
+    {
+      "key": "read-only",
+      "accepted": false,
+      "warnings": [],
+      "refusal": "this API key is read-only and cannot place orders; create a testnet key with Contract trade (Order + Position) permission",
+      "permissions": {
+        "ContractTrade": [
+          "Order",
+          "Position"
+        ],
+        "Wallet": []
+      },
+      "readOnly": 1,
+      "ips": [
+        "203.0.113.7"
+      ]
+    },
+    {
+      "key": "spot trading only",
+      "accepted": false,
+      "warnings": [],
+      "refusal": "this API key has no ContractTrade 'Order' permission, so it cannot trade USDT perpetuals; enable Contract -> Orders and Positions on the testnet key",
+      "permissions": {
+        "ContractTrade": [],
+        "Spot": [
+          "SpotTrade"
+        ],
+        "Wallet": []
+      },
+      "readOnly": 0,
+      "ips": [
+        "203.0.113.7"
+      ]
+    }
+  ]
+}

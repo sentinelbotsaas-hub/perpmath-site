@@ -1,0 +1,2 @@
+saved 1097 funding records to research\dca-bot\data\BTCUSDT-funding.csv
+range 2025-11-18T00:00:00Z to 2026-11-18T08:00:00Z (settlement times, UTC)

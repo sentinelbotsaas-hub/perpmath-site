@@ -1,0 +1,6 @@
+trade only, bound to an IP             ACCEPTED
+trade only, no IP bound                ACCEPTED  warning: key is not bound to an IP address; Bybit recommends binding one
+trade plus withdrawal                  REFUSED   this API key can withdraw or transfer funds (Wallet:AccountTransfer, Wallet:Withdraw). Refusing to start: create a testnet key with trade permission only, no withdrawal or transfer.
+trade plus transfer between accounts   REFUSED   this API key can withdraw or transfer funds (Wallet:AccountTransfer). Refusing to start: create a testnet key with trade permission only, no withdrawal or transfer.
+read-only                              REFUSED   this API key is read-only and cannot place orders; create a testnet key with Contract trade (Order + Position) permission
+spot trading only                      REFUSED   this API key has no ContractTrade 'Order' permission, so it cannot trade USDT perpetuals; enable Contract -> Orders and Positions on the testnet key

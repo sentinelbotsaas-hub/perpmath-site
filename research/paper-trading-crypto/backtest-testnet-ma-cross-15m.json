@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "package": "perpmath",
+  "package_version": "0.2.2",
+  "generated_at": "2026-11-21T21:01:50Z",
+  "strategy": "ma_cross",
+  "symbol": "BTCUSDT",
+  "interval": "15m",
+  "config": {
+    "strategy": "ma_cross",
+    "params": {
+      "fast_period": 20,
+      "slow_period": 50,
+      "atr_period": 14,
+      "stop_atr_mult": 2.0
+    },
+    "execution": {
+      "fee_rate": 0.00055,
+      "slippage": 0.0002,
+      "initial_capital": 100,
+      "notional_fraction": 1.0,
+      "max_hold_bars": null
+    },
+    "split": {
+      "oos_start": "2026-11-21T19:15:00Z"
+    }
+  },
+  "data": {
+    "exchange": "bybit",
+    "category": "linear",
+    "source": "https://api.bybit.com/v5/market/kline",
+    "first_bar": "2026-11-16T14:15:00Z",
+    "last_bar": "2026-11-21T20:45:00Z",
+    "bars": 507,
+    "missing_bars": 0,
+    "file": "BTCUSDT-15m.csv",
+    "file_sha256": "7fc24f839d7a26aaca5bd37fefe7966c941f49fb1dea6a3532f973616b3daccd"
+  },
+  "costs": {
+    "fee_rate_per_side": 0.00055,
+    "slippage_per_fill": 0.0002,
+    "funding_modelled": false
+  },
+  "timing": {
+    "signal": "bar close",
+    "fill": "next bar open",
+    "same_bar_stop_and_target": "stop first",
+    "lookahead_check": {
+      "passed": true,
+      "method": "signal_cuts",
+      "shortened_runs": 506,
+      "signal_bars": 10,
+      "signal_bars_checked": 10,
+      "signal_bars_checked_pct": 100.0,
+      "signal_bars_sampled": false,
+      "other_bars": 496,
+      "other_bars_checked": 496,
+      "other_bars_checked_pct": 100.0,
+      "other_bars_sampled": false,
+      "leading_bars_all_checked": 506,
+      "sample_seed": null
+    }
+  },
+  "split": {
+    "oos_start": "2026-11-21T19:15:00Z"
+  },
+  "in_sample": {
+    "first_bar": "2026-11-16T14:15:00Z",
+    "last_bar": "2026-11-21T19:00:00Z",
+    "bars": 500,
+    "metrics": {
+      "trades": 10,
+      "insufficient_sample": true,
+      "wins": 3,
+      "losses": 7,
+      "win_rate_pct": 30.0,
+      "avg_r": 0.516,
+      "avg_trade_return_pct": 0.2096,
+      "t_stat": 0.3452,
+      "t_stat_n": 10,
+      "total_return_pct": 1.9519,
+      "max_drawdown_pct": 7.9088,
+      "profit_factor": 1.5393,
+      "total_fees": 1.11,
+      "avg_bars_held": 21.1,
+      "final_equity": 101.95,
+      "exit_reasons": {
+        "signal": 3,
+        "stop": 7
+      }
+    },
+    "signals": {
+      "seen": 10,
+      "skipped_in_position": 0,
+      "skipped_invalid_stop": 0,
+      "skipped_no_equity": 0
+    },
+    "equity_curve": [
+      {"t": "2026-11-16T14:15:00Z", "equity": 100.0},
+      {"t": "2026-11-17T00:00:00Z", "equity": 100.0},
+      {"t": "2026-11-18T00:00:00Z", "equity": 99.54},
+      {"t": "2026-11-19T00:00:00Z", "equity": 98.8},
+      {"t": "2026-11-20T00:00:00Z", "equity": 101.24},
+      {"t": "2026-11-21T00:00:00Z", "equity": 103.45},
+      {"t": "2026-11-21T19:15:00Z", "equity": 101.95}
+    ],
+    "trades": [
+      {"n": 1, "side": "short", "entry_time": "2026-11-17T03:45:00Z", "entry_price": 64499.89744, "exit_time": "2026-11-17T05:30:00Z", "exit_price": 64727.400034, "stop_price": 64714.457143, "target_price": null, "quantity": 0.00155039, "fees": 0.1102, "pnl": -0.4629, "return_pct": -0.4629, "r_multiple": -1.3916, "exit_reason": "stop", "bars_held": 7},
+      {"n": 2, "side": "long", "entry_time": "2026-11-18T00:45:00Z", "entry_price": 64363.47012, "exit_time": "2026-11-18T01:00:00Z", "exit_price": 64159.76548, "stop_price": 64172.6, "target_price": null, "quantity": 0.00154648, "fees": 0.1093, "pnl": -0.4243, "return_pct": -0.4263, "r_multiple": -1.4376, "exit_reason": "stop", "bars_held": 1},
+      {"n": 3, "side": "short", "entry_time": "2026-11-18T14:15:00Z", "entry_price": 64183.6607, "exit_time": "2026-11-18T14:15:00Z", "exit_price": 64315.8606, "stop_price": 64303.0, "target_price": null, "quantity": 0.00154421, "fees": 0.1091, "pnl": -0.3133, "return_pct": -0.3161, "r_multiple": -1.7, "exit_reason": "stop", "bars_held": 0},
+      {"n": 4, "side": "long", "entry_time": "2026-11-19T08:30:00Z", "entry_price": 64674.33228, "exit_time": "2026-11-19T10:30:00Z", "exit_price": 64325.917957, "stop_price": 64338.785714, "target_price": null, "quantity": 0.00152765, "fees": 0.1084, "pnl": -0.6406, "return_pct": -0.6484, "r_multiple": -1.2498, "exit_reason": "stop", "bars_held": 8},
+      {"n": 5, "side": "short", "entry_time": "2026-11-19T17:15:00Z", "entry_price": 63446.50816, "exit_time": "2026-11-20T14:15:00Z", "exit_price": 59861.36988, "stop_price": 63623.871429, "target_price": null, "quantity": 0.00154711, "fees": 0.1049, "pnl": 5.4417, "return_pct": 5.5438, "r_multiple": 19.8312, "exit_reason": "signal", "bars_held": 84},
+      {"n": 6, "side": "long", "entry_time": "2026-11-20T14:15:00Z", "entry_price": 59861.36988, "exit_time": "2026-11-20T22:30:00Z", "exit_price": 59952.0072, "stop_price": 58940.385714, "target_price": null, "quantity": 0.00173067, "fees": 0.114, "pnl": 0.0428, "return_pct": 0.0413, "r_multiple": 0.0269, "exit_reason": "signal", "bars_held": 33},
+      {"n": 7, "side": "short", "entry_time": "2026-11-20T22:30:00Z", "entry_price": 59952.0072, "exit_time": "2026-11-20T22:45:00Z", "exit_price": 59986.566343, "stop_price": 59974.571429, "target_price": null, "quantity": 0.00172877, "fees": 0.114, "pnl": -0.1738, "return_pct": -0.1677, "r_multiple": -4.4551, "exit_reason": "stop", "bars_held": 1},
+      {"n": 8, "side": "long", "entry_time": "2026-11-20T23:15:00Z", "entry_price": 59975.9928, "exit_time": "2026-11-21T03:00:00Z", "exit_price": 59938.524183, "stop_price": 59950.514286, "target_price": null, "quantity": 0.00172518, "fees": 0.1138, "pnl": -0.1784, "return_pct": -0.1724, "r_multiple": -4.0592, "exit_reason": "stop", "bars_held": 15},
+      {"n": 9, "side": "short", "entry_time": "2026-11-21T03:30:00Z", "entry_price": 59720.65348, "exit_time": "2026-11-21T16:00:00Z", "exit_price": 59605.11864, "stop_price": 59792.1, "target_price": null, "quantity": 0.00172957, "fees": 0.1135, "pnl": 0.0863, "return_pct": 0.0836, "r_multiple": 0.6985, "exit_reason": "signal", "bars_held": 50},
+      {"n": 10, "side": "long", "entry_time": "2026-11-21T16:00:00Z", "entry_price": 59605.11864, "exit_time": "2026-11-21T19:00:00Z", "exit_price": 58848.313697, "stop_price": 58860.085714, "target_price": null, "quantity": 0.00173437, "fees": 0.113, "pnl": -1.4256, "return_pct": -1.379, "r_multiple": -1.1032, "exit_reason": "stop", "bars_held": 12}
+    ]
+  },
+  "out_of_sample": {
+    "first_bar": "2026-11-21T19:15:00Z",
+    "last_bar": "2026-11-21T20:45:00Z",
+    "bars": 7,
+    "metrics": {
+      "trades": 0,
+      "insufficient_sample": true,
+      "wins": 0,
+      "losses": 0,
+      "win_rate_pct": null,
+      "avg_r": null,
+      "avg_trade_return_pct": null,
+      "t_stat": null,
+      "t_stat_n": 0,
+      "total_return_pct": 0.0,
+      "max_drawdown_pct": 0.0,
+      "profit_factor": null,
+      "total_fees": 0.0,
+      "avg_bars_held": null,
+      "final_equity": 100.0,
+      "exit_reasons": {}
+    },
+    "signals": {
+      "seen": 0,
+      "skipped_in_position": 0,
+      "skipped_invalid_stop": 0,
+      "skipped_no_equity": 0
+    },
+    "equity_curve": [
+      {"t": "2026-11-21T19:15:00Z", "equity": 100.0},
+      {"t": "2026-11-21T21:00:00Z", "equity": 100.0}
+    ],
+    "trades": []
+  },
+  "warnings": [
+    "in_sample: 10 trades, fewer than 100: insufficient sample",
+    "out_of_sample: 0 trades, fewer than 100: insufficient sample"
+  ],
+  "disclaimer": "Backtest on historical data. Not investment advice. Past results do not predict future results. Funding payments are not modelled."
+}

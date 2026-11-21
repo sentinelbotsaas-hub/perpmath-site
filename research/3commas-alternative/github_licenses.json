@@ -1,0 +1,61 @@
+{
+  "source": "https://api.github.com/repos/<owner>/<repo>",
+  "fetched_at": "2026-11-21T19:52:39Z",
+  "repos": [
+    {
+      "full_name": "freqtrade/freqtrade",
+      "html_url": "https://github.com/freqtrade/freqtrade",
+      "description": "Free, open source crypto trading bot",
+      "homepage": "https://www.freqtrade.io",
+      "language": "Python",
+      "pushed_at": "2026-11-19T20:14:59Z",
+      "archived": false,
+      "license_spdx_id": "GPL-3.0",
+      "license_name": "GNU General Public License v3.0"
+    },
+    {
+      "full_name": "hummingbot/hummingbot",
+      "html_url": "https://github.com/hummingbot/hummingbot",
+      "description": "Open source software that helps you create and deploy high-frequency crypto trading bots",
+      "homepage": "https://hummingbot.org",
+      "language": "Python",
+      "pushed_at": "2026-11-20T16:31:48Z",
+      "archived": false,
+      "license_spdx_id": "Apache-2.0",
+      "license_name": "Apache License 2.0"
+    },
+    {
+      "full_name": "jesse-ai/jesse",
+      "html_url": "https://github.com/jesse-ai/jesse",
+      "description": "An advanced trading bot written in Python",
+      "homepage": "https://jesse.trade",
+      "language": "Python",
+      "pushed_at": "2026-11-17T13:29:36Z",
+      "archived": false,
+      "license_spdx_id": "MIT",
+      "license_name": "MIT License"
+    },
+    {
+      "full_name": "Drakkar-Software/OctoBot",
+      "html_url": "https://github.com/Drakkar-Software/OctoBot",
+      "description": "Free open source crypto trading bot to automate AI, Grid, DCA and TradingView strategies on Binance, Hyperliquid and 15+ exchanges, with a simple interface.",
+      "homepage": "https://www.octobot.cloud",
+      "language": "Python",
+      "pushed_at": "2026-11-19T15:42:01Z",
+      "archived": false,
+      "license_spdx_id": "GPL-3.0",
+      "license_name": "GNU General Public License v3.0"
+    },
+    {
+      "full_name": "sentinelbotsaas-hub/perpmath",
+      "html_url": "https://github.com/sentinelbotsaas-hub/perpmath",
+      "description": "A small, honest backtester for crypto perpetual-futures strategies on Bybit public data. Backtest only. All shipped example results lose money.",
+      "homepage": "https://perpmath.com",
+      "language": "Python",
+      "pushed_at": "2026-11-21T19:18:33Z",
+      "archived": false,
+      "license_spdx_id": "MIT",
+      "license_name": "MIT License"
+    }
+  ]
+}
