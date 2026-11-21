@@ -1,0 +1,356 @@
+{
+  "article": "en/ict-trading",
+  "concepts": [
+    {
+      "concept": "fair value gap",
+      "status": "backtested",
+      "article": "/learn/fair-value-gap/",
+      "backtest_page": "/backtests/fvg-btcusdt/"
+    },
+    {
+      "concept": "liquidity sweep",
+      "status": "backtested",
+      "article": "/learn/liquidity-sweep/",
+      "backtest_page": "/backtests/liquidity-sweep-btcusdt/"
+    },
+    {
+      "concept": "order block",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    },
+    {
+      "concept": "breaker block",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    },
+    {
+      "concept": "break of structure",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    },
+    {
+      "concept": "market structure shift",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    },
+    {
+      "concept": "change of character",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    },
+    {
+      "concept": "inverse fair value gap",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    },
+    {
+      "concept": "kill zones",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    },
+    {
+      "concept": "judas swing",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    },
+    {
+      "concept": "power of 3",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    },
+    {
+      "concept": "silver bullet",
+      "status": "not backtested",
+      "article": null,
+      "backtest_page": null
+    }
+  ],
+  "counts": {
+    "concepts": 12,
+    "backtested": 2,
+    "not_backtested": 10
+  },
+  "candle_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+  "swing_points_btcusdt_15m": {
+    "bars": 35040,
+    "days": 365.0,
+    "by_k": {
+      "2": {
+        "pivot_highs": 4809,
+        "pivot_lows": 4850,
+        "total": 9659,
+        "per_day": 26.46,
+        "per_week": 185.2
+      },
+      "5": {
+        "pivot_highs": 2214,
+        "pivot_lows": 2225,
+        "total": 4439,
+        "per_day": 12.16,
+        "per_week": 85.1
+      },
+      "10": {
+        "pivot_highs": 1137,
+        "pivot_lows": 1208,
+        "total": 2345,
+        "per_day": 6.42,
+        "per_week": 45.0
+      },
+      "20": {
+        "pivot_highs": 600,
+        "pivot_lows": 598,
+        "total": 1198,
+        "per_day": 3.28,
+        "per_week": 23.0
+      }
+    }
+  },
+  "stop_distance": {
+    "fair_value_gap_in_sample": {
+      "median_stop_distance_pct": 0.323,
+      "round_trip_cost_in_r_at_median_stop": 0.46
+    },
+    "liquidity_sweep_in_sample": {
+      "median_stop_distance_pct": 0.2962,
+      "round_trip_cost_in_r_at_median_stop": 0.51
+    }
+  },
+  "fair_value_gap": {
+    "published": {
+      "file": "results/fvg-btcusdt.json",
+      "engine_version": "0.1.0",
+      "generated_at": "2026-11-18T11:40:45Z",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "first_bar": "2025-11-18T11:30:00Z",
+      "last_bar": "2026-11-18T11:15:00Z",
+      "bars": 35040,
+      "oos_start": "2026-07-31T00:00:00Z",
+      "params": {
+        "atr_period": 14,
+        "min_gap_atr": 0.5,
+        "max_wait_bars": 96,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "costs": {
+        "fee_rate_per_side": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "funding_modelled": false
+      },
+      "in_sample": {
+        "trades": 801,
+        "win_rate_pct": 31.4607,
+        "avg_r": -0.5692,
+        "avg_trade_return_pct": -0.1351,
+        "t_stat": -4.928,
+        "total_return_pct": -66.945,
+        "max_drawdown_pct": 66.9656,
+        "final_equity": 3305.5,
+        "insufficient_sample": false
+      },
+      "out_of_sample": {
+        "trades": 304,
+        "win_rate_pct": 27.9605,
+        "avg_r": -0.8264,
+        "avg_trade_return_pct": -0.1821,
+        "t_stat": -5.2277,
+        "total_return_pct": -42.8564,
+        "max_drawdown_pct": 43.1899,
+        "final_equity": 5714.36,
+        "insufficient_sample": false
+      }
+    },
+    "zero_cost_rerun": {
+      "in_sample": {
+        "trades": 814,
+        "win_rate_pct": 34.1523,
+        "t_stat": 0.3786,
+        "total_return_pct": 6.0342
+      },
+      "out_of_sample": {
+        "trades": 316,
+        "win_rate_pct": 31.6456,
+        "t_stat": -0.9728,
+        "total_return_pct": -10.0523
+      }
+    },
+    "gaps_any_size": {
+      "bullish": 3570,
+      "bearish": 3606,
+      "total": 7176,
+      "share_of_bars_pct": 20.48
+    },
+    "gaps_passing_size_filter": {
+      "bullish": 977,
+      "bearish": 953,
+      "total": 1930,
+      "share_of_all_gaps_pct": 26.9,
+      "per_day": 5.29
+    },
+    "returned_within_max_wait": {
+      "gaps": 1776,
+      "share_pct": 92.02
+    }
+  },
+  "liquidity_sweep": {
+    "published": {
+      "file": "results/liquidity-sweep-btcusdt.json",
+      "engine_version": "0.1.0",
+      "generated_at": "2026-11-18T11:40:45Z",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "first_bar": "2025-11-18T11:30:00Z",
+      "last_bar": "2026-11-18T11:15:00Z",
+      "bars": 35040,
+      "oos_start": "2026-07-31T00:00:00Z",
+      "params": {
+        "lookback": 20,
+        "atr_period": 14,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "costs": {
+        "fee_rate_per_side": 0.00055,
+        "slippage_per_fill": 0.0002,
+        "funding_modelled": false
+      },
+      "in_sample": {
+        "trades": 1639,
+        "win_rate_pct": 29.1641,
+        "avg_r": -0.6667,
+        "avg_trade_return_pct": -0.1693,
+        "t_stat": -10.914,
+        "total_return_pct": -93.9772,
+        "max_drawdown_pct": 94.3547,
+        "final_equity": 602.28,
+        "insufficient_sample": false
+      },
+      "out_of_sample": {
+        "trades": 688,
+        "win_rate_pct": 28.1977,
+        "avg_r": -0.7947,
+        "avg_trade_return_pct": -0.1688,
+        "t_stat": -8.4786,
+        "total_return_pct": -69.0254,
+        "max_drawdown_pct": 69.306,
+        "final_equity": 3097.46,
+        "insufficient_sample": false
+      }
+    },
+    "zero_cost_rerun": {
+      "in_sample": {
+        "trades": 1679,
+        "win_rate_pct": 32.2216,
+        "t_stat": -1.1401,
+        "total_return_pct": -27.1242
+      },
+      "out_of_sample": {
+        "trades": 712,
+        "win_rate_pct": 31.882,
+        "t_stat": -1.1108,
+        "total_return_pct": -14.5754
+      }
+    },
+    "sensitivity_tally": {
+      "settings": 19,
+      "sample_blocks": 38,
+      "t_stat_range": {
+        "published_costs": {
+          "lowest": -16.7321,
+          "highest": -0.058
+        },
+        "zero_cost": {
+          "lowest": -1.6727,
+          "highest": 1.1795
+        }
+      },
+      "published_costs": {
+        "positive_return_in_sample": 0,
+        "positive_return_out_of_sample": 0,
+        "positive_return_in_both": 0,
+        "t_stat_below_minus_2_in_both": 16
+      },
+      "zero_cost": {
+        "positive_return_in_sample": 3,
+        "positive_return_out_of_sample": 4,
+        "positive_return_in_both": 1,
+        "t_stat_above_2_in_sample": 0,
+        "t_stat_above_2_out_of_sample": 0,
+        "t_stat_above_2_in_both": 0,
+        "abs_t_stat_below_2_in_both": 19
+      }
+    },
+    "signal_bars_btcusdt_15m_by_lookback": {
+      "10": 5177,
+      "20": 3374,
+      "50": 1909,
+      "100": 1228
+    },
+    "bars_that_took_either_side": 6402,
+    "sweeps": {
+      "high_side": 1681,
+      "low_side": 1693,
+      "total": 3374,
+      "of_which_on_bars_that_took_both_sides": 10,
+      "pct_of_bars_that_took_either_side": 52.7,
+      "pct_of_bars": 9.63,
+      "per_day": 9.24
+    },
+    "sweep_extreme_held_next_96_bars": {
+      "bars": 3365,
+      "extreme_held": 370,
+      "extreme_held_pct": 11.0
+    },
+    "published_trades_split_by_hindsight": {
+      "extreme_held_96_bars": {
+        "trades": 275,
+        "win_rate_pct": 94.91,
+        "avg_r": 1.4559,
+        "avg_trade_return_pct": 0.7261,
+        "exit_reasons": {
+          "stop": 12,
+          "target": 263
+        },
+        "stop_exits_within_96_bars": 1,
+        "target_exits_with_a_net_loss": 2
+      },
+      "extreme_broken_within_96_bars": {
+        "trades": 2046,
+        "win_rate_pct": 20.04,
+        "avg_r": -0.9947,
+        "avg_trade_return_pct": -0.2897,
+        "exit_reasons": {
+          "end": 1,
+          "stop": 1627,
+          "target": 418
+        },
+        "stop_exits_within_96_bars": 1627,
+        "target_exits_with_a_net_loss": 9
+      },
+      "fewer_than_96_bars_left": {
+        "trades": 6,
+        "win_rate_pct": 16.67,
+        "avg_r": -0.7821,
+        "avg_trade_return_pct": -0.0948,
+        "exit_reasons": {
+          "end": 1,
+          "stop": 4,
+          "target": 1
+        },
+        "stop_exits_within_96_bars": 4,
+        "target_exits_with_a_net_loss": 0
+      },
+      "extreme_held_share_pct_of_trades_with_96_bars_left": 11.85
+    }
+  }
+}

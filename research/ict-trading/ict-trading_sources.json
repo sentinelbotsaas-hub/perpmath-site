@@ -1,0 +1,95 @@
+{
+  "article": "en/ict-trading",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the sentences the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source. The one-line rules in the article are our own wording, not quotations from any of these pages.",
+  "origin": [
+    {
+      "name": "The Inner Circle Trader, home page",
+      "url": "https://www.theinnercircletrader.com/",
+      "page_date": "none shown",
+      "what_it_says": [
+        "Written in the first person; the author introduces himself as Michael J. Huddleston, otherwise known as The Inner Circle Trader, and addresses new and aspiring forex traders.",
+        "Links to a YouTube channel (youtube.com/innercircletrader) and, under 'ICT Mentorship Core Content', to a YouTube playlist."
+      ],
+      "does_not_say": [
+        "None of the twelve terms in the article appears on this page.",
+        "No years, no track record, no statement of when any term was introduced."
+      ]
+    },
+    {
+      "name": "YouTube playlist linked from that page",
+      "url": "https://www.youtube.com/playlist?list=PLVgHx4Z63paYzh3KwUFX0UHQUf31CAEXk",
+      "what_it_says": ["Playlist title: '2016 ICT Private Mentorship Core Content Month 01'."],
+      "caveat": "We read the title only. We have not watched the lectures and do not attribute any term to a specific video."
+    },
+    {
+      "name": "YouTube channel linked from that page",
+      "url": "https://www.youtube.com/innercircletrader",
+      "what_it_says": ["Channel name: The Inner Circle Trader."]
+    },
+    {
+      "name": "TradingView: Smart Money Concepts (SMC) [LuxAlgo], open-source script",
+      "url": "https://www.tradingview.com/script/CnB3fSph-Smart-Money-Concepts-SMC-LuxAlgo/",
+      "page_date": "created 2022-10-11 (page metadata)",
+      "what_it_says": [
+        "Calls 'Smart Money Concepts' a fairly new yet widely used term, coined and popularised primarily within the forex community and by ICT.",
+        "States there is no supporting data regarding the validity of these teachings.",
+        "Features listed: internal and swing structure with BOS and CHoCH labels, order blocks (removed when price breaks through, i.e. mitigated), equal highs and lows, fair value gaps, premium and discount zones."
+      ]
+    },
+    {
+      "name": "LuxAlgo library: Smart Money Concepts",
+      "url": "https://www.luxalgo.com/library/concept/smart-money-concepts/",
+      "what_it_says": [
+        "ICT is Michael J. Huddleston's own body of teaching; SMC is the community's label for the same core ideas, often with renamed or simplified terms.",
+        "The ideas predate the branding (Wyckoff on accumulation and distribution; supply-and-demand zones before the 'order block' label).",
+        "No rigorous public study shows the methodology is profitable on its own; patterns are defined loosely enough that two traders can mark the same chart differently."
+      ]
+    }
+  ],
+  "concepts": [
+    {"concept": "order block", "url": "https://www.luxalgo.com/library/concept/bullish-bearish-order-block/",
+     "what_it_says": ["The last candle that closed against a move before the move took off; the candle alone is not the concept, the displacement after it is required.",
+                      "Drawing conventions vary and none is official (full range, body only, open to extreme, 50% of the range).",
+                      "No reliable universal hit rate exists."]},
+    {"concept": "breaker block", "url": "https://www.luxalgo.com/library/concept/breaker-block/",
+     "what_it_says": ["An order block that failed and flipped roles.",
+                      "Two readings circulate: the strict one requires the failing swing to first trade beyond a prior high or low; the looser one treats any violated order block as a breaker."]},
+    {"concept": "break of structure", "url": "https://www.luxalgo.com/library/concept/break-of-structure/",
+     "what_it_says": ["A with-trend structural break.", "A body close beyond the level is the common filter; wick-based readings also exist.", "Usage of the terms varies by author."]},
+    {"concept": "change of character / market structure shift", "url": "https://www.luxalgo.com/library/concept/change-of-character/",
+     "what_it_says": ["The first structural break against the prevailing trend.",
+                      "Vocabulary is not fully standardized: many use CHoCH and MSS interchangeably, others reserve MSS for a counter-trend break with displacement right after a liquidity sweep of the trend's extreme."],
+     "note": "https://www.luxalgo.com/library/concept/market-structure-shift/ redirects (HTTP 308) to the change-of-character page."},
+    {"concept": "inverse fair value gap", "url": "https://www.luxalgo.com/library/concept/inversion-fvg/",
+     "what_it_says": ["A fair value gap that failed and flipped roles; the common requirement is a body close beyond the far side of the gap.",
+                      "Conventions differ on strictness: whole gap closed through, or a close beyond its midpoint."]},
+    {"concept": "kill zones", "url": "https://www.luxalgo.com/library/concept/killzones/",
+     "what_it_says": ["New York time: Asian roughly 8:00 to 10:00 pm, London open 2:00 to 5:00 am, New York AM 7:00 to 10:00 am (index-futures variants 8:30 to 11:00), London close 10:00 am to 12:00 pm, New York PM 1:30 to 4:00 pm.",
+                      "Window boundaries differ by 30 to 90 minutes across ICT sources and platforms."]},
+    {"concept": "judas swing", "url": "https://www.luxalgo.com/library/concept/judas-swing/",
+     "what_it_says": ["The false move early in a session that runs resting stops before the day's real move goes the other way; measured against the midnight New York opening price.",
+                      "Confirmed by the failure, never assumed from the clock; stated windows vary across different series of teachings."]},
+    {"concept": "power of 3 (AMD)", "url": "https://www.luxalgo.com/library/concept/accumulation-manipulation-distribution/",
+     "what_it_says": ["A template for how a trading period unfolds around its open: accumulation, manipulation, distribution.",
+                      "Easy to see in hindsight on a finished candle; descriptive, not mechanical."]},
+    {"concept": "silver bullet", "url": "https://www.tradingview.com/script/fq4wSUev-ICT-Silver-Bullet-LuxAlgo/",
+     "page_date": "created 2023-07-04 (page metadata)",
+     "what_it_says": ["Open-source script that says it is inspired from the lectures of The Inner Circle Trader.",
+                      "Three windows in New York local time: 3 to 4 am, 10 to 11 am, 2 to 3 pm; a fair value gap has to form inside the window.",
+                      "Sets a minimum distance of 40 ticks for index futures and 15 pips for forex pairs; advises timeframes below 15 minutes."]},
+    {"concept": "silver bullet (evidence)", "url": "https://www.luxalgo.com/library/concept/silver-bullet/",
+     "what_it_says": ["No audited public statistics exist; win rates circulating online should be treated as marketing until shown otherwise."]},
+    {"concept": "liquidity sweep", "url": "https://www.luxalgo.com/library/concept/liquidity-sweep/",
+     "what_it_says": ["See research/liquidity-sweep/liquidity-sweep_sources.json."]},
+    {"concept": "fair value gap", "url": "https://www.luxalgo.com/library/concept/fair-value-gap/",
+     "what_it_says": ["Most tools require a minimum size (ATR or percentage); many treat a touch of the midpoint as a fill. Cited in en/fair-value-gap."]}
+  ],
+  "not_found": [
+    "A dated primary source for the first use of each of the twelve terms. The definitions live in years of video lectures, which we have not catalogued.",
+    "Who first used 'Smart Money Concepts' as a label.",
+    "Any audited or independently verified performance record for the method as a whole.",
+    "Any figure for what share of people who trade this way make money."
+  ],
+  "source_caveat": "Most concept descriptions above come from LuxAlgo, a company that sells charting indicators. It is not the originator of the vocabulary. We use its library because it states rules precisely and says where conventions differ."
+}

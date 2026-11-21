@@ -1,0 +1,97 @@
+{
+  "article": "en/liquidity-sweep",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the sentences the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source.",
+  "definition_sources": [
+    {
+      "name": "LuxAlgo library: Liquidity Sweep",
+      "url": "https://www.luxalgo.com/library/concept/liquidity-sweep/",
+      "page_date": "none shown",
+      "what_it_says": [
+        "A run through a level where resting orders cluster that then fails to hold beyond it; the classic form is a wick through a prior swing high or low.",
+        "States that definitions are contested at the edges: some traders require the close back inside on the sweeping candle, others accept any tag-and-reject that resolves within a few bars.",
+        "Treats grab, purge, raid, stop run and stop hunt as names for the same footprint.",
+        "FAQ: 'stop hunt' implies an intent that a chart cannot prove; 'liquidity sweep' is the neutral term."
+      ],
+      "not_specified": ["how many bars define the swing", "how far price must go through the level", "how many bars it has to come back"]
+    },
+    {
+      "name": "TMGM academy: Liquidity Sweep",
+      "url": "https://www.tmgm.com/en/academy/trading-academy/liquidity-sweep",
+      "page_date": "Last Updated: 29 Sep 2026",
+      "what_it_says": [
+        "Price moves beyond an established level and fails to maintain acceptance beyond it; needs a pre-existing level, a breach and a rejection or reclaim.",
+        "FAQ: a wick alone is not enough.",
+        "Lists 'penetration threshold' and 'reclaim window' as detector settings without giving values.",
+        "Some traders use sweep and grab as synonyms; others use grab for a faster single-candle event and sweep for a broader move."
+      ],
+      "not_specified": ["bar count for the level", "penetration distance", "reclaim window length"]
+    },
+    {
+      "name": "LiteFinance blog: Liquidity Sweep",
+      "url": "https://www.litefinance.org/blog/for-beginners/trading-strategies/liquidity-sweep/",
+      "page_date": "datePublished 2026-08-17, dateModified 2026-08-31 (schema.org metadata in the page)",
+      "what_it_says": [
+        "Price briefly crosses a level where stop-loss orders are concentrated; the move typically leaves a long wick.",
+        "Calls a sweep a form of market manipulation by larger participants.",
+        "Says a liquidity grab is the broader concept (absorption of any pending orders), which is the reverse of the TMGM and FXOpen usage."
+      ],
+      "not_specified": ["bar count for the level", "wick size", "time limit for the return"]
+    },
+    {
+      "name": "FXOpen blog: Liquidity Sweep in Trading",
+      "url": "https://fxopen.com/blog/en/liquidity-sweep-in-trading-basics-components-and-application/",
+      "page_date": "Published 29 Dec 2025 (article:modified_time 2026-01-23 in the page's metadata)",
+      "what_it_says": [
+        "Describes large institutional participants intentionally driving price towards liquidity zones.",
+        "A grab may move slightly beyond a peak or low before reversing; a sweep can see a sustained movement beyond it before reversing.",
+        "Says sweeps often resemble false breakouts, without separating the two."
+      ],
+      "not_specified": ["bar count", "wick versus close", "size threshold", "return window"]
+    }
+  ],
+  "related_sources": [
+    {
+      "name": "LuxAlgo library: False Breakout",
+      "url": "https://www.luxalgo.com/library/concept/false-breakout/",
+      "what_it_says": [
+        "A close back inside the level is the common trigger that reclassifies a break as false; it often happens within a few bars.",
+        "Presents a liquidity sweep as the Smart Money Concepts description of similar price action; a false breakout can apply to any level and may stay beyond it for several bars."
+      ]
+    },
+    {
+      "name": "LuxAlgo library: Turtle Soup",
+      "url": "https://www.luxalgo.com/library/concept/turtle-soup/",
+      "what_it_says": [
+        "Credits the setup to Laurence Connors and Linda Raschke, Street Smarts (1995).",
+        "Original buy rule as the page states it: a new 20-day low while the previous 20-day low is at least four sessions old; entry on a buy stop back above the prior low; initial stop below the new extreme."
+      ],
+      "caveat": "We have not read the book. The attribution and the rules are as this page gives them."
+    },
+    {
+      "name": "Bybit help center: Trading Fee Structure",
+      "url": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure",
+      "page_date": "Last updated on 2026-11-20",
+      "what_it_says": ["VIP 0, perpetual and futures contracts: taker 0.0550%, maker 0.0200%."]
+    },
+    {
+      "name": "Bybit API docs: Get Kline",
+      "url": "https://bybit-exchange.github.io/docs/v5/market/kline",
+      "what_it_says": ["Public endpoint the engine downloads candles from (category linear)."]
+    },
+    {
+      "name": "NIST/SEMATECH e-Handbook: one-sample t-test",
+      "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm",
+      "what_it_says": ["Definition of the one-sample t statistic the engine reports."]
+    },
+    {
+      "name": "perpmath engine, commit 85ee44e (version 0.2.0)",
+      "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/85ee44e58a12eace4cd6645331d0d3ca74197da9/src/perpmath/strategies/liquidity_sweep.py",
+      "what_it_says": ["The strategy's rules (docstring) and code. The strategy file and configs/liquidity_sweep.json are unchanged since 0.1.0 (commit 2fdc9de), which produced the published result."]
+    }
+  ],
+  "not_found": [
+    "No source gave a standard lookback, penetration distance or return window for a liquidity sweep.",
+    "No source we read reported a backtest with a trade count for the pattern."
+  ]
+}

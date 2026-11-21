@@ -1,0 +1,5 @@
+# Candle files and full engine outputs (every trade) are large and can be
+# re-created with liquidity-sweep_sensitivity.py; the summary JSON records
+# their SHA-256, configs and commands.
+data/
+runs/
