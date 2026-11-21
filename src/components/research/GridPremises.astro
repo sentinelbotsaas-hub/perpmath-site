@@ -1,0 +1,106 @@
+---
+// What a grid result has to be read with, in a warning box: where its bounds
+// came from, and whether price stayed inside them out-of-sample. It sits
+// right beside the result on the grid's own page and beside its card on
+// /backtests/, so the gain is never printed without its conditions.
+//
+//   <GridPremises locale={locale} result={result} />
+//   <GridPremises locale={locale} result={result} compact />   the statements alone
+//
+// Which statements appear is decided from the result file: hindsight bounds
+// get the first one (fixed bounds need none), and the second says either
+// that price never left the range or how often it closed outside. The prices
+// and returns inside the sentences come from the same file. `compact` prints
+// the statements without their explanations, for /backtests/, where the
+// card beside it links to the page that has them in full.
+import Disclaimer from '../ui/Disclaimer.astro';
+import { backtests } from '../../i18n/backtests';
+import type { Locale } from '../../i18n/config';
+import { formatPct, formatPlusPct } from '../../lib/backtests/format';
+import { hasHindsightBounds, stayedInRange } from '../../lib/backtests/overview';
+import type { GridResult } from '../../lib/backtests/types';
+import { fmt } from '../../lib/fmt';
+import { formatPrice, formatUsdtEffect } from './grid-views';
+
+interface Props {
+  locale: Locale;
+  result: GridResult;
+  /** The statements alone, without the explanation under each. */
+  compact?: boolean;
+  class?: string;
+}
+
+const { locale, result, compact = false, class: className } = Astro.props;
+const t = backtests[locale];
+const p = t.grid.premises;
+const na = t.na;
+
+const oos = result.out_of_sample;
+// Buy and hold over the same period, with funding when the run counts it.
+const bh = formatPlusPct(result.costs.funding_modelled ? oos.buy_and_hold.return_with_funding_pct : oos.buy_and_hold.return_pct) ?? na;
+const closed = oos.closing_fills.filter((fill) => fill.pnl !== null);
+const inv = formatUsdtEffect(closed.reduce((sum, fill) => sum + (fill.pnl as number), 0)) ?? na;
+const pct = formatPct(oos.metrics.bars_outside_range_pct) ?? na;
+
+const items = [
+  hasHindsightBounds(result)
+    ? {
+        head: p.hindsight.head,
+        body: fmt(p.hindsight.body, { lower: formatPrice(result.grid.lower), upper: formatPrice(result.grid.upper) }),
+      }
+    : null,
+  stayedInRange(result)
+    ? { head: p.inRange.head, body: fmt(p.inRange.body, { bh, inv }) }
+    : { head: p.outOfRange.head, body: fmt(p.outOfRange.body, { pct, bh }) },
+].filter((item) => item !== null);
+---
+
+<Disclaimer locale={locale} kind="warning" title={p.title} class:list={['bt-premises', className]}>
+  <ol class="bt-premises-list">
+    {
+      items.map((item, i) => (
+        <li>
+          <span class="num bt-premises-n" aria-hidden="true">{i + 1}</span>
+          <div>
+            <p class="bt-premises-head">{item.head}</p>
+            {!compact && <p>{item.body}</p>}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="bt-premises-close">{p.close}</p>
+</Disclaimer>
+
+<style>
+  .bt-premises-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+  }
+
+  .bt-premises-list li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .bt-premises-n {
+    color: var(--color-text-muted);
+  }
+
+  .bt-premises-head {
+    color: var(--color-text);
+    font-weight: var(--weight-medium);
+  }
+
+  .bt-premises-list p + p {
+    margin-top: var(--space-1);
+  }
+
+  .bt-premises-list p,
+  .bt-premises-close {
+    max-width: 68ch;
+  }
+</style>

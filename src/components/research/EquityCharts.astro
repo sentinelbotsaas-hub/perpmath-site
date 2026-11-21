@@ -7,8 +7,10 @@
 //
 // Both charts share one time axis, so they line up when stacked. Each has a
 // sentence under it with the same figures (the text alternative), and the
-// drawdown caption says how its daily points differ from the engine's
-// trade-level max drawdown.
+// drawdown caption says how its daily points differ from the engine's own
+// max drawdown figure. A grid result has the same equity points and the same
+// split, so it is drawn by the same component; it passes its own wording for
+// that caption through the `drawdownCaption` prop.
 //
 // How the SVGs are built: two SVGs, one inside the other. The inner one holds
 // the lines in a fixed 1000 x 400 box and is stretched to the plot area; its
@@ -19,18 +21,30 @@ import { backtests } from '../../i18n/backtests';
 import type { Locale } from '../../i18n/config';
 import { PLOT_HEIGHT, PLOT_WIDTH, equityChart } from '../../lib/backtests/chart';
 import { formatDay, formatMoney, formatPct } from '../../lib/backtests/format';
-import type { BacktestResult } from '../../lib/backtests/types';
+import type { EquityPoint } from '../../lib/backtests/types';
 import { fmt } from '../../lib/fmt';
 import { drawdownChart } from './drawdown';
 
-interface Props {
-  locale: Locale;
-  result: BacktestResult;
-  /** The strategy's name, for the chart titles. */
-  name: string;
+/** What the charts read from a result. Strategy and grid results both have it. */
+interface Chartable {
+  slug: string;
+  symbol: string;
+  split: { oos_start: string };
+  config: { execution: { initial_capital: number } };
+  in_sample: { equity_curve: EquityPoint[]; metrics: { max_drawdown_pct: number | null } };
+  out_of_sample: { equity_curve: EquityPoint[]; metrics: { max_drawdown_pct: number | null } };
 }
 
-const { locale, result, name } = Astro.props;
+interface Props {
+  locale: Locale;
+  result: Chartable;
+  /** The strategy's name, for the chart titles. */
+  name: string;
+  /** Replaces the caption under the drawdown chart. Takes {is} and {oos}, the engine's max drawdown of each sample. */
+  drawdownCaption?: string;
+}
+
+const { locale, result, name, drawdownCaption: drawdownCaptionText } = Astro.props;
 const t = backtests[locale];
 const d = t.detail;
 const { symbol } = result;
@@ -63,7 +77,7 @@ const drawdownDesc = fmt(d.drawdown.desc, {
   oosDd: formatPct(oosDd.deepest.pct) ?? na,
   oosDay: formatDay(oosDd.deepest.t),
 });
-const drawdownCaption = fmt(d.drawdown.caption, {
+const drawdownCaption = fmt(drawdownCaptionText ?? d.drawdown.caption, {
   is: formatPct(result.in_sample.metrics.max_drawdown_pct) ?? na,
   oos: formatPct(result.out_of_sample.metrics.max_drawdown_pct) ?? na,
 });

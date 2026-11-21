@@ -1,0 +1,42 @@
+---
+// A shell command in a FormulaBlock, wrapped between its words only.
+//
+//   <Command label={q.grid} code={GRID_COMMAND} />
+//
+// A long command has to wrap on a phone, and left to itself the browser also
+// breaks after a hyphen, which leaves "--" at the end of one line and "out"
+// at the start of the next. Here every word is an unbreakable unit that moves
+// to the next line whole; a word longer than the line (a file path on a
+// narrow screen) still breaks inside, so nothing scrolls sideways. The text
+// that is selected and copied is the command itself, unchanged: the spaces
+// and line breaks of `code` are kept exactly.
+import FormulaBlock from '../ui/FormulaBlock.astro';
+
+interface Props {
+  /** One command, or several separated by line breaks. */
+  code: string;
+  label?: string;
+  id?: string;
+  class?: string;
+}
+
+const { code, label, id, class: className } = Astro.props;
+
+const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// Split on runs of spaces and line breaks and keep those runs as they are; every other part is a word.
+const html = code
+  .split(/(\s+)/)
+  .map((part) => (/^\s*$/.test(part) ? part : `<span class="bt-cmd-word">${escape(part)}</span>`))
+  .join('');
+---
+
+<FormulaBlock label={label} id={id} class:list={['bt-cmd', className]}><Fragment set:html={html} /></FormulaBlock>
+
+<style is:global>
+  .bt-cmd .bt-cmd-word {
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    vertical-align: top;
+  }
+</style>

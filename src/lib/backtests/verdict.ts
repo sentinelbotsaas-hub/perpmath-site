@@ -10,7 +10,7 @@
 //
 // t is the engine's one-sample t-statistic of per-trade net returns against
 // zero. Rule 1 wins over the others: a large t on 30 trades is still 30 trades.
-import type { BacktestResult, Metrics } from './types';
+import type { Metrics, SampleKey } from './types';
 import { SAMPLE_KEYS } from './types';
 
 export const MIN_TRADES = 100;
@@ -28,7 +28,7 @@ export function verdictOf(metrics: Pick<Metrics, 'trades' | 't_stat'>): VerdictC
 }
 
 /** True when equity ended lower than it started in both samples. */
-export function lostInBothSamples(result: BacktestResult): boolean {
+export function lostInBothSamples(result: Record<SampleKey, { metrics: { total_return_pct: number | null } }>): boolean {
   return SAMPLE_KEYS.every((key) => {
     const r = result[key].metrics.total_return_pct;
     return r !== null && r < 0;

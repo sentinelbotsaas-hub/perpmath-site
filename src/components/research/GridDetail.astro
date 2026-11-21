@@ -1,0 +1,851 @@
+---
+// The page of one published grid backtest, /backtests/<slug>/. Rendered by
+// src/pages/[...locale]/backtests/[slug].astro for every grid result in
+// src/data/backtests/ (signal strategies go to StrategyDetail.astro).
+//
+// Every figure on the page comes from that file: the returns, the round
+// trips, the ledger, the bounds and cell width inside the rule sentences,
+// the four intrabar paths, the taker-fee and no-funding runs, the equity
+// curve and the drawdown drawn from it. Nothing is typed in by hand, and a
+// result this page cannot describe (unknown bounds source, direction,
+// spacing, range rule, intrabar path, exchange or fill rule) stops the build.
+//
+// Outline: the result with its two conditions right under it, the ledger,
+// the charts, the rules and their parameters, the comparisons, the
+// assumptions and limits, how to rerun it.
+//
+// There is no exchange link on this page. The actions are "run it yourself"
+// and "view the code".
+import Cta from '../Cta.astro';
+import Card from '../ui/Card.astro';
+import DataTable from '../ui/DataTable.astro';
+import Icon from '../ui/Icon.astro';
+import PageContainer from '../ui/PageContainer.astro';
+import PageHeader from '../ui/PageHeader.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import { backtests } from '../../i18n/backtests';
+import { bot } from '../../i18n/bot';
+import { common } from '../../i18n/common';
+import { localePath } from '../../i18n/config';
+import type { Locale } from '../../i18n/config';
+import Base from '../../layouts/Base.astro';
+import { GRID_SOURCE_URL, README_GRID_URL, README_INTRABAR_URL, gridReproduceCommands, resultSourceUrl } from '../../lib/backtests/engine';
+import { formatCount, formatDay, formatMoney, formatParam, formatPct, formatRate, formatUtc } from '../../lib/backtests/format';
+import { backtestPath } from '../../lib/backtests/load';
+import { gainedInBothSamples, hasHindsightBounds, stayedInRange } from '../../lib/backtests/overview';
+import type { GridResult, IntrabarPath } from '../../lib/backtests/types';
+import { lostInBothSamples } from '../../lib/backtests/verdict';
+import { fmt } from '../../lib/fmt';
+import { breadcrumbLd } from '../../lib/seo';
+import Command from './Command.astro';
+import EquityCharts from './EquityCharts.astro';
+import GridCompare from './GridCompare.astro';
+import GridPremises from './GridPremises.astro';
+import { baseAsset, comparisonVariant, formatPrice, gridViews, publishedVariant } from './grid-views';
+import type { GridVariantView } from './grid-views';
+import { toneOf } from './samples';
+
+interface Props {
+  locale: Locale;
+  result: GridResult;
+}
+
+const { locale, result } = Astro.props;
+const t = backtests[locale];
+const d = t.detail;
+const g = t.grid;
+const c = common[locale];
+const PATH = backtestPath(result.slug);
+const stop = (message: string): never => {
+  throw new Error(`backtests/${result.slug}: ${message}`);
+};
+/** A string keyed by one of the engine's setting values; an unknown value stops the build. */
+function keyed<T extends Record<string, string>>(strings: T, value: string, what: string): string {
+  return strings[value as keyof T] ?? stop(`no strings for ${what} "${value}" in src/i18n/backtests.ts`);
+}
+
+// --- what this page knows how to describe ---------------------------------
+const { timing, grid, costs } = result;
+if (result.data.exchange !== 'bybit') stop(`the data strings say Bybit, the result says "${result.data.exchange}"`);
+if (
+  timing.grid_start !== 'open of the first bar of each sample' ||
+  timing.grid_orders !== 'fill when price trades strictly through the level, at the level'
+) {
+  stop('the engine fill rules differ from the ones the "Fills and timing" strings describe');
+}
+if (!timing.lookahead_check.passed) stop('the look-ahead check did not pass');
+const hindsight = hasHindsightBounds(result);
+// True when price stayed inside the grid in both samples: the range rule never fired.
+const rangeUntested = stayedInRange(result, 'in_sample') && stayedInRange(result, 'out_of_sample');
+
+// --- figures --------------------------------------------------------------
+const na = t.na;
+const { symbol, interval } = result;
+const execution = result.config.execution;
+const name = g.name;
+const direction = keyed(g.directions, grid.direction, 'grid direction');
+const costWords = costs.funding_modelled ? g.costsAll : g.costsNoFunding;
+
+const views = gridViews(result, t);
+const [inSample, outOfSample] = views;
+
+const headTemplate = lostInBothSamples(result) ? g.headLost : gainedInBothSamples(result) && hindsight && stayedInRange(result) ? g.headRanged : g.head;
+const head = fmt(headTemplate, { direction, symbol });
+const sub = fmt(g.sub, { costs: costWords, symbol, interval, is: inSample.totalReturn, oos: outOfSample.totalReturn });
+const title = fmt(d.title, { name, symbol, interval });
+const description = fmt(g.description, {
+  count: formatCount(grid.grid_count),
+  direction,
+  symbol,
+  interval,
+  isTrips: inSample.roundTrips,
+  oosTrips: outOfSample.roundTrips,
+  costs: costWords,
+});
+
+// --- the ledger ---------------------------------------------------------------
+const anyLiquidation = views.some((v) => v.liquidated);
+const ledgerRows = [
+  { head: g.ledger.roundTrips, pick: (v: (typeof views)[number]) => v.ledger.roundTrips },
+  { head: g.ledger.inventory, pick: (v: (typeof views)[number]) => v.ledger.inventory },
+  { head: g.ledger.fees, pick: (v: (typeof views)[number]) => v.ledger.fees },
+  ...(costs.funding_modelled ? [{ head: g.ledger.funding, pick: (v: (typeof views)[number]) => v.ledger.funding }] : []),
+  ...(anyLiquidation ? [{ head: g.ledger.liquidation, pick: (v: (typeof views)[number]) => v.ledger.liquidation }] : []),
+];
+const base = baseAsset(symbol);
+const inventoryLines = views.flatMap((v) =>
+  v.closing.map((fill) => fmt(g.ledger.inventoryLine, { sample: v.sample, qty: fill.quantity, base, price: fill.price })),
+);
+
+// --- the rules, with the settings of this run filled in ---------------------
+const width = (pct: number) => formatPct(pct) ?? na;
+const ruleVars = {
+  count: formatCount(grid.grid_count),
+  levels: formatCount(grid.levels.length),
+  lower: formatPrice(grid.lower),
+  upper: formatPrice(grid.upper),
+  width: width(grid.cell_width_pct_min),
+  widthMin: width(grid.cell_width_pct_min),
+  widthMax: width(grid.cell_width_pct_max),
+  cellNotional: formatMoney(grid.cell_notional),
+  leverage: formatParam(grid.leverage) ?? na,
+  mmr: formatRate(costs.maintenance_margin_rate),
+};
+const rules = [
+  { head: g.rules.levels.head, text: keyed(g.rules.levels, grid.spacing, 'grid spacing') },
+  { head: g.rules.cells.head, text: g.rules.cells.text },
+  { head: g.rules.size.head, text: g.rules.size.text },
+  { head: g.rules.start.head, text: keyed(g.rules.start, grid.direction, 'grid direction') },
+  { head: g.rules.fills.head, text: g.rules.fills.text },
+  { head: g.rules.range.head, text: keyed(g.rules.range, grid.out_of_range, 'out_of_range') },
+  { head: g.rules.liquidation.head, text: g.rules.liquidation.text },
+  { head: g.rules.end.head, text: g.rules.end.text },
+].map((rule) => {
+  const text = fmt(rule.text, ruleVars);
+  if (/\{\w+\}/.test(text)) stop(`a rule mentions a value this result does not have: ${text}`);
+  return { head: rule.head, text };
+});
+const boundsNote = hindsight ? g.params.boundsHindsight : g.params.boundsFixed;
+const cellWidth =
+  grid.cell_width_pct_min === grid.cell_width_pct_max
+    ? width(grid.cell_width_pct_min)
+    : fmt(g.params.widthRange, { min: width(grid.cell_width_pct_min), max: width(grid.cell_width_pct_max) });
+const params: Array<{ label: string; key?: string; value: string; note?: string; num?: boolean }> = [
+  { label: g.params.lower, value: formatPrice(grid.lower), note: boundsNote, num: true },
+  { label: g.params.upper, value: formatPrice(grid.upper), note: boundsNote, num: true },
+  { label: g.params.grid_count, key: 'grid_count', value: formatCount(grid.grid_count), num: true },
+  { label: g.params.spacing, key: 'spacing', value: keyed(g.spacings, grid.spacing, 'grid spacing') },
+  { label: g.params.direction, key: 'direction', value: direction },
+  { label: g.params.leverage, key: 'leverage', value: formatParam(grid.leverage) ?? na, num: true },
+  { label: g.params.out_of_range, key: 'out_of_range', value: keyed(g.outOfRange, grid.out_of_range, 'out_of_range') },
+  { label: g.params.cell_notional, value: formatMoney(grid.cell_notional), num: true },
+  { label: g.params.cell_width, value: cellWidth, num: true },
+];
+
+// --- the same run along other intrabar paths --------------------------------------
+const PATH_ORDER: IntrabarPath[] = ['worst_of_two', 'low_first', 'high_first', 'best_of_two'];
+const usedPath = timing.intrabar_path;
+const published = publishedVariant(result, na);
+const pathRows = PATH_ORDER.flatMap((path) => {
+  const view = path === usedPath ? published : comparisonVariant(result, `intrabar_path=${path}`, na);
+  return view ? [{ path, name: keyed(g.paths.names, path, 'intrabar path'), used: path === usedPath, view }] : [];
+});
+if (!pathRows.some((row) => row.used)) stop(`unknown intrabar path "${usedPath}"`);
+
+// --- the same run with one cost changed -----------------------------------------
+const rateVars = { maker: formatRate(costs.grid_fee_rate), taker: formatRate(costs.taker_fee_rate) };
+const atTaker = comparisonVariant(result, 'grid_fills_at_taker_fee', na);
+const noFunding = comparisonVariant(result, 'without_funding', na);
+const variantRows: Array<{ name: string; note?: string; view: GridVariantView }> = [
+  {
+    name: g.variants.published,
+    note: fmt(costs.funding_modelled ? g.variants.publishedNote : g.variants.publishedNoteNoFunding, rateVars),
+    view: published,
+  },
+  ...(atTaker ? [{ name: g.variants.taker, note: fmt(g.variants.takerNote, rateVars), view: atTaker }] : []),
+  ...(noFunding ? [{ name: g.variants.noFunding, view: noFunding }] : []),
+];
+
+// --- costs: the source of the fee rates, as the result file states it -----------
+// "...(https://www.bybit.com/..., read 2026-11-19). ..."
+const feeSource = /\((https:\/\/[^\s,)]+), read (\d{4}-\d{2}-\d{2})\)/.exec(costs.fee_source);
+if (!feeSource || !costs.fee_source.includes('VIP 0')) stop('costs.fee_source is not in the form the "Costs" note describes');
+const [, feeTableUrl, feeReadDate] = feeSource as RegExpExecArray;
+if (!costs.maintenance_margin_source.includes('tier 1')) stop('costs.maintenance_margin_source is not Bybit tier 1, which the "Costs" strings say');
+const funding = result.data.funding;
+if (costs.funding_modelled && !funding) stop('funding is modelled but data.funding is missing');
+
+// --- run it yourself ------------------------------------------------------------
+const commands = gridReproduceCommands(result);
+const steps = bot[locale].quickstart;
+// A SHA-256 is 64 characters: when it has to wrap, it wraps in the middle.
+const halves = (hash: string) => [hash.slice(0, hash.length / 2), hash.slice(hash.length / 2)];
+const hashes = [
+  { label: d.data.hash, value: result.data.file_sha256 },
+  ...(funding ? [{ label: g.run.fundingHash, value: funding.file_sha256 }] : []),
+  { label: d.data.resultHash, value: result.source.sha256 },
+];
+
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: t.crumb, path: '/backtests/' },
+  { name, path: PATH },
+];
+const jsonLd = breadcrumbLd(locale, trail);
+---
+
+<Base locale={locale} path={PATH} title={title} description={description} jsonLd={jsonLd}>
+  <PageContainer lead>
+    <PageHeader locale={locale} title={head} lede={sub} breadcrumb={trail}>
+      <p slot="meta" class="bt-meta">
+        <span>{fmt(d.data.marketValue, { symbol, interval })}</span>
+        <span class="num">{fmt(t.range, { from: formatDay(result.data.first_bar), to: formatDay(result.data.last_bar) })}</span>
+      </p>
+      <Cta
+        locale={locale}
+        pageType="backtest"
+        position="hero"
+        primary={{ label: d.primary, href: '#run-it-yourself' }}
+        secondary={{ label: d.secondary, href: GRID_SOURCE_URL }}
+      />
+    </PageHeader>
+  </PageContainer>
+
+  <PageContainer flush id="result">
+    <SectionHeader title={fmt(g.resultHead, { costs: costWords })} />
+    <div class="cards cols-2">
+      {
+        views.map((v) => (
+          <Card class="bt-return" data-tone={toneOf(v.totalReturnSign)}>
+            <p class="result-label">{d.result.totalReturn[v.key]}</p>
+            <p class="result-value">{v.totalReturn}</p>
+            <p class="bt-return-note">{v.note}</p>
+          </Card>
+        ))
+      }
+    </div>
+    <GridPremises locale={locale} result={result} class="bt-premises-box" />
+
+    <div class="bt-result">
+      <div>
+        <GridCompare
+          locale={locale}
+          label={g.compare.label}
+          views={views}
+          funding={costs.funding_modelled}
+          caption={fmt(g.compare.caption, { version: result.package_version, date: formatUtc(result.generated_at) })}
+        />
+      </div>
+      <div id="ledger">
+        <h3 class="h-card">{g.ledger.head}</h3>
+        <DataTable locale={locale} label={g.ledger.label} stickyFirst class="bt-ledger">
+          <thead>
+            <tr>
+              <th scope="col">{g.ledger.source}</th>
+              {views.map((v) => <th scope="col">{v.sample}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {
+              ledgerRows.map((row) => (
+                <tr>
+                  <th scope="row">{row.head}</th>
+                  {views.map((v) => {
+                    const cell = row.pick(v);
+                    return <td class="num" data-tone={toneOf(cell.sign)}>{cell.text}</td>;
+                  })}
+                </tr>
+              ))
+            }
+            <tr class="bt-ledger-net">
+              <th scope="row">{g.ledger.net}</th>
+              {views.map((v) => <td class="num" data-tone={toneOf(v.ledger.net.sign)}>{v.ledger.net.text}</td>)}
+            </tr>
+          </tbody>
+        </DataTable>
+        {inventoryLines.map((line) => <p class="bt-small">{line}</p>)}
+        <p class="bt-small">{fmt(g.ledger.note, { capital: formatMoney(execution.initial_capital) })}</p>
+      </div>
+    </div>
+  </PageContainer>
+
+  <PageContainer flush id="equity">
+    <SectionHeader title={d.chart.head} />
+    <EquityCharts locale={locale} result={result} name={g.chartName} drawdownCaption={g.chart.drawdownCaption} />
+    {
+      result.source.fills_dropped && (
+        <p class="bt-small bt-after-charts">
+          {g.chart.note}{' '}
+          <a href={resultSourceUrl(result)} rel="noopener">{d.run.full}</a>
+        </p>
+      )
+    }
+  </PageContainer>
+
+  <PageContainer band id="rules">
+    <SectionHeader title={g.sections.rules}>
+      <a slot="action" class="lnk" href={GRID_SOURCE_URL} rel="noopener">
+        {d.secondary}
+        <Icon name="arrow-right" size={16} />
+      </a>
+    </SectionHeader>
+    <div class="bt-rules-wrap">
+      <ol class="bt-rules">
+        {
+          rules.map((rule, i) => (
+            <li>
+              <span class="num bt-step" aria-hidden="true">{i + 1}</span>
+              <h3 class="h-card">{rule.head}</h3>
+              <p>{rule.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div id="parameters" class="bt-params">
+        <h3 class="h-card">{g.params.head}</h3>
+        <dl class="bt-kv">
+          {
+            params.map((p) => (
+              <div>
+                <dt>
+                  {p.label}
+                  {p.key && <code>{p.key}</code>}
+                  {p.note && <span class="bt-kv-note">{p.note}</span>}
+                </dt>
+                <dd class:list={{ num: p.num }}>{p.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="bt-small">{g.params.note}</p>
+      </div>
+    </div>
+  </PageContainer>
+
+  <PageContainer id="intrabar-paths">
+    <SectionHeader title={g.sections.paths} />
+    <div class="bt-side">
+      <div class="bt-side-text">
+        <p>{fmt(g.paths.intro, { interval })}</p>
+        <p>{g.paths.bound}</p>
+        <a class="lnk" href={README_INTRABAR_URL} rel="noopener">
+          {g.paths.readme}
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+      <DataTable locale={locale} label={g.paths.label} stickyFirst hint class="bt-variants">
+        <thead>
+          <tr>
+            <th scope="col" rowspan="2">{g.paths.path}</th>
+            <th scope="colgroup" colspan="2" class="bt-group">{t.columns.totalReturn}</th>
+            <th scope="colgroup" colspan="2" class="bt-group">{g.compare.roundTrips}</th>
+          </tr>
+          <tr>
+            {[0, 1].flatMap(() => views.map((v) => <th scope="col">{v.sample}</th>))}
+          </tr>
+        </thead>
+        <tbody>
+          {
+            pathRows.map((row) => (
+              <tr>
+                <th scope="row">
+                  {row.name}
+                  <span class="bt-row-note">
+                    <code>{row.path}</code>
+                    {row.used && <span class="tag">{g.paths.used}</span>}
+                  </span>
+                </th>
+                <td class="num" data-tone={toneOf(row.view.totalReturnSign.in_sample)}>{row.view.totalReturn.in_sample}</td>
+                <td class="num" data-tone={toneOf(row.view.totalReturnSign.out_of_sample)}>{row.view.totalReturn.out_of_sample}</td>
+                <td class="num">{row.view.roundTrips.in_sample}</td>
+                <td class="num">{row.view.roundTrips.out_of_sample}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </DataTable>
+    </div>
+  </PageContainer>
+
+  {
+    variantRows.length > 1 && (
+      <PageContainer flush id="cost-variants">
+        <SectionHeader title={g.sections.variants} desc={g.variants.intro} />
+        <DataTable locale={locale} label={g.variants.label} stickyFirst hint class="bt-variants">
+          <thead>
+            <tr>
+              <th scope="col" rowspan="2">{g.variants.run}</th>
+              <th scope="colgroup" colspan="2" class="bt-group">{t.columns.totalReturn}</th>
+              <th scope="colgroup" colspan="2" class="bt-group">{g.variants.fees}</th>
+            </tr>
+            <tr>
+              {[0, 1].flatMap(() => views.map((v) => <th scope="col">{v.sample}</th>))}
+            </tr>
+          </thead>
+          <tbody>
+            {variantRows.map((row) => (
+              <tr>
+                <th scope="row">
+                  {row.name}
+                  {row.note && <span class="bt-row-note">{row.note}</span>}
+                </th>
+                <td class="num" data-tone={toneOf(row.view.totalReturnSign.in_sample)}>{row.view.totalReturn.in_sample}</td>
+                <td class="num" data-tone={toneOf(row.view.totalReturnSign.out_of_sample)}>{row.view.totalReturn.out_of_sample}</td>
+                <td class="num">{row.view.fees.in_sample}</td>
+                <td class="num">{row.view.fees.out_of_sample}</td>
+              </tr>
+            ))}
+          </tbody>
+        </DataTable>
+      </PageContainer>
+    )
+  }
+
+  <PageContainer id="assumptions">
+    <SectionHeader title={g.sections.assumptions} />
+    <div class="bt-assume">
+      <div id="costs">
+        <h3 class="h-card">{g.costs.head}</h3>
+        <dl class="bt-kv">
+          <div>
+            <dt>{g.costs.gridFee}</dt>
+            <dd>{fmt(g.costs.gridFeeValue, { rate: formatRate(costs.grid_fee_rate) })}</dd>
+          </div>
+          <div>
+            <dt>{g.costs.takerFee}</dt>
+            <dd>{fmt(g.costs.takerFeeValue, { rate: formatRate(costs.taker_fee_rate) })}</dd>
+          </div>
+          <div>
+            <dt>{g.costs.slippage}</dt>
+            <dd>{fmt(g.costs.slippageValue, { rate: formatRate(costs.slippage_per_fill) })}</dd>
+          </div>
+          <div>
+            <dt>{g.costs.roundTrip}</dt>
+            <dd>{fmt(g.costs.roundTripValue, { cost: formatPct(costs.round_trip_cost_pct) ?? na, width: width(grid.cell_width_pct_min) })}</dd>
+          </div>
+          <div>
+            <dt>{g.costs.funding}</dt>
+            <dd>{funding ? fmt(g.costs.fundingValue, { records: formatCount(funding.records_in_range) }) : g.costs.fundingOff}</dd>
+          </div>
+          <div>
+            <dt>{g.costs.mmr}</dt>
+            <dd>{fmt(g.costs.mmrValue, { rate: formatRate(costs.maintenance_margin_rate) })}</dd>
+          </div>
+          <div>
+            <dt>{g.costs.capital}</dt>
+            <dd class="num">{formatMoney(execution.initial_capital)}</dd>
+          </div>
+        </dl>
+        <p class="bt-small">
+          {fmt(g.costs.note, { date: feeReadDate })}{' '}
+          <a href={feeTableUrl} rel="noopener nofollow">{g.costs.feeTable}</a>
+        </p>
+      </div>
+
+      <div id="fills">
+        <h3 class="h-card">{g.timing.head}</h3>
+        <dl class="bt-kv">
+          <div>
+            <dt>{g.timing.start}</dt>
+            <dd>{g.timing.startValue}</dd>
+          </div>
+          <div>
+            <dt>{g.timing.order}</dt>
+            <dd>{g.timing.orderValue}</dd>
+          </div>
+          <div>
+            <dt>{g.timing.path}</dt>
+            <dd>{keyed(g.paths.names, usedPath, 'intrabar path')}</dd>
+          </div>
+          {
+            costs.funding_modelled && (
+              <div>
+                <dt>{g.timing.fundingPrice}</dt>
+                <dd>{g.timing.fundingPriceValue}</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt>{g.timing.lookahead}</dt>
+            <dd>{fmt(g.timing.lookaheadValue, { runs: formatCount(timing.lookahead_check.shortened_runs) })}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div id="limits">
+        <h3 class="h-card">{g.limits.head}</h3>
+        <ul class="bt-omitted">
+          {g.limits.items.map((item) => <li>{item}</li>)}
+          {rangeUntested && <li>{g.limits.rangeUntested}</li>}
+        </ul>
+      </div>
+    </div>
+  </PageContainer>
+
+  <PageContainer band id="run-it-yourself">
+    <SectionHeader title={d.run.head} />
+    <div class="bt-run">
+      <div class="bt-commands">
+        <Command label={steps.download} code={commands.download} />
+        {costs.funding_modelled && <Command label={steps.funding} code={commands.funding} />}
+        <Command label={steps.grid} code={commands.grid} />
+        <div class="bt-more">
+          <a class="lnk" href={localePath(locale, '/bot/#quickstart')}>{d.run.install}</a>
+          <a class="lnk" href={resultSourceUrl(result)} rel="noopener">{d.run.full}</a>
+          <a class="lnk" href={README_GRID_URL} rel="noopener">{g.run.readme}</a>
+          <a class="lnk" href={localePath(locale, '/backtests/')}>{d.back}</a>
+        </div>
+      </div>
+
+      <div id="data">
+        <h3 class="h-card">{d.data.head}</h3>
+        <dl class="bt-kv">
+          <div>
+            <dt>{d.data.market}</dt>
+            <dd>{fmt(d.data.marketValue, { symbol, interval })}</dd>
+          </div>
+          <div>
+            <dt>{d.data.first}</dt>
+            <dd class="num">{formatUtc(result.data.first_bar)}</dd>
+          </div>
+          <div>
+            <dt>{d.data.last}</dt>
+            <dd class="num">{formatUtc(result.data.last_bar)}</dd>
+          </div>
+          <div>
+            <dt>{d.data.bars}</dt>
+            <dd>
+              {
+                fmt(d.data.barsValue, {
+                  bars: formatCount(result.data.bars),
+                  missing: formatCount(result.data.missing_bars),
+                })
+              }
+            </dd>
+          </div>
+          <div>
+            <dt>{d.data.split}</dt>
+            <dd class="num">{formatUtc(result.split.oos_start)}</dd>
+          </div>
+          {
+            funding && (
+              <div>
+                <dt>{g.run.fundingRecords}</dt>
+                <dd>
+                  {fmt(g.run.fundingRecordsValue, {
+                    records: formatCount(funding.records_in_range),
+                    from: formatUtc(funding.first),
+                    to: formatUtc(funding.last),
+                  })}
+                </dd>
+              </div>
+            )
+          }
+          {
+            hashes.map((hash) => (
+              <div class="bt-hash">
+                <dt>{hash.label}</dt>
+                <dd class="num">{halves(hash.value)[0]}<wbr />{halves(hash.value)[1]}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </PageContainer>
+</Base>
+
+<style>
+  /* Market and period under the lede: two facts, a gap between them. */
+  .bt-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* The two total returns. The sign is printed; the colour repeats it. */
+  .bt-return .result-value {
+    color: var(--tone, var(--color-text));
+  }
+
+  .bt-return-note {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  /* The two conditions sit directly under the two returns they qualify. */
+  :global(.bt-premises-box) {
+    margin-top: var(--space-4);
+  }
+
+  /* The full comparison beside the ledger. */
+  .bt-result {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-10);
+    align-items: start;
+    margin-top: var(--space-10);
+  }
+
+  #ledger h3 {
+    margin-bottom: var(--space-3);
+  }
+
+  /* The last line is the sum of the ones above it. */
+  .bt-ledger-net :is(th, td) {
+    border-top: var(--hairline) solid var(--color-border-hover);
+    border-bottom: 0;
+    color: var(--tone, var(--color-text));
+    font-weight: var(--weight-medium);
+  }
+
+  :global(.bt-ledger) th[scope="row"] {
+    white-space: normal;
+  }
+
+  .bt-small {
+    max-width: 72ch;
+    margin-top: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .bt-small + .bt-small {
+    margin-top: var(--space-2);
+  }
+
+  .bt-small a {
+    color: var(--color-accent);
+  }
+
+  .bt-after-charts {
+    font-size: var(--text-sm);
+  }
+
+  /* The rules, in the order the simulator applies them, and beside them the
+     settings those rules were run with. */
+  .bt-rules-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: var(--space-12) var(--space-16);
+    align-items: start;
+  }
+
+  .bt-rules {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-10);
+  }
+
+  .bt-rules li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--space-2);
+    padding-top: var(--space-4);
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  .bt-step {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .bt-rules p {
+    color: var(--color-text-secondary);
+  }
+
+  .bt-params {
+    max-width: var(--measure);
+  }
+
+  /* A setting's value is short: the label takes the room, the value sits at the end. */
+  .bt-params .bt-kv > div {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .bt-params .bt-kv dd {
+    text-align: right;
+  }
+
+  /* Label and value pairs: one pair a row, a rule under each. */
+  .bt-kv {
+    margin-top: var(--space-3);
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  .bt-kv > div {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-1) var(--space-5);
+    padding-block: var(--space-3);
+    border-bottom: var(--hairline) solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+
+  .bt-kv dt {
+    color: var(--color-text-secondary);
+  }
+
+  .bt-kv dt :is(code, .bt-kv-note) {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .bt-kv dd {
+    color: var(--color-text);
+    overflow-wrap: anywhere;
+  }
+
+  /* A SHA-256 is 64 characters: give it the full row. */
+  .bt-kv > .bt-hash {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bt-hash dd {
+    color: var(--color-text-secondary);
+    font-size: var(--text-xs);
+  }
+
+  /* The explanation on the left, the table it explains beside it. */
+  .bt-side {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .bt-side-text {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    gap: var(--space-3);
+    max-width: 60ch;
+    color: var(--color-text-secondary);
+  }
+
+  /* A sentence-long link: on a phone it wraps instead of running off the screen. */
+  .bt-side-text .lnk {
+    white-space: normal;
+  }
+
+  /* A row's name, and under it the setting it stands for. */
+  :global(.bt-variants) th[scope="row"] {
+    white-space: normal;
+    min-width: 10em;
+  }
+
+  /* Two figures for each sample: the group name sits over its pair of columns. */
+  .bt-group {
+    border-bottom: 0;
+    padding-bottom: 0;
+    color: var(--color-text);
+    text-align: center;
+  }
+
+  :global(.bt-variants) thead tr:last-child th {
+    padding-top: var(--space-1);
+  }
+
+  .bt-row-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-2);
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-regular);
+  }
+
+  .bt-assume {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .bt-omitted {
+    margin-top: var(--space-3);
+    border-top: var(--hairline) solid var(--color-border-hover);
+    font-size: var(--text-sm);
+  }
+
+  .bt-omitted li {
+    padding-block: var(--space-3);
+    border-bottom: var(--hairline) solid var(--color-border);
+    color: var(--color-text);
+  }
+
+  .bt-run {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .bt-commands {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .bt-more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-6);
+  }
+
+  .bt-more .lnk {
+    white-space: normal;
+  }
+
+  @media (max-width: 1100px) {
+    .bt-rules-wrap {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 960px) {
+    .bt-result,
+    .bt-side,
+    .bt-run {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bt-assume {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .bt-rules,
+    .bt-assume {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+  }
+</style>

@@ -1,34 +1,66 @@
 ---
-// /bot/: the open-source backtester. What it is, the commands to a first
-// result, what it does and does not do, how it is paid for, and what its
-// shipped strategies returned.
+// /bot/: the home page of the open-source engine. What it is and its three
+// parts, the commands to a first result on each of them, how a backtest is
+// computed, how the testnet order runner is kept safe, what the engine does
+// not do and how it is funded, what its shipped results returned, and the
+// lessons that use it.
 //
-// The commands are the ones in the engine's README (src/lib/backtests/engine.ts,
-// checked against the README by a test). The version number, the count of
-// shipped results and the table of returns come from src/data/backtests/.
+// Everything here follows the engine's README. The commands, the version and
+// the runner's default limits are in src/lib/backtests/engine.ts, which a
+// test compares with the README. The rates in the cost formula, the split
+// share, the count of shipped results and the table of returns come from
+// src/data/backtests/. The lessons are read from the articles collection, so
+// one that is not released yet is not listed and there is no dead link.
 // There is no exchange link on this page: the engine trades on the Bybit
 // testnet only (0.2), so there is nothing to open a real account for.
 import Cta from '../../../components/Cta.astro';
+import Command from '../../../components/research/Command.astro';
+import Flags from '../../../components/research/Flags.astro';
+import { gridViews } from '../../../components/research/grid-views';
+import { headline } from '../../../components/research/headline';
 import { sampleViews, toneOf } from '../../../components/research/samples';
+import Accordion from '../../../components/ui/Accordion.astro';
+import ArticleCard from '../../../components/ui/ArticleCard.astro';
 import DataTable from '../../../components/ui/DataTable.astro';
+import Disclaimer from '../../../components/ui/Disclaimer.astro';
 import FormulaBlock from '../../../components/ui/FormulaBlock.astro';
 import Icon from '../../../components/ui/Icon.astro';
 import type { IconName } from '../../../components/ui/Icon.astro';
 import PageContainer from '../../../components/ui/PageContainer.astro';
 import PageHeader from '../../../components/ui/PageHeader.astro';
 import SectionHeader from '../../../components/ui/SectionHeader.astro';
+import ToolCard from '../../../components/ui/ToolCard.astro';
 import { backtests } from '../../../i18n/backtests';
 import { bot } from '../../../i18n/bot';
 import { common } from '../../../i18n/common';
 import { localePath, localeStaticPaths } from '../../../i18n/config';
 import type { Locale } from '../../../i18n/config';
+import { toHans } from '../../../i18n/hans';
 import Base from '../../../layouts/Base.astro';
-import { BACKTEST_COMMAND, DOWNLOAD_COMMAND, ENGINE_VERSION, INSTALL_COMMANDS, REPO_URL } from '../../../lib/backtests/engine';
-import { formatCount } from '../../../lib/backtests/format';
-import { backtestPath, results } from '../../../lib/backtests/load';
+import { articlePath, getArticlesFor } from '../../../lib/articles';
+import {
+  BACKTEST_COMMAND,
+  DOWNLOAD_COMMAND,
+  ENGINE_VERSION,
+  GRID_COMMAND,
+  GRID_DOWNLOAD_COMMAND,
+  GRID_FUNDING_COMMAND,
+  INSTALL_COMMANDS,
+  LIVE_BREAKERS,
+  LIVE_DRY_RUN_COMMAND,
+  LIVE_HALT_EXIT_CODE,
+  LIVE_MAX_SIGNAL_DELAY_SECONDS,
+  LIVE_ORDER_NOTIONAL_USDT,
+  README_BROKER_URL,
+  README_LIVE_URL,
+  REPO_URL,
+} from '../../../lib/backtests/engine';
+import { formatCount, formatRate } from '../../../lib/backtests/format';
+import { backtestPath, gridResults, results } from '../../../lib/backtests/load';
 import { softwareSourceCodeLd } from '../../../lib/backtests/seo';
-import { lostInBothSamples } from '../../../lib/backtests/verdict';
+import { MIN_TRADES } from '../../../lib/backtests/verdict';
 import { fmt } from '../../../lib/fmt';
+import { ENGINE_GUIDES } from '../../../lib/related';
 import { breadcrumbLd } from '../../../lib/seo';
 
 export const getStaticPaths = localeStaticPaths;
@@ -48,8 +80,7 @@ if (results.length === 0) throw new Error('bot: src/data/backtests/ is empty. Ru
 // The latest engine release. The published results may come from an older
 // version; each result page names its own.
 const version = ENGINE_VERSION;
-const n = formatCount(results.length);
-const resultsHead = fmt(results.every(lostInBothSamples) ? t.results.headAllLost : t.results.head, { n });
+const q = t.quickstart;
 
 const facts = [
   { label: t.facts.version, value: version, num: true },
@@ -57,30 +88,126 @@ const facts = [
   { label: t.facts.dependency, value: t.facts.dependencyValue },
   { label: t.facts.license, value: t.facts.licenseValue },
 ];
-const steps = [
-  { head: t.quickstart.install, code: INSTALL_COMMANDS.join('\n'), note: t.quickstart.installNote },
-  { head: t.quickstart.download, code: DOWNLOAD_COMMAND, note: t.quickstart.downloadNote },
-  { head: t.quickstart.backtest, code: BACKTEST_COMMAND, note: t.quickstart.backtestNote },
+
+// --- the three parts, each leading to its own track of the quickstart ---------
+const parts: Array<{ icon: IconName; anchor: string; title: string; body: string; link: string }> = [
+  { icon: 'chart-line', anchor: '#quickstart-backtest', ...t.parts.backtest },
+  { icon: 'layers', anchor: '#quickstart-grid', ...t.parts.grid },
+  { icon: 'flask-conical', anchor: '#quickstart-live', ...t.parts.live },
 ];
-const statements: Array<{ head: string; body: string; icon: IconName }> = [
+
+// --- quickstart: install once, then three tracks ------------------------------
+const grid = gridResults[0];
+const tracks: Array<{
+  id: string;
+  head: string;
+  steps: Array<{ head: string; code: string; note: string }>;
+  more?: { href: string; label: string };
+}> = [
+  {
+    id: 'quickstart-install',
+    head: q.groups.install,
+    steps: [{ head: q.install, code: INSTALL_COMMANDS.join('\n'), note: q.installNote }],
+  },
+  {
+    id: 'quickstart-backtest',
+    head: q.groups.backtest,
+    steps: [
+      { head: q.download, code: DOWNLOAD_COMMAND, note: q.downloadNote },
+      { head: q.backtest, code: BACKTEST_COMMAND, note: q.backtestNote },
+    ],
+  },
+  {
+    id: 'quickstart-grid',
+    head: q.groups.grid,
+    steps: [
+      { head: q.gridDownload, code: GRID_DOWNLOAD_COMMAND, note: q.gridDownloadNote },
+      { head: q.funding, code: GRID_FUNDING_COMMAND, note: q.fundingNote },
+      { head: q.grid, code: GRID_COMMAND, note: q.gridNote },
+    ],
+    more: grid ? { href: localePath(locale, backtestPath(grid.slug)), label: q.gridResult } : undefined,
+  },
+  {
+    id: 'quickstart-live',
+    head: q.groups.live,
+    steps: [{ head: q.dryRun, code: LIVE_DRY_RUN_COMMAND, note: q.dryRunNote }],
+  },
+];
+
+// --- how a backtest is computed: the figures come from the shipped results ----
+/** The value all strategy results share, or null when they differ. */
+function shared<T>(pick: (result: (typeof results)[number]) => T): T | null {
+  const first = pick(results[0]);
+  return results.every((result) => pick(result) === first) ? first : null;
+}
+const fee = shared((r) => r.costs.fee_rate_per_side);
+const slip = shared((r) => r.costs.slippage_per_fill);
+const inSampleShare = shared((r) => r.config.split.in_sample_fraction);
+const costFormula =
+  fee !== null && slip !== null
+    ? fmt(t.computed.costs.formula, { fee: formatRate(fee), slip: formatRate(slip), total: formatRate(2 * (fee + slip)) })
+    : null;
+const computed: Array<{ head: string; body: string; extra?: string; label?: string; formula?: string | null }> = [
+  { head: t.computed.timing.head, body: t.computed.timing.body, label: t.computed.timing.label, formula: t.computed.timing.formula },
+  { head: t.computed.costs.head, body: t.computed.costs.body, label: t.computed.costs.label, formula: costFormula },
+  {
+    head: t.computed.split.head,
+    body: t.computed.split.body,
+    extra: typeof inSampleShare === 'number' ? fmt(t.computed.split.shipped, { share: formatRate(inSampleShare) }) : undefined,
+  },
+  { head: t.computed.lookahead.head, body: t.computed.lookahead.body },
+];
+
+// --- the runner's default limits -------------------------------------------------
+const breakers = LIVE_BREAKERS.map((item) => ({
+  setting: item.setting,
+  value: fmt(t.live.breakers.units[item.unit], { n: formatCount(item.value) }),
+  when: t.live.breakers.when[item.setting],
+}));
+
+const statements: Array<{ head: string; body: string; icon: IconName; link?: { href: string; label: string } }> = [
   { head: t.does.head, body: t.does.body, icon: 'check' },
   { head: t.doesNot.head, body: fmt(t.doesNot.body, { version }), icon: 'x' },
-  { head: t.funded.head, body: t.funded.body, icon: 'scale' },
+  { head: t.funded.head, body: t.funded.body, icon: 'scale', link: { href: README_BROKER_URL, label: t.funded.link } },
 ];
-// What the shipped strategies returned, from the same files as /backtests/.
-const shipped = results.map((result) => {
-  const strategy = b.strategies[result.strategy as keyof typeof b.strategies];
-  if (!strategy) throw new Error(`bot: no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
-  return {
-    name: strategy.short,
-    href: localePath(locale, backtestPath(result.slug)),
-    market: `${result.symbol} ${result.interval}`,
-    views: sampleViews(result, b),
-  };
-});
 
-// The same line /backtests/ prints under its results.
-const costsCaption = results.every((r) => !r.costs.funding_modelled) ? b.index.caption : b.index.captionPlain;
+// --- what the shipped results returned, from the same files as /backtests/ ----
+const summary = headline(b.index, b.na);
+const resultsHead =
+  summary.code === 'grid-ranged'
+    ? fmt(t.results.headRanged, { s: summary.s })
+    : fmt(summary.code === 'all-lost' ? t.results.headAllLost : t.results.head, { n: summary.n });
+const shipped = [
+  ...results.map((result) => {
+    const strategy = b.strategies[result.strategy as keyof typeof b.strategies];
+    if (!strategy) throw new Error(`bot: no strings for strategy "${result.strategy}" in src/i18n/backtests.ts`);
+    return {
+      name: strategy.short,
+      href: localePath(locale, backtestPath(result.slug)),
+      market: `${result.symbol} ${result.interval}`,
+      returns: sampleViews(result, b).map((v) => ({ text: v.totalReturn, sign: v.totalReturnSign })),
+      notes: [result.costs.funding_modelled ? t.results.fundingIn : t.results.fundingOut],
+    };
+  }),
+  ...gridResults.map((result) => {
+    const views = gridViews(result, b);
+    return {
+      name: b.grid.short,
+      href: localePath(locale, backtestPath(result.slug)),
+      market: `${result.symbol} ${result.interval}`,
+      returns: views.map((v) => ({ text: v.totalReturn, sign: v.totalReturnSign })),
+      // What each sample has to be read with, in-sample first.
+      notes: views.map((v) => v.noteShort),
+    };
+  }),
+];
+const sampleHeads = [b.detail.result.totalReturn.in_sample, b.detail.result.totalReturn.out_of_sample];
+
+// --- lessons built on the engine: only the ones that exist in this locale -----
+const articles = await getArticlesFor(locale);
+const guides = ENGINE_GUIDES.flatMap((slug) => articles.filter((a) => a.entry.data.slug === slug));
+// The generated Simplified articles keep the Traditional `category`, so it is converted here.
+const category = (text: string) => (locale === 'zh-hans' ? toHans(text) : text);
 
 const trail = [
   { name: c.breadcrumb.home, path: '/' },
@@ -112,25 +239,154 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
     </dl>
   </PageContainer>
 
-  <PageContainer band id="quickstart" aria-labelledby="quickstart-head">
-    <SectionHeader title={t.quickstart.head} id="quickstart-head" />
-    <ol class="bot-steps">
+  <PageContainer flush id="what-it-is">
+    <SectionHeader title={t.parts.head} desc={t.parts.body} />
+    <div class="cards cols-3" role="group" aria-label={fmt(t.parts.label, { version })}>
       {
-        steps.map((step, i) => (
+        parts.map((part) => (
+          <ToolCard locale={locale} href={part.anchor} icon={part.icon} title={part.title} desc={part.body}>
+            <span slot="foot">{part.link}</span>
+          </ToolCard>
+        ))
+      }
+    </div>
+  </PageContainer>
+
+  <PageContainer band id="quickstart" aria-labelledby="quickstart-head">
+    <SectionHeader title={q.head} desc={q.sub} id="quickstart-head" />
+    <div class="bot-tracks">
+      {
+        tracks.map((track) => (
+          <section class="bot-track" id={track.id} aria-labelledby={`${track.id}-head`}>
+            <h3 class="h-card" id={`${track.id}-head`}>
+              {track.head}
+            </h3>
+            <ol class="bot-steps">
+              {track.steps.map((step, i) => (
+                <li>
+                  <div class="bot-step-text">
+                    {track.steps.length > 1 && (
+                      <span class="num bot-step-n" aria-hidden="true">
+                        {i + 1}
+                      </span>
+                    )}
+                    <h4>{step.head}</h4>
+                    <p>
+                      <Flags text={step.note} />
+                    </p>
+                  </div>
+                  <Command code={step.code} />
+                </li>
+              ))}
+            </ol>
+            {track.more && (
+              <a class="lnk" href={track.more.href}>
+                {track.more.label}
+                <Icon name="arrow-right" size={16} />
+              </a>
+            )}
+          </section>
+        ))
+      }
+    </div>
+  </PageContainer>
+
+  <PageContainer id="how-it-is-computed">
+    <SectionHeader title={t.computed.head} desc={t.computed.sub} />
+    <div class="bot-computed">
+      {
+        computed.map((item) => (
+          <div>
+            <h3 class="h-card">{item.head}</h3>
+            <p>{item.body}</p>
+            {item.extra && <p>{item.extra}</p>}
+            {item.formula && <FormulaBlock label={item.label} formula={item.formula} />}
+          </div>
+        ))
+      }
+    </div>
+    <p class="bot-after">
+      {fmt(t.computed.metrics, { min: formatCount(MIN_TRADES) })}{' '}
+      <a href={localePath(locale, '/backtests/#verdict-rule')}>{t.computed.rule}</a>
+    </p>
+  </PageContainer>
+
+  <PageContainer band id="testnet-runner">
+    <SectionHeader title={t.live.head} desc={t.live.sub} />
+    <Disclaimer locale={locale} kind="warning" title={t.live.tested.title}>
+      <p>{t.live.tested.body}</p>
+    </Disclaimer>
+
+    <h3 class="h-card bot-sub">{t.live.safetyHead}</h3>
+    <ul class="bot-safety">
+      {
+        t.live.safety.map((item) => (
           <li>
-            <div class="bot-step-text">
-              <span class="num bot-step-n" aria-hidden="true">{i + 1}</span>
-              <h3 class="h-card">{step.head}</h3>
-              <p>{step.note}</p>
-            </div>
-            <FormulaBlock formula={step.code} />
+            <h4>{item.head}</h4>
+            <p>
+              <Flags text={item.body} />
+            </p>
           </li>
         ))
       }
-    </ol>
+    </ul>
+
+    <div class="bot-breakers" id="circuit-breakers">
+      <div class="bot-breakers-text">
+        <h3 class="h-card">{t.live.breakers.head}</h3>
+        <p>
+          <Flags text={fmt(t.live.breakers.body, { code: LIVE_HALT_EXIT_CODE })} />
+        </p>
+        <p>
+          {
+            fmt(t.live.breakers.also, {
+              delay: formatCount(LIVE_MAX_SIGNAL_DELAY_SECONDS),
+              notional: formatCount(LIVE_ORDER_NOTIONAL_USDT),
+            })
+          }
+        </p>
+      </div>
+      {/* Two columns, so it fits a phone without scrolling: when a breaker trips is written under its name. */}
+      <DataTable locale={locale} label={t.live.breakers.tableLabel} class="bot-limits">
+        <thead>
+          <tr>
+            <th scope="col">{t.live.breakers.setting}</th>
+            <th scope="col">{t.live.breakers.default}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            breakers.map((row) => (
+              <tr>
+                <th scope="row">
+                  <code>{row.setting}</code>
+                  <span class="bot-when">{row.when}</span>
+                </th>
+                <td class="num bot-default">{row.value}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </DataTable>
+    </div>
+
+    <h3 class="h-card bot-sub">{t.live.moreHead}</h3>
+    <div class="bot-more">
+      {
+        t.live.more.map((item) => (
+          <Accordion summary={item.q} level={4} name="runner">
+            <p>{item.a}</p>
+          </Accordion>
+        ))
+      }
+    </div>
+    <a class="lnk" href={README_LIVE_URL} rel="noopener">
+      {t.live.readme}
+      <Icon name="arrow-right" size={16} />
+    </a>
   </PageContainer>
 
-  <PageContainer>
+  <PageContainer id="limits">
     <div class="bot-statements">
       {
         statements.map((s) => (
@@ -140,20 +396,26 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
               {s.head}
             </h2>
             <p>{s.body}</p>
+            {s.link && (
+              <a class="lnk" href={s.link.href} rel="noopener">
+                {s.link.label}
+                <Icon name="arrow-right" size={16} />
+              </a>
+            )}
           </div>
         ))
       }
     </div>
   </PageContainer>
 
-  <PageContainer flush>
+  <PageContainer flush id="shipped-results">
     <SectionHeader title={resultsHead} desc={t.results.body} href={localePath(locale, '/backtests/')} linkLabel={t.results.link} />
-    <DataTable locale={locale} label={t.results.tableLabel} caption={costsCaption} stickyFirst class="bot-table">
+    {/* Three columns, so it fits a phone: the market and what to keep in mind sit under the name. */}
+    <DataTable locale={locale} label={t.results.tableLabel} caption={summary.caption} class="bot-table">
       <thead>
         <tr>
           <th scope="col">{b.columns.strategy}</th>
-          <th scope="col" class="bot-l">{b.detail.data.market}</th>
-          {shipped[0].views.map((v) => <th scope="col">{b.detail.result.totalReturn[v.key]}</th>)}
+          {sampleHeads.map((head) => <th scope="col" class="bot-head">{head}</th>)}
         </tr>
       </thead>
       <tbody>
@@ -162,11 +424,16 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
             <tr>
               <th scope="row">
                 <a href={row.href}>{row.name}</a>
+                <span class="bot-row-note">
+                  <span class="num">{row.market}</span>
+                  {row.notes.map((note) => (
+                    <span>{note}</span>
+                  ))}
+                </span>
               </th>
-              <td class="num bot-l">{row.market}</td>
-              {row.views.map((v) => (
-                <td class="num bot-return" data-tone={toneOf(v.totalReturnSign)}>
-                  {v.totalReturn}
+              {row.returns.map((r) => (
+                <td class="num bot-return" data-tone={toneOf(r.sign)}>
+                  {r.text}
                 </td>
               ))}
             </tr>
@@ -175,6 +442,25 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
       </tbody>
     </DataTable>
   </PageContainer>
+
+  {
+    guides.length > 0 && (
+      <PageContainer id="guides">
+        <SectionHeader title={t.guides.head} desc={t.guides.sub} href={localePath(locale, '/learn/')} linkLabel={c.nav.items.learn.label} />
+        <div class="cards cols-3">
+          {guides.map(({ entry }) => (
+            <ArticleCard
+              href={localePath(locale, articlePath(entry.data.slug))}
+              title={entry.data.title}
+              desc={entry.data.description}
+              category={category(entry.data.category)}
+              date={entry.data.date}
+            />
+          ))}
+        </div>
+      </PageContainer>
+    )
+  }
 </Base>
 
 <style>
@@ -199,10 +485,27 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
     font-weight: var(--weight-medium);
   }
 
+  /* The quickstart: one track under the other, each with its own heading. */
+  .bot-tracks {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-12);
+  }
+
+  .bot-track {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    gap: var(--space-3);
+    scroll-margin-top: calc(var(--header-h) + var(--space-4));
+  }
+
   /* One step a row: what it is on the left, the command on the right. */
   .bot-steps {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    border-bottom: var(--hairline) solid var(--color-border);
   }
 
   .bot-steps li {
@@ -210,12 +513,8 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
     grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
     gap: var(--space-4) var(--space-10);
     align-items: start;
-    padding-block: var(--space-8);
+    padding-block: var(--space-6);
     border-top: var(--hairline) solid var(--color-border);
-  }
-
-  .bot-steps li:last-child {
-    padding-bottom: 0;
   }
 
   .bot-step-text {
@@ -229,10 +528,130 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
     font-size: var(--text-sm);
   }
 
+  .bot-step-text h4 {
+    font-size: var(--text-md);
+    line-height: var(--leading-tight);
+    letter-spacing: 0;
+  }
+
   .bot-step-text p {
     max-width: 44ch;
     color: var(--color-text-secondary);
     font-size: var(--text-sm);
+  }
+
+  /* Four rules, two across: each a heading, a paragraph and, where there is one, its formula. */
+  .bot-computed {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-10) var(--space-16);
+  }
+
+  .bot-computed > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  .bot-computed p {
+    max-width: 62ch;
+    color: var(--color-text-secondary);
+  }
+
+  .bot-after {
+    max-width: 78ch;
+    margin-top: var(--space-10);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .bot-after a {
+    color: var(--color-accent);
+  }
+
+  .bot-sub {
+    margin-top: var(--space-12);
+  }
+
+  /* Six design decisions, three across. No frames: the band is the surface. */
+  .bot-safety {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-10);
+    margin-top: var(--space-5);
+  }
+
+  .bot-safety li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--space-2);
+    padding-top: var(--space-4);
+    border-top: var(--hairline) solid var(--color-border-hover);
+  }
+
+  .bot-safety h4 {
+    font-size: var(--text-md);
+    line-height: var(--leading-tight);
+    letter-spacing: 0;
+  }
+
+  .bot-safety p {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  /* What a breaker does on the left, the table of defaults beside it. */
+  .bot-breakers {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-6) var(--space-10);
+    align-items: start;
+    margin-top: var(--space-12);
+    scroll-margin-top: calc(var(--header-h) + var(--space-4));
+  }
+
+  .bot-breakers-text {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .bot-breakers-text p {
+    max-width: 60ch;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  /* A setting, and under its name the sentence that says when it trips. */
+  :global(.bot-limits) th[scope="row"] {
+    white-space: normal;
+  }
+
+  :global(.bot-limits) code {
+    overflow-wrap: anywhere;
+  }
+
+  .bot-when {
+    display: block;
+    max-width: 52ch;
+    margin-top: var(--space-1);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+  }
+
+  .bot-default {
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .bot-more {
+    max-width: var(--measure);
+    margin-block: var(--space-4) var(--space-3);
   }
 
   .bot-statements {
@@ -245,6 +664,7 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     align-content: start;
+    justify-items: start;
     gap: var(--space-3);
     padding-top: var(--space-5);
     border-top: var(--hairline) solid var(--color-border-hover);
@@ -268,8 +688,24 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
     color: var(--color-text-secondary);
   }
 
-  .bot-l {
-    text-align: left;
+  /* A shipped result: its name, and under it the market and what to keep in mind. */
+  :global(.bot-table) th[scope="row"] {
+    white-space: normal;
+  }
+
+  .bot-row-note {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-4);
+    padding-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-regular);
+  }
+
+  /* "Total return, out-of-sample" is long for a phone column: it may wrap. */
+  .bot-head {
+    white-space: normal;
   }
 
   .bot-return {
@@ -281,18 +717,35 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
     align-items: center;
     min-height: var(--tap);
     text-decoration-color: var(--color-border-control);
+    white-space: nowrap;
+  }
+
+  /* Sentence-long links: on a phone they wrap instead of running off the screen. */
+  :is(.bot-track, .bot-statements) .lnk,
+  :global(#testnet-runner) .lnk {
+    white-space: normal;
   }
 
   tbody a:hover {
     text-decoration-color: currentColor;
   }
 
+  @media (max-width: 960px) {
+    .bot-breakers {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bot-safety {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
   @media (max-width: 860px) {
     .bot-steps li {
       grid-template-columns: minmax(0, 1fr);
-      padding-block: var(--space-6);
     }
 
+    .bot-computed,
     .bot-statements {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-8);
@@ -302,6 +755,10 @@ const jsonLd = [softwareSourceCodeLd(locale, { path: PATH, description: t.descri
   @media (max-width: 600px) {
     .bot-facts {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .bot-safety {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

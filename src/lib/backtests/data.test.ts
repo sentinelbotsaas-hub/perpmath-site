@@ -10,9 +10,24 @@ import { describe, expect, it } from 'vitest';
 // @ts-ignore: a plain .mjs script; it has no type declarations
 import { serialize, slim, slugOf } from '../../../scripts/backtests-import.mjs';
 import { equityChart } from './chart';
-import { BACKTEST_COMMAND, DOWNLOAD_COMMAND, INSTALL_COMMANDS, reproduceCommands } from './engine';
+import {
+  BACKTEST_COMMAND,
+  DOWNLOAD_COMMAND,
+  GRID_COMMAND,
+  GRID_DOWNLOAD_COMMAND,
+  GRID_FUNDING_COMMAND,
+  INSTALL_COMMANDS,
+  LIVE_BREAKERS,
+  LIVE_DRY_RUN_COMMAND,
+  LIVE_HALT_EXIT_CODE,
+  LIVE_KEY_ENV,
+  LIVE_MAX_SIGNAL_DELAY_SECONDS,
+  LIVE_ORDER_NOTIONAL_USDT,
+  gridReproduceCommands,
+  reproduceCommands,
+} from './engine';
 import { formatCount, formatPct, formatSigned } from './format';
-import { backtestPath, results } from './load';
+import { backtestPath, gridResults, results } from './load';
 import { SAMPLE_KEYS } from './types';
 import type { BacktestResult } from './types';
 import { verdictOf } from './verdict';
@@ -221,5 +236,54 @@ describe('commands quoted from the engine README', () => {
     if (!fvg) return;
     const text = readFileSync(readme, 'utf8');
     expect(text).toContain(reproduceCommands(fvg).download);
+  });
+
+  it.skipIf(!hasEngine)('has the grid and dry-run commands word for word', () => {
+    const text = readFileSync(readme, 'utf8').replace(/\r\n/g, '\n');
+    // The three grid lines are one block in the README, in this order.
+    expect(text).toContain([GRID_DOWNLOAD_COMMAND, GRID_FUNDING_COMMAND, GRID_COMMAND].join('\n'));
+    expect(text).toContain(LIVE_DRY_RUN_COMMAND);
+  });
+
+  it('builds the grid reproduction commands from a result', () => {
+    const grid = gridResults.find((r) => r.slug === 'grid-btcusdt');
+    if (!grid) return; // the shipped example was removed; nothing to compare
+    expect(gridReproduceCommands(grid)).toEqual({
+      download: GRID_DOWNLOAD_COMMAND,
+      funding: GRID_FUNDING_COMMAND,
+      grid: GRID_COMMAND,
+    });
+  });
+
+  it('covers every funding settlement inside the bars with the funding command', () => {
+    for (const grid of gridResults) {
+      const funding = grid.data.funding;
+      if (!funding) continue;
+      const [, start, end] = /--start (\S+) --end (\S+)$/.exec(gridReproduceCommands(grid).funding) ?? [];
+      expect(Date.parse(start)).toBeLessThanOrEqual(Date.parse(funding.first));
+      expect(Date.parse(end)).toBeGreaterThan(Date.parse(funding.last));
+      expect(Date.parse(start)).toBeLessThanOrEqual(Date.parse(grid.data.first_bar));
+    }
+  });
+});
+
+describe('testnet runner facts quoted from the engine README', () => {
+  it.skipIf(!hasEngine)('has every circuit breaker with its default', () => {
+    const text = readFileSync(readme, 'utf8');
+    // README rows look like: | `max_daily_loss_usdt` | 20 | USDT equity has fallen ...
+    for (const breaker of LIVE_BREAKERS) {
+      expect(text).toContain(`| \`${breaker.setting}\` | ${breaker.value} |`);
+    }
+    // ...and the page lists all of them, not a selection.
+    const rows = text.match(/^\| `max_[a-z_]+` \| \d+ \|/gm) ?? [];
+    expect(rows).toHaveLength(LIVE_BREAKERS.length);
+  });
+
+  it.skipIf(!hasEngine)('has the exit code, the signal delay, the entry size and the key variables', () => {
+    const text = readFileSync(readme, 'utf8').replace(/\s+/g, ' ');
+    expect(text).toContain(`exits with code ${LIVE_HALT_EXIT_CODE}`);
+    expect(text).toContain(`\`max_signal_delay_seconds\` (default ${LIVE_MAX_SIGNAL_DELAY_SECONDS})`);
+    expect(text).toContain(`\`order_notional_usdt\` (${LIVE_ORDER_NOTIONAL_USDT},`);
+    expect(text).toContain(`perpmath reads only ${LIVE_KEY_ENV.map((name) => `\`${name}\``).join(' and ')}`);
   });
 });
