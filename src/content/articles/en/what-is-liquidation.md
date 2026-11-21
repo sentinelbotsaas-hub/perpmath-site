@@ -2,8 +2,8 @@
 title: "What is liquidation in crypto? One year of BTCUSDT: a 100x long was liquidated on 254 days"
 slug: "what-is-liquidation"
 description: "Liquidation is the exchange closing your position when its margin runs out. We counted same-day liquidations on 365 BTCUSDT daily candles, from 2x to 100x."
-date: "2026-11-22"
-lastmod: "2026-11-22"
+date: "2026-11-21"
+lastmod: "2026-11-21"
 lang: "en"
 category: "Perpetual basics"
 tags: ["liquidation", "leverage", "forced liquidation", "margin", "BTCUSDT"]
@@ -17,7 +17,7 @@ I wanted one plain number: at what leverage does a position get wiped out inside
 
 Liquidation is the moment the margin in a position falls below the maintenance margin and the exchange closes the position without asking you. In isolated margin mode on a USDT perpetual, what you lose is the margin assigned to that one position. The rest of the account is not touched.
 
-Bybit's [liquidation process article](https://www.bybit.com/en/help-center/article/UTA-Trading-Rules-Liquidation-Process) (page dated 15 October 2026, checked 22 November 2026) says it plainly: in isolated mode each position is managed independently with its own allocated margin, and liquidation is triggered when the mark price hits the liquidation price. At the lowest risk limit tier the system first cancels any orders that would make the position bigger. If the margin is still short, the whole position is closed at the bankruptcy price.
+Bybit's [liquidation process article](https://www.bybit.com/en/help-center/article/UTA-Trading-Rules-Liquidation-Process) (page dated 15 October 2026, checked 21 November 2026) says it plainly: in isolated mode each position is managed independently with its own allocated margin, and liquidation is triggered when the mark price hits the liquidation price. At the lowest risk limit tier the system first cancels any orders that would make the position bigger. If the margin is still short, the whole position is closed at the bankruptcy price.
 
 Cross margin follows different rules. This article only counts isolated positions.
 
@@ -34,7 +34,7 @@ short liquidation price = entry price x (1 + room)
 Bybit's published formula has more in it: any extra margin you add, a maintenance margin deduction, and (1 ∓ MMR) in the denominator. The page also notes that the actual liquidation price can differ slightly on account of the fee to close. With no margin added and a first-tier position the two barely differ, 0.67% against 0.6722% for a 100x long. I ran both, and a later table has the counts.
 
 <!-- unique:cross-reference -->
-The maintenance margin rate has to be looked up in the right place. Bybit's [maintenance margin article](https://www.bybit.com/en/help-center/article/Maintenance-Margin-USDT-Contract) (page dated 16 April 2026, checked 22 November 2026) gives this example: a BTCUSDT position worth 2,000,000 USDT or less needs an MMR of 0.5%. When I called the [risk limit endpoint](https://bybit-exchange.github.io/docs/v5/market/risk-limit) directly on 18 November 2026, the first tier it returned was a position value up to 300,000 USDT, an MMR of 0.33% and a maximum leverage of 150x. The 0.5% is the second tier's rate. The help article's example has fallen behind the parameters. Everything here uses the endpoint's 0.33%, and anyone holding more than 300,000 USDT has less room than the table below shows.
+The maintenance margin rate has to be looked up in the right place. Bybit's [maintenance margin article](https://www.bybit.com/en/help-center/article/Maintenance-Margin-USDT-Contract) (page dated 16 April 2026, checked 21 November 2026) gives this example: a BTCUSDT position worth 2,000,000 USDT or less needs an MMR of 0.5%. When I called the [risk limit endpoint](https://bybit-exchange.github.io/docs/v5/market/risk-limit) directly on 18 November 2026, the first tier it returned was a position value up to 300,000 USDT, an MMR of 0.33% and a maximum leverage of 150x. The 0.5% is the second tier's rate. The help article's example has fallen behind the parameters. Everything here uses the endpoint's 0.33%, and anyone holding more than 300,000 USDT has less room than the table below shows.
 
 The table below also turns the room into USDT at the 17 November 2026 close of 64,919.9. For your own entry price, the [liquidation price calculator](/tools/liquidation-price-calculator/) applies the same formula.
 
@@ -77,7 +77,7 @@ The table departs from real trading in four ways: the entry time is assumed, liq
 Entry time first, the one I worried about most. The daily open is not a special moment, only the point where the UTC date changes. Nobody enters at exactly 00:00 UTC every day, and I expected the assumption to skew the result. So I recounted on 1-hour candles: one entry at every full hour from 00:00 on 18 November 2025 to 00:00 on 17 November 2026, 8,737 entries in all, each held for 24 hours. A 100x long was liquidated on 70.29% of those entries, against 69.59% in the daily version. Split by the hour of entry, the 100x long figure runs from 68.13% to 73.63%. I guessed wrong. The hour of entry hardly changes the conclusion.
 
 <!-- unique:original-calc -->
-The mark price mattered less than I expected as well. Bybit states that liquidation follows the mark price, and the [mark price](https://www.bybit.com/en/help-center/article/Mark-Price-Calculation-Perpetual-Expiry-Contracts) (page dated 4 September 2026, checked 22 November 2026) is the median of three values: two prices derived from the index price, plus the last traded price. I downloaded daily mark price candles too (the `mark-price-kline` endpoint, [docs](https://bybit-exchange.github.io/docs/v5/market/mark-kline)) and recounted. That is the second row below. Across six leverage levels and both directions, the two price series disagree on only 9 day-and-direction pairs, and in all 9 the last traded price reached the level while the mark price did not.
+The mark price mattered less than I expected as well. Bybit states that liquidation follows the mark price, and the [mark price](https://www.bybit.com/en/help-center/article/Mark-Price-Calculation-Perpetual-Expiry-Contracts) (page dated 4 September 2026, checked 21 November 2026) is the median of three values: two prices derived from the index price, plus the last traded price. I downloaded daily mark price candles too (the `mark-price-kline` endpoint, [docs](https://bybit-exchange.github.io/docs/v5/market/mark-kline)) and recounted. That is the second row below. Across six leverage levels and both directions, the two price series disagree on only 9 day-and-direction pairs, and in all 9 the last traded price reached the level while the mark price did not.
 
 | Method | 20x long / short | 50x long / short | 100x long / short |
 | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ The table measures whether price touches your liquidation level within one day. 
 
 My own reading is that the leverage setting decides how much room you have, and the relationship is far from linear. In the long column, going from 10x to 20x adds 18 liquidation days a year; going from 50x to 100x adds 107 days. To work back from a stop distance to a leverage ceiling, use the [leverage calculator](/tools/leverage-calculator/). To fix the most you're willing to lose on a trade and size the position from that, use the [position size calculator](/tools/position-size-calculator/).
 
-In [policy statement PS20/10](https://www.fca.org.uk/publications/policy-statements/ps20-10-prohibiting-sale-retail-clients-investment-products-reference-cryptoassets) (published 6 October 2020, checked 22 November 2026) the UK Financial Conduct Authority banned the sale of crypto-asset derivatives to retail clients. One of the reasons it lists is extreme volatility in crypto-asset prices.
+In [policy statement PS20/10](https://www.fca.org.uk/publications/policy-statements/ps20-10-prohibiting-sale-retail-clients-investment-products-reference-cryptoassets) (published 6 October 2020, checked 21 November 2026) the UK Financial Conduct Authority banned the sale of crypto-asset derivatives to retail clients. One of the reasons it lists is extreme volatility in crypto-asset prices.
 
 The latest daily reading is in the [bitcoin daily report](/daily/btc/), and statistics across several contracts are on the [liquidation data page](/data/liquidation/). The other running cost of a position is funding, and current rates are on the [funding rate data page](/data/funding-rate/). If you'd like to test an exit rule on a year of candles before trusting it with margin, the open-source backtester is described on the [bot page](/bot/).
 

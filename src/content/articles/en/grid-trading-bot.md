@@ -2,8 +2,8 @@
 title: "Grid trading bot: a one-year BTCUSDT backtest of what it earns and what it gives back"
 slug: "grid-trading-bot"
 description: "What a grid trading bot earns and loses, from a one-year BTCUSDT backtest: 669 completed pairs made 1,366.58 USDT and the position left over gave back 953.84."
-date: "2026-11-22"
-lastmod: "2026-11-22"
+date: "2026-11-21"
+lastmod: "2026-11-21"
 lang: "en"
 category: "Backtests"
 tags: ["grid trading bot", "grid bot", "backtest", "BTCUSDT", "funding", "leverage"]
@@ -18,7 +18,7 @@ tldr: "A grid trading bot keeps buy and sell limit orders at fixed price levels 
 
 A grid trading bot is a program that keeps limit orders resting at a ladder of price levels inside a range you choose: buys below the current price, sells above it. Each time price drops through a level and later climbs back through the next one up, a buy and a sell complete a pair and the bot keeps the spacing between them. It makes no forecast. It is paid for price going back and forth.
 
-Between two neighbouring levels sits one cell. A long cell buys at its lower level and sells at its upper level; a short cell does the mirror image. A neutral grid uses long cells below the starting price and short cells above it, and trades nothing at the start. Exchanges offer this as a built-in product. Bybit's [getting started page](https://www.bybit.com/en/help-center/article/How-to-Get-Started-with-Futures-Grid-Bot-on-Bybit) for its futures grid bot (updated 8 April 2026, checked 22 November 2026) lists neutral as the default direction and arithmetic spacing as the default grid type, with geometric as the alternative. What ties this site to Bybit is spelled out on the [disclosure page](/disclosure/).
+Between two neighbouring levels sits one cell. A long cell buys at its lower level and sells at its upper level; a short cell does the mirror image. A neutral grid uses long cells below the starting price and short cells above it, and trades nothing at the start. Exchanges offer this as a built-in product. Bybit's [getting started page](https://www.bybit.com/en/help-center/article/How-to-Get-Started-with-Futures-Grid-Bot-on-Bybit) for its futures grid bot (updated 8 April 2026, checked 21 November 2026) lists neutral as the default direction and arithmetic spacing as the default grid type, with geometric as the alternative. What ties this site to Bybit is spelled out on the [disclosure page](/disclosure/).
 
 ## The rules and settings we tested, and why these
 
@@ -27,9 +27,9 @@ We tested one configuration, the one the open-source engine ships in [configs/gr
 - **Range.** 57,755.8 to 97,963.2 USDT, the lowest low and highest high of the in-sample period. Remember that sentence; it comes back.
 - **Geometric spacing.** Every cell is 1.0623% wide, so a cell at 60,000 and a cell at 95,000 earn the same percentage.
 - **50 cells.** With 10,000 USDT that is 200 USDT of notional per cell. A completed pair costs 0.08% (two maker fees of 0.02% and two fills moved 0.02% against us), so each cell is about 13 times wider than its cost.
-- **Fills.** An order fills only when price trades strictly through its level, at the level, never better. The simulator in [grid.py](https://github.com/sentinelbotsaas-hub/perpmath/blob/d06236ec9fd04a5a17854aaed5477bb048ff98ad/src/perpmath/grid.py) (version 0.2.1, checked 22 November 2026) then applies slippage to limit fills too.
+- **Fills.** An order fills only when price trades strictly through its level, at the level, never better. The simulator in [grid.py](https://github.com/sentinelbotsaas-hub/perpmath/blob/d06236ec9fd04a5a17854aaed5477bb048ff98ad/src/perpmath/grid.py) (version 0.2.1, checked 21 November 2026) then applies slippage to limit fills too.
 
-The data is the same year used for the other [backtests](/backtests/) on this site: 35,040 fifteen-minute BTCUSDT bars from 18 November 2025 to 18 November 2026, plus 1,095 settled funding rates from Bybit's public [funding history endpoint](https://bybit-exchange.github.io/docs/v5/market/history-fund-rate) (checked 22 November 2026). The first 70% is in-sample, and the rest, from 31 July 2026, is out-of-sample.
+The data is the same year used for the other [backtests](/backtests/) on this site: 35,040 fifteen-minute BTCUSDT bars from 18 November 2025 to 18 November 2026, plus 1,095 settled funding rates from Bybit's public [funding history endpoint](https://bybit-exchange.github.io/docs/v5/market/history-fund-rate) (checked 21 November 2026). The first 70% is in-sample, and the rest, from 31 July 2026, is out-of-sample.
 
 ```
 perpmath download BTCUSDT 15m --start 2025-11-18T11:30:00Z --end 2026-11-18T11:30:00Z
@@ -38,7 +38,7 @@ perpmath grid --symbol BTCUSDT --interval 15m --config configs/grid.json --out r
 ```
 
 <!-- unique:firsthand-data -->
-We ran those three commands on 22 November 2026 in a newly cloned copy. The SHA-256 of both downloaded files matched the ones behind the published result, and our output differed from the engine's `results/grid-btcusdt.json` only in the timestamp and the version number.
+We ran those three commands on 21 November 2026 in a newly cloned copy. The SHA-256 of both downloaded files matched the ones behind the published result, and our output differed from the engine's `results/grid-btcusdt.json` only in the timestamp and the version number.
 
 | Sample | Completed pairs | Total return | Max drawdown | Fees | Funding paid | Buy and hold, with funding |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -77,7 +77,7 @@ They move the result by up to a point of return in this run, which is a lot when
 | Grid fills at the taker fee | +2.22% | +4.09% |
 | Funding left out | +3.55% | +3.83% |
 
-Both rates are the base tier for perpetuals in Bybit's [fee table](https://www.bybit.com/en/help-center/article/Trading-Fee-Structure) (page updated 20 November 2026, checked 22 November 2026). Which one a built-in bot pays is worth checking on your own statements. Bybit's [P&L page](https://www.bybit.com/en/help-center/article/P-L-Calculations-Futures-Grid-Bot) for the futures grid bot (updated 10 September 2026, checked 22 November 2026) works its example with the taker rate.
+Both rates are the base tier for perpetuals in Bybit's [fee table](https://www.bybit.com/en/help-center/article/Trading-Fee-Structure) (page updated 20 November 2026, checked 21 November 2026). Which one a built-in bot pays is worth checking on your own statements. Bybit's [P&L page](https://www.bybit.com/en/help-center/article/P-L-Calculations-Futures-Grid-Bot) for the futures grid bot (updated 10 September 2026, checked 21 November 2026) works its example with the taker rate.
 
 <!-- unique:original-calc -->
 Funding cuts both ways. A grid pays or receives it on its net position. In-sample the grid was net long 89.0% of the time and paid 38.09 USDT; out-of-sample it was net short 79.2% of the time and received 53.98. Leaving funding out would have understated one period and overstated the other. Current rates are on the [funding rate page](/data/funding-rate/).
@@ -160,11 +160,11 @@ It multiplies the pair income and the inventory loss by the same factor, and it 
 <!-- unique:original-calc -->
 None of the 14 runs was liquidated, which surprised me. Read the 10x in-sample row, though. Its return column says +31.66%. On 6 February 2026 its equity at one bar close was 610.04 USDT out of 10,000, against a maintenance margin of 211.91 on a 1.0666 BTC long. Holding that position fixed, equity meets the maintenance margin near 59,829, about 0.6% below that bar's close. The next bar's low was 59,888.0. This is a rough measure (it ignores further fills, and the engine uses a simplified tier-1 margin rule), but the size of the gap is the point: roughly 59 USDT of BTC price separated +31.66% from an account at zero.
 
-That run survived on hindsight too. The same simplified rule is what the [liquidation price calculator](/tools/liquidation-price-calculator/) uses, and the [leverage calculator](/tools/leverage-calculator/) shows how fast the distance shrinks. The maintenance margin rate here, 0.33%, is Bybit's first BTCUSDT tier as served by its public [risk limit endpoint](https://bybit-exchange.github.io/docs/v5/market/risk-limit) on 18 November 2026 (documentation checked 22 November 2026).
+That run survived on hindsight too. The same simplified rule is what the [liquidation price calculator](/tools/liquidation-price-calculator/) uses, and the [leverage calculator](/tools/leverage-calculator/) shows how fast the distance shrinks. The maintenance margin rate here, 0.33%, is Bybit's first BTCUSDT tier as served by its public [risk limit endpoint](https://bybit-exchange.github.io/docs/v5/market/risk-limit) on 18 November 2026 (documentation checked 21 November 2026).
 
 ## How do exchange grid bots differ from this simulator?
 
-In several details, any of which can change a result, so treat these numbers as an accounting example and not as a preview of a particular exchange's bot. Comparing the engine's stated rules with Bybit's help pages for its futures grid bot (all checked 22 November 2026):
+In several details, any of which can change a result, so treat these numbers as an accounting example and not as a preview of a particular exchange's bot. Comparing the engine's stated rules with Bybit's help pages for its futures grid bot (all checked 21 November 2026):
 
 - **Size per level.** The simulator opens the same USDT notional in every cell. Bybit's P&L example holds the same BTC quantity at every level.
 - **Fees.** The simulator charges the maker rate on grid fills by default. Bybit's worked example uses the taker rate, which is the +2.22% row above.

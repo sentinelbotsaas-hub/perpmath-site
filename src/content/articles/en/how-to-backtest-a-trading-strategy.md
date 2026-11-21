@@ -2,8 +2,8 @@
 title: "How to backtest a trading strategy: one rule, five ways the result lies"
 slug: "how-to-backtest-a-trading-strategy"
 description: "How to backtest a trading strategy with an open-source engine: one moving-average rule on a year of BTCUSDT, and the five checks that moved its result."
-date: "2026-11-22"
-lastmod: "2026-11-22"
+date: "2026-11-21"
+lastmod: "2026-11-21"
 lang: "en"
 category: "Backtests"
 tags: ["backtesting", "crypto backtesting", "look-ahead bias", "trading costs", "BTCUSDT"]
@@ -19,7 +19,7 @@ I ran one moving-average rule on one year of BTCUSDT candles this week and came 
 You write the rule precisely enough for a program to follow, replay it over historical candles with realistic fills and costs, and judge it on a stretch of data you did not use to choose anything. The mechanics take ten minutes. Most of the work is stopping the result from flattering you.
 
 <!-- unique:firsthand-data -->
-We ran the whole thing with the open-source [perpmath engine](https://github.com/sentinelbotsaas-hub/perpmath/tree/d06236ec9fd04a5a17854aaed5477bb048ff98ad) (version 0.2.1, commit `d06236e`, checked 22 November 2026) and then changed one thing at a time. Five changes moved the number:
+We ran the whole thing with the open-source [perpmath engine](https://github.com/sentinelbotsaas-hub/perpmath/tree/d06236ec9fd04a5a17854aaed5477bb048ff98ad) (version 0.2.1, commit `d06236e`, checked 21 November 2026) and then changed one thing at a time. Five changes moved the number:
 
 | Where it lies | What we changed | Honest run | After the change |
 | --- | --- | --- | --- |
@@ -33,7 +33,7 @@ All six example strategies the engine ships lose money after costs, in both peri
 
 ## Step 1: write a rule a program can run
 
-A rule is ready to backtest when two people coding it separately would get the same trades. "Buy when the trend turns up" fails that test. The engine's [ma_cross.py](https://github.com/sentinelbotsaas-hub/perpmath/blob/d06236ec9fd04a5a17854aaed5477bb048ff98ad/src/perpmath/strategies/ma_cross.py) (checked 22 November 2026) passes it:
+A rule is ready to backtest when two people coding it separately would get the same trades. "Buy when the trend turns up" fails that test. The engine's [ma_cross.py](https://github.com/sentinelbotsaas-hub/perpmath/blob/d06236ec9fd04a5a17854aaed5477bb048ff98ad/src/perpmath/strategies/ma_cross.py) (checked 21 November 2026) passes it:
 
 - Fast line: the simple average of the last 20 closes. Slow line: the last 50.
 - When the fast line crosses above the slow line on a bar's close, close any short and go long. A cross below does the reverse.
@@ -49,7 +49,7 @@ The first trade in our output shows it. The 01:30 UTC bar on 19 November 2025 cl
 
 ## Step 2: get the data and run it
 
-Six commands take you from nothing to a result file. No exchange account or API key is involved: the candles come from Bybit's public [kline endpoint](https://bybit-exchange.github.io/docs/v5/market/kline) (checked 22 November 2026). How this site relates to Bybit is on the [disclosure page](/disclosure/).
+Six commands take you from nothing to a result file. No exchange account or API key is involved: the candles come from Bybit's public [kline endpoint](https://bybit-exchange.github.io/docs/v5/market/kline) (checked 21 November 2026). How this site relates to Bybit is on the [disclosure page](/disclosure/).
 
 ```
 git clone https://github.com/sentinelbotsaas-hub/perpmath.git
@@ -61,7 +61,7 @@ python -m venv .venv
 ```
 
 <!-- unique:firsthand-data -->
-That is Windows, where we ran it from a fresh clone on 22 November 2026 with Python 3.12.10. On Linux or macOS the folder is `.venv/bin/`. The download gave 35,040 fifteen-minute bars, none missing, from 11:30 UTC on 18 November 2025 to 11:30 UTC on 18 November 2026. Its SHA-256 matched the file behind the engine's published result, and our output matched the published `results/ma-cross-btcusdt.json` line for line apart from the timestamp and the version number. This is what the last command printed:
+That is Windows, where we ran it from a fresh clone on 21 November 2026 with Python 3.12.10. On Linux or macOS the folder is `.venv/bin/`. The download gave 35,040 fifteen-minute bars, none missing, from 11:30 UTC on 18 November 2025 to 11:30 UTC on 18 November 2026. Its SHA-256 matched the file behind the engine's published result, and our output matched the published `results/ma-cross-btcusdt.json` line for line apart from the timestamp and the version number. This is what the last command printed:
 
 ```
 ma_cross BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
@@ -92,7 +92,7 @@ In this run they are the difference between a small loss and a large one, and ou
 <!-- unique:original-calc -->
 The average trade moves by exactly 0.15 points in both samples. That is the round trip: two fees of 0.055% and two fills moved 0.02% against you. Compounded over 572 trades at full position size, 0.15% a trade is the whole distance from -11.15% to -62.35%.
 
-The 0.055% is the base-tier taker rate for perpetuals in Bybit's [fee table](https://www.bybit.com/en/help-center/article/Trading-Fee-Structure) (page updated 20 November 2026, checked 22 November 2026). The 0.02% slippage is an assumption, not a measurement. Funding payments are not modelled by this engine at all; the [funding rate page](/data/funding-rate/) shows what they have been running at.
+The 0.055% is the base-tier taker rate for perpetuals in Bybit's [fee table](https://www.bybit.com/en/help-center/article/Trading-Fee-Structure) (page updated 20 November 2026, checked 21 November 2026). The 0.02% slippage is an assumption, not a measurement. Funding payments are not modelled by this engine at all; the [funding rate page](/data/funding-rate/) shows what they have been running at.
 
 <!-- unique:firsthand-data -->
 We then did the same to the other five shipped strategies. IS is in-sample, OOS is out-of-sample, and each t column belongs to the zero-cost run on its left:
@@ -138,13 +138,13 @@ I expected the textbook picture here, the best in-sample pair falling apart out-
 It's a cost ranking. The five pairs with the smallest in-sample loss are the five that traded least (148 to 337 trades). Slower averages cross less often, pay the 0.15% round trip less often, and lose less. Trade frequency carries over to the next period, so the ranking does too. Nothing in it is about predicting price.
 
 <!-- unique:original-calc -->
-Then there is the one positive cell: 50/100 out-of-sample, +4.88% on 116 trades, t = 0.32. Had we run 13 pairs and reported that line alone, this page would be announcing a profitable moving-average bot. Harvey, Liu and Zhu's [NBER working paper 20592](https://www.nber.org/papers/w20592) (October 2014, checked 22 November 2026) argues that after heavy data mining the usual hurdle of a t-ratio above 2.0 no longer makes sense, and puts the bar for a newly found factor above 3.0. A value of 0.32 is nowhere near either.
+Then there is the one positive cell: 50/100 out-of-sample, +4.88% on 116 trades, t = 0.32. Had we run 13 pairs and reported that line alone, this page would be announcing a profitable moving-average bot. Harvey, Liu and Zhu's [NBER working paper 20592](https://www.nber.org/papers/w20592) (October 2014, checked 21 November 2026) argues that after heavy data mining the usual hurdle of a t-ratio above 2.0 no longer makes sense, and puts the bar for a newly found factor above 3.0. A value of 0.32 is nowhere near either.
 
 ## What is look-ahead bias, and can software catch it?
 
 Look-ahead bias is a decision that uses data from after the moment it was supposedly made. Of the five, it produces the biggest numbers.
 
-We wrote two versions of ma_cross that peek, on purpose. They live only in our research script, which registers them and then calls the engine's ordinary command-line entry point. The first uses a centred fast average: the value on each bar averages 10 closes up to that bar and the 10 closes after it. This is what `center=True` does in pandas' [rolling window](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html) (checked 22 November 2026), and people reach for it since it hugs the chart so well.
+We wrote two versions of ma_cross that peek, on purpose. They live only in our research script, which registers them and then calls the engine's ordinary command-line entry point. The first uses a centred fast average: the value on each bar averages 10 closes up to that bar and the 10 closes after it. This is what `center=True` does in pandas' [rolling window](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html) (checked 21 November 2026), and people reach for it since it hugs the chart so well.
 
 | Version | Engine's check | IS trades | IS win rate | IS return | IS t | OOS return |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -187,7 +187,7 @@ Counting the out-of-sample blocks too, 75 of 4,452 trades (1.68%) left on a bar 
 
 ## How many trades does a backtest need?
 
-Enough that the average trade can be told apart from zero, which is what the t-statistic measures. It is a [one-sample t-test](https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm) (NIST handbook, checked 22 November 2026) of per-trade net returns: the mean divided by its standard error. Roughly, when its absolute value is under 2 you can't tell the average from zero.
+Enough that the average trade can be told apart from zero, which is what the t-statistic measures. It is a [one-sample t-test](https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm) (NIST handbook, checked 21 November 2026) of per-trade net returns: the mean divided by its standard error. Roughly, when its absolute value is under 2 you can't tell the average from zero.
 
 <!-- unique:original-calc -->
 Apply that to our headline numbers. Out-of-sample the shipped rule lost 18.46% over 263 trades, and its t-statistic is -0.68. Nearly a fifth of the account gone, and statistically it is a shrug: the average trade was -0.066%, with enough scatter that zero sits well inside the noise. The zero-cost run's +20.99% has t = 0.86, the same shrug with the sign flipped. Returns compound, so they sound decisive. The t-statistic looks at the per-trade average and its spread.
