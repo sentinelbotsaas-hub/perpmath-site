@@ -12,7 +12,7 @@ tldr: "A break of structure (BOS) is a close beyond the most recent swing high o
 ---
 
 <!-- unique:firsthand-data -->
-We have published six signal-strategy backtests, and this is the only one with a block we can't read. Out-of-sample, the break of structure rule made 42 trades. Their average R is +0.06, and the account still ended 3.35% down. The engine flags any sample under 100 trades as insufficient, and here that flag is the whole result: it is neither a win nor a loss. What the data does support is a count of what price did after 1,631 breaks, and that count is harder on the idea than the backtest is.
+Six signal strategies ship with the engine, and this is the only one with a block we can't read. Out-of-sample, the break of structure rule made 42 trades. Their average R is +0.06, and the account still ended 3.35% down. The engine flags any sample under 100 trades as insufficient, and here that flag is the whole result: it is neither a win nor a loss. What the data does support is a count of what price did after 1,631 breaks, and that count is harder on the idea than the backtest is.
 
 ## What is a break of structure?
 
