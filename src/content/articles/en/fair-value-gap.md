@@ -16,7 +16,7 @@ Price came back to 92.02% of the fair value gaps we counted on a year of BTCUSDT
 
 ## What is a fair value gap?
 
-A fair value gap (FVG) is a three-candle pattern in which the first and third candles do not overlap, so a band of prices was crossed by the middle candle alone. The idea comes from the [ICT and "smart money" school](/learn/ict-trading/) of chart reading, where the band is treated as an imbalance that price tends to revisit.
+A fair value gap (FVG) is a three-candle pattern in which the first and third candles do not overlap, so a band of prices was crossed by the middle candle alone. The idea comes from the [ICT and "smart money" school](/learn/ict-trading/) of chart reading, where the band is treated as an imbalance that price tends to revisit. Its neighbour in that vocabulary is the [order block](/learn/order-block/), the candle a fast move starts from.
 
 There are two versions. In a bullish gap the low of candle 3 sits above the high of candle 1. In a bearish gap the high of candle 3 sits below the low of candle 1. Nothing else is needed for the pattern itself, no indicator and no trend filter.
 

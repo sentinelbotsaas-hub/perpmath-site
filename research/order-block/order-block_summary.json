@@ -1,0 +1,1307 @@
+{
+  "article": "en/order-block",
+  "engine": {
+    "package": "perpmath",
+    "version": "0.2.1",
+    "repository": "https://github.com/sentinelbotsaas-hub/perpmath"
+  },
+  "shipped_result": {
+    "file": "results/order-block-btcusdt.json",
+    "generated_at": "2026-11-21T17:35:25Z",
+    "data": {
+      "exchange": "bybit",
+      "category": "linear",
+      "source": "https://api.bybit.com/v5/market/kline",
+      "first_bar": "2025-11-18T11:30:00Z",
+      "last_bar": "2026-11-18T11:15:00Z",
+      "bars": 35040,
+      "missing_bars": 0,
+      "file": "BTCUSDT-15m.csv",
+      "file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+    },
+    "split": {
+      "oos_start": "2026-07-31T00:00:00Z"
+    },
+    "costs": {
+      "fee_rate_per_side": 0.00055,
+      "slippage_per_fill": 0.0002,
+      "funding_modelled": false
+    },
+    "in_sample": {
+      "trades": 325,
+      "insufficient_sample": false,
+      "wins": 100,
+      "losses": 225,
+      "win_rate_pct": 30.7692,
+      "avg_r": -0.6103,
+      "avg_trade_return_pct": -0.1661,
+      "t_stat": -3.7699,
+      "t_stat_n": 325,
+      "total_return_pct": -42.3331,
+      "max_drawdown_pct": 46.9207,
+      "profit_factor": 0.5969,
+      "total_fees": 2836.33,
+      "avg_bars_held": 13.78,
+      "final_equity": 5766.69,
+      "exit_reasons": {
+        "end": 1,
+        "stop": 223,
+        "target": 101
+      }
+    },
+    "out_of_sample": {
+      "trades": 141,
+      "insufficient_sample": false,
+      "wins": 34,
+      "losses": 107,
+      "win_rate_pct": 24.1135,
+      "avg_r": -0.9842,
+      "avg_trade_return_pct": -0.1445,
+      "t_stat": -2.4856,
+      "t_stat_n": 141,
+      "total_return_pct": -18.7108,
+      "max_drawdown_pct": 24.94,
+      "profit_factor": 0.5312,
+      "total_fees": 1362.92,
+      "avg_bars_held": 15.38,
+      "final_equity": 8128.92,
+      "exit_reasons": {
+        "stop": 106,
+        "target": 35
+      }
+    },
+    "signals": {
+      "in_sample": {
+        "seen": 366,
+        "skipped_in_position": 41,
+        "skipped_invalid_stop": 0,
+        "skipped_no_equity": 0
+      },
+      "out_of_sample": {
+        "seen": 164,
+        "skipped_in_position": 23,
+        "skipped_invalid_stop": 0,
+        "skipped_no_equity": 0
+      }
+    }
+  },
+  "plan_note": "The five settings were fixed before the first run. This is a sensitivity table, not a search: every row is reported and none is a recommendation.",
+  "runs": [
+    {
+      "name": "btcusdt-15m-ib3-mi2",
+      "group": "published",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "atr_period": 14,
+        "swing_left": 5,
+        "swing_right": 5,
+        "impulse_bars": 3,
+        "min_impulse_atr": 2.0,
+        "max_wait_bars": 96,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.1",
+      "published_costs": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 3,
+            "min_impulse_atr": 2.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib3-mi2.published_costs.config.json --out research/order-block/runs/btcusdt-15m-ib3-mi2.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:01Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 325,
+            "wins": 100,
+            "losses": 225,
+            "win_rate_pct": 30.7692,
+            "avg_r": -0.6103,
+            "avg_trade_return_pct": -0.1661,
+            "t_stat": -3.7699,
+            "t_stat_n": 325,
+            "total_return_pct": -42.3331,
+            "max_drawdown_pct": 46.9207,
+            "profit_factor": 0.5969,
+            "total_fees": 2836.33,
+            "final_equity": 5766.69,
+            "avg_bars_held": 13.78,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 223,
+              "target": 101
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 366,
+            "skipped_in_position": 41,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 141,
+            "wins": 34,
+            "losses": 107,
+            "win_rate_pct": 24.1135,
+            "avg_r": -0.9842,
+            "avg_trade_return_pct": -0.1445,
+            "t_stat": -2.4856,
+            "t_stat_n": 141,
+            "total_return_pct": -18.7108,
+            "max_drawdown_pct": 24.94,
+            "profit_factor": 0.5312,
+            "total_fees": 1362.92,
+            "final_equity": 8128.92,
+            "avg_bars_held": 15.38,
+            "exit_reasons": {
+              "stop": 106,
+              "target": 35
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 164,
+            "skipped_in_position": 23,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      },
+      "reproduces_shipped_result": true,
+      "zero_cost": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 3,
+            "min_impulse_atr": 2.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib3-mi2.zero_cost.config.json --out research/order-block/runs/btcusdt-15m-ib3-mi2.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:01Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 327,
+            "wins": 108,
+            "losses": 219,
+            "win_rate_pct": 33.0275,
+            "avg_r": -0.0152,
+            "avg_trade_return_pct": -0.0167,
+            "t_stat": -0.3792,
+            "t_stat_n": 327,
+            "total_return_pct": -6.2655,
+            "max_drawdown_pct": 17.6191,
+            "profit_factor": 0.9348,
+            "total_fees": 0.0,
+            "final_equity": 9373.45,
+            "avg_bars_held": 13.07,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 219,
+              "target": 107
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 366,
+            "skipped_in_position": 39,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 145,
+            "wins": 41,
+            "losses": 104,
+            "win_rate_pct": 28.2759,
+            "avg_r": -0.1517,
+            "avg_trade_return_pct": 0.0058,
+            "t_stat": 0.1059,
+            "t_stat_n": 145,
+            "total_return_pct": 0.5354,
+            "max_drawdown_pct": 10.199,
+            "profit_factor": 1.0188,
+            "total_fees": 0.0,
+            "final_equity": 10053.54,
+            "avg_bars_held": 13.48,
+            "exit_reasons": {
+              "stop": 104,
+              "target": 41
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 164,
+            "skipped_in_position": 19,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-ib3-mi1",
+      "group": "min_impulse_atr",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "atr_period": 14,
+        "swing_left": 5,
+        "swing_right": 5,
+        "impulse_bars": 3,
+        "min_impulse_atr": 1.0,
+        "max_wait_bars": 96,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.1",
+      "published_costs": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 3,
+            "min_impulse_atr": 1.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib3-mi1.published_costs.config.json --out research/order-block/runs/btcusdt-15m-ib3-mi1.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:02Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 434,
+            "wins": 132,
+            "losses": 302,
+            "win_rate_pct": 30.4147,
+            "avg_r": -0.6089,
+            "avg_trade_return_pct": -0.175,
+            "t_stat": -4.9239,
+            "t_stat_n": 434,
+            "total_return_pct": -53.7839,
+            "max_drawdown_pct": 55.9879,
+            "profit_factor": 0.5519,
+            "total_fees": 3302.53,
+            "final_equity": 4621.61,
+            "avg_bars_held": 12.82,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 300,
+              "target": 133
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 519,
+            "skipped_in_position": 85,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 205,
+            "wins": 49,
+            "losses": 156,
+            "win_rate_pct": 23.9024,
+            "avg_r": -0.9691,
+            "avg_trade_return_pct": -0.154,
+            "t_stat": -3.5016,
+            "t_stat_n": 205,
+            "total_return_pct": -27.3756,
+            "max_drawdown_pct": 32.301,
+            "profit_factor": 0.4913,
+            "total_fees": 1874.91,
+            "final_equity": 7262.44,
+            "avg_bars_held": 14.05,
+            "exit_reasons": {
+              "stop": 153,
+              "target": 52
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 250,
+            "skipped_in_position": 45,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 3,
+            "min_impulse_atr": 1.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib3-mi1.zero_cost.config.json --out research/order-block/runs/btcusdt-15m-ib3-mi1.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:02Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 438,
+            "wins": 144,
+            "losses": 294,
+            "win_rate_pct": 32.8767,
+            "avg_r": -0.0182,
+            "avg_trade_return_pct": -0.0164,
+            "t_stat": -0.4633,
+            "t_stat_n": 438,
+            "total_return_pct": -8.0273,
+            "max_drawdown_pct": 17.5084,
+            "profit_factor": 0.9308,
+            "total_fees": 0.0,
+            "final_equity": 9197.27,
+            "avg_bars_held": 12.16,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 294,
+              "target": 143
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 519,
+            "skipped_in_position": 81,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 214,
+            "wins": 61,
+            "losses": 153,
+            "win_rate_pct": 28.5047,
+            "avg_r": -0.1449,
+            "avg_trade_return_pct": 0.0005,
+            "t_stat": 0.013,
+            "t_stat_n": 214,
+            "total_return_pct": -0.2674,
+            "max_drawdown_pct": 10.3537,
+            "profit_factor": 0.9933,
+            "total_fees": 0.0,
+            "final_equity": 9973.26,
+            "avg_bars_held": 12.02,
+            "exit_reasons": {
+              "stop": 153,
+              "target": 61
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 250,
+            "skipped_in_position": 36,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-ib3-mi3",
+      "group": "min_impulse_atr",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "atr_period": 14,
+        "swing_left": 5,
+        "swing_right": 5,
+        "impulse_bars": 3,
+        "min_impulse_atr": 3.0,
+        "max_wait_bars": 96,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.1",
+      "published_costs": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 3,
+            "min_impulse_atr": 3.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib3-mi3.published_costs.config.json --out research/order-block/runs/btcusdt-15m-ib3-mi3.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:03Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 179,
+            "wins": 50,
+            "losses": 129,
+            "win_rate_pct": 27.933,
+            "avg_r": -0.6947,
+            "avg_trade_return_pct": -0.2122,
+            "t_stat": -3.5419,
+            "t_stat_n": 179,
+            "total_return_pct": -32.0168,
+            "max_drawdown_pct": 35.5159,
+            "profit_factor": 0.5072,
+            "total_fees": 1635.7,
+            "final_equity": 6798.32,
+            "avg_bars_held": 15.01,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 128,
+              "target": 50
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 193,
+            "skipped_in_position": 14,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 76,
+            "wins": 24,
+            "losses": 52,
+            "win_rate_pct": 31.5789,
+            "avg_r": -0.7534,
+            "avg_trade_return_pct": -0.0095,
+            "t_stat": -0.1002,
+            "t_stat_n": 76,
+            "total_return_pct": -0.9736,
+            "max_drawdown_pct": 10.415,
+            "profit_factor": 0.9525,
+            "total_fees": 808.05,
+            "final_equity": 9902.64,
+            "avg_bars_held": 17.41,
+            "exit_reasons": {
+              "stop": 51,
+              "target": 25
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 84,
+            "skipped_in_position": 8,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 3,
+            "min_impulse_atr": 3.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib3-mi3.zero_cost.config.json --out research/order-block/runs/btcusdt-15m-ib3-mi3.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:03Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 181,
+            "wins": 53,
+            "losses": 128,
+            "win_rate_pct": 29.2818,
+            "avg_r": -0.1325,
+            "avg_trade_return_pct": -0.053,
+            "t_stat": -0.8706,
+            "t_stat_n": 181,
+            "total_return_pct": -9.692,
+            "max_drawdown_pct": 16.5062,
+            "profit_factor": 0.8237,
+            "total_fees": 0.0,
+            "final_equity": 9030.8,
+            "avg_bars_held": 14.07,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 128,
+              "target": 52
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 193,
+            "skipped_in_position": 12,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 79,
+            "wins": 29,
+            "losses": 50,
+            "win_rate_pct": 36.7089,
+            "avg_r": 0.1013,
+            "avg_trade_return_pct": 0.1332,
+            "t_stat": 1.4903,
+            "t_stat_n": 79,
+            "total_return_pct": 10.8177,
+            "max_drawdown_pct": 4.0802,
+            "profit_factor": 1.7901,
+            "total_fees": 0.0,
+            "final_equity": 11081.77,
+            "avg_bars_held": 14.24,
+            "exit_reasons": {
+              "stop": 50,
+              "target": 29
+            },
+            "insufficient_sample": true
+          },
+          "signals": {
+            "seen": 84,
+            "skipped_in_position": 5,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-ib2-mi2",
+      "group": "impulse_bars",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "atr_period": 14,
+        "swing_left": 5,
+        "swing_right": 5,
+        "impulse_bars": 2,
+        "min_impulse_atr": 2.0,
+        "max_wait_bars": 96,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.1",
+      "published_costs": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 2,
+            "min_impulse_atr": 2.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib2-mi2.published_costs.config.json --out research/order-block/runs/btcusdt-15m-ib2-mi2.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:04Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 398,
+            "wins": 127,
+            "losses": 271,
+            "win_rate_pct": 31.9095,
+            "avg_r": -0.5721,
+            "avg_trade_return_pct": -0.1435,
+            "t_stat": -3.6191,
+            "t_stat_n": 398,
+            "total_return_pct": -44.2384,
+            "max_drawdown_pct": 49.2736,
+            "profit_factor": 0.6374,
+            "total_fees": 3418.49,
+            "final_equity": 5576.16,
+            "avg_bars_held": 13.62,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 268,
+              "target": 129
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 464,
+            "skipped_in_position": 66,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 175,
+            "wins": 46,
+            "losses": 129,
+            "win_rate_pct": 26.2857,
+            "avg_r": -0.9242,
+            "avg_trade_return_pct": -0.1313,
+            "t_stat": -2.5438,
+            "t_stat_n": 175,
+            "total_return_pct": -20.8656,
+            "max_drawdown_pct": 28.8823,
+            "profit_factor": 0.5593,
+            "total_fees": 1658.08,
+            "final_equity": 7913.44,
+            "avg_bars_held": 14.5,
+            "exit_reasons": {
+              "stop": 129,
+              "target": 46
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 209,
+            "skipped_in_position": 34,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 2,
+            "min_impulse_atr": 2.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib2-mi2.zero_cost.config.json --out research/order-block/runs/btcusdt-15m-ib2-mi2.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:04Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 403,
+            "wins": 140,
+            "losses": 263,
+            "win_rate_pct": 34.7395,
+            "avg_r": 0.0373,
+            "avg_trade_return_pct": 0.0067,
+            "t_stat": 0.1722,
+            "t_stat_n": 403,
+            "total_return_pct": 1.4902,
+            "max_drawdown_pct": 17.1964,
+            "profit_factor": 1.0128,
+            "total_fees": 0.0,
+            "final_equity": 10149.02,
+            "avg_bars_held": 12.84,
+            "exit_reasons": {
+              "end": 1,
+              "stop": 263,
+              "target": 139
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 464,
+            "skipped_in_position": 61,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 180,
+            "wins": 54,
+            "losses": 126,
+            "win_rate_pct": 30.0,
+            "avg_r": -0.1,
+            "avg_trade_return_pct": 0.0182,
+            "t_stat": 0.3712,
+            "t_stat_n": 180,
+            "total_return_pct": 2.9321,
+            "max_drawdown_pct": 12.3156,
+            "profit_factor": 1.085,
+            "total_fees": 0.0,
+            "final_equity": 10293.21,
+            "avg_bars_held": 12.85,
+            "exit_reasons": {
+              "stop": 126,
+              "target": 54
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 209,
+            "skipped_in_position": 29,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "btcusdt-15m-ib4-mi2",
+      "group": "impulse_bars",
+      "symbol": "BTCUSDT",
+      "interval": "15m",
+      "params": {
+        "atr_period": 14,
+        "swing_left": 5,
+        "swing_right": 5,
+        "impulse_bars": 4,
+        "min_impulse_atr": 2.0,
+        "max_wait_bars": 96,
+        "stop_buffer_atr": 0.1,
+        "r_multiple": 2.0
+      },
+      "data_file": "BTCUSDT-15m.csv",
+      "data_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+      "engine_version": "0.2.1",
+      "published_costs": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 4,
+            "min_impulse_atr": 2.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.00055,
+            "slippage": 0.0002,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib4-mi2.published_costs.config.json --out research/order-block/runs/btcusdt-15m-ib4-mi2.published_costs.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:05Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 225,
+            "wins": 68,
+            "losses": 157,
+            "win_rate_pct": 30.2222,
+            "avg_r": -0.6215,
+            "avg_trade_return_pct": -0.1674,
+            "t_stat": -3.2914,
+            "t_stat_n": 225,
+            "total_return_pct": -31.8475,
+            "max_drawdown_pct": 38.897,
+            "profit_factor": 0.5814,
+            "total_fees": 2093.09,
+            "final_equity": 6815.25,
+            "avg_bars_held": 13.6,
+            "exit_reasons": {
+              "stop": 156,
+              "target": 69
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 247,
+            "skipped_in_position": 22,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 109,
+            "wins": 29,
+            "losses": 80,
+            "win_rate_pct": 26.6055,
+            "avg_r": -0.9186,
+            "avg_trade_return_pct": -0.1396,
+            "t_stat": -2.1738,
+            "t_stat_n": 109,
+            "total_return_pct": -14.3295,
+            "max_drawdown_pct": 19.9062,
+            "profit_factor": 0.5291,
+            "total_fees": 1088.0,
+            "final_equity": 8567.05,
+            "avg_bars_held": 14.7,
+            "exit_reasons": {
+              "stop": 79,
+              "target": 30
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 122,
+            "skipped_in_position": 13,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      },
+      "zero_cost": {
+        "config": {
+          "strategy": "order_block",
+          "params": {
+            "atr_period": 14,
+            "swing_left": 5,
+            "swing_right": 5,
+            "impulse_bars": 4,
+            "min_impulse_atr": 2.0,
+            "max_wait_bars": 96,
+            "stop_buffer_atr": 0.1,
+            "r_multiple": 2.0
+          },
+          "execution": {
+            "fee_rate": 0.0,
+            "slippage": 0.0,
+            "initial_capital": 10000,
+            "notional_fraction": 1.0,
+            "max_hold_bars": null
+          },
+          "split": {
+            "oos_start": "2026-07-31"
+          }
+        },
+        "command": "python -m perpmath backtest order_block --symbol BTCUSDT --interval 15m --config research/order-block/runs/btcusdt-15m-ib4-mi2.zero_cost.config.json --out research/order-block/runs/btcusdt-15m-ib4-mi2.zero_cost.json --data-dir <engine>/data",
+        "generated_at": "2026-11-21T18:53:05Z",
+        "in_sample": {
+          "first_bar": "2025-11-18T11:30:00Z",
+          "last_bar": "2026-07-30T23:45:00Z",
+          "bars": 24434,
+          "metrics": {
+            "trades": 227,
+            "wins": 74,
+            "losses": 153,
+            "win_rate_pct": 32.5991,
+            "avg_r": -0.022,
+            "avg_trade_return_pct": -0.0103,
+            "t_stat": -0.2005,
+            "t_stat_n": 227,
+            "total_return_pct": -2.9615,
+            "max_drawdown_pct": 16.7972,
+            "profit_factor": 0.9545,
+            "total_fees": 0.0,
+            "final_equity": 9703.85,
+            "avg_bars_held": 12.71,
+            "exit_reasons": {
+              "stop": 153,
+              "target": 74
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 247,
+            "skipped_in_position": 20,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        },
+        "out_of_sample": {
+          "first_bar": "2026-07-31T00:00:00Z",
+          "last_bar": "2026-11-18T11:15:00Z",
+          "bars": 10606,
+          "metrics": {
+            "trades": 111,
+            "wins": 32,
+            "losses": 79,
+            "win_rate_pct": 28.8288,
+            "avg_r": -0.1351,
+            "avg_trade_return_pct": -0.0039,
+            "t_stat": -0.0642,
+            "t_stat_n": 111,
+            "total_return_pct": -0.6612,
+            "max_drawdown_pct": 9.2798,
+            "profit_factor": 0.969,
+            "total_fees": 0.0,
+            "final_equity": 9933.88,
+            "avg_bars_held": 13.66,
+            "exit_reasons": {
+              "stop": 79,
+              "target": 32
+            },
+            "insufficient_sample": false
+          },
+          "signals": {
+            "seen": 122,
+            "skipped_in_position": 11,
+            "skipped_invalid_stop": 0,
+            "skipped_no_equity": 0
+          }
+        }
+      }
+    }
+  ],
+  "published_settings": {
+    "symbol": "BTCUSDT",
+    "interval": "15m",
+    "params": {
+      "atr_period": 14,
+      "swing_left": 5,
+      "swing_right": 5,
+      "impulse_bars": 3,
+      "min_impulse_atr": 2.0,
+      "max_wait_bars": 96,
+      "stop_buffer_atr": 0.1,
+      "r_multiple": 2.0
+    },
+    "bars": 35040,
+    "price": {
+      "first_open": 91423.0,
+      "last_close": 64124.5,
+      "change_pct": -29.86
+    },
+    "round_trip_cost_pct": 0.15,
+    "breakeven_win_rate_pct_before_costs": 33.33,
+    "funnel": [
+      {
+        "stage": "run_of_3_same_direction_bars",
+        "candles": 4234,
+        "pct_of_first_stage": 100.0
+      },
+      {
+        "stage": "candle_before_it_closed_the_other_way",
+        "candles": 4233,
+        "pct_of_first_stage": 99.98
+      },
+      {
+        "stage": "run_covers_2_atr",
+        "candles": 1450,
+        "pct_of_first_stage": 34.25
+      },
+      {
+        "stage": "run_closes_beyond_the_candle",
+        "candles": 1434,
+        "pct_of_first_stage": 33.87
+      },
+      {
+        "stage": "run_closes_beyond_latest_swing",
+        "candles": 801,
+        "pct_of_first_stage": 18.92
+      }
+    ],
+    "blocks": {
+      "all": {
+        "blocks": 801,
+        "entry_signal": 533,
+        "failed_on_return_bar": 71,
+        "expired_untouched": 196,
+        "data_ended_first": 1,
+        "returned_within_wait": 604,
+        "returned_pct": 75.41,
+        "entry_signal_pct_of_blocks": 66.54,
+        "failed_pct_of_returns": 11.75,
+        "bars_until_return_median": 10.0,
+        "returned_on_the_next_bar": 42,
+        "returned_on_the_next_bar_pct_of_returns": 6.95,
+        "returned_within_4_bars_pct_of_returns": 26.82
+      },
+      "bullish": {
+        "blocks": 385,
+        "entry_signal": 257,
+        "failed_on_return_bar": 37,
+        "expired_untouched": 91,
+        "data_ended_first": 0,
+        "returned_within_wait": 294,
+        "returned_pct": 76.36,
+        "entry_signal_pct_of_blocks": 66.75,
+        "failed_pct_of_returns": 12.59,
+        "bars_until_return_median": 10.0,
+        "returned_on_the_next_bar": 20,
+        "returned_on_the_next_bar_pct_of_returns": 6.8,
+        "returned_within_4_bars_pct_of_returns": 27.21
+      },
+      "bearish": {
+        "blocks": 416,
+        "entry_signal": 276,
+        "failed_on_return_bar": 34,
+        "expired_untouched": 105,
+        "data_ended_first": 1,
+        "returned_within_wait": 310,
+        "returned_pct": 74.52,
+        "entry_signal_pct_of_blocks": 66.35,
+        "failed_pct_of_returns": 10.97,
+        "bars_until_return_median": 10.0,
+        "returned_on_the_next_bar": 22,
+        "returned_on_the_next_bar_pct_of_returns": 7.1,
+        "returned_within_4_bars_pct_of_returns": 26.45
+      },
+      "zone_height_pct_of_price_median": 0.2262,
+      "zone_height_in_atr_median": 0.9351,
+      "bars_from_candle_to_block_existing_median": 3,
+      "signal_bars": 530,
+      "signal_bars_in_shipped_result": 530,
+      "note": "signal bars can be fewer than blocks with an entry signal when two blocks trigger on one bar; the shipped result counts signal bars inside each sample"
+    },
+    "blocks_per_day": 2.19,
+    "published_trades": {
+      "in_sample": {
+        "fills": {
+          "trades": 325,
+          "fill_vs_zone": {
+            "beyond_near_edge": {
+              "trades": 207,
+              "pct": 63.69
+            },
+            "inside_zone": {
+              "trades": 118,
+              "pct": 36.31
+            },
+            "past_far_edge": {
+              "trades": 0,
+              "pct": 0.0
+            }
+          },
+          "risk_at_fill_over_risk_at_near_edge_median": 1.1057,
+          "entry_to_stop_pct_of_price_median": 0.3304,
+          "round_trip_cost_in_r_at_median_stop": 0.454,
+          "trades_with_stop_closer_than_round_trip_cost": 49,
+          "trades_with_r_below_minus_2": 31,
+          "stopped_on_the_entry_bar": 72
+        },
+        "long": {
+          "trades": 148,
+          "wins": 40,
+          "win_rate_pct": 27.03,
+          "avg_r": -0.7246,
+          "avg_trade_return_pct": -0.1596,
+          "exit_reasons": {
+            "end": 1,
+            "stop": 106,
+            "target": 41
+          }
+        },
+        "short": {
+          "trades": 177,
+          "wins": 60,
+          "win_rate_pct": 33.9,
+          "avg_r": -0.5148,
+          "avg_trade_return_pct": -0.1715,
+          "exit_reasons": {
+            "stop": 117,
+            "target": 60
+          }
+        },
+        "avg_hours_held": 3.44
+      },
+      "out_of_sample": {
+        "fills": {
+          "trades": 141,
+          "fill_vs_zone": {
+            "beyond_near_edge": {
+              "trades": 86,
+              "pct": 60.99
+            },
+            "inside_zone": {
+              "trades": 55,
+              "pct": 39.01
+            },
+            "past_far_edge": {
+              "trades": 0,
+              "pct": 0.0
+            }
+          },
+          "risk_at_fill_over_risk_at_near_edge_median": 1.108,
+          "entry_to_stop_pct_of_price_median": 0.262,
+          "round_trip_cost_in_r_at_median_stop": 0.5724,
+          "trades_with_stop_closer_than_round_trip_cost": 34,
+          "trades_with_r_below_minus_2": 25,
+          "stopped_on_the_entry_bar": 29
+        },
+        "long": {
+          "trades": 73,
+          "wins": 17,
+          "win_rate_pct": 23.29,
+          "avg_r": -1.0302,
+          "avg_trade_return_pct": -0.207,
+          "exit_reasons": {
+            "stop": 55,
+            "target": 18
+          }
+        },
+        "short": {
+          "trades": 68,
+          "wins": 17,
+          "win_rate_pct": 25.0,
+          "avg_r": -0.9348,
+          "avg_trade_return_pct": -0.0773,
+          "exit_reasons": {
+            "stop": 51,
+            "target": 17
+          }
+        },
+        "avg_hours_held": 3.85
+      }
+    }
+  }
+}

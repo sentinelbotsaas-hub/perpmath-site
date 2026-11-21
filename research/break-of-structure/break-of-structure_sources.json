@@ -1,0 +1,66 @@
+{
+  "article": "en/break-of-structure",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the sentences the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source. The rule in the article's code block is the engine's docstring restated, not a quotation from any of these pages.",
+  "definition_sources": [
+    {
+      "name": "LuxAlgo library: Break of Structure",
+      "url": "https://www.luxalgo.com/library/concept/break-of-structure/",
+      "page_date": "none shown",
+      "what_it_says": [
+        "A break of structure is a with-trend structural break: in an uptrend, price trading through the most recent significant swing high; in a downtrend, through the most recent swing low. The counter-trend equivalent is a change of character.",
+        "Some sources use BOS loosely for any structural break.",
+        "Confirmation conventions vary: many traders require a candle body to close beyond the swing; wick-based readings react earlier and mislabel more sweeps.",
+        "A change of character is also called a market structure shift by many traders; usage varies by author.",
+        "FAQ: not all breaks lead to continuation, and most BOS-based models do not buy the break itself but wait for a retracement."
+      ],
+      "not_specified": ["how many bars define a swing", "how trend is established in numbers", "any hit rate"],
+      "origin": "The page names no originator."
+    },
+    {
+      "name": "LuxAlgo library: Swing High/low",
+      "url": "https://www.luxalgo.com/library/concept/swing-high-low/",
+      "page_date": "none shown",
+      "what_it_says": [
+        "A swing high is a bar whose high stands above the highs of a set number of bars on either side; that number is the only parameter, and there is no universal setting.",
+        "A swing point cannot be confirmed until the right-side bars have closed: a swing high with strength 5 is only knowable five bars after it printed."
+      ]
+    },
+    {
+      "name": "TMGM academy: Break of Structure (BOS)",
+      "url": "https://www.tmgm.com/en/academy/trading-academy/break-of-structure",
+      "page_date": "Last Updated: 5 Nov 2026",
+      "what_it_says": [
+        "A BOS occurs when price moves beyond a significant previous swing high or low in the direction of an existing trend.",
+        "BOS is commonly associated with Smart Money Concepts and Inner Circle Trader (ICT) terminology; the underlying principle also belongs to traditional price action analysis.",
+        "Swing points can be defined by a specified number of completed candles on each side; no single swing-selection method is universally required, and no number is given.",
+        "Changing the definition after observing the outcome introduces hindsight bias.",
+        "Describes both a breakout entry (after a confirmed close) and a retest entry; BOS is not a guaranteed trading signal."
+      ],
+      "not_specified": ["number of candles on each side", "any win rate or backtest"]
+    }
+  ],
+  "origin_conclusion": "No dated primary source for who first used the phrase 'break of structure' was found. The article attributes it to nobody.",
+  "engine_sources": [
+    {"name": "break_of_structure.py docstring (rules and judgement calls)",
+     "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/d06236ec9fd04a5a17854aaed5477bb048ff98ad/src/perpmath/strategies/break_of_structure.py"},
+    {"name": "CHANGELOG.md, 0.2.1: parameters written down on 2026-11-21 (UTC) before the first run on real data, run once, not changed; 42 out-of-sample trades flagged insufficient_sample",
+     "url": "https://github.com/sentinelbotsaas-hub/perpmath/blob/d06236ec9fd04a5a17854aaed5477bb048ff98ad/CHANGELOG.md"}
+  ],
+  "data_and_cost_sources": [
+    {"name": "Bybit V5 kline endpoint (public)", "url": "https://bybit-exchange.github.io/docs/v5/market/kline"},
+    {"name": "Bybit trading fee structure", "url": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure",
+     "page_date": "Last updated on 2026-11-20 04:29:35",
+     "what_it_says": ["VIP 0, perpetual and expiry contracts: taker 0.0550%, maker 0.0200%."]},
+    {"name": "NIST/SEMATECH e-Handbook: one-sample t-test", "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm"}
+  ],
+  "numbers": {
+    "published_backtest": "<engine>/results/break-of-structure-btcusdt.json (perpmath 0.2.1, generated 2026-11-21T17:35:26Z)",
+    "everything_else": "research/break-of-structure/break-of-structure_summary.json, produced by research/break-of-structure/break-of-structure_research.py",
+    "derived_in_the_article": {
+      "standard_deviation_of_trade_returns": "avg_trade_return_pct x sqrt(trades) / t_stat, from the published in-sample metric blocks: break_of_structure 0.3452 x sqrt(149) / 1.5717 = 2.68%; order_block 0.1661 x sqrt(325) / 3.7699 = 0.79%",
+      "funding_settlements_per_trade": "average holding time in hours / 8 (BTCUSDT funding interval, engine README)",
+      "fvg_and_sweep_stop_distances": "0.323% and 0.296% (0.46R and 0.51R) are from the articles en/fair-value-gap and en/liquidity-sweep"
+    }
+  }
+}
