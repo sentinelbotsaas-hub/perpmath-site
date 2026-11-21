@@ -1,0 +1,1390 @@
+{
+  "engine_results": "https://github.com/sentinelbotsaas-hub/perpmath/tree/v0.2.1/results",
+  "candle_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037",
+  "definition": "max over time of (running peak - equity) / running peak, starting capital counted as the first peak",
+  "strategies": {
+    "ma_cross": {
+      "result_file": "ma-cross-btcusdt.json",
+      "generated_at": "2026-11-18T11:40:46Z",
+      "package_version": "0.1.0",
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "trades": 572,
+        "total_return_pct": -62.3527,
+        "published_max_drawdown_pct": 63.3341,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 62.8077,
+            "peak": 10122.34,
+            "peak_time": "2025-12-06T04:00:00Z",
+            "trough": 3764.73,
+            "trough_time": "2026-07-30T05:00:00Z",
+            "gain_needed_to_recover_pct": 168.87
+          },
+          "daily": {
+            "max_drawdown_pct": 62.9744,
+            "peak": 10167.9,
+            "peak_time": "2025-12-06T00:00:00Z",
+            "trough": 3764.73,
+            "trough_time": "2026-07-31T00:00:00Z",
+            "gain_needed_to_recover_pct": 170.08
+          },
+          "bar_close": {
+            "max_drawdown_pct": 63.3341,
+            "peak": 10267.66,
+            "peak_time": "2025-12-05T16:45:00Z",
+            "trough": 3764.73,
+            "trough_time": "2026-07-30T05:15:00Z",
+            "gain_needed_to_recover_pct": 172.73
+          },
+          "intrabar": {
+            "max_drawdown_pct": 63.3341,
+            "peak": 10267.66,
+            "peak_time": "2025-12-05T17:00:00Z",
+            "trough": 3764.73,
+            "trough_time": "2026-07-30T05:15:00Z",
+            "gain_needed_to_recover_pct": 172.73
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 63.4624,
+            "peak": 10303.73,
+            "peak_time": "2025-12-05T16:45:00Z",
+            "trough": 3764.73,
+            "trough_time": "2026-07-30T05:15:00Z",
+            "gain_needed_to_recover_pct": 173.69
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.5264,
+          "bar_close_minus_daily": 0.3597,
+          "intrabar_minus_bar_close": 0.0,
+          "intrabar_outer_minus_bar_close": 0.1283
+        },
+        "underwater_daily": {
+          "longest_days": 237.0,
+          "longest_from": "2025-12-06T00:00:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 253,
+          "points": 256,
+          "share_of_points_below_peak_pct": 98.83,
+          "sample_days": 254.52,
+          "last_high_time": "2025-12-06T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 237.3,
+          "longest_from": "2025-12-05T16:45:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 24366,
+          "points": 24435,
+          "share_of_points_below_peak_pct": 99.72,
+          "sample_days": 254.52,
+          "last_high_time": "2025-12-05T16:45:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 8.974,
+          "first_14_days": 13.97,
+          "first_30_days": 13.97,
+          "first_60_days": 27.765,
+          "first_90_days": 35.9321,
+          "first_120_days": 36.7068,
+          "first_180_days": 50.0524,
+          "full_sample": 63.3341
+        },
+        "thirty_day_windows": {
+          "count": 8,
+          "each_pct": [
+            13.97,
+            21.1505,
+            23.3139,
+            9.1885,
+            14.5086,
+            12.024,
+            15.3161,
+            20.5287
+          ],
+          "smallest_pct": 9.1885,
+          "median_pct": 14.9123,
+          "largest_pct": 23.3139
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "trades": 263,
+        "total_return_pct": -18.4566,
+        "published_max_drawdown_pct": 31.1783,
+        "bar_close_minus_published_pp": 0.0001,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 28.8324,
+            "peak": 10496.93,
+            "peak_time": "2026-08-21T19:45:00Z",
+            "trough": 7470.42,
+            "trough_time": "2026-11-04T04:45:00Z",
+            "gain_needed_to_recover_pct": 40.51
+          },
+          "daily": {
+            "max_drawdown_pct": 27.0248,
+            "peak": 10388.56,
+            "peak_time": "2026-08-22T00:00:00Z",
+            "trough": 7581.07,
+            "trough_time": "2026-11-04T00:00:00Z",
+            "gain_needed_to_recover_pct": 37.03
+          },
+          "bar_close": {
+            "max_drawdown_pct": 31.1784,
+            "peak": 10796.25,
+            "peak_time": "2026-08-21T09:00:00Z",
+            "trough": 7430.16,
+            "trough_time": "2026-11-04T12:15:00Z",
+            "gain_needed_to_recover_pct": 45.3
+          },
+          "intrabar": {
+            "max_drawdown_pct": 31.2456,
+            "peak": 10796.25,
+            "peak_time": "2026-08-21T09:15:00Z",
+            "trough": 7422.9,
+            "trough_time": "2026-11-04T12:30:00Z",
+            "gain_needed_to_recover_pct": 45.45
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 31.4927,
+            "peak": 10835.2,
+            "peak_time": "2026-08-21T09:00:00Z",
+            "trough": 7422.9,
+            "trough_time": "2026-11-04T12:30:00Z",
+            "gain_needed_to_recover_pct": 45.97
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 2.346,
+          "bar_close_minus_daily": 4.1536,
+          "intrabar_minus_bar_close": 0.0672,
+          "intrabar_outer_minus_bar_close": 0.3143
+        },
+        "underwater_daily": {
+          "longest_days": 88.48,
+          "longest_from": "2026-08-22T00:00:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 109,
+          "points": 112,
+          "share_of_points_below_peak_pct": 97.32,
+          "sample_days": 110.48,
+          "last_high_time": "2026-08-22T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 89.1,
+          "longest_from": "2026-08-21T09:00:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 10570,
+          "points": 10607,
+          "share_of_points_below_peak_pct": 99.65,
+          "sample_days": 110.48,
+          "last_high_time": "2026-08-21T09:00:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 8.9259,
+          "first_14_days": 12.6324,
+          "first_30_days": 14.4917,
+          "first_60_days": 19.8011,
+          "first_90_days": 27.6076,
+          "full_sample": 31.1784
+        },
+        "thirty_day_windows": {
+          "count": 3,
+          "each_pct": [
+            14.4917,
+            15.2854,
+            12.4289
+          ],
+          "smallest_pct": 12.4289,
+          "median_pct": 14.4917,
+          "largest_pct": 15.2854
+        }
+      }
+    },
+    "fvg": {
+      "result_file": "fvg-btcusdt.json",
+      "generated_at": "2026-11-18T11:40:45Z",
+      "package_version": "0.1.0",
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "trades": 801,
+        "total_return_pct": -66.945,
+        "published_max_drawdown_pct": 66.9656,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 66.945,
+            "peak": 10000,
+            "peak_time": "2025-11-18T11:30:00Z",
+            "trough": 3305.5,
+            "trough_time": "2026-07-30T23:30:00Z",
+            "gain_needed_to_recover_pct": 202.53
+          },
+          "daily": {
+            "max_drawdown_pct": 66.9656,
+            "peak": 10006.24,
+            "peak_time": "2025-11-19T00:00:00Z",
+            "trough": 3305.5,
+            "trough_time": "2026-07-31T00:00:00Z",
+            "gain_needed_to_recover_pct": 202.71
+          },
+          "bar_close": {
+            "max_drawdown_pct": 66.9656,
+            "peak": 10006.24,
+            "peak_time": "2025-11-19T00:00:00Z",
+            "trough": 3305.5,
+            "trough_time": "2026-07-30T23:45:00Z",
+            "gain_needed_to_recover_pct": 202.71
+          },
+          "intrabar": {
+            "max_drawdown_pct": 66.9656,
+            "peak": 10006.24,
+            "peak_time": "2025-11-19T00:15:00Z",
+            "trough": 3305.5,
+            "trough_time": "2026-07-30T23:45:00Z",
+            "gain_needed_to_recover_pct": 202.71
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 66.9923,
+            "peak": 10014.32,
+            "peak_time": "2025-11-19T00:00:00Z",
+            "trough": 3305.5,
+            "trough_time": "2026-07-30T23:45:00Z",
+            "gain_needed_to_recover_pct": 202.96
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.0206,
+          "bar_close_minus_daily": 0.0,
+          "intrabar_minus_bar_close": 0.0,
+          "intrabar_outer_minus_bar_close": 0.0267
+        },
+        "underwater_daily": {
+          "longest_days": 254.0,
+          "longest_from": "2025-11-19T00:00:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 254,
+          "points": 256,
+          "share_of_points_below_peak_pct": 99.22,
+          "sample_days": 254.52,
+          "last_high_time": "2025-11-19T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 254.0,
+          "longest_from": "2025-11-19T00:00:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 24386,
+          "points": 24435,
+          "share_of_points_below_peak_pct": 99.8,
+          "sample_days": 254.52,
+          "last_high_time": "2025-11-19T00:00:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 6.5133,
+          "first_14_days": 11.3675,
+          "first_30_days": 18.2478,
+          "first_60_days": 29.519,
+          "first_90_days": 33.469,
+          "first_120_days": 33.469,
+          "first_180_days": 52.9779,
+          "full_sample": 66.9656
+        },
+        "thirty_day_windows": {
+          "count": 8,
+          "each_pct": [
+            18.2478,
+            17.3194,
+            8.4244,
+            7.4918,
+            20.4741,
+            21.5519,
+            6.4698,
+            20.0919
+          ],
+          "smallest_pct": 6.4698,
+          "median_pct": 17.7836,
+          "largest_pct": 21.5519
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "trades": 304,
+        "total_return_pct": -42.8564,
+        "published_max_drawdown_pct": 43.1899,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 43.0361,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:00:00Z",
+            "trough": 5696.39,
+            "trough_time": "2026-11-11T15:30:00Z",
+            "gain_needed_to_recover_pct": 75.55
+          },
+          "daily": {
+            "max_drawdown_pct": 43.036,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:00:00Z",
+            "trough": 5696.4,
+            "trough_time": "2026-11-12T00:00:00Z",
+            "gain_needed_to_recover_pct": 75.55
+          },
+          "bar_close": {
+            "max_drawdown_pct": 43.1899,
+            "peak": 10006.23,
+            "peak_time": "2026-07-31T06:30:00Z",
+            "trough": 5684.54,
+            "trough_time": "2026-11-12T00:45:00Z",
+            "gain_needed_to_recover_pct": 76.03
+          },
+          "intrabar": {
+            "max_drawdown_pct": 43.2771,
+            "peak": 10006.23,
+            "peak_time": "2026-07-31T06:45:00Z",
+            "trough": 5675.83,
+            "trough_time": "2026-11-12T01:00:00Z",
+            "gain_needed_to_recover_pct": 76.3
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 43.3069,
+            "peak": 10011.5,
+            "peak_time": "2026-07-31T06:45:00Z",
+            "trough": 5675.83,
+            "trough_time": "2026-11-12T01:00:00Z",
+            "gain_needed_to_recover_pct": 76.39
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.1538,
+          "bar_close_minus_daily": 0.1539,
+          "intrabar_minus_bar_close": 0.0872,
+          "intrabar_outer_minus_bar_close": 0.117
+        },
+        "underwater_daily": {
+          "longest_days": 110.48,
+          "longest_from": "2026-07-31T00:00:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 111,
+          "points": 112,
+          "share_of_points_below_peak_pct": 99.11,
+          "sample_days": 110.48,
+          "last_high_time": "2026-07-31T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 110.21,
+          "longest_from": "2026-07-31T06:30:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 10597,
+          "points": 10607,
+          "share_of_points_below_peak_pct": 99.91,
+          "sample_days": 110.48,
+          "last_high_time": "2026-07-31T06:30:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 6.5074,
+          "first_14_days": 10.2652,
+          "first_30_days": 13.6822,
+          "first_60_days": 21.4383,
+          "first_90_days": 37.3715,
+          "full_sample": 43.1899
+        },
+        "thirty_day_windows": {
+          "count": 3,
+          "each_pct": [
+            13.6822,
+            9.1873,
+            20.3328
+          ],
+          "smallest_pct": 9.1873,
+          "median_pct": 13.6822,
+          "largest_pct": 20.3328
+        }
+      }
+    },
+    "liquidity_sweep": {
+      "result_file": "liquidity-sweep-btcusdt.json",
+      "generated_at": "2026-11-18T11:40:45Z",
+      "package_version": "0.1.0",
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "trades": 1639,
+        "total_return_pct": -93.9772,
+        "published_max_drawdown_pct": 94.3547,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 94.3355,
+            "peak": 10513.95,
+            "peak_time": "2025-11-19T20:45:00Z",
+            "trough": 595.56,
+            "trough_time": "2026-07-29T16:30:00Z",
+            "gain_needed_to_recover_pct": 1665.38
+          },
+          "daily": {
+            "max_drawdown_pct": 94.2107,
+            "peak": 10403.35,
+            "peak_time": "2025-11-20T00:00:00Z",
+            "trough": 602.28,
+            "trough_time": "2026-07-31T00:00:00Z",
+            "gain_needed_to_recover_pct": 1627.32
+          },
+          "bar_close": {
+            "max_drawdown_pct": 94.3547,
+            "peak": 10513.95,
+            "peak_time": "2025-11-19T21:00:00Z",
+            "trough": 593.54,
+            "trough_time": "2026-07-29T19:00:00Z",
+            "gain_needed_to_recover_pct": 1671.39
+          },
+          "intrabar": {
+            "max_drawdown_pct": 94.3675,
+            "peak": 10513.95,
+            "peak_time": "2025-11-19T21:15:00Z",
+            "trough": 592.2,
+            "trough_time": "2026-07-29T19:00:00Z",
+            "gain_needed_to_recover_pct": 1675.41
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 94.369,
+            "peak": 10516.76,
+            "peak_time": "2025-11-19T20:45:00Z",
+            "trough": 592.2,
+            "trough_time": "2026-07-29T19:00:00Z",
+            "gain_needed_to_recover_pct": 1675.88
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.0192,
+          "bar_close_minus_daily": 0.144,
+          "intrabar_minus_bar_close": 0.0128,
+          "intrabar_outer_minus_bar_close": 0.0143
+        },
+        "underwater_daily": {
+          "longest_days": 253.0,
+          "longest_from": "2025-11-20T00:00:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 253,
+          "points": 256,
+          "share_of_points_below_peak_pct": 98.83,
+          "sample_days": 254.52,
+          "last_high_time": "2025-11-20T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 253.1,
+          "longest_from": "2025-11-19T21:30:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 24346,
+          "points": 24435,
+          "share_of_points_below_peak_pct": 99.64,
+          "sample_days": 254.52,
+          "last_high_time": "2025-11-19T21:30:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 6.8199,
+          "first_14_days": 14.0218,
+          "first_30_days": 28.6646,
+          "first_60_days": 42.2424,
+          "first_90_days": 64.2385,
+          "first_120_days": 74.887,
+          "first_180_days": 85.5464,
+          "full_sample": 94.3547
+        },
+        "thirty_day_windows": {
+          "count": 8,
+          "each_pct": [
+            28.6646,
+            21.7611,
+            38.5349,
+            31.0875,
+            23.0816,
+            30.634,
+            31.082,
+            36.8094
+          ],
+          "smallest_pct": 21.7611,
+          "median_pct": 30.858,
+          "largest_pct": 38.5349
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "trades": 688,
+        "total_return_pct": -69.0254,
+        "published_max_drawdown_pct": 69.306,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 69.306,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:00:00Z",
+            "trough": 3069.4,
+            "trough_time": "2026-11-17T14:30:00Z",
+            "gain_needed_to_recover_pct": 225.8
+          },
+          "daily": {
+            "max_drawdown_pct": 69.0254,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:00:00Z",
+            "trough": 3097.46,
+            "trough_time": "2026-11-18T11:30:00Z",
+            "gain_needed_to_recover_pct": 222.85
+          },
+          "bar_close": {
+            "max_drawdown_pct": 69.306,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:15:00Z",
+            "trough": 3069.4,
+            "trough_time": "2026-11-17T14:45:00Z",
+            "gain_needed_to_recover_pct": 225.8
+          },
+          "intrabar": {
+            "max_drawdown_pct": 69.361,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:15:00Z",
+            "trough": 3063.9,
+            "trough_time": "2026-11-17T15:00:00Z",
+            "gain_needed_to_recover_pct": 226.38
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 69.3758,
+            "peak": 10004.84,
+            "peak_time": "2026-07-31T06:45:00Z",
+            "trough": 3063.9,
+            "trough_time": "2026-11-17T15:00:00Z",
+            "gain_needed_to_recover_pct": 226.54
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.0,
+          "bar_close_minus_daily": 0.2806,
+          "intrabar_minus_bar_close": 0.055,
+          "intrabar_outer_minus_bar_close": 0.0698
+        },
+        "underwater_daily": {
+          "longest_days": 110.48,
+          "longest_from": "2026-07-31T00:00:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 111,
+          "points": 112,
+          "share_of_points_below_peak_pct": 99.11,
+          "sample_days": 110.48,
+          "last_high_time": "2026-07-31T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 110.39,
+          "longest_from": "2026-07-31T02:15:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 10597,
+          "points": 10607,
+          "share_of_points_below_peak_pct": 99.91,
+          "sample_days": 110.48,
+          "last_high_time": "2026-07-31T02:15:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 10.3028,
+          "first_14_days": 14.3307,
+          "first_30_days": 29.8872,
+          "first_60_days": 42.3803,
+          "first_90_days": 60.88,
+          "full_sample": 69.306
+        },
+        "thirty_day_windows": {
+          "count": 3,
+          "each_pct": [
+            29.8872,
+            20.6852,
+            35.0116
+          ],
+          "smallest_pct": 20.6852,
+          "median_pct": 29.8872,
+          "largest_pct": 35.0116
+        }
+      }
+    },
+    "order_block": {
+      "result_file": "order-block-btcusdt.json",
+      "generated_at": "2026-11-21T17:35:25Z",
+      "package_version": "0.2.1",
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "trades": 325,
+        "total_return_pct": -42.3331,
+        "published_max_drawdown_pct": 46.9207,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 46.7004,
+            "peak": 10811.12,
+            "peak_time": "2025-12-01T15:30:00Z",
+            "trough": 5762.29,
+            "trough_time": "2026-07-29T16:30:00Z",
+            "gain_needed_to_recover_pct": 87.62
+          },
+          "daily": {
+            "max_drawdown_pct": 46.4,
+            "peak": 10758.76,
+            "peak_time": "2025-11-30T00:00:00Z",
+            "trough": 5766.69,
+            "trough_time": "2026-07-31T00:00:00Z",
+            "gain_needed_to_recover_pct": 86.57
+          },
+          "bar_close": {
+            "max_drawdown_pct": 46.9207,
+            "peak": 10819.21,
+            "peak_time": "2025-11-29T18:30:00Z",
+            "trough": 5742.77,
+            "trough_time": "2026-07-29T19:00:00Z",
+            "gain_needed_to_recover_pct": 88.4
+          },
+          "intrabar": {
+            "max_drawdown_pct": 47.0406,
+            "peak": 10819.21,
+            "peak_time": "2025-11-29T18:45:00Z",
+            "trough": 5729.79,
+            "trough_time": "2026-07-29T19:00:00Z",
+            "gain_needed_to_recover_pct": 88.82
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 47.1484,
+            "peak": 10841.28,
+            "peak_time": "2025-11-29T18:15:00Z",
+            "trough": 5729.79,
+            "trough_time": "2026-07-29T19:00:00Z",
+            "gain_needed_to_recover_pct": 89.21
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.2203,
+          "bar_close_minus_daily": 0.5207,
+          "intrabar_minus_bar_close": 0.1199,
+          "intrabar_outer_minus_bar_close": 0.2277
+        },
+        "underwater_daily": {
+          "longest_days": 243.0,
+          "longest_from": "2025-11-30T00:00:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 246,
+          "points": 256,
+          "share_of_points_below_peak_pct": 96.09,
+          "sample_days": 254.52,
+          "last_high_time": "2025-11-30T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 243.23,
+          "longest_from": "2025-11-29T18:30:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 23942,
+          "points": 24435,
+          "share_of_points_below_peak_pct": 97.98,
+          "sample_days": 254.52,
+          "last_high_time": "2025-11-29T18:30:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 1.9501,
+          "first_14_days": 1.9501,
+          "first_30_days": 4.6775,
+          "first_60_days": 10.5621,
+          "first_90_days": 21.9011,
+          "first_120_days": 31.521,
+          "first_180_days": 37.6013,
+          "full_sample": 46.9207
+        },
+        "thirty_day_windows": {
+          "count": 8,
+          "each_pct": [
+            4.6775,
+            9.8697,
+            16.1763,
+            12.913,
+            6.2913,
+            9.5232,
+            3.9756,
+            9.0131
+          ],
+          "smallest_pct": 3.9756,
+          "median_pct": 9.2681,
+          "largest_pct": 16.1763
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "trades": 141,
+        "total_return_pct": -18.7108,
+        "published_max_drawdown_pct": 24.94,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 24.4909,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:00:00Z",
+            "trough": 7550.91,
+            "trough_time": "2026-11-13T14:15:00Z",
+            "gain_needed_to_recover_pct": 32.43
+          },
+          "daily": {
+            "max_drawdown_pct": 24.1741,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:00:00Z",
+            "trough": 7582.59,
+            "trough_time": "2026-11-12T00:00:00Z",
+            "gain_needed_to_recover_pct": 31.88
+          },
+          "bar_close": {
+            "max_drawdown_pct": 24.94,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:15:00Z",
+            "trough": 7506.0,
+            "trough_time": "2026-11-13T17:45:00Z",
+            "gain_needed_to_recover_pct": 33.23
+          },
+          "intrabar": {
+            "max_drawdown_pct": 25.0181,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:15:00Z",
+            "trough": 7498.19,
+            "trough_time": "2026-11-13T17:45:00Z",
+            "gain_needed_to_recover_pct": 33.37
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 25.0181,
+            "peak": 10000,
+            "peak_time": "2026-07-31T00:15:00Z",
+            "trough": 7498.19,
+            "trough_time": "2026-11-13T17:45:00Z",
+            "gain_needed_to_recover_pct": 33.37
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.4491,
+          "bar_close_minus_daily": 0.7659,
+          "intrabar_minus_bar_close": 0.0781,
+          "intrabar_outer_minus_bar_close": 0.0781
+        },
+        "underwater_daily": {
+          "longest_days": 109.48,
+          "longest_from": "2026-08-01T00:00:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 110,
+          "points": 112,
+          "share_of_points_below_peak_pct": 98.21,
+          "sample_days": 110.48,
+          "last_high_time": "2026-08-01T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 108.83,
+          "longest_from": "2026-08-01T15:30:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 10448,
+          "points": 10607,
+          "share_of_points_below_peak_pct": 98.5,
+          "sample_days": 110.48,
+          "last_high_time": "2026-08-01T15:30:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 1.264,
+          "first_14_days": 2.3393,
+          "first_30_days": 4.6442,
+          "first_60_days": 16.2163,
+          "first_90_days": 20.9786,
+          "full_sample": 24.94
+        },
+        "thirty_day_windows": {
+          "count": 3,
+          "each_pct": [
+            4.6442,
+            14.9691,
+            7.8771
+          ],
+          "smallest_pct": 4.6442,
+          "median_pct": 7.8771,
+          "largest_pct": 14.9691
+        }
+      }
+    },
+    "break_of_structure": {
+      "result_file": "break-of-structure-btcusdt.json",
+      "generated_at": "2026-11-21T17:35:26Z",
+      "package_version": "0.2.1",
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "trades": 149,
+        "total_return_pct": -43.3416,
+        "published_max_drawdown_pct": 53.719,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 52.904,
+            "peak": 10710.07,
+            "peak_time": "2025-12-02T15:00:00Z",
+            "trough": 5044.01,
+            "trough_time": "2026-06-01T11:45:00Z",
+            "gain_needed_to_recover_pct": 112.33
+          },
+          "daily": {
+            "max_drawdown_pct": 52.9543,
+            "peak": 10840.26,
+            "peak_time": "2025-12-04T00:00:00Z",
+            "trough": 5099.88,
+            "trough_time": "2026-06-02T00:00:00Z",
+            "gain_needed_to_recover_pct": 112.56
+          },
+          "bar_close": {
+            "max_drawdown_pct": 53.719,
+            "peak": 10898.66,
+            "peak_time": "2025-12-04T03:00:00Z",
+            "trough": 5044.01,
+            "trough_time": "2026-06-01T12:00:00Z",
+            "gain_needed_to_recover_pct": 116.07
+          },
+          "intrabar": {
+            "max_drawdown_pct": 53.8433,
+            "peak": 10898.66,
+            "peak_time": "2025-12-04T03:15:00Z",
+            "trough": 5030.46,
+            "trough_time": "2026-06-01T12:15:00Z",
+            "gain_needed_to_recover_pct": 116.65
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 53.9887,
+            "peak": 10933.09,
+            "peak_time": "2025-12-03T23:00:00Z",
+            "trough": 5030.46,
+            "trough_time": "2026-06-01T12:15:00Z",
+            "gain_needed_to_recover_pct": 117.34
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.815,
+          "bar_close_minus_daily": 0.7647,
+          "intrabar_minus_bar_close": 0.1243,
+          "intrabar_outer_minus_bar_close": 0.2697
+        },
+        "underwater_daily": {
+          "longest_days": 239.0,
+          "longest_from": "2025-12-04T00:00:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 248,
+          "points": 256,
+          "share_of_points_below_peak_pct": 96.88,
+          "sample_days": 254.52,
+          "last_high_time": "2025-12-04T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 238.88,
+          "longest_from": "2025-12-04T03:00:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 24262,
+          "points": 24435,
+          "share_of_points_below_peak_pct": 99.29,
+          "sample_days": 254.52,
+          "last_high_time": "2025-12-04T03:00:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 5.4767,
+          "first_14_days": 5.4767,
+          "first_30_days": 7.4538,
+          "first_60_days": 12.0369,
+          "first_90_days": 28.1952,
+          "first_120_days": 36.0533,
+          "first_180_days": 52.5059,
+          "full_sample": 53.719
+        },
+        "thirty_day_windows": {
+          "count": 8,
+          "each_pct": [
+            7.4538,
+            9.9383,
+            26.6347,
+            14.5182,
+            21.8773,
+            22.5582,
+            13.4877,
+            9.5105
+          ],
+          "smallest_pct": 7.4538,
+          "median_pct": 14.003,
+          "largest_pct": 26.6347
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "trades": 42,
+        "total_return_pct": -3.3512,
+        "published_max_drawdown_pct": 23.5688,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 22.6024,
+            "peak": 10866.28,
+            "peak_time": "2026-08-21T08:45:00Z",
+            "trough": 8410.24,
+            "trough_time": "2026-10-18T19:45:00Z",
+            "gain_needed_to_recover_pct": 29.2
+          },
+          "daily": {
+            "max_drawdown_pct": 22.6101,
+            "peak": 10891.31,
+            "peak_time": "2026-08-22T00:00:00Z",
+            "trough": 8428.77,
+            "trough_time": "2026-11-05T00:00:00Z",
+            "gain_needed_to_recover_pct": 29.22
+          },
+          "bar_close": {
+            "max_drawdown_pct": 23.5688,
+            "peak": 10951.52,
+            "peak_time": "2026-08-22T03:30:00Z",
+            "trough": 8370.38,
+            "trough_time": "2026-10-20T01:15:00Z",
+            "gain_needed_to_recover_pct": 30.84
+          },
+          "intrabar": {
+            "max_drawdown_pct": 23.6461,
+            "peak": 10951.52,
+            "peak_time": "2026-08-22T03:45:00Z",
+            "trough": 8361.91,
+            "trough_time": "2026-10-20T01:15:00Z",
+            "gain_needed_to_recover_pct": 30.97
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 23.7301,
+            "peak": 10963.59,
+            "peak_time": "2026-08-22T03:45:00Z",
+            "trough": 8361.91,
+            "trough_time": "2026-10-20T01:15:00Z",
+            "gain_needed_to_recover_pct": 31.11
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.9664,
+          "bar_close_minus_daily": 0.9587,
+          "intrabar_minus_bar_close": 0.0773,
+          "intrabar_outer_minus_bar_close": 0.1613
+        },
+        "underwater_daily": {
+          "longest_days": 88.48,
+          "longest_from": "2026-08-22T00:00:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 104,
+          "points": 112,
+          "share_of_points_below_peak_pct": 92.86,
+          "sample_days": 110.48,
+          "last_high_time": "2026-08-22T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 88.33,
+          "longest_from": "2026-08-22T03:30:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 10417,
+          "points": 10607,
+          "share_of_points_below_peak_pct": 98.21,
+          "sample_days": 110.48,
+          "last_high_time": "2026-08-22T03:30:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 2.1398,
+          "first_14_days": 4.6497,
+          "first_30_days": 7.321,
+          "first_60_days": 17.6902,
+          "first_90_days": 23.5688,
+          "full_sample": 23.5688
+        },
+        "thirty_day_windows": {
+          "count": 3,
+          "each_pct": [
+            7.321,
+            15.1039,
+            11.7673
+          ],
+          "smallest_pct": 7.321,
+          "median_pct": 11.7673,
+          "largest_pct": 15.1039
+        }
+      }
+    },
+    "breaker_block": {
+      "result_file": "breaker-block-btcusdt.json",
+      "generated_at": "2026-11-21T17:35:26Z",
+      "package_version": "0.2.1",
+      "in_sample": {
+        "first_bar": "2025-11-18T11:30:00Z",
+        "last_bar": "2026-07-30T23:45:00Z",
+        "bars": 24434,
+        "trades": 243,
+        "total_return_pct": -18.4425,
+        "published_max_drawdown_pct": 21.2277,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 21.1762,
+            "peak": 10296.38,
+            "peak_time": "2026-03-09T09:15:00Z",
+            "trough": 8116.0,
+            "trough_time": "2026-06-14T12:30:00Z",
+            "gain_needed_to_recover_pct": 26.87
+          },
+          "daily": {
+            "max_drawdown_pct": 21.1762,
+            "peak": 10296.38,
+            "peak_time": "2026-03-10T00:00:00Z",
+            "trough": 8116.0,
+            "trough_time": "2026-06-15T00:00:00Z",
+            "gain_needed_to_recover_pct": 26.87
+          },
+          "bar_close": {
+            "max_drawdown_pct": 21.2277,
+            "peak": 10303.12,
+            "peak_time": "2026-03-11T17:30:00Z",
+            "trough": 8116.0,
+            "trough_time": "2026-06-14T12:45:00Z",
+            "gain_needed_to_recover_pct": 26.95
+          },
+          "intrabar": {
+            "max_drawdown_pct": 21.3326,
+            "peak": 10303.12,
+            "peak_time": "2026-03-11T17:45:00Z",
+            "trough": 8105.19,
+            "trough_time": "2026-06-15T22:15:00Z",
+            "gain_needed_to_recover_pct": 27.12
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 21.5291,
+            "peak": 10328.92,
+            "peak_time": "2026-03-10T18:00:00Z",
+            "trough": 8105.19,
+            "trough_time": "2026-06-15T22:15:00Z",
+            "gain_needed_to_recover_pct": 27.44
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.0515,
+          "bar_close_minus_daily": 0.0515,
+          "intrabar_minus_bar_close": 0.1049,
+          "intrabar_outer_minus_bar_close": 0.3014
+        },
+        "underwater_daily": {
+          "longest_days": 143.0,
+          "longest_from": "2026-03-10T00:00:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 246,
+          "points": 256,
+          "share_of_points_below_peak_pct": 96.09,
+          "sample_days": 254.52,
+          "last_high_time": "2026-03-10T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 141.27,
+          "longest_from": "2026-03-11T17:30:00Z",
+          "longest_to": "2026-07-31T00:00:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 23831,
+          "points": 24435,
+          "share_of_points_below_peak_pct": 97.53,
+          "sample_days": 254.52,
+          "last_high_time": "2026-03-11T17:30:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 1.864,
+          "first_14_days": 4.5955,
+          "first_30_days": 4.5955,
+          "first_60_days": 7.5569,
+          "first_90_days": 10.1521,
+          "first_120_days": 10.1521,
+          "first_180_days": 13.504,
+          "full_sample": 21.2277
+        },
+        "thirty_day_windows": {
+          "count": 8,
+          "each_pct": [
+            4.5955,
+            4.8962,
+            4.4638,
+            5.4268,
+            6.4238,
+            5.5452,
+            9.4077,
+            2.6122
+          ],
+          "smallest_pct": 2.6122,
+          "median_pct": 5.1615,
+          "largest_pct": 9.4077
+        }
+      },
+      "out_of_sample": {
+        "first_bar": "2026-07-31T00:00:00Z",
+        "last_bar": "2026-11-18T11:15:00Z",
+        "bars": 10606,
+        "trades": 120,
+        "total_return_pct": -15.0657,
+        "published_max_drawdown_pct": 16.6202,
+        "bar_close_minus_published_pp": 0.0,
+        "measures": {
+          "closed_trades": {
+            "max_drawdown_pct": 16.6202,
+            "peak": 10186.44,
+            "peak_time": "2026-08-05T20:15:00Z",
+            "trough": 8493.43,
+            "trough_time": "2026-11-17T21:15:00Z",
+            "gain_needed_to_recover_pct": 19.93
+          },
+          "daily": {
+            "max_drawdown_pct": 16.6202,
+            "peak": 10186.44,
+            "peak_time": "2026-08-06T00:00:00Z",
+            "trough": 8493.43,
+            "trough_time": "2026-11-18T00:00:00Z",
+            "gain_needed_to_recover_pct": 19.93
+          },
+          "bar_close": {
+            "max_drawdown_pct": 16.6202,
+            "peak": 10186.44,
+            "peak_time": "2026-08-05T20:30:00Z",
+            "trough": 8493.43,
+            "trough_time": "2026-11-17T21:30:00Z",
+            "gain_needed_to_recover_pct": 19.93
+          },
+          "intrabar": {
+            "max_drawdown_pct": 16.6202,
+            "peak": 10186.44,
+            "peak_time": "2026-08-05T20:45:00Z",
+            "trough": 8493.43,
+            "trough_time": "2026-11-17T21:30:00Z",
+            "gain_needed_to_recover_pct": 19.93
+          },
+          "intrabar_outer": {
+            "max_drawdown_pct": 16.6372,
+            "peak": 10188.51,
+            "peak_time": "2026-08-05T20:00:00Z",
+            "trough": 8493.43,
+            "trough_time": "2026-11-17T21:30:00Z",
+            "gain_needed_to_recover_pct": 19.96
+          }
+        },
+        "differences_pp": {
+          "bar_close_minus_closed_trades": 0.0,
+          "bar_close_minus_daily": 0.0,
+          "intrabar_minus_bar_close": 0.0,
+          "intrabar_outer_minus_bar_close": 0.017
+        },
+        "underwater_daily": {
+          "longest_days": 104.48,
+          "longest_from": "2026-08-06T00:00:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 107,
+          "points": 112,
+          "share_of_points_below_peak_pct": 95.54,
+          "sample_days": 110.48,
+          "last_high_time": "2026-08-06T00:00:00Z"
+        },
+        "underwater_bar_close": {
+          "longest_days": 103.74,
+          "longest_from": "2026-08-06T17:45:00Z",
+          "longest_to": "2026-11-18T11:30:00Z",
+          "longest_ended_in_recovery": false,
+          "points_below_peak": 10256,
+          "points": 10607,
+          "share_of_points_below_peak_pct": 96.69,
+          "sample_days": 110.48,
+          "last_high_time": "2026-08-06T17:45:00Z"
+        },
+        "max_drawdown_by_sample_length_pct": {
+          "first_7_days": 1.0411,
+          "first_14_days": 1.4783,
+          "first_30_days": 2.5593,
+          "first_60_days": 10.9596,
+          "first_90_days": 14.2439,
+          "full_sample": 16.6202
+        },
+        "thirty_day_windows": {
+          "count": 3,
+          "each_pct": [
+            2.5593,
+            9.3332,
+            3.6885
+          ],
+          "smallest_pct": 2.5593,
+          "median_pct": 3.6885,
+          "largest_pct": 9.3332
+        }
+      }
+    }
+  },
+  "grid": {
+    "result_file": "grid-btcusdt.json",
+    "generated_at": "2026-11-19T12:44:26Z",
+    "package_version": "0.2.0",
+    "in_sample": {
+      "first_bar": "2025-11-18T11:30:00Z",
+      "last_bar": "2026-07-30T23:45:00Z",
+      "sample_days": 254.52,
+      "total_return_pct": 3.1659,
+      "published_max_drawdown_pct": 12.5168,
+      "measures": {
+        "realised_until_final_close": {
+          "max_drawdown_pct": 0.0033,
+          "peak": 11056.73,
+          "peak_time": "2026-05-29T15:00:00Z",
+          "trough": 11056.37,
+          "trough_time": "2026-06-02T19:15:00Z"
+        },
+        "realised_including_final_close": {
+          "max_drawdown_pct": 8.459,
+          "peak": 11311.55,
+          "peak_time": "2026-07-30T12:00:00Z",
+          "trough": 10354.72,
+          "trough_time": "2026-07-30T23:45:00Z"
+        },
+        "daily": {
+          "max_drawdown_pct": 11.7519,
+          "peak": 10935.29,
+          "peak_time": "2026-05-11T00:00:00Z",
+          "trough": 9650.19,
+          "trough_time": "2026-07-01T00:00:00Z"
+        },
+        "bar_close_published": {
+          "max_drawdown_pct": 12.5168,
+          "gain_needed_to_recover_pct": 14.31
+        },
+        "intrabar": null
+      },
+      "intrabar_note": "not computable from the result file: it lists fills, not the position held at each bar, and funding is not itemised",
+      "bar_close_by_intrabar_path_pct": {
+        "low_first": 12.1462,
+        "high_first": 12.157,
+        "best_of_two": 11.7982,
+        "worst_of_two (published)": 12.5168
+      },
+      "round_trips": 669,
+      "round_trips_with_a_loss": 0,
+      "final_close_pnl": -953.8434,
+      "differences_pp": {
+        "bar_close_minus_daily": 0.7649
+      },
+      "underwater_daily": {
+        "longest_days": 81.0,
+        "longest_from": "2026-05-11T00:00:00Z",
+        "longest_to": "2026-07-31T00:00:00Z",
+        "longest_ended_in_recovery": false,
+        "points_below_peak": 190,
+        "points": 256,
+        "share_of_points_below_peak_pct": 74.22,
+        "sample_days": 254.52,
+        "last_high_time": "2026-05-11T00:00:00Z"
+      },
+      "buy_and_hold_max_drawdown_pct": 40.4682,
+      "return_over_max_drawdown": {
+        "annualised_return_pct": 4.57,
+        "ratio": 0.37,
+        "note": "annualised return of this sample divided by its max drawdown; shown to illustrate how unstable the ratio is on short samples. Not a Calmar ratio (that needs 36 months)."
+      }
+    },
+    "out_of_sample": {
+      "first_bar": "2026-07-31T00:00:00Z",
+      "last_bar": "2026-11-18T11:15:00Z",
+      "sample_days": 110.48,
+      "total_return_pct": 4.3692,
+      "published_max_drawdown_pct": 7.307,
+      "measures": {
+        "realised_until_final_close": {
+          "max_drawdown_pct": 0.0028,
+          "peak": 10025.53,
+          "peak_time": "2026-08-19T12:30:00Z",
+          "trough": 10025.25,
+          "trough_time": "2026-08-19T15:15:00Z"
+        },
+        "realised_including_final_close": {
+          "max_drawdown_pct": 0.0043,
+          "peak": 10383.39,
+          "peak_time": "2026-11-18T07:45:00Z",
+          "trough": 10382.95,
+          "trough_time": "2026-11-18T11:15:00Z"
+        },
+        "daily": {
+          "max_drawdown_pct": 6.7924,
+          "peak": 10022.99,
+          "peak_time": "2026-08-19T00:00:00Z",
+          "trough": 9342.19,
+          "trough_time": "2026-09-22T00:00:00Z"
+        },
+        "bar_close_published": {
+          "max_drawdown_pct": 7.307,
+          "gain_needed_to_recover_pct": 7.88
+        },
+        "intrabar": null
+      },
+      "intrabar_note": "not computable from the result file: it lists fills, not the position held at each bar, and funding is not itemised",
+      "bar_close_by_intrabar_path_pct": {
+        "low_first": 7.1322,
+        "high_first": 7.0552,
+        "best_of_two": 6.8998,
+        "worst_of_two (published)": 7.307
+      },
+      "round_trips": 197,
+      "round_trips_with_a_loss": 0,
+      "final_close_pnl": -0.294,
+      "differences_pp": {
+        "bar_close_minus_daily": 0.5146
+      },
+      "underwater_daily": {
+        "longest_days": 73.0,
+        "longest_from": "2026-08-19T00:00:00Z",
+        "longest_to": "2026-10-31T00:00:00Z",
+        "longest_ended_in_recovery": true,
+        "points_below_peak": 88,
+        "points": 112,
+        "share_of_points_below_peak_pct": 78.57,
+        "sample_days": 110.48,
+        "last_high_time": "2026-11-18T11:30:00Z"
+      },
+      "buy_and_hold_max_drawdown_pct": 28.8692,
+      "return_over_max_drawdown": {
+        "annualised_return_pct": 15.18,
+        "ratio": 2.08,
+        "note": "annualised return of this sample divided by its max drawdown; shown to illustrate how unstable the ratio is on short samples. Not a Calmar ratio (that needs 36 months)."
+      }
+    }
+  }
+}

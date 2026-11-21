@@ -1,0 +1,61 @@
+candle file sha256 ac4acc429d7f... matches all 7 result files
+strategy           sample          trades   closed    daily      bar    publ.  intrabar    outer
+ma_cross           in_sample          572    62.81    62.97    63.33    63.33     63.33    63.46
+ma_cross           out_of_sample      263    28.83    27.02    31.18    31.18     31.25    31.49
+fvg                in_sample          801    66.94    66.97    66.97    66.97     66.97    66.99
+fvg                out_of_sample      304    43.04    43.04    43.19    43.19     43.28    43.31
+liquidity_sweep    in_sample         1639    94.34    94.21    94.35    94.35     94.37    94.37
+liquidity_sweep    out_of_sample      688    69.31    69.03    69.31    69.31     69.36    69.38
+order_block        in_sample          325    46.70    46.40    46.92    46.92     47.04    47.15
+order_block        out_of_sample      141    24.49    24.17    24.94    24.94     25.02    25.02
+break_of_structure in_sample          149    52.90    52.95    53.72    53.72     53.84    53.99
+break_of_structure out_of_sample       42    22.60    22.61    23.57    23.57     23.65    23.73
+breaker_block      in_sample          243    21.18    21.18    21.23    21.23     21.33    21.53
+breaker_block      out_of_sample      120    16.62    16.62    16.62    16.62     16.62    16.64
+
+grid in_sample      realised until final close 0.0033%  realised incl. final close 8.46%  daily 11.75%  bar close (published) 12.52%  paths {'low_first': 12.1462, 'high_first': 12.157, 'best_of_two': 11.7982, 'worst_of_two (published)': 12.5168}
+grid out_of_sample  realised until final close 0.0028%  realised incl. final close 0.00%  daily 6.79%  bar close (published) 7.31%  paths {'low_first': 7.1322, 'high_first': 7.0552, 'best_of_two': 6.8998, 'worst_of_two (published)': 7.307}
+
+underwater (daily points): longest spell in days, share of points below the peak, recovered?
+  ma_cross        in_sample        237.00 d of  254.52   98.83%  recovered=False  last high 2025-12-06T00:00:00Z
+  ma_cross        out_of_sample     88.48 d of  110.48   97.32%  recovered=False  last high 2026-08-22T00:00:00Z
+  fvg             in_sample        254.00 d of  254.52   99.22%  recovered=False  last high 2025-11-19T00:00:00Z
+  fvg             out_of_sample    110.48 d of  110.48   99.11%  recovered=False  last high 2026-07-31T00:00:00Z
+  liquidity_sweep in_sample        253.00 d of  254.52   98.83%  recovered=False  last high 2025-11-20T00:00:00Z
+  liquidity_sweep out_of_sample    110.48 d of  110.48   99.11%  recovered=False  last high 2026-07-31T00:00:00Z
+  order_block     in_sample        243.00 d of  254.52   96.09%  recovered=False  last high 2025-11-30T00:00:00Z
+  order_block     out_of_sample    109.48 d of  110.48   98.21%  recovered=False  last high 2026-08-01T00:00:00Z
+  break_of_structurein_sample        239.00 d of  254.52   96.88%  recovered=False  last high 2025-12-04T00:00:00Z
+  break_of_structureout_of_sample     88.48 d of  110.48   92.86%  recovered=False  last high 2026-08-22T00:00:00Z
+  breaker_block   in_sample        143.00 d of  254.52   96.09%  recovered=False  last high 2026-03-10T00:00:00Z
+  breaker_block   out_of_sample    104.48 d of  110.48   95.54%  recovered=False  last high 2026-08-06T00:00:00Z
+  grid            in_sample         81.00 d of  254.52   74.22%  recovered=False  last high 2026-05-11T00:00:00Z
+  grid            out_of_sample     73.00 d of  110.48   78.57%  recovered=True  last high 2026-11-18T11:30:00Z
+
+max drawdown (bar close) as the sample grows, percent
+  ma_cross        in_sample      {'first_7_days': 8.974, 'first_14_days': 13.97, 'first_30_days': 13.97, 'first_60_days': 27.765, 'first_90_days': 35.9321, 'first_120_days': 36.7068, 'first_180_days': 50.0524, 'full_sample': 63.3341}
+  ma_cross        out_of_sample  {'first_7_days': 8.9259, 'first_14_days': 12.6324, 'first_30_days': 14.4917, 'first_60_days': 19.8011, 'first_90_days': 27.6076, 'full_sample': 31.1784}
+  fvg             in_sample      {'first_7_days': 6.5133, 'first_14_days': 11.3675, 'first_30_days': 18.2478, 'first_60_days': 29.519, 'first_90_days': 33.469, 'first_120_days': 33.469, 'first_180_days': 52.9779, 'full_sample': 66.9656}
+  fvg             out_of_sample  {'first_7_days': 6.5074, 'first_14_days': 10.2652, 'first_30_days': 13.6822, 'first_60_days': 21.4383, 'first_90_days': 37.3715, 'full_sample': 43.1899}
+  liquidity_sweep in_sample      {'first_7_days': 6.8199, 'first_14_days': 14.0218, 'first_30_days': 28.6646, 'first_60_days': 42.2424, 'first_90_days': 64.2385, 'first_120_days': 74.887, 'first_180_days': 85.5464, 'full_sample': 94.3547}
+  liquidity_sweep out_of_sample  {'first_7_days': 10.3028, 'first_14_days': 14.3307, 'first_30_days': 29.8872, 'first_60_days': 42.3803, 'first_90_days': 60.88, 'full_sample': 69.306}
+  order_block     in_sample      {'first_7_days': 1.9501, 'first_14_days': 1.9501, 'first_30_days': 4.6775, 'first_60_days': 10.5621, 'first_90_days': 21.9011, 'first_120_days': 31.521, 'first_180_days': 37.6013, 'full_sample': 46.9207}
+  order_block     out_of_sample  {'first_7_days': 1.264, 'first_14_days': 2.3393, 'first_30_days': 4.6442, 'first_60_days': 16.2163, 'first_90_days': 20.9786, 'full_sample': 24.94}
+  break_of_structurein_sample      {'first_7_days': 5.4767, 'first_14_days': 5.4767, 'first_30_days': 7.4538, 'first_60_days': 12.0369, 'first_90_days': 28.1952, 'first_120_days': 36.0533, 'first_180_days': 52.5059, 'full_sample': 53.719}
+  break_of_structureout_of_sample  {'first_7_days': 2.1398, 'first_14_days': 4.6497, 'first_30_days': 7.321, 'first_60_days': 17.6902, 'first_90_days': 23.5688, 'full_sample': 23.5688}
+  breaker_block   in_sample      {'first_7_days': 1.864, 'first_14_days': 4.5955, 'first_30_days': 4.5955, 'first_60_days': 7.5569, 'first_90_days': 10.1521, 'first_120_days': 10.1521, 'first_180_days': 13.504, 'full_sample': 21.2277}
+  breaker_block   out_of_sample  {'first_7_days': 1.0411, 'first_14_days': 1.4783, 'first_30_days': 2.5593, 'first_60_days': 10.9596, 'first_90_days': 14.2439, 'full_sample': 16.6202}
+
+30-day windows, each measured on its own: count, smallest, median, largest; full sample
+  ma_cross        in_sample        8  9.1885  14.9123  23.3139   full 63.3341
+  ma_cross        out_of_sample    3  12.4289  14.4917  15.2854   full 31.1783
+  fvg             in_sample        8  6.4698  17.7836  21.5519   full 66.9656
+  fvg             out_of_sample    3  9.1873  13.6822  20.3328   full 43.1899
+  liquidity_sweep in_sample        8  21.7611  30.858  38.5349   full 94.3547
+  liquidity_sweep out_of_sample    3  20.6852  29.8872  35.0116   full 69.306
+  order_block     in_sample        8  3.9756  9.2681  16.1763   full 46.9207
+  order_block     out_of_sample    3  4.6442  7.8771  14.9691   full 24.94
+  break_of_structurein_sample        8  7.4538  14.003  26.6347   full 53.719
+  break_of_structureout_of_sample    3  7.321  11.7673  15.1039   full 23.5688
+  breaker_block   in_sample        8  2.6122  5.1615  9.4077   full 21.2277
+  breaker_block   out_of_sample    3  2.5593  3.6885  9.3332   full 16.6202

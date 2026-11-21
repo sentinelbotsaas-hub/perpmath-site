@@ -1,0 +1,26 @@
+perpmath 0.2.0, endpoint https://api-testnet.bybit.com (public requests only)
+clock offset to Bybit: 884 ms
+BTCUSDT testnet rules: qty step 0.001, min qty 0.001, tick 0.10, min notional 5
+bars: 1000 closed 15m bars, 2026-11-11T07:15:00Z to 2026-11-21T17:00:00Z, missing inside the range: 0
+entry signals on the 904 bars after warm-up: 1 long, 51 short (5.75% of bars)
+most recent signal bar: 2026-11-21T10:15:00Z close 55399.8 (short), stop 56303.79
+order body the runner would POST to /v5/order/create:
+{
+  "category": "linear",
+  "symbol": "BTCUSDT",
+  "side": "Sell",
+  "orderType": "Market",
+  "qty": "0.001",
+  "positionIdx": 0,
+  "orderLinkId": "pm-breakout-5f467f-1795256100-SE1",
+  "stopLoss": "56303.8",
+  "slTriggerBy": "LastPrice",
+  "tpslMode": "Full",
+  "slOrderType": "Market",
+  "takeProfit": "53591.8",
+  "tpTriggerBy": "LastPrice"
+}
+order ID, first call:            pm-breakout-5f467f-1795256100-SE1
+order ID, second call:           pm-breakout-5f467f-1795256100-SE1   same: True
+order ID, lookback 97 not 96:   pm-breakout-6ece7d-1795256100-SE1
+order ID, one bar later:         pm-breakout-5f467f-1795257000-SE1

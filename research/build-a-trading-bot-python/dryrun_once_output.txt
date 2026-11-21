@@ -1,0 +1,4 @@
+2026-11-21T17:23:58Z perpmath live breakout BTCUSDT 15m | DRY RUN (no signed requests, no orders) | state .perpmath-live\breakout-BTCUSDT-15m-5f467f-dryrun.json
+2026-11-21T17:23:58Z limits: order 100 USDT, max position 200 USDT, max daily loss 20 USDT, max 5 consecutive API errors, max clock skew 5000 ms
+2026-11-21T17:23:58Z clock offset to Bybit: 1019 ms (request timestamps and bar timing use Bybit's clock)
+2026-11-21T17:23:59Z bar 2026-11-21T17:00:00Z close 59660.0: no entry

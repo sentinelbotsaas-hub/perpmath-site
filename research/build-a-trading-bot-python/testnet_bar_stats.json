@@ -1,0 +1,14 @@
+{
+  "bars": 1000,
+  "first_bar": "2026-11-11T07:15:00Z",
+  "last_bar": "2026-11-21T17:00:00Z",
+  "median_volume_btc": 0.9865,
+  "median_turnover_usdt": 65203.6,
+  "bars_with_zero_volume": 0,
+  "bars_with_high_equal_low": 13,
+  "signal_bar": "2026-11-21T10:15:00Z",
+  "signal_bar_close": 55399.8,
+  "last_bar_close": 59660.0,
+  "hours_between": 6.75,
+  "move_pct": 7.69
+}

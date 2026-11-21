@@ -1,0 +1,6 @@
+breakout BTCUSDT 15m  2025-11-18T11:30:00Z to 2026-11-18T11:15:00Z
+fee 0.0550% per side, slippage 0.0200% per fill, funding not modelled
+               trades   win %   avg R  t-stat  return %  max DD %
+in_sample         364   34.34   -0.17   -1.55    -34.79     39.36
+out_of_sample     157   32.48   -0.29   -1.60    -19.32     28.27
+wrote results/breakout-btcusdt.json
