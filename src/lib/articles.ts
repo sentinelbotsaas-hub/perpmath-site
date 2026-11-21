@@ -21,7 +21,11 @@ function localeOf(entry: Article): Locale {
 }
 
 export async function getArticles(): Promise<LocalizedArticle[]> {
-  const entries = await getCollection('articles');
+  // Scheduled release: an article dated after the build day is left out of
+  // the build entirely (no page, no sitemap entry, no link to it). The day is
+  // UTC. PERPMATH_BUILD_DATE overrides it: 2099-12-31 previews everything.
+  const buildDay = process.env.PERPMATH_BUILD_DATE ?? new Date().toISOString().slice(0, 10);
+  const entries = (await getCollection('articles')).filter((entry) => entry.data.date <= buildDay);
   const bySlug = new Map<string, Set<Locale>>();
 
   for (const entry of entries) {
