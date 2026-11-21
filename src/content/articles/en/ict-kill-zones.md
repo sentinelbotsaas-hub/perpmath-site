@@ -129,7 +129,7 @@ I expected the London open to show at least a small bump, since LuxAlgo's page s
 
 ## Do the day's high and low form inside the kill zones?
 
-Partly, and the answer needs a baseline first. A window can collect highs and lows for dull reasons: it is long, or it is volatile. There is a third reason people rarely mention. On a random walk the high and low of any period fall near its start or its end far more often than in the middle, so the hours around New York midnight would lead this count even if nothing happened there. Look at the hour table: 00:00 and 23:00 have the most extremes and are among the quietest hours.
+Partly, and the answer needs a baseline first. A window can collect highs and lows for dull reasons: it is long, or it is volatile. There is a third reason people rarely mention. On a random walk the high and low of any period fall near its start or its end far more often than in the middle, so the hours around New York midnight would lead this count even if nothing happened there. Look at the hour table: 00:00 has the most extremes of any hour and 23:00 has the fourth most, and both are among the quietest hours.
 
 <!-- unique:firsthand-data -->
 So we built the comparison into the script before running it. Each of the 362 days was replayed 2,000 times with the direction of every 15-minute bar flipped at random. That keeps every bar's size and its place in the day, and removes any tendency for moves to reverse or continue. The table gives the share of all 724 daily highs and lows that fell in each window, what the replays expect, and the range that 95% of replays stayed inside.

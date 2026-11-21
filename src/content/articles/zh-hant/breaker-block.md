@@ -15,7 +15,7 @@ tldr: "Breaker block 是被價格直接收盤穿過的訂單塊（order block）
 
 ## Breaker block 是什麼，又是哪一根 K 線
 
-Breaker block 是一個區塊，它本來是[訂單塊（order block）](/zh-hant/learn/order-block/)，直到價格收盤穿過它。看多的訂單塊照說要當支撐。價格一旦收在它下面，同一個區塊就被預期會變成壓力，做法是等價格往上回到區塊時做空。反過來的情況就是做多。同樣的翻面套在[公平價值缺口](/zh-hant/learn/fair-value-gap/)上，叫 inverse fair value gap，那個我們另外測了。這個想法屬於 [ICT 交易與聰明錢概念](/zh-hant/learn/ict-trading/)；TMGM 那一頁說它出自 ICT，至於這個詞最早是什麼時候開始用的，我們找不到有日期的原始出處。
+Breaker block 是一個區塊，它本來是[訂單塊（order block）](/zh-hant/learn/order-block/)，直到價格收盤穿過它。看多的訂單塊照說要當支撐。價格一旦收在它下面，同一個區塊就被預期會變成壓力，做法是等價格往上回到區塊時做空。反過來的情況就是做多。同樣的翻面套在[公平價值缺口](/zh-hant/learn/fair-value-gap/)上，叫[反向公平價值缺口（inverse fair value gap）](/zh-hant/learn/inverse-fair-value-gap/)，那個我們另外測了。這個想法屬於 [ICT 交易與聰明錢概念](/zh-hant/learn/ict-trading/)；TMGM 那一頁說它出自 ICT，至於這個詞最早是什麼時候開始用的，我們找不到有日期的原始出處。
 
 <!-- unique:cross-reference -->
 問框要畫在哪一根 K 線上，我們讀的三頁給了三個答案。拿看多的 breaker、也就是用來做多的那一種當例子。TMGM 從失效的看空訂單塊出發，那是下跌之前最後一根上漲 K 線。[LuxAlgo 的詞條](https://www.luxalgo.com/library/concept/breaker-block/)（2026-11-22 查閱）說，它是把那段失敗的走勢往下推的那一根或那一串下跌 K 線，詞條的常見問題也確認，看多的 breaker 是用下跌 K 線組成的。Diego Arribas Lopez 在 [MQL5 部落格的一篇文章](https://www.mql5.com/en/blogs/post/773691)（日期 2026-08-18）標的是形成波段高點的那段看跌 K 線範圍，下跌就是從那個高點開始的；那篇文章同時在推銷作者自己的付費指標。三個框都掛在同一個波段高點上，卻不是同一個框。邊緣不一樣，進場價和停損也就不一樣。
