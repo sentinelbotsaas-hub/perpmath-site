@@ -4,7 +4,7 @@
   "baseCoin": "BTC",
   "category": "linear",
   "reportDate": "2026-11-20",
-  "fetchedAt": "2026-11-21T17:13:50.542Z",
+  "fetchedAt": "2026-11-21T19:21:32.995Z",
   "source": "Bybit public API v5 (no API key)",
   "endpoints": {
     "dailyKlines": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=D&limit=130",
@@ -398,13 +398,13 @@
     "longShortChange7d": 0.2969551182907617
   },
   "atFetch": {
-    "time": "2026-11-21T17:13:48.847Z",
-    "lastPrice": 60270,
-    "markPrice": 60239.7,
-    "fundingRate": -0.00007076,
+    "time": "2026-11-21T19:21:31.403Z",
+    "lastPrice": 60263.8,
+    "markPrice": 60263.8,
+    "fundingRate": -0.000064,
     "nextFundingTime": "2026-11-22T00:00:00.000Z",
-    "openInterest": 67974.174,
-    "openInterestValue": 4094743849.51
+    "openInterest": 68241.399,
+    "openInterestValue": 4112486021.06
   },
   "history": {
     "daily": [
