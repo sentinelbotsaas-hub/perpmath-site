@@ -1,0 +1,33 @@
+fold   chosen  train %  train t train n  runner-up    ru %  prof/13   test % test n  rank  test prof/13  worst %  vs median  anchored    by t
+1      50/100    -6.03    -0.35     100     10/100   -7.14        0    14.54     30     1             4   -23.97      19.58    50/100  10/100
+2      50/100    25.90     1.32      91     10/100    6.56        3    -2.69     35     1             0   -32.66      10.18    50/100  50/100
+3      50/100    23.78     1.17      93     10/100    8.89        3    -3.68     28     3             0   -32.99       8.38    50/100  50/100
+4      50/100     6.14     0.43      91     10/100  -10.84        1   -13.80     35    10             3   -35.72      -4.21    50/100  50/100
+5      20/200     6.38     0.40      67     10/200   -3.01        1    -2.41     26     1             0   -39.60      12.79    50/100  20/200
+6      20/200    10.29     0.58      68     10/200   -3.43        1    -7.22     25     3             0   -31.28       7.70    50/100  20/200
+7      20/200     5.54     0.37      73     10/200   -7.06        1     9.54     34     5             7   -24.64       9.40    50/100  20/200
+8      20/100     3.55     0.26     107     50/200    2.18        2    -6.34     43     3             1   -28.81       3.80    50/100  20/100
+9      20/100     1.82     0.18     115     50/100   -0.92        1     0.41     42     1             2   -16.52       2.97    50/100  20/100
+
+pair_windows: 117
+training_windows_with_a_profit: 13
+test_windows_with_a_profit: 17
+folds_where_chosen_pair_made_money_in_training: 8
+folds_where_chosen_pair_made_money_in_test: 3
+mean_chosen_train_return_pct: 8.5965
+mean_chosen_test_return_pct: -1.2932
+median_chosen_test_return_pct: -2.6863
+folds_chosen_ranked_first_in_test: 4
+folds_chosen_in_top_three_in_test: 7
+folds_chosen_beat_the_median_pair: 8
+mean_rank_correlation: 0.7033
+min_rank_correlation: 0.3352
+max_rank_correlation: 0.9011
+chosen_training_windows_under_100_trades: 6
+chosen_test_trades_min: 25
+chosen_test_trades_max: 43
+distinct_pairs_chosen: ['20/100', '20/200', '50/100']
+folds_where_chosen_was_the_fewest_trades_pair_in_training: 0
+folds_where_chosen_was_among_the_four_fewest_trades_pairs: 9
+fixed_pairs_with_a_profit_over_the_test_span: 0
+rank_correlation_fewer_trades_vs_higher_return_fixed_pairs: 0.9341

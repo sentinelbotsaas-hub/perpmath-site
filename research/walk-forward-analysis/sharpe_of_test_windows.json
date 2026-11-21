@@ -1,0 +1,52 @@
+{
+ "rolling_total_return_pct": {
+  "returns_pct": [
+   14.5437,
+   -2.6863,
+   -3.6767,
+   -13.8008,
+   -2.4112,
+   -7.2174,
+   9.5402,
+   -6.3399,
+   0.4098
+  ],
+  "count": 9,
+  "mean_pct": -1.2932,
+  "standard_deviation_pct": 8.6382,
+  "sharpe_per_period": -0.1497,
+  "annualized_sharpe": -0.5186,
+  "t_statistic": -0.4491,
+  "interval_95_annualized": [
+   -2.7945,
+   1.7573
+  ],
+  "small_sample": true,
+  "distinct_from_zero": false
+ },
+ "anchored_total_return_pct": {
+  "returns_pct": [
+   14.5437,
+   -2.6863,
+   -3.6767,
+   -13.8008,
+   -4.2535,
+   -12.05,
+   10.1677,
+   4.1434,
+   -0.8851
+  ],
+  "count": 9,
+  "mean_pct": -0.9442,
+  "standard_deviation_pct": 9.3496,
+  "sharpe_per_period": -0.101,
+  "annualized_sharpe": -0.3498,
+  "t_statistic": -0.303,
+  "interval_95_annualized": [
+   -2.6188,
+   1.9192
+  ],
+  "small_sample": true,
+  "distinct_from_zero": false
+ }
+}

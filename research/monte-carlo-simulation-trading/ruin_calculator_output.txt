@@ -1,0 +1,18 @@
+list                      sizing            p       b     r %  edge R  down   calc %   boot %  block %   shuf %
+ma_cross/in_sample        as_run       0.2080   2.565   0.628  -0.258   20%    99.98    99.69    99.47   100.00
+ma_cross/in_sample        as_run       0.2080   2.565   0.628  -0.258   50%    90.73    86.61    85.54   100.00
+ma_cross/in_sample        risk_1pct    0.2080   2.432   1.078  -0.286   20%   100.00   100.00    99.95   100.00
+ma_cross/in_sample        risk_1pct    0.2080   2.432   1.078  -0.286   50%    99.95    99.47    99.00   100.00
+ma_cross/out_of_sample    as_run       0.1901   3.525   0.472  -0.140   20%    49.97    66.45    64.09    66.76
+ma_cross/out_of_sample    as_run       0.1901   3.525   0.472  -0.140   50%     0.00     1.11     1.13     0.00
+ma_cross/out_of_sample    risk_1pct    0.1901   4.007   1.127  -0.048   20%    70.92    88.80    89.78   100.00
+ma_cross/out_of_sample    risk_1pct    0.1901   4.007   1.127  -0.048   50%    12.88    58.02    56.94    43.76
+fvg/in_sample             as_run       0.3146   1.392   0.546  -0.248   20%   100.00   100.00   100.00   100.00
+fvg/in_sample             as_run       0.3146   1.392   0.546  -0.248   50%    99.28    97.88    97.97   100.00
+fvg/in_sample             risk_1pct    0.3146   1.000   1.535  -0.371   20%   100.00   100.00   100.00   100.00
+fvg/in_sample             risk_1pct    0.3146   1.000   1.535  -0.371   50%   100.00   100.00   100.00   100.00
+fvg/out_of_sample         as_run       0.2796   1.174   0.464  -0.392   20%   100.00    99.93    99.97   100.00
+fvg/out_of_sample         as_run       0.2796   1.174   0.464  -0.392   50%     4.51    11.55    10.65     0.00
+fvg/out_of_sample         risk_1pct    0.2796   0.815   1.678  -0.492   20%   100.00   100.00   100.00   100.00
+fvg/out_of_sample         risk_1pct    0.2796   0.815   1.678  -0.492   50%   100.00   100.00   100.00   100.00
+wrote research/monte-carlo-simulation-trading/ruin_calculator.json

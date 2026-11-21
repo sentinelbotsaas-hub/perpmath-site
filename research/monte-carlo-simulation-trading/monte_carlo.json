@@ -1,0 +1,1308 @@
+{
+ "generated_at": "2026-11-21T20:00:10Z",
+ "numpy": "2.5.5",
+ "python": "3.12.10",
+ "paths": 10000,
+ "seed": 20261202,
+ "block_length": 20,
+ "risk_per_trade": 0.01,
+ "thresholds_below_start": [
+  0.2,
+  0.5
+ ],
+ "drawdown_sampling": "after each closed trade",
+ "engine_results": {
+  "ma-cross-btcusdt.json": {
+   "package_version": "0.2.2",
+   "generated_at": "2026-11-21T18:47:34Z",
+   "data_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+  },
+  "fvg-btcusdt.json": {
+   "package_version": "0.2.2",
+   "generated_at": "2026-11-21T18:47:26Z",
+   "data_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+  },
+  "grid-btcusdt.json": {
+   "package_version": "0.2.2",
+   "generated_at": "2026-11-21T18:48:40Z",
+   "data_file_sha256": "ac4acc429d7f33dd10e480195bce85f5639714b5d46869499b4275666f9fa037"
+  }
+ },
+ "lists": {
+  "ma_cross/in_sample": {
+   "strategy": "ma_cross",
+   "sample": "in_sample",
+   "trades": 572,
+   "engine_total_return_pct": -62.3527,
+   "engine_max_drawdown_pct_bar_close": 63.3341,
+   "engine_avg_r": -0.3083,
+   "engine_win_rate_pct": 20.8042,
+   "stop_distance_pct_median": 0.5758,
+   "order_dependence": {
+    "lag1_autocorrelation_of_trade_returns": 0.0419,
+    "lag1_autocorrelation_of_r_multiples": -0.015,
+    "runs_test_on_wins_and_losses": {
+     "runs": 202,
+     "expected_runs": 189.49,
+     "z": 1.5907
+    }
+   },
+   "sizing": {
+    "as_run": {
+     "original_path": {
+      "max_drawdown_pct": 62.8077,
+      "final_return_pct": -62.3527,
+      "lowest_equity_vs_start_pct": -62.3527,
+      "longest_losing_run": 27
+     },
+     "calculator_inputs": {
+      "win_rate": 0.208042,
+      "payoff": 2.564539,
+      "risk_per_trade": 0.00627944,
+      "trades": 572,
+      "mean_move_pct": -0.162277,
+      "zero_moves": 0
+     },
+     "shape_pct": {
+      "wins": 119,
+      "losses": 453,
+      "win_mean": 1.6104,
+      "win_median": 0.9251,
+      "win_largest": 13.7843,
+      "loss_mean": 0.6279,
+      "loss_median": 0.5935,
+      "loss_largest": 2.348,
+      "standard_deviation": 1.3172,
+      "standard_deviation_of_the_two_outcome_coin": 0.9086
+     },
+     "methods": {
+      "shuffle": {
+       "max_drawdown_pct": {
+        "p1": 62.3527,
+        "p5": 62.3527,
+        "p25": 63.2441,
+        "p50": 64.6656,
+        "p75": 66.5884,
+        "p95": 69.6017,
+        "p99": 71.6643
+       },
+       "final_return_pct": {
+        "p1": -62.3527,
+        "p5": -62.3527,
+        "p25": -62.3527,
+        "p50": -62.3527,
+        "p75": -62.3527,
+        "p95": -62.3527,
+        "p99": -62.3527
+       },
+       "longest_losing_run": {
+        "p1": 14.0,
+        "p5": 16.0,
+        "p25": 19.0,
+        "p50": 21.0,
+        "p75": 25.0,
+        "p95": 32.0,
+        "p99": 38.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 83.06,
+       "paths_with_longer_losing_run_than_original_pct": 13.82,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 100.0,
+       "final_return_is_the_same_on_every_path": true
+      },
+      "bootstrap": {
+       "max_drawdown_pct": {
+        "p1": 35.625,
+        "p5": 45.6405,
+        "p25": 58.4972,
+        "p50": 65.6549,
+        "p75": 71.5216,
+        "p95": 78.0384,
+        "p99": 81.5661
+       },
+       "final_return_pct": {
+        "p1": -80.8183,
+        "p5": -76.9176,
+        "p25": -69.5559,
+        "p50": -62.7685,
+        "p75": -53.8121,
+        "p95": -36.3542,
+        "p99": -19.7997
+       },
+       "longest_losing_run": {
+        "p1": 14.0,
+        "p5": 16.0,
+        "p25": 19.0,
+        "p50": 22.0,
+        "p75": 25.0,
+        "p95": 33.0,
+        "p99": 39.0
+       },
+       "paths_ending_above_start_pct": 0.18,
+       "paths_with_deeper_drawdown_than_original_pct": 61.61,
+       "paths_with_longer_losing_run_than_original_pct": 15.41,
+       "paths_touching_20pct_below_start_pct": 99.69,
+       "paths_touching_50pct_below_start_pct": 86.61
+      },
+      "blocks": {
+       "max_drawdown_pct": {
+        "p1": 37.1918,
+        "p5": 46.1576,
+        "p25": 58.9517,
+        "p50": 66.3878,
+        "p75": 72.6963,
+        "p95": 79.2269,
+        "p99": 82.7708
+       },
+       "final_return_pct": {
+        "p1": -81.9384,
+        "p5": -78.1547,
+        "p25": -70.5532,
+        "p50": -62.9463,
+        "p75": -53.0959,
+        "p95": -33.2216,
+        "p99": -13.6017
+       },
+       "longest_losing_run": {
+        "p1": 14.0,
+        "p5": 15.0,
+        "p25": 18.0,
+        "p50": 22.0,
+        "p75": 26.0,
+        "p95": 33.0,
+        "p99": 41.0
+       },
+       "paths_ending_above_start_pct": 0.45,
+       "paths_with_deeper_drawdown_than_original_pct": 62.99,
+       "paths_with_longer_losing_run_than_original_pct": 17.44,
+       "paths_touching_20pct_below_start_pct": 99.47,
+       "paths_touching_50pct_below_start_pct": 85.54
+      }
+     }
+    },
+    "risk_1pct": {
+     "original_path": {
+      "max_drawdown_pct": 85.5834,
+      "final_return_pct": -84.8916,
+      "lowest_equity_vs_start_pct": -84.8916,
+      "longest_losing_run": 27
+     },
+     "calculator_inputs": {
+      "win_rate": 0.208042,
+      "payoff": 2.431697,
+      "risk_per_trade": 0.01077764,
+      "trades": 572,
+      "mean_move_pct": -0.308308,
+      "zero_moves": 0
+     },
+     "shape_pct": {
+      "wins": 119,
+      "losses": 453,
+      "win_mean": 2.6208,
+      "win_median": 1.4115,
+      "win_largest": 17.3834,
+      "loss_mean": 1.0778,
+      "loss_median": 1.1935,
+      "loss_largest": 1.8837,
+      "standard_deviation": 2.1357,
+      "standard_deviation_of_the_two_outcome_coin": 1.5013
+     },
+     "methods": {
+      "shuffle": {
+       "max_drawdown_pct": {
+        "p1": 84.8916,
+        "p5": 84.8916,
+        "p25": 85.2775,
+        "p50": 86.0642,
+        "p75": 87.1293,
+        "p95": 88.8302,
+        "p99": 89.9538
+       },
+       "final_return_pct": {
+        "p1": -84.8916,
+        "p5": -84.8916,
+        "p25": -84.8916,
+        "p50": -84.8916,
+        "p75": -84.8916,
+        "p95": -84.8916,
+        "p99": -84.8916
+       },
+       "longest_losing_run": {
+        "p1": 14.0,
+        "p5": 16.0,
+        "p25": 19.0,
+        "p50": 22.0,
+        "p75": 25.0,
+        "p95": 32.0,
+        "p99": 38.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 64.33,
+       "paths_with_longer_losing_run_than_original_pct": 14.36,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 100.0,
+       "final_return_is_the_same_on_every_path": true
+      },
+      "bootstrap": {
+       "max_drawdown_pct": {
+        "p1": 60.8406,
+        "p5": 71.2828,
+        "p25": 81.7737,
+        "p50": 86.5947,
+        "p75": 90.1249,
+        "p95": 93.5583,
+        "p99": 95.2454
+       },
+       "final_return_pct": {
+        "p1": -94.8884,
+        "p5": -93.177,
+        "p25": -89.1284,
+        "p50": -84.9356,
+        "p75": -79.2097,
+        "p95": -65.1661,
+        "p99": -48.1281
+       },
+       "longest_losing_run": {
+        "p1": 14.0,
+        "p5": 16.0,
+        "p25": 19.0,
+        "p50": 22.0,
+        "p75": 25.0,
+        "p95": 33.0,
+        "p99": 40.0
+       },
+       "paths_ending_above_start_pct": 0.01,
+       "paths_with_deeper_drawdown_than_original_pct": 56.34,
+       "paths_with_longer_losing_run_than_original_pct": 15.13,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 99.47
+      },
+      "blocks": {
+       "max_drawdown_pct": {
+        "p1": 59.2051,
+        "p5": 71.0096,
+        "p25": 82.1657,
+        "p50": 87.1824,
+        "p75": 90.6942,
+        "p95": 93.9415,
+        "p99": 95.4452
+       },
+       "final_return_pct": {
+        "p1": -95.1786,
+        "p5": -93.4725,
+        "p25": -89.7579,
+        "p50": -85.378,
+        "p75": -78.68,
+        "p95": -61.6241,
+        "p99": -39.8706
+       },
+       "longest_losing_run": {
+        "p1": 14.0,
+        "p5": 15.0,
+        "p25": 19.0,
+        "p50": 22.0,
+        "p75": 26.0,
+        "p95": 34.0,
+        "p99": 41.0
+       },
+       "paths_ending_above_start_pct": 0.14,
+       "paths_with_deeper_drawdown_than_original_pct": 59.21,
+       "paths_with_longer_losing_run_than_original_pct": 18.03,
+       "paths_touching_20pct_below_start_pct": 99.95,
+       "paths_touching_50pct_below_start_pct": 99.0
+      }
+     }
+    }
+   }
+  },
+  "ma_cross/out_of_sample": {
+   "strategy": "ma_cross",
+   "sample": "out_of_sample",
+   "trades": 263,
+   "engine_total_return_pct": -18.4566,
+   "engine_max_drawdown_pct_bar_close": 31.1783,
+   "engine_avg_r": -0.0542,
+   "engine_win_rate_pct": 19.0114,
+   "stop_distance_pct_median": 0.4315,
+   "order_dependence": {
+    "lag1_autocorrelation_of_trade_returns": -0.0378,
+    "lag1_autocorrelation_of_r_multiples": -0.0144,
+    "runs_test_on_wins_and_losses": {
+     "runs": 86,
+     "expected_runs": 81.99,
+     "z": 0.8067
+    }
+   },
+   "sizing": {
+    "as_run": {
+     "original_path": {
+      "max_drawdown_pct": 28.8324,
+      "final_return_pct": -18.4566,
+      "lowest_equity_vs_start_pct": -25.2958,
+      "longest_losing_run": 16
+     },
+     "calculator_inputs": {
+      "win_rate": 0.190114,
+      "payoff": 3.524525,
+      "risk_per_trade": 0.00472265,
+      "trades": 263,
+      "mean_move_pct": -0.066034,
+      "zero_moves": 0
+     },
+     "shape_pct": {
+      "wins": 50,
+      "losses": 213,
+      "win_mean": 1.6645,
+      "win_median": 0.7312,
+      "win_largest": 19.4632,
+      "loss_mean": 0.4723,
+      "loss_median": 0.4588,
+      "loss_largest": 1.7134,
+      "standard_deviation": 1.5816,
+      "standard_deviation_of_the_two_outcome_coin": 0.8385
+     },
+     "methods": {
+      "shuffle": {
+       "max_drawdown_pct": {
+        "p1": 19.6479,
+        "p5": 21.5709,
+        "p25": 25.4223,
+        "p50": 29.1993,
+        "p75": 32.8067,
+        "p95": 37.5056,
+        "p99": 40.3927
+       },
+       "final_return_pct": {
+        "p1": -18.4566,
+        "p5": -18.4566,
+        "p25": -18.4566,
+        "p50": -18.4566,
+        "p75": -18.4566,
+        "p95": -18.4566,
+        "p99": -18.4566
+       },
+       "longest_losing_run": {
+        "p1": 13.0,
+        "p5": 14.0,
+        "p25": 17.0,
+        "p50": 20.0,
+        "p75": 23.0,
+        "p95": 30.0,
+        "p99": 36.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 52.44,
+       "paths_with_longer_losing_run_than_original_pct": 78.37,
+       "paths_touching_20pct_below_start_pct": 66.76,
+       "paths_touching_50pct_below_start_pct": 0.0,
+       "final_return_is_the_same_on_every_path": true
+      },
+      "bootstrap": {
+       "max_drawdown_pct": {
+        "p1": 13.0672,
+        "p5": 16.6784,
+        "p25": 23.8055,
+        "p50": 30.5133,
+        "p75": 37.2015,
+        "p95": 45.8642,
+        "p99": 51.1584
+       },
+       "final_return_pct": {
+        "p1": -49.5933,
+        "p5": -43.2608,
+        "p25": -31.724,
+        "p50": -20.0497,
+        "p75": -4.8362,
+        "p95": 24.3359,
+        "p99": 54.0795
+       },
+       "longest_losing_run": {
+        "p1": 12.0,
+        "p5": 13.0,
+        "p25": 17.0,
+        "p50": 20.0,
+        "p75": 24.0,
+        "p95": 32.0,
+        "p99": 40.0
+       },
+       "paths_ending_above_start_pct": 19.39,
+       "paths_with_deeper_drawdown_than_original_pct": 56.46,
+       "paths_with_longer_losing_run_than_original_pct": 76.9,
+       "paths_touching_20pct_below_start_pct": 66.45,
+       "paths_touching_50pct_below_start_pct": 1.11
+      },
+      "blocks": {
+       "max_drawdown_pct": {
+        "p1": 13.4395,
+        "p5": 16.8725,
+        "p25": 23.8254,
+        "p50": 30.4116,
+        "p75": 37.3109,
+        "p95": 46.3763,
+        "p99": 51.742
+       },
+       "final_return_pct": {
+        "p1": -49.6762,
+        "p5": -43.3461,
+        "p25": -30.8081,
+        "p50": -19.5115,
+        "p75": -4.9894,
+        "p95": 21.4228,
+        "p99": 45.862
+       },
+       "longest_losing_run": {
+        "p1": 12.0,
+        "p5": 14.0,
+        "p25": 16.0,
+        "p50": 18.0,
+        "p75": 21.0,
+        "p95": 26.0,
+        "p99": 29.0
+       },
+       "paths_ending_above_start_pct": 18.8,
+       "paths_with_deeper_drawdown_than_original_pct": 56.34,
+       "paths_with_longer_losing_run_than_original_pct": 64.41,
+       "paths_touching_20pct_below_start_pct": 64.09,
+       "paths_touching_50pct_below_start_pct": 1.13
+      }
+     }
+    },
+    "risk_1pct": {
+     "original_path": {
+      "max_drawdown_pct": 54.7966,
+      "final_return_pct": -37.7192,
+      "lowest_equity_vs_start_pct": -47.9157,
+      "longest_losing_run": 16
+     },
+     "calculator_inputs": {
+      "win_rate": 0.190114,
+      "payoff": 4.006746,
+      "risk_per_trade": 0.01126719,
+      "trades": 263,
+      "mean_move_pct": -0.054248,
+      "zero_moves": 0
+     },
+     "shape_pct": {
+      "wins": 50,
+      "losses": 213,
+      "win_mean": 4.5145,
+      "win_median": 1.7326,
+      "win_largest": 92.0051,
+      "loss_mean": 1.1267,
+      "loss_median": 1.2369,
+      "loss_largest": 2.2478,
+      "standard_deviation": 6.1159,
+      "standard_deviation_of_the_two_outcome_coin": 2.2136
+     },
+     "methods": {
+      "shuffle": {
+       "max_drawdown_pct": {
+        "p1": 45.3802,
+        "p5": 48.1578,
+        "p25": 54.5658,
+        "p50": 60.8636,
+        "p75": 66.4767,
+        "p95": 71.4797,
+        "p99": 74.3949
+       },
+       "final_return_pct": {
+        "p1": -37.7192,
+        "p5": -37.7192,
+        "p25": -37.7192,
+        "p50": -37.7192,
+        "p75": -37.7192,
+        "p95": -37.7192,
+        "p99": -37.7192
+       },
+       "longest_losing_run": {
+        "p1": 13.0,
+        "p5": 14.0,
+        "p25": 17.0,
+        "p50": 20.0,
+        "p75": 23.0,
+        "p95": 30.0,
+        "p99": 37.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 74.01,
+       "paths_with_longer_losing_run_than_original_pct": 79.63,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 43.76,
+       "final_return_is_the_same_on_every_path": true
+      },
+      "bootstrap": {
+       "max_drawdown_pct": {
+        "p1": 32.1873,
+        "p5": 39.8143,
+        "p25": 52.5244,
+        "p50": 62.5324,
+        "p75": 71.2528,
+        "p95": 79.6034,
+        "p99": 83.43
+       },
+       "final_return_pct": {
+        "p1": -82.6037,
+        "p5": -77.8414,
+        "p25": -63.6876,
+        "p50": -42.0432,
+        "p75": -0.7356,
+        "p95": 141.7707,
+        "p99": 420.9849
+       },
+       "longest_losing_run": {
+        "p1": 12.0,
+        "p5": 14.0,
+        "p25": 17.0,
+        "p50": 20.0,
+        "p75": 24.0,
+        "p95": 32.0,
+        "p99": 39.0
+       },
+       "paths_ending_above_start_pct": 24.78,
+       "paths_with_deeper_drawdown_than_original_pct": 69.68,
+       "paths_with_longer_losing_run_than_original_pct": 77.05,
+       "paths_touching_20pct_below_start_pct": 88.8,
+       "paths_touching_50pct_below_start_pct": 58.02
+      },
+      "blocks": {
+       "max_drawdown_pct": {
+        "p1": 30.9948,
+        "p5": 38.4906,
+        "p25": 51.5441,
+        "p50": 62.0031,
+        "p75": 71.2173,
+        "p95": 80.5993,
+        "p99": 84.9772
+       },
+       "final_return_pct": {
+        "p1": -83.9367,
+        "p5": -78.2875,
+        "p25": -62.2573,
+        "p50": -40.6496,
+        "p75": -1.0643,
+        "p95": 115.251,
+        "p99": 268.6053
+       },
+       "longest_losing_run": {
+        "p1": 12.0,
+        "p5": 14.0,
+        "p25": 16.0,
+        "p50": 18.0,
+        "p75": 21.0,
+        "p95": 26.0,
+        "p99": 29.0
+       },
+       "paths_ending_above_start_pct": 24.45,
+       "paths_with_deeper_drawdown_than_original_pct": 67.96,
+       "paths_with_longer_losing_run_than_original_pct": 65.49,
+       "paths_touching_20pct_below_start_pct": 89.78,
+       "paths_touching_50pct_below_start_pct": 56.94
+      }
+     }
+    }
+   }
+  },
+  "fvg/in_sample": {
+   "strategy": "fvg",
+   "sample": "in_sample",
+   "trades": 801,
+   "engine_total_return_pct": -66.945,
+   "engine_max_drawdown_pct_bar_close": 66.9656,
+   "engine_avg_r": -0.5692,
+   "engine_win_rate_pct": 31.4607,
+   "stop_distance_pct_median": 0.323,
+   "order_dependence": {
+    "lag1_autocorrelation_of_trade_returns": 0.0311,
+    "lag1_autocorrelation_of_r_multiples": 0.0672,
+    "runs_test_on_wins_and_losses": {
+     "runs": 341,
+     "expected_runs": 346.44,
+     "z": -0.4459
+    }
+   },
+   "sizing": {
+    "as_run": {
+     "original_path": {
+      "max_drawdown_pct": 66.945,
+      "final_return_pct": -66.945,
+      "lowest_equity_vs_start_pct": -66.945,
+      "longest_losing_run": 20
+     },
+     "calculator_inputs": {
+      "win_rate": 0.314607,
+      "payoff": 1.391653,
+      "risk_per_trade": 0.00545771,
+      "trades": 801,
+      "mean_move_pct": -0.135117,
+      "zero_moves": 0
+     },
+     "shape_pct": {
+      "wins": 252,
+      "losses": 549,
+      "win_mean": 0.7595,
+      "win_median": 0.5463,
+      "win_largest": 4.9022,
+      "loss_mean": 0.5458,
+      "loss_median": 0.4432,
+      "loss_largest": 3.0244,
+      "standard_deviation": 0.776,
+      "standard_deviation_of_the_two_outcome_coin": 0.6061
+     },
+     "methods": {
+      "shuffle": {
+       "max_drawdown_pct": {
+        "p1": 66.945,
+        "p5": 66.945,
+        "p25": 67.299,
+        "p50": 67.8533,
+        "p75": 68.5928,
+        "p95": 69.9716,
+        "p99": 71.1493
+       },
+       "final_return_pct": {
+        "p1": -66.945,
+        "p5": -66.945,
+        "p25": -66.945,
+        "p50": -66.945,
+        "p75": -66.945,
+        "p95": -66.945,
+        "p99": -66.945
+       },
+       "longest_losing_run": {
+        "p1": 10.0,
+        "p5": 11.0,
+        "p25": 13.0,
+        "p50": 15.0,
+        "p75": 17.0,
+        "p95": 22.0,
+        "p99": 26.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 92.65,
+       "paths_with_longer_losing_run_than_original_pct": 7.6,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 100.0,
+       "final_return_is_the_same_on_every_path": true
+      },
+      "bootstrap": {
+       "max_drawdown_pct": {
+        "p1": 48.4131,
+        "p5": 55.0614,
+        "p25": 63.3135,
+        "p50": 68.0373,
+        "p75": 72.3391,
+        "p95": 77.5739,
+        "p99": 80.4261
+       },
+       "final_return_pct": {
+        "p1": -79.9754,
+        "p5": -76.89,
+        "p25": -71.5048,
+        "p50": -66.8361,
+        "p75": -61.8448,
+        "p95": -52.6032,
+        "p99": -45.3564
+       },
+       "longest_losing_run": {
+        "p1": 10.0,
+        "p5": 11.0,
+        "p25": 13.0,
+        "p50": 15.0,
+        "p75": 17.0,
+        "p95": 22.0,
+        "p99": 26.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 56.44,
+       "paths_with_longer_losing_run_than_original_pct": 8.08,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 97.88
+      },
+      "blocks": {
+       "max_drawdown_pct": {
+        "p1": 48.4086,
+        "p5": 55.1301,
+        "p25": 63.5274,
+        "p50": 68.0776,
+        "p75": 72.2932,
+        "p95": 77.1956,
+        "p99": 80.1808
+       },
+       "final_return_pct": {
+        "p1": -79.5673,
+        "p5": -76.642,
+        "p25": -71.4584,
+        "p50": -66.9615,
+        "p75": -61.9503,
+        "p95": -52.6953,
+        "p99": -44.764
+       },
+       "longest_losing_run": {
+        "p1": 10.0,
+        "p5": 12.0,
+        "p25": 15.0,
+        "p50": 18.0,
+        "p75": 21.0,
+        "p95": 26.0,
+        "p99": 32.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 56.91,
+       "paths_with_longer_losing_run_than_original_pct": 27.49,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 97.97
+      }
+     }
+    },
+    "risk_1pct": {
+     "original_path": {
+      "max_drawdown_pct": 99.0548,
+      "final_return_pct": -99.0548,
+      "lowest_equity_vs_start_pct": -99.0548,
+      "longest_losing_run": 20
+     },
+     "calculator_inputs": {
+      "win_rate": 0.314607,
+      "payoff": 0.999901,
+      "risk_per_trade": 0.0153492,
+      "trades": 801,
+      "mean_move_pct": -0.569176,
+      "zero_moves": 0
+     },
+     "shape_pct": {
+      "wins": 252,
+      "losses": 549,
+      "win_mean": 1.5348,
+      "win_median": 1.6159,
+      "win_largest": 1.9498,
+      "loss_mean": 1.5349,
+      "loss_median": 1.4103,
+      "loss_largest": 4.3411,
+      "standard_deviation": 1.491,
+      "standard_deviation_of_the_two_outcome_coin": 1.4254
+     },
+     "methods": {
+      "shuffle": {
+       "max_drawdown_pct": {
+        "p1": 99.0548,
+        "p5": 99.0548,
+        "p25": 99.0596,
+        "p50": 99.0735,
+        "p75": 99.093,
+        "p95": 99.129,
+        "p99": 99.161
+       },
+       "final_return_pct": {
+        "p1": -99.0548,
+        "p5": -99.0548,
+        "p25": -99.0548,
+        "p50": -99.0548,
+        "p75": -99.0548,
+        "p95": -99.0548,
+        "p99": -99.0548
+       },
+       "longest_losing_run": {
+        "p1": 11.0,
+        "p5": 12.0,
+        "p25": 13.0,
+        "p50": 15.0,
+        "p75": 17.0,
+        "p95": 22.0,
+        "p99": 26.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 81.51,
+       "paths_with_longer_losing_run_than_original_pct": 7.65,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 100.0,
+       "final_return_is_the_same_on_every_path": true
+      },
+      "bootstrap": {
+       "max_drawdown_pct": {
+        "p1": 97.5805,
+        "p5": 98.1342,
+        "p25": 98.7702,
+        "p50": 99.0724,
+        "p75": 99.3053,
+        "p95": 99.5385,
+        "p99": 99.6531
+       },
+       "final_return_pct": {
+        "p1": -99.6448,
+        "p5": -99.5286,
+        "p25": -99.2892,
+        "p50": -99.0438,
+        "p75": -98.7286,
+        "p95": -98.0742,
+        "p99": -97.4847
+       },
+       "longest_losing_run": {
+        "p1": 10.0,
+        "p5": 11.0,
+        "p25": 13.0,
+        "p50": 15.0,
+        "p75": 17.0,
+        "p95": 22.0,
+        "p99": 26.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 51.53,
+       "paths_with_longer_losing_run_than_original_pct": 8.44,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 100.0
+      },
+      "blocks": {
+       "max_drawdown_pct": {
+        "p1": 97.1727,
+        "p5": 97.9803,
+        "p25": 98.7115,
+        "p50": 99.0721,
+        "p75": 99.3295,
+        "p95": 99.5825,
+        "p99": 99.6954
+       },
+       "final_return_pct": {
+        "p1": -99.6889,
+        "p5": -99.5735,
+        "p25": -99.3104,
+        "p50": -99.0446,
+        "p75": -98.6714,
+        "p95": -97.9119,
+        "p99": -97.0295
+       },
+       "longest_losing_run": {
+        "p1": 10.0,
+        "p5": 12.0,
+        "p25": 16.0,
+        "p50": 18.0,
+        "p75": 21.0,
+        "p95": 26.0,
+        "p99": 32.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 51.37,
+       "paths_with_longer_losing_run_than_original_pct": 27.87,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 100.0
+      }
+     }
+    }
+   }
+  },
+  "fvg/out_of_sample": {
+   "strategy": "fvg",
+   "sample": "out_of_sample",
+   "trades": 304,
+   "engine_total_return_pct": -42.8564,
+   "engine_max_drawdown_pct_bar_close": 43.1899,
+   "engine_avg_r": -0.8264,
+   "engine_win_rate_pct": 27.9605,
+   "stop_distance_pct_median": 0.2427,
+   "order_dependence": {
+    "lag1_autocorrelation_of_trade_returns": -0.0532,
+    "lag1_autocorrelation_of_r_multiples": 0.0353,
+    "runs_test_on_wins_and_losses": {
+     "runs": 128,
+     "expected_runs": 123.47,
+     "z": 0.6469
+    }
+   },
+   "sizing": {
+    "as_run": {
+     "original_path": {
+      "max_drawdown_pct": 43.036,
+      "final_return_pct": -42.8564,
+      "lowest_equity_vs_start_pct": -43.036,
+      "longest_losing_run": 12
+     },
+     "calculator_inputs": {
+      "win_rate": 0.279605,
+      "payoff": 1.173721,
+      "risk_per_trade": 0.00464237,
+      "trades": 304,
+      "mean_move_pct": -0.182081,
+      "zero_moves": 0
+     },
+     "shape_pct": {
+      "wins": 85,
+      "losses": 219,
+      "win_mean": 0.5449,
+      "win_median": 0.359,
+      "win_largest": 4.3655,
+      "loss_mean": 0.4642,
+      "loss_median": 0.3684,
+      "loss_largest": 2.6741,
+      "standard_deviation": 0.6073,
+      "standard_deviation_of_the_two_outcome_coin": 0.4529
+     },
+     "methods": {
+      "shuffle": {
+       "max_drawdown_pct": {
+        "p1": 42.8564,
+        "p5": 42.8564,
+        "p25": 42.9751,
+        "p50": 43.3898,
+        "p75": 44.0231,
+        "p95": 45.4214,
+        "p99": 46.4074
+       },
+       "final_return_pct": {
+        "p1": -42.8564,
+        "p5": -42.8564,
+        "p25": -42.8564,
+        "p50": -42.8564,
+        "p75": -42.8564,
+        "p95": -42.8564,
+        "p99": -42.8564
+       },
+       "longest_losing_run": {
+        "p1": 9.0,
+        "p5": 10.0,
+        "p25": 12.0,
+        "p50": 14.0,
+        "p75": 16.0,
+        "p95": 21.0,
+        "p99": 26.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 70.54,
+       "paths_with_longer_losing_run_than_original_pct": 71.54,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 0.0,
+       "final_return_is_the_same_on_every_path": true
+      },
+      "bootstrap": {
+       "max_drawdown_pct": {
+        "p1": 28.8937,
+        "p5": 33.6326,
+        "p25": 39.7217,
+        "p50": 43.8019,
+        "p75": 47.506,
+        "p95": 52.4231,
+        "p99": 55.6911
+       },
+       "final_return_pct": {
+        "p1": -55.367,
+        "p5": -51.9574,
+        "p25": -46.8768,
+        "p50": -42.9608,
+        "p75": -38.6947,
+        "p95": -31.9419,
+        "p99": -26.2055
+       },
+       "longest_losing_run": {
+        "p1": 9.0,
+        "p5": 10.0,
+        "p25": 12.0,
+        "p50": 14.0,
+        "p75": 17.0,
+        "p95": 22.0,
+        "p99": 27.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 55.19,
+       "paths_with_longer_losing_run_than_original_pct": 71.05,
+       "paths_touching_20pct_below_start_pct": 99.93,
+       "paths_touching_50pct_below_start_pct": 11.55
+      },
+      "blocks": {
+       "max_drawdown_pct": {
+        "p1": 28.5974,
+        "p5": 33.4989,
+        "p25": 39.7833,
+        "p50": 43.7039,
+        "p75": 47.4436,
+        "p95": 52.27,
+        "p99": 55.3535
+       },
+       "final_return_pct": {
+        "p1": -54.9016,
+        "p5": -51.6745,
+        "p25": -46.7344,
+        "p50": -42.8065,
+        "p75": -38.5842,
+        "p95": -31.965,
+        "p99": -26.771
+       },
+       "longest_losing_run": {
+        "p1": 8.0,
+        "p5": 9.0,
+        "p25": 11.0,
+        "p50": 12.0,
+        "p75": 13.0,
+        "p95": 17.0,
+        "p99": 19.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 54.54,
+       "paths_with_longer_losing_run_than_original_pct": 37.31,
+       "paths_touching_20pct_below_start_pct": 99.97,
+       "paths_touching_50pct_below_start_pct": 10.65
+      }
+     }
+    },
+    "risk_1pct": {
+     "original_path": {
+      "max_drawdown_pct": 92.3103,
+      "final_return_pct": -92.243,
+      "lowest_equity_vs_start_pct": -92.3103,
+      "longest_losing_run": 12
+     },
+     "calculator_inputs": {
+      "win_rate": 0.279605,
+      "payoff": 0.814928,
+      "risk_per_trade": 0.01677822,
+      "trades": 304,
+      "mean_move_pct": -0.826388,
+      "zero_moves": 0
+     },
+     "shape_pct": {
+      "wins": 85,
+      "losses": 219,
+      "win_mean": 1.3673,
+      "win_median": 1.4673,
+      "win_largest": 1.9436,
+      "loss_mean": 1.6778,
+      "loss_median": 1.5179,
+      "loss_largest": 5.2092,
+      "standard_deviation": 1.4876,
+      "standard_deviation_of_the_two_outcome_coin": 1.3667
+     },
+     "methods": {
+      "shuffle": {
+       "max_drawdown_pct": {
+        "p1": 92.243,
+        "p5": 92.243,
+        "p25": 92.243,
+        "p50": 92.3431,
+        "p75": 92.4355,
+        "p95": 92.6368,
+        "p99": 92.8039
+       },
+       "final_return_pct": {
+        "p1": -92.243,
+        "p5": -92.243,
+        "p25": -92.243,
+        "p50": -92.243,
+        "p75": -92.243,
+        "p95": -92.243,
+        "p99": -92.243
+       },
+       "longest_losing_run": {
+        "p1": 9.0,
+        "p5": 10.0,
+        "p25": 12.0,
+        "p50": 14.0,
+        "p75": 16.25,
+        "p95": 21.0,
+        "p99": 26.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 55.84,
+       "paths_with_longer_losing_run_than_original_pct": 71.93,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 100.0,
+       "final_return_is_the_same_on_every_path": true
+      },
+      "bootstrap": {
+       "max_drawdown_pct": {
+        "p1": 86.0883,
+        "p5": 88.3634,
+        "p25": 90.8995,
+        "p50": 92.3303,
+        "p75": 93.5725,
+        "p95": 94.9312,
+        "p99": 95.7847
+       },
+       "final_return_pct": {
+        "p1": -95.7103,
+        "p5": -94.8656,
+        "p25": -93.4852,
+        "p50": -92.212,
+        "p75": -90.7374,
+        "p95": -88.0939,
+        "p99": -85.8322
+       },
+       "longest_losing_run": {
+        "p1": 9.0,
+        "p5": 10.0,
+        "p25": 12.0,
+        "p50": 14.0,
+        "p75": 17.0,
+        "p95": 22.0,
+        "p99": 27.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 50.34,
+       "paths_with_longer_losing_run_than_original_pct": 70.46,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 100.0
+      },
+      "blocks": {
+       "max_drawdown_pct": {
+        "p1": 84.3552,
+        "p5": 87.5712,
+        "p25": 90.8072,
+        "p50": 92.4687,
+        "p75": 93.7863,
+        "p95": 95.2133,
+        "p99": 95.9593
+       },
+       "final_return_pct": {
+        "p1": -95.9198,
+        "p5": -95.1275,
+        "p25": -93.6725,
+        "p50": -92.3342,
+        "p75": -90.5982,
+        "p95": -87.2843,
+        "p99": -84.0163
+       },
+       "longest_losing_run": {
+        "p1": 9.0,
+        "p5": 9.0,
+        "p25": 11.0,
+        "p50": 12.0,
+        "p75": 14.0,
+        "p95": 17.0,
+        "p99": 19.0
+       },
+       "paths_ending_above_start_pct": 0.0,
+       "paths_with_deeper_drawdown_than_original_pct": 53.03,
+       "paths_with_longer_losing_run_than_original_pct": 38.0,
+       "paths_touching_20pct_below_start_pct": 100.0,
+       "paths_touching_50pct_below_start_pct": 100.0
+      }
+     }
+    }
+   }
+  }
+ },
+ "cross_check": "closed-trade max drawdown equals research/max-drawdown/drawdown_measures.json",
+ "forecast_from_in_sample": {
+  "ma_cross": {
+   "drawn_from": "ma_cross/in_sample (572 trades)",
+   "path_length": 263,
+   "final_return_pct": {
+    "p1": -59.0969,
+    "p5": -53.7932,
+    "p25": -44.6764,
+    "p50": -36.7618,
+    "p75": -27.0499,
+    "p95": -9.122,
+    "p99": 7.7866
+   },
+   "max_drawdown_pct": {
+    "p1": 17.7817,
+    "p5": 23.6925,
+    "p25": 34.2774,
+    "p50": 41.2763,
+    "p75": 47.5414,
+    "p95": 55.5078,
+    "p99": 59.9843
+   },
+   "actual_out_of_sample_final_return_pct": -18.4566,
+   "actual_out_of_sample_max_drawdown_pct": 28.8324,
+   "paths_with_a_worse_final_return_than_actual_pct": 87.66,
+   "paths_with_a_deeper_drawdown_than_actual_pct": 87.3
+  },
+  "fvg": {
+   "drawn_from": "fvg/in_sample (801 trades)",
+   "path_length": 304,
+   "final_return_pct": {
+    "p1": -51.4903,
+    "p5": -47.0803,
+    "p25": -40.03,
+    "p50": -34.5272,
+    "p75": -28.2676,
+    "p95": -17.8783,
+    "p99": -9.3738
+   },
+   "max_drawdown_pct": {
+    "p1": 17.1148,
+    "p5": 22.6512,
+    "p25": 31.2632,
+    "p50": 36.6523,
+    "p75": 41.716,
+    "p95": 48.1617,
+    "p99": 52.2494
+   },
+   "actual_out_of_sample_final_return_pct": -42.8564,
+   "actual_out_of_sample_max_drawdown_pct": 43.036,
+   "paths_with_a_worse_final_return_than_actual_pct": 14.45,
+   "paths_with_a_deeper_drawdown_than_actual_pct": 19.27
+  }
+ },
+ "grid": {
+  "in_sample": {
+   "round_trips": 669,
+   "round_trips_closed_at_a_loss": 0,
+   "final_close_fills": 1,
+   "final_close_profit": -953.8434,
+   "engine_max_drawdown_pct_marked_to_market": 12.5168,
+   "engine_total_return_pct": 3.1659,
+   "equity": "additive, profits before fees",
+   "round_trips_only": {
+    "original_order_max_drawdown_pct": 0.0,
+    "shuffled_max_drawdown_pct": {
+     "p1": 0.0,
+     "p5": 0.0,
+     "p25": 0.0,
+     "p50": 0.0,
+     "p75": 0.0,
+     "p95": 0.0,
+     "p99": 0.0
+    },
+    "shuffled_max_drawdown_pct_largest": 0.0
+   },
+   "with_final_close": {
+    "original_order_max_drawdown_pct": 8.3916,
+    "shuffled_max_drawdown_pct": {
+     "p1": 8.4007,
+     "p5": 8.4417,
+     "p25": 8.6449,
+     "p50": 8.9257,
+     "p75": 9.222,
+     "p95": 9.4688,
+     "p99": 9.5267
+    },
+    "shuffled_max_drawdown_pct_largest": 9.5384
+   }
+  },
+  "out_of_sample": {
+   "round_trips": 197,
+   "round_trips_closed_at_a_loss": 0,
+   "final_close_fills": 1,
+   "final_close_profit": -0.294,
+   "engine_max_drawdown_pct_marked_to_market": 7.307,
+   "engine_total_return_pct": 4.3692,
+   "equity": "additive, profits before fees",
+   "round_trips_only": {
+    "original_order_max_drawdown_pct": 0.0,
+    "shuffled_max_drawdown_pct": {
+     "p1": 0.0,
+     "p5": 0.0,
+     "p25": 0.0,
+     "p50": 0.0,
+     "p75": 0.0,
+     "p95": 0.0,
+     "p99": 0.0
+    },
+    "shuffled_max_drawdown_pct_largest": 0.0
+   },
+   "with_final_close": {
+    "original_order_max_drawdown_pct": 0.0028,
+    "shuffled_max_drawdown_pct": {
+     "p1": 0.0028,
+     "p5": 0.0028,
+     "p25": 0.0029,
+     "p50": 0.0029,
+     "p75": 0.0029,
+     "p95": 0.0029,
+     "p99": 0.0029
+    },
+    "shuffled_max_drawdown_pct_largest": 0.0029
+   }
+  }
+ }
+}

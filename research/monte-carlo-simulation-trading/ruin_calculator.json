@@ -1,0 +1,287 @@
+{
+ "source": "src/lib/calc/risk-of-ruin.ts",
+ "sim_paths": 10000,
+ "sim_seed": 20261122,
+ "lists": {
+  "ma_cross/in_sample": {
+   "as_run": {
+    "inputs": {
+     "win_rate": 0.208042,
+     "payoff": 2.564539,
+     "risk_per_trade": 0.00627944,
+     "trades": 572,
+     "mean_move_pct": -0.162277,
+     "zero_moves": 0
+    },
+    "thresholds": {
+     "0.2": {
+      "calculator_probability_pct": 99.98,
+      "calculator_simulation_pct": 99.97,
+      "eventual": "certain",
+      "edge_r": -0.2584,
+      "log_growth_per_trade": -0.00166514,
+      "losses_in_a_row_to_threshold": 36,
+      "bootstrap_of_real_trades_pct": 99.69,
+      "block_bootstrap_of_real_trades_pct": 99.47,
+      "shuffle_of_real_trades_pct": 100
+     },
+     "0.5": {
+      "calculator_probability_pct": 90.73,
+      "calculator_simulation_pct": 90.12,
+      "eventual": "certain",
+      "edge_r": -0.2584,
+      "log_growth_per_trade": -0.00166514,
+      "losses_in_a_row_to_threshold": 111,
+      "bootstrap_of_real_trades_pct": 86.61,
+      "block_bootstrap_of_real_trades_pct": 85.54,
+      "shuffle_of_real_trades_pct": 100
+     }
+    }
+   },
+   "risk_1pct": {
+    "inputs": {
+     "win_rate": 0.208042,
+     "payoff": 2.431697,
+     "risk_per_trade": 0.01077764,
+     "trades": 572,
+     "mean_move_pct": -0.308308,
+     "zero_moves": 0
+    },
+    "thresholds": {
+     "0.2": {
+      "calculator_probability_pct": 100,
+      "calculator_simulation_pct": 100,
+      "eventual": "certain",
+      "edge_r": -0.2861,
+      "log_growth_per_trade": -0.00319964,
+      "losses_in_a_row_to_threshold": 21,
+      "bootstrap_of_real_trades_pct": 100,
+      "block_bootstrap_of_real_trades_pct": 99.95,
+      "shuffle_of_real_trades_pct": 100
+     },
+     "0.5": {
+      "calculator_probability_pct": 99.95,
+      "calculator_simulation_pct": 99.91,
+      "eventual": "certain",
+      "edge_r": -0.2861,
+      "log_growth_per_trade": -0.00319964,
+      "losses_in_a_row_to_threshold": 64,
+      "bootstrap_of_real_trades_pct": 99.47,
+      "block_bootstrap_of_real_trades_pct": 99,
+      "shuffle_of_real_trades_pct": 100
+     }
+    }
+   }
+  },
+  "ma_cross/out_of_sample": {
+   "as_run": {
+    "inputs": {
+     "win_rate": 0.190114,
+     "payoff": 3.524525,
+     "risk_per_trade": 0.00472265,
+     "trades": 263,
+     "mean_move_pct": -0.066034,
+     "zero_moves": 0
+    },
+    "thresholds": {
+     "0.2": {
+      "calculator_probability_pct": 49.97,
+      "calculator_simulation_pct": 49.91,
+      "eventual": "certain",
+      "edge_r": -0.1398,
+      "log_growth_per_trade": -0.00069545,
+      "losses_in_a_row_to_threshold": 48,
+      "bootstrap_of_real_trades_pct": 66.45,
+      "block_bootstrap_of_real_trades_pct": 64.09,
+      "shuffle_of_real_trades_pct": 66.76
+     },
+     "0.5": {
+      "calculator_probability_pct": 0,
+      "calculator_simulation_pct": 0,
+      "eventual": "certain",
+      "edge_r": -0.1398,
+      "log_growth_per_trade": -0.00069545,
+      "losses_in_a_row_to_threshold": 147,
+      "bootstrap_of_real_trades_pct": 1.11,
+      "block_bootstrap_of_real_trades_pct": 1.13,
+      "shuffle_of_real_trades_pct": 0
+     }
+    }
+   },
+   "risk_1pct": {
+    "inputs": {
+     "win_rate": 0.190114,
+     "payoff": 4.006746,
+     "risk_per_trade": 0.01126719,
+     "trades": 263,
+     "mean_move_pct": -0.054248,
+     "zero_moves": 0
+    },
+    "thresholds": {
+     "0.2": {
+      "calculator_probability_pct": 70.92,
+      "calculator_simulation_pct": 70.54,
+      "eventual": "certain",
+      "edge_r": -0.0481,
+      "log_growth_per_trade": -0.00078237,
+      "losses_in_a_row_to_threshold": 20,
+      "bootstrap_of_real_trades_pct": 88.8,
+      "block_bootstrap_of_real_trades_pct": 89.78,
+      "shuffle_of_real_trades_pct": 100
+     },
+     "0.5": {
+      "calculator_probability_pct": 12.88,
+      "calculator_simulation_pct": 12.85,
+      "eventual": "certain",
+      "edge_r": -0.0481,
+      "log_growth_per_trade": -0.00078237,
+      "losses_in_a_row_to_threshold": 62,
+      "bootstrap_of_real_trades_pct": 58.02,
+      "block_bootstrap_of_real_trades_pct": 56.94,
+      "shuffle_of_real_trades_pct": 43.76
+     }
+    }
+   }
+  },
+  "fvg/in_sample": {
+   "as_run": {
+    "inputs": {
+     "win_rate": 0.314607,
+     "payoff": 1.391653,
+     "risk_per_trade": 0.00545771,
+     "trades": 801,
+     "mean_move_pct": -0.135117,
+     "zero_moves": 0
+    },
+    "thresholds": {
+     "0.2": {
+      "calculator_probability_pct": 100,
+      "calculator_simulation_pct": 100,
+      "eventual": "certain",
+      "edge_r": -0.2476,
+      "log_growth_per_trade": -0.00137043,
+      "losses_in_a_row_to_threshold": 41,
+      "bootstrap_of_real_trades_pct": 100,
+      "block_bootstrap_of_real_trades_pct": 100,
+      "shuffle_of_real_trades_pct": 100
+     },
+     "0.5": {
+      "calculator_probability_pct": 99.28,
+      "calculator_simulation_pct": 99.07,
+      "eventual": "certain",
+      "edge_r": -0.2476,
+      "log_growth_per_trade": -0.00137043,
+      "losses_in_a_row_to_threshold": 127,
+      "bootstrap_of_real_trades_pct": 97.88,
+      "block_bootstrap_of_real_trades_pct": 97.97,
+      "shuffle_of_real_trades_pct": 100
+     }
+    }
+   },
+   "risk_1pct": {
+    "inputs": {
+     "win_rate": 0.314607,
+     "payoff": 0.999901,
+     "risk_per_trade": 0.0153492,
+     "trades": 801,
+     "mean_move_pct": -0.569176,
+     "zero_moves": 0
+    },
+    "thresholds": {
+     "0.2": {
+      "calculator_probability_pct": 100,
+      "calculator_simulation_pct": 100,
+      "eventual": "certain",
+      "edge_r": -0.3708,
+      "log_growth_per_trade": -0.00581,
+      "losses_in_a_row_to_threshold": 15,
+      "bootstrap_of_real_trades_pct": 100,
+      "block_bootstrap_of_real_trades_pct": 100,
+      "shuffle_of_real_trades_pct": 100
+     },
+     "0.5": {
+      "calculator_probability_pct": 100,
+      "calculator_simulation_pct": 100,
+      "eventual": "certain",
+      "edge_r": -0.3708,
+      "log_growth_per_trade": -0.00581,
+      "losses_in_a_row_to_threshold": 45,
+      "bootstrap_of_real_trades_pct": 100,
+      "block_bootstrap_of_real_trades_pct": 100,
+      "shuffle_of_real_trades_pct": 100
+     }
+    }
+   }
+  },
+  "fvg/out_of_sample": {
+   "as_run": {
+    "inputs": {
+     "win_rate": 0.279605,
+     "payoff": 1.173721,
+     "risk_per_trade": 0.00464237,
+     "trades": 304,
+     "mean_move_pct": -0.182081,
+     "zero_moves": 0
+    },
+    "thresholds": {
+     "0.2": {
+      "calculator_probability_pct": 100,
+      "calculator_simulation_pct": 100,
+      "eventual": "certain",
+      "edge_r": -0.3922,
+      "log_growth_per_trade": -0.00183274,
+      "losses_in_a_row_to_threshold": 48,
+      "bootstrap_of_real_trades_pct": 99.93,
+      "block_bootstrap_of_real_trades_pct": 99.97,
+      "shuffle_of_real_trades_pct": 100
+     },
+     "0.5": {
+      "calculator_probability_pct": 4.51,
+      "calculator_simulation_pct": 4.41,
+      "eventual": "certain",
+      "edge_r": -0.3922,
+      "log_growth_per_trade": -0.00183274,
+      "losses_in_a_row_to_threshold": 149,
+      "bootstrap_of_real_trades_pct": 11.55,
+      "block_bootstrap_of_real_trades_pct": 10.65,
+      "shuffle_of_real_trades_pct": 0
+     }
+    }
+   },
+   "risk_1pct": {
+    "inputs": {
+     "win_rate": 0.279605,
+     "payoff": 0.814928,
+     "risk_per_trade": 0.01677822,
+     "trades": 304,
+     "mean_move_pct": -0.826388,
+     "zero_moves": 0
+    },
+    "thresholds": {
+     "0.2": {
+      "calculator_probability_pct": 100,
+      "calculator_simulation_pct": 100,
+      "eventual": "certain",
+      "edge_r": -0.4925,
+      "log_growth_per_trade": -0.00839234,
+      "losses_in_a_row_to_threshold": 14,
+      "bootstrap_of_real_trades_pct": 100,
+      "block_bootstrap_of_real_trades_pct": 100,
+      "shuffle_of_real_trades_pct": 100
+     },
+     "0.5": {
+      "calculator_probability_pct": 100,
+      "calculator_simulation_pct": 100,
+      "eventual": "certain",
+      "edge_r": -0.4925,
+      "log_growth_per_trade": -0.00839234,
+      "losses_in_a_row_to_threshold": 41,
+      "bootstrap_of_real_trades_pct": 100,
+      "block_bootstrap_of_real_trades_pct": 100,
+      "shuffle_of_real_trades_pct": 100
+     }
+    }
+   }
+  }
+ }
+}
