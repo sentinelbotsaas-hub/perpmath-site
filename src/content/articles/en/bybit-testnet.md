@@ -166,7 +166,7 @@ It verifies plumbing. Anything that depends on price, volume or other traders it
 | Do the circuit breakers trip? | yes | play-money losses still count |
 | What slippage will I get? | no | 1 BTC moved the book 1.44% |
 | Will my orders fill? | no | too little depth |
-| What will funding cost? | no | 22 of 90 settlements at the cap |
+| What will funding cost? | no | 22 of 90 settlements at the cap or the floor |
 | Does the strategy make money? | no | signals differ from mainnet |
 
 "Mostly" needs a footnote. Tick size, minimum quantity and quantity step were the same on both networks when we read them, but the largest allowed limit order was 1,190 BTC on the testnet against 1,500 on mainnet, and the testnet listed 11 fewer contracts. The restart row covers timeouts and duplicate order IDs too: that is order bookkeeping, and it behaves the same whatever the price does.

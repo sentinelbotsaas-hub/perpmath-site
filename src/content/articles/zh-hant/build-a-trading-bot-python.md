@@ -117,7 +117,7 @@ wrote results/breakout-btcusdt.json
 <!-- unique:firsthand-data -->
 策略出訊號的次數，遠多於實際交易的次數。樣本內它給了 791 個進場訊號，引擎跳過其中 427 個，當時手上已經有倉位。在這一切之前，引擎先在九份截短的資料上重跑 `generate`，確認拿掉後面的 K 線時沒有任何決定改變。這個偷看未來檢查每次回測都會跑，不用另外開。
 
-39.36% 的回撤要漲 64.90% 才回得到原本的高點，可以用[回撤計算機](/zh-hant/tools/drawdown-calculator/)驗算。這個回撤數字是怎麼量的、兩套工具為什麼會對不上，寫在[最大回撤](/zh-hant/learn/max-drawdown/)那篇。樣本切分與成本的完整流程在[回測怎麼做](/zh-hant/learn/how-to-backtest-a-trading-strategy/)，隨附策略的結果（到目前為止每一個都賠）在[回測頁](/zh-hant/backtests/)。
+39.36% 的回撤大約要漲 64.9% 才回得到原本的高點，可以用[回撤計算機](/zh-hant/tools/drawdown-calculator/)驗算。這個回撤數字是怎麼量的、兩套工具為什麼會對不上，寫在[最大回撤](/zh-hant/learn/max-drawdown/)那篇。樣本切分與成本的完整流程在[回測怎麼做](/zh-hant/learn/how-to-backtest-a-trading-strategy/)，隨附策略的結果（到目前為止每一個都賠）在[回測頁](/zh-hant/backtests/)。
 
 回測賠錢該怎麼辦？不要去調它。這組參數我們只跑過一次；在同一年的資料裡找一個讓結果翻正的回看長度，只會得到一個數字，得不到任何知識。這篇剩下的部分，策略只是個替身。賠錢的也行：下面每一個問題，不管訊號有沒有用都會找上門。
 

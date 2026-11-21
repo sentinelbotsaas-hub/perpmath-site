@@ -150,7 +150,7 @@ A 線用 2013 年 8 月以前的黃金日線，在 12 組動能參數裡挑出�
 3. 樣本外資料只看一次，報告同時列出換其他切法會得到什麼。
 4. 把資料瑕疵當頭號嫌疑，好消息尤其要查。每個交易時段對一次資料檔的切點；印出每個時段第一筆進場的分鐘數；天數增加時，每個商品的筆數都要跟著變多；對照組先重現舊數字，新的結果才算數。
 
-用在加密永續合約上的逐步做法，寫在[如何回測交易策略（英文）](/learn/how-to-backtest-a-trading-strategy/)。本站[回測頁](/zh-hant/backtests/)背後的開源引擎會切樣本內外，每次成交都扣手續費與滑價，介紹在[機器人專區](/zh-hant/bot/)。永續合約的成本項目比這些期貨多一項，持倉期間要結算[資金費率](/zh-hant/learn/what-is-funding-rate/)。自己測的時候，倉位與虧損的算術可以用[倉位大小計算機](/zh-hant/tools/position-size-calculator/)和[回撤計算機](/zh-hant/tools/drawdown-calculator/)。
+用在加密永續合約上的逐步做法，寫在[如何回測交易策略](/zh-hant/learn/how-to-backtest-a-trading-strategy/)。本站[回測頁](/zh-hant/backtests/)背後的開源引擎會切樣本內外，每次成交都扣手續費與滑價，介紹在[機器人專區](/zh-hant/bot/)。永續合約的成本項目比這些期貨多一項，持倉期間要結算[資金費率](/zh-hant/learn/what-is-funding-rate/)。自己測的時候，倉位與虧損的算術可以用[倉位大小計算機](/zh-hant/tools/position-size-calculator/)和[回撤計算機](/zh-hant/tools/drawdown-calculator/)。
 
 ## 這篇不能證明什麼
 

@@ -12,7 +12,7 @@ tldr: "To backtest a trading strategy, write the rule so a program can run it, f
 ---
 
 <!-- unique:firsthand-data -->
-I ran one moving-average rule on one year of BTCUSDT candles this week and came away with four results: -62.35%, -11.15%, +20.99% and +4,470.18%. Same rule, same candles. Only the first is the honest in-sample figure. This page shows how to produce that one, and where the other three came from.
+I ran one moving-average rule on one year of BTCUSDT candles in November 2026 and came away with four results: -62.35%, -11.15%, +20.99% and +4,470.18%. Same rule, same candles. Only the first is the honest in-sample figure. This page shows how to produce that one, and where the other three came from.
 
 ## How do you backtest a trading strategy?
 

@@ -132,7 +132,7 @@ perpmath download BTCUSDT 15m --start 2025-11-18T11:30:00Z --end 2026-11-18T11:3
 perpmath backtest fvg --symbol BTCUSDT --interval 15m --config configs/fvg.json --out results/fvg-btcusdt.json
 ```
 
-On Windows the activate line is `.venv\Scripts\activate`. The engine is backtest only and never asks for an API key. Its home on this site is the [bot section](/bot/), and the [position size calculator](/tools/position-size-calculator/) shows what a 0.3% stop does to position size before you run anything of your own. Other concept pages are under [learn](/learn/), the remaining calculators under [tools](/tools/).
+On Windows the activate line is `.venv\Scripts\activate`. These commands only backtest and never ask for an API key. Its home on this site is the [bot section](/bot/), and the [position size calculator](/tools/position-size-calculator/) shows what a 0.3% stop does to position size before you run anything of your own. Other concept pages are under [learn](/learn/), the remaining calculators under [tools](/tools/).
 
 ## FAQ
 

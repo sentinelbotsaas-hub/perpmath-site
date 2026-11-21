@@ -123,7 +123,7 @@ gain needed to recover = d / (1 - d)        d = drawdown as a fraction
 | 90% | 1,000 | 900.00% |
 
 <!-- unique:original-calc -->
-Put the sampling gap through that formula and it gets wider. The MA cross drawdown of 27.02% on daily points needs a 37.03% gain; the 31.18% from bar closes needs 45.30%. A 4.16-point difference in the drawdown became an 8.27-point difference in the climb back. At the far end, the liquidity sweep's 94.35% needs 1,671.39%. Any other value can be tried on the [drawdown calculator](/tools/drawdown-calculator/), which also turns a losing streak into a drawdown.
+Put the sampling gap through that formula and it gets wider. The MA cross drawdown of 27.02% on daily points needs a 37.03% gain; the 31.18% from bar closes needs 45.30% (worked from the unrounded equity figures; put the rounded 31.18% through the formula and you get 45.31%). A 4.16-point difference in the drawdown became an 8.27-point difference in the climb back. At the far end, the liquidity sweep's 94.35% needs 1,671.39%. Any other value can be tried on the [drawdown calculator](/tools/drawdown-calculator/), which also turns a losing streak into a drawdown.
 
 ### How long does a drawdown last?
 
