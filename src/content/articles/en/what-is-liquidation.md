@@ -19,8 +19,6 @@ Liquidation is the moment the margin in a position falls below the maintenance m
 
 Bybit's [liquidation process article](https://www.bybit.com/en/help-center/article/UTA-Trading-Rules-Liquidation-Process) (page dated 15 October 2026, checked 22 November 2026) says it plainly: in isolated mode each position is managed independently with its own allocated margin, and liquidation is triggered when the mark price hits the liquidation price. At the lowest risk limit tier the system first cancels any orders that would make the position bigger. If the margin is still short, the whole position is closed at the bankruptcy price.
 
-Liquidation is not a stop-loss. A stop is a price you choose, and in normal use it sits closer to your entry, so it fires first. The liquidation price belongs to the exchange, and you don't get a say in it.
-
 Cross margin follows different rules. This article only counts isolated positions.
 
 ## How is the liquidation price calculated? Room = 1 ÷ leverage − maintenance margin rate
@@ -38,7 +36,7 @@ Bybit's published formula has more in it: any extra margin you add, a maintenanc
 <!-- unique:cross-reference -->
 The maintenance margin rate has to be looked up in the right place. Bybit's [maintenance margin article](https://www.bybit.com/en/help-center/article/Maintenance-Margin-USDT-Contract) (page dated 16 April 2026, checked 22 November 2026) gives this example: a BTCUSDT position worth 2,000,000 USDT or less needs an MMR of 0.5%. When I called the [risk limit endpoint](https://bybit-exchange.github.io/docs/v5/market/risk-limit) directly on 18 November 2026, the first tier it returned was a position value up to 300,000 USDT, an MMR of 0.33% and a maximum leverage of 150x. The 0.5% is the second tier's rate. The help article's example has fallen behind the parameters. Everything here uses the endpoint's 0.33%, and anyone holding more than 300,000 USDT has less room than the table below shows.
 
-Two figures make it concrete. At 10x the room is 9.67%; at the 17 November 2026 close of 64,919.9, price has to move 6,277.75 USDT against you. At 100x the room is 0.67%, which is 434.96 USDT. The [liquidation price calculator](/tools/liquidation-price-calculator/) applies the same formula to your own entry price.
+The table below also turns the room into USDT at the 17 November 2026 close of 64,919.9. For your own entry price, the [liquidation price calculator](/tools/liquidation-price-calculator/) applies the same formula.
 
 ## How many of 365 days ended in a same-day liquidation? 254 at 100x, 2 at 10x
 
@@ -60,7 +58,7 @@ The right-hand column surprised me most. At 100x there were 160 days on which bo
 <!-- unique:original-calc -->
 Longs and shorts are not symmetric. At 50x, longs were liquidated on 147 days and shorts on 118 days, a gap of 29 days. Over this year BTC went from 92,171.4 to 64,919.9, a fall of 29.57%, with 189 down days against 176 up days, so there were more downward wicks to begin with. In a rising year the ugly column would probably be the short one. That part is a guess. These 365 days are all I have.
 
-## How big is the move against you in one day? Median 1.24%, maximum 14.88%
+### How big is the move against you in one day? Median 1.24%, maximum 14.88%
 
 <!-- unique:original-calc -->
 For a long, the largest drop from the open within the day had a median of 1.24% and a mean of 1.78%. For a short, the largest rise from the open had a median of 1.08% and a mean of 1.61%. Put those next to the room column: the 1.67% at 50x is only a little wider than an ordinary day, and the 0.67% at 100x is about half of one.
@@ -69,16 +67,14 @@ For a long, the largest drop from the open within the day had a median of 1.24% 
 The extremes cluster in early February 2026. The worst day for longs was 5 February 2026: open 73,130.3, low 62,250.0, a fall of 14.88%. The next day, 6 February 2026, it was the shorts' turn: open 62,872.7, high 71,719.9, a rise of 14.07%. Only three days in the year hurt a 10x position, and they are those two plus 31 January 2026 (down 10.13%).
 
 <!-- unique:original-calc -->
-The 90th percentile is 3.86% for longs and 3.63% for shorts, so roughly one day in ten moves further against you than that. The 4.67% room at 20x sits a little outside that line, which is why 20x goes about 20 days a year and no more. At 5x the room is 19.67%, and the year's largest move of 14.88% doesn't reach it.
-
-One aside: the daily open is not a special moment. It is only the point where the UTC date changes. I first took that to be the biggest hole in the whole method, and the next section tests it.
+The 90th percentile is 3.86% for longs and 3.63% for shorts, so roughly one day in ten moves further against you than that. The 4.67% room at 20x sits a little outside that line, which is why 20x goes about 20 days a year and no more.
 
 ## Where the method is off: entry time, mark price, and what a daily candle hides
 
-The table departs from real trading in four ways. The entry time is assumed. Liquidation is triggered by the mark price and not by the last traded price. A daily candle hides the order of events. And only the day of entry is counted. I checked the three that the data can check.
+The table departs from real trading in four ways: the entry time is assumed, liquidation is triggered by the mark price and not by the last traded price, a daily candle hides the order of events, and only the day of entry is counted. I checked the three that the data can check.
 
 <!-- unique:original-calc -->
-Entry time first, the one I worried about most. Nobody enters at exactly 00:00 UTC every day, and I expected the assumption to skew the result. So I recounted on 1-hour candles: one entry at every full hour from 00:00 on 18 November 2025 to 00:00 on 17 November 2026, 8,737 entries in all, each held for 24 hours. A 100x long was liquidated on 70.29% of those entries, against 69.59% in the daily version. At 50x it was 39.29% against 40.27%, and at 20x 5.94% against 5.48%. Split by the hour of entry, the 100x long figure runs from 68.13% to 73.63%. I guessed wrong. The hour of entry hardly changes the conclusion.
+Entry time first, the one I worried about most. The daily open is not a special moment, only the point where the UTC date changes. Nobody enters at exactly 00:00 UTC every day, and I expected the assumption to skew the result. So I recounted on 1-hour candles: one entry at every full hour from 00:00 on 18 November 2025 to 00:00 on 17 November 2026, 8,737 entries in all, each held for 24 hours. A 100x long was liquidated on 70.29% of those entries, against 69.59% in the daily version. At 50x it was 39.29% against 40.27%, and at 20x 5.94% against 5.48%. Split by the hour of entry, the 100x long figure runs from 68.13% to 73.63%. I guessed wrong. The hour of entry hardly changes the conclusion.
 
 <!-- unique:original-calc -->
 The mark price mattered less than I expected as well. Bybit states that liquidation follows the mark price, and the [mark price](https://www.bybit.com/en/help-center/article/Mark-Price-Calculation-Perpetual-Expiry-Contracts) (page dated 4 September 2026, checked 22 November 2026) is the median of three values: two prices derived from the index price, plus the last traded price. I downloaded daily mark price candles too (the `mark-price-kline` endpoint, [docs](https://bybit-exchange.github.io/docs/v5/market/mark-kline)) and recounted. That is the second row below. Across six leverage levels and both directions, the two price series disagree on only 9 day-and-direction pairs, and in all 9 the last traded price reached the level while the mark price did not.
@@ -93,7 +89,7 @@ The mark price mattered less than I expected as well. Bybit states that liquidat
 What the daily candle hides is harder to deal with. A candle has four prices: open, high, low and close. It doesn't say whether the high or the low came first, or at what hour the liquidation happened. For "does it get liquidated" that makes no difference. For "how long does it last" it makes a large one.
 
 <!-- unique:original-calc -->
-Going back to the 1-hour candles: of the 254 days on which a 100x long was liquidated, 38 days were over within the first hour, 131 days within the first four hours and 171 days within the first eight. For the 253 short days the counts are 39, 110 and 147. Put plainly, more than half of those 100x longs were gone before 04:00 UTC.
+Going back to the 1-hour candles: of the 254 days on which a 100x long was liquidated, 38 days were over within the first hour, 131 days within the first four hours and 171 days within the first eight. For the 253 short days the counts are 39, 110 and 147. More than half of those 100x longs were gone before 04:00 UTC.
 
 The remaining limits can't be patched with this data. Fees and funding are left out, and under Bybit's rules a funding fee that the available balance can't cover is taken from the position margin, which pulls the liquidation price a little closer. Only the day of entry is counted, and the longer a position stays open, the more chances price gets to reach the level. And the sample is one coin and one year, a falling year at that.
 
@@ -103,17 +99,13 @@ The table measures whether price touches your liquidation level within one day. 
 
 My own reading is that the leverage setting decides how much room you have, and the relationship is far from linear. In the long column, going from 10x to 20x adds 18 liquidation days a year; going from 50x to 100x adds 107 days. To work back from a stop distance to a leverage ceiling, use the [leverage calculator](/tools/leverage-calculator/). To fix the most you're willing to lose on a trade and size the position from that, use the [position size calculator](/tools/position-size-calculator/).
 
-A regulator's view makes a useful comparison. In [policy statement PS20/10](https://www.fca.org.uk/publications/policy-statements/ps20-10-prohibiting-sale-retail-clients-investment-products-reference-cryptoassets) (published 6 October 2020, checked 22 November 2026) the UK Financial Conduct Authority banned the sale of crypto-asset derivatives to retail clients, with the rules applying from 6 January 2021. One of the reasons it lists is extreme volatility in crypto-asset prices. Readers outside the UK aren't covered by that rule, but the risk it describes is the one in the table above.
+In [policy statement PS20/10](https://www.fca.org.uk/publications/policy-statements/ps20-10-prohibiting-sale-retail-clients-investment-products-reference-cryptoassets) (published 6 October 2020, checked 22 November 2026) the UK Financial Conduct Authority banned the sale of crypto-asset derivatives to retail clients, with the rules applying from 6 January 2021. One of the reasons it lists is extreme volatility in crypto-asset prices. Readers outside the UK aren't covered by that rule, but the risk it describes is the one in the table above.
 
 The latest daily reading is in the [bitcoin daily report](/daily/btc/), and statistics across several contracts are on the [liquidation data page](/data/liquidation/). The other running cost of a position is funding, and current rates are on the [funding rate data page](/data/funding-rate/). If you'd like to test an exit rule on a year of candles before trusting it with margin, the open-source backtester is described on the [bot page](/bot/).
 
 Two things are not counted yet: cross margin, and holding for longer than a day. The second will look a good deal worse, but I haven't run it, so I won't put a number on it.
 
 ## FAQ
-
-### Does liquidation wipe out the whole account?
-
-Not in isolated margin mode. You lose the margin of that position. Bybit's description is that each position has its own allocated margin and that liquidating one position does not affect another. Cross margin follows different rules, which this article doesn't count.
 
 ### What is the difference between a liquidation price and a stop-loss?
 
@@ -129,4 +121,4 @@ In this data a 5x position was liquidated on its day of entry on 0 days, and tha
 
 ### Can I recompute these numbers myself?
 
-Yes. Everything comes from Bybit's public endpoints, with no API key: `kline`, `mark-price-kline` and `risk-limit`. The script and the raw CSV downloads are in the `research/` folder of this site's source code, and the main file is `liquidation_btcusdt.py`. The day counts move as soon as the maintenance margin rate changes, so check what the endpoint returns before you rerun it.
+Yes. Everything comes from Bybit's public endpoints, with no API key: `kline`, `mark-price-kline` and `risk-limit`. The script and the raw CSV downloads are in the `research/` folder of this site's source code, and the main file is `liquidation_btcusdt.py`. I'd check what the `risk-limit` endpoint returns before rerunning it, since the day counts move as soon as the maintenance margin rate changes.

@@ -12,13 +12,13 @@ tldr: "A grid trading bot keeps buy and sell limit orders at fixed price levels 
 ---
 
 <!-- unique:firsthand-data -->
-In eight months of our backtest a grid bot on BTCUSDT completed 669 buy-low, sell-high pairs and collected 1,366.58 USDT from them. It finished that period 316.59 USDT ahead. This page is about where the other thousand went, and about the two conditions that kept the final number positive at all.
+669 buy-low, sell-high pairs earned a grid bot on BTCUSDT 1,366.58 USDT in eight months of our backtest. It finished that period 316.59 USDT ahead. This page is about where the other thousand went, and about the two conditions that kept the final number positive at all.
 
 ## What is a grid trading bot?
 
 A grid trading bot is a program that keeps limit orders resting at a ladder of price levels inside a range you choose: buys below the current price, sells above it. Each time price drops through a level and later climbs back through the next one up, a buy and a sell complete a pair and the bot keeps the spacing between them. It makes no forecast. It is paid for price going back and forth.
 
-Between two neighbouring levels sits one cell. A long cell buys at its lower level and sells at its upper level; a short cell does the mirror image. A neutral grid uses long cells below the starting price and short cells above it, and trades nothing at the start. Exchanges offer the same thing as a built-in product. Bybit's [getting started page](https://www.bybit.com/en/help-center/article/How-to-Get-Started-with-Futures-Grid-Bot-on-Bybit) for its futures grid bot (updated 8 April 2026, checked 22 November 2026) lists neutral as the default direction and arithmetic spacing as the default grid type, with geometric as the alternative. How this site relates to Bybit is on the [disclosure page](/disclosure/).
+Between two neighbouring levels sits one cell. A long cell buys at its lower level and sells at its upper level; a short cell does the mirror image. A neutral grid uses long cells below the starting price and short cells above it, and trades nothing at the start. Exchanges offer this as a built-in product. Bybit's [getting started page](https://www.bybit.com/en/help-center/article/How-to-Get-Started-with-Futures-Grid-Bot-on-Bybit) for its futures grid bot (updated 8 April 2026, checked 22 November 2026) lists neutral as the default direction and arithmetic spacing as the default grid type, with geometric as the alternative. How this site relates to Bybit is on the [disclosure page](/disclosure/).
 
 ## The rules and settings we tested, and why these
 
@@ -67,9 +67,9 @@ Out-of-sample the position line is -0.29 USDT. The grid did not get smarter. Pri
 
 One comparison needs care. Buy and hold lost 30.39% in-sample and the grid gained 3.17%, but the grid's average position was 3,318.88 USDT, a third of its capital. It was carrying a third of the exposure for most of the fall.
 
-## How much do fees and funding matter to a grid?
+### Fees and funding
 
-Up to a point of return in this run, which is a lot when the total is three or four points. A grid trades constantly: 1,370 grid fills in-sample. At the 0.02% maker rate they cost 55.04 USDT. The result file also reruns everything with grid fills charged at the 0.055% taker rate, and total fees rise from 58.04 to 154.59 USDT:
+They move the result by up to a point of return in this run, which is a lot when the total is three or four points. A grid trades constantly: 1,370 grid fills in-sample. At the 0.02% maker rate they cost 55.04 USDT. The result file also reruns everything with grid fills charged at the 0.055% taker rate, and total fees rise from 58.04 to 154.59 USDT:
 
 | Variant | In-sample | Out-of-sample |
 | --- | --- | --- |
@@ -82,12 +82,12 @@ Both rates are the base tier for perpetuals in Bybit's [fee table](https://www.b
 <!-- unique:original-calc -->
 Funding cuts both ways. A grid pays or receives it on its net position. In-sample the grid was net long 89.0% of the time and paid 38.09 USDT; out-of-sample it was net short 79.2% of the time and received 53.98. Leaving funding out would have understated one period and overstated the other. Current rates are on the [funding rate page](/data/funding-rate/).
 
-## How much does the order of prices inside a candle matter?
+### The order of prices inside a candle
 
-For a grid it is the largest modelling assumption. A 15-minute bar does not say whether its high or its low came first, and an order bought on the way down can be sold on the way back up inside the same bar. The simulator walks each bar both ways and, by default, keeps the path that leaves less equity (`worst_of_two`).
+For a grid this is the largest modelling assumption. A 15-minute bar does not say whether its high or its low came first, and an order bought on the way down can be sold on the way back up inside the same bar. The simulator walks each bar both ways and, by default, keeps the path that leaves less equity (`worst_of_two`).
 
 <!-- unique:firsthand-data -->
-To see how far off 15-minute bars are, we downloaded the same year as 525,600 one-minute bars and ran the same config on them:
+To see how far off 15-minute bars are, we downloaded the year again as 525,600 one-minute bars and ran the shipped config on them:
 
 | Path assumption | In-sample, 15m | Out-of-sample, 15m | In-sample, 1m | Out-of-sample, 1m |
 | --- | --- | --- | --- | --- |
@@ -175,7 +175,7 @@ In several details, any of which can change a result, so treat these numbers as 
 
 ## What one year does and does not show
 
-It shows the mechanics clearly. Pair income arrives steadily and is small. The position decides the result. The mode you pick for leaving the range decides which accident you get, and leverage decides whether you are still there afterwards.
+It shows the mechanics. Pair income arrives steadily and is small, and the position left over decides the result.
 
 <!-- unique:original-calc -->
 It does not show that grids make money. The two headline numbers came from a range fitted to its own period and from a period that happened to return to its start. Of the two ranges a person could have set in advance, one held 97.33% of the time and returned +3.77%; the other did not hold and lost 3.88%, or 38.84% at 10x. This is one market, one year and one configuration, and there is no t-statistic for it, since the pairs of a grid are not independent bets. We have not tested long or short grids, other coins, or trailing ranges.
@@ -193,17 +193,7 @@ Not as a rule. In our BTCUSDT year the same grid returned +3.17% and +4.37% with
 
 There is no best number, and we did not search for one. The hard floor is cost: a cell must be wider than the round trip, 0.08% under our assumptions. Our 50 cells were 1.06% wide each. The one-month range squeezed the same 50 cells to 0.32%, about four times the cost.
 
-### What happens to a grid bot when the price goes out of range?
-
-<!-- unique:firsthand-data -->
-It stops completing pairs and is left holding a position: long if price fell out the bottom, short if it rose out the top. In our one-month test, keeping the orders lost 3.88%, closing at the bound lost 1.41%, and cancelling the orders while keeping the position made 19.32% by accident.
-
 ### Can a grid bot get liquidated?
 
 <!-- unique:firsthand-data -->
 With leverage, yes. None of our 14 runs was, but at 10x the in-sample run was down to 610.04 USDT of its 10,000 at one bar close, a fraction of a percent of BTC price from the engine's liquidation rule.
-
-### Does a grid bot pay funding fees?
-
-<!-- unique:firsthand-data -->
-On a perpetual contract it pays or receives funding on its net position at every settlement. Ours paid 38.09 USDT in-sample while mostly long and received 53.98 out-of-sample while mostly short.
