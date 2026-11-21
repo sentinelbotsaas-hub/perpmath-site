@@ -1,0 +1,148 @@
+---
+// Shares of one whole as bars on a scale from 0 to 100%: one bar per fill of
+// the DCA calculator, its length the fill's share of the total quantity.
+//
+//   <FillsBars id="calc-fills" title={t.result.bars} rows={rows} caption="One bar per fill ..." />
+//
+// The scale is fixed: the full width is the whole (100%), the ticks under the
+// bars say so, and no bar is zoomed or given a minimum length.
+//
+// The picture is hidden from screen readers; the caption says the same in
+// words. To redraw from a script: updateFillsBars() in fills-bars.ts.
+import { fillsRowsHtml, fillsTicksHtml } from './fills-bars';
+import type { FillsBarsRow } from './fills-bars';
+
+interface Props {
+  id: string;
+  /** What the bars show, printed above them. */
+  title: string;
+  rows: FillsBarsRow[];
+  /** The sentence under the bars; also their text alternative. */
+  caption: string;
+  class?: string;
+}
+
+const { id, title, rows, caption, class: className } = Astro.props;
+---
+
+<figure class:list={['calc-fills', className]} id={id} data-state={rows.length > 0 ? 'ready' : 'empty'}>
+  <div class="calc-fills-plot" aria-hidden="true">
+    <p class="calc-fills-title">{title}</p>
+    <div class="calc-fills-rows" data-fills="rows" set:html={fillsRowsHtml(rows)} />
+    <div class="calc-fills-axis" set:html={fillsTicksHtml()} />
+  </div>
+  <figcaption class="calc-fills-caption" data-fills="caption">{caption}</figcaption>
+</figure>
+
+<style is:global>
+  .calc-fills {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    min-width: 0;
+    margin: 0;
+  }
+
+  .calc-fills-plot {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    /* The tick-label layers are moved sideways by a transform: keep them from
+       widening the page. */
+    padding-inline: var(--space-1);
+    overflow-x: clip;
+  }
+
+  .calc-fills-title {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+  }
+
+  .calc-fills-rows {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .calc-fills-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 var(--space-4);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .calc-fills-head > .num {
+    color: var(--color-text);
+    font-weight: var(--weight-medium);
+  }
+
+  .calc-fills-name {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-2);
+    min-width: 0;
+  }
+
+  .calc-fills-track {
+    position: relative;
+    height: var(--space-3);
+    margin-top: var(--space-1);
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .calc-fills-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-text);
+    transform-origin: left center;
+    transform: scaleX(var(--value, 0));
+  }
+
+  .calc-fills-axis {
+    position: relative;
+    height: var(--space-8);
+    border-top: var(--hairline) solid var(--color-text-muted);
+  }
+
+  .calc-fills-tick {
+    position: absolute;
+    top: 0;
+    left: calc(var(--at) * 100%);
+    width: var(--hairline);
+    height: var(--space-2);
+    background: var(--color-text-muted);
+  }
+
+  /* A full-width layer moved by a transform; the label is pulled back by the
+     same share of its own width, so it stays over its tick and inside the box. */
+  .calc-fills-ticklabel {
+    position: absolute;
+    inset: 0;
+    transform: translateX(calc(var(--at) * 100%));
+    pointer-events: none;
+  }
+
+  .calc-fills-ticklabel > span {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translateX(calc(var(--at) * -100%));
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  .calc-fills-caption {
+    max-width: 72ch;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+</style>

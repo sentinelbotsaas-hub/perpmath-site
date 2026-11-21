@@ -8,8 +8,8 @@ export const tools = defineStrings({
   en: {
     title: 'Calculators for crypto perpetual futures',
     description:
-      'Free perpetual futures calculators: {names}. Answers drawn to scale.',
-    // Joins the names of the ready calculators in the description.
+      '{n} free calculators for crypto perpetual futures: liquidation price, leverage, position size, drawdown, risk of ruin and more. Formulas shown.',
+    // Joins the names of the ready calculators wherever a page lists them.
     separator: ', ',
     head: 'Each calculator answers one question.',
     sub: '{ready} are ready to use and {planned} more are in development. Free, no account. What you type never leaves your browser.',
@@ -28,6 +28,10 @@ export const tools = defineStrings({
       edge: {
         name: 'Expectancy and bet size',
         desc: 'What a win rate and a payoff ratio add up to over many trades.',
+      },
+      performance: {
+        name: 'Costs and performance',
+        desc: 'What a position cost, what a trade left, and what a record of returns can say.',
       },
     },
     // One worked result per card, computed at build time by the calc library
@@ -69,6 +73,21 @@ export const tools = defineStrings({
         label: 'Full Kelly, share at risk',
         value: '{full}',
       },
+      'dca-calculator': {
+        setup: '{lev}x long in {n} fills, from {first} down to {last}',
+        label: 'Average entry price',
+        value: '{avg} USDT',
+      },
+      'crypto-profit-calculator': {
+        setup: '{lev}x long, {qty} BTC from {entry} to {exit}',
+        label: 'Net P&L after fees and funding',
+        value: '{net} USDT',
+      },
+      'sharpe-ratio-calculator': {
+        setup: '{n} monthly returns, 95% interval {low} to {high}',
+        label: 'Annualised Sharpe ratio',
+        value: '{annual}',
+      },
     },
     plannedHead: 'In development',
     plannedNote: 'These are not built yet, and there is no date for them. They have no page until they work.',
@@ -76,7 +95,7 @@ export const tools = defineStrings({
   'zh-hant': {
     title: '加密貨幣永續合約計算機',
     description:
-      '給永續合約交易者用的免費計算機。現在可以用的有：{names}。每個工具只回答一個問題，把答案照真實比例畫出來，公式也直接寫在頁面上。',
+      '給永續合約交易者用的 {n} 個免費計算機：爆倉價、槓桿、倉位大小、回撤、破產風險等。每個工具只回答一個問題，把答案照真實比例畫出來，公式也直接寫在頁面上。',
     separator: '、',
     head: '每個計算機只回答一個問題。',
     sub: '現在可以用的有 {ready} 個，另外 {planned} 個還在開發中。免費、不用註冊，你輸入的數字不會離開你的瀏覽器。',
@@ -93,6 +112,10 @@ export const tools = defineStrings({
       edge: {
         name: '期望值與下注大小',
         desc: '勝率和賺賠比放在一起，長期下來代表什麼。',
+      },
+      performance: {
+        name: '績效與成本',
+        desc: '部位的平均成本、一筆單實際剩多少，以及一段報酬紀錄能說明什麼。',
       },
     },
     exampleTag: '範例',
@@ -131,6 +154,21 @@ export const tools = defineStrings({
         setup: '勝率 {win}，賺賠比 {payoff}',
         label: '全凱利（每筆冒險的比例）',
         value: '{full}',
+      },
+      'dca-calculator': {
+        setup: '做多 {lev} 倍，從 {first} 到 {last} 分 {n} 筆進場',
+        label: '平均進場價',
+        value: '{avg} USDT',
+      },
+      'crypto-profit-calculator': {
+        setup: '做多 {lev} 倍，{qty} BTC，從 {entry} 到 {exit}',
+        label: '扣掉手續費和資金費的淨損益',
+        value: '{net} USDT',
+      },
+      'sharpe-ratio-calculator': {
+        setup: '{n} 個月報酬，95% 區間 {low} 到 {high}',
+        label: '年化夏普值',
+        value: '{annual}',
       },
     },
     plannedHead: '開發中',

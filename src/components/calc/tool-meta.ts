@@ -7,10 +7,10 @@
 import type { ToolSlug } from '../../i18n/tool-index';
 import type { IconName } from '../ui/Icon.astro';
 
-export type ToolGroup = 'risk' | 'planning' | 'edge';
+export type ToolGroup = 'risk' | 'planning' | 'edge' | 'performance';
 
 /** Order of the groups on /tools/. */
-export const TOOL_GROUPS: ToolGroup[] = ['risk', 'planning', 'edge'];
+export const TOOL_GROUPS: ToolGroup[] = ['risk', 'planning', 'edge', 'performance'];
 
 export const TOOL_ICON: Record<ToolSlug, IconName> = {
   'liquidation-price-calculator': 'ruler',
@@ -34,4 +34,7 @@ export const TOOL_GROUP: Partial<Record<ToolSlug, ToolGroup>> = {
   'risk-of-ruin-calculator': 'edge',
   'risk-reward-calculator': 'edge',
   'kelly-criterion-calculator': 'edge',
+  'dca-calculator': 'performance',
+  'crypto-profit-calculator': 'performance',
+  'sharpe-ratio-calculator': 'performance',
 };

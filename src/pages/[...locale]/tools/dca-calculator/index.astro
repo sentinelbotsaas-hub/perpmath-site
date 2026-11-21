@@ -1,0 +1,530 @@
+---
+// DCA calculator. One file serves all three locales.
+// The interactive part is src/scripts/dca-calculator.ts; everything on this
+// page is also correct with scripting off (it shows worked example 1).
+import Cta from '../../../../components/Cta.astro';
+import Segmented from '../../../../components/Segmented.astro';
+import CalculatorShell from '../../../../components/calc/CalculatorShell.astro';
+import DocSection from '../../../../components/calc/DocSection.astro';
+import ExampleBlock from '../../../../components/calc/ExampleBlock.astro';
+import FillsBars from '../../../../components/calc/FillsBars.astro';
+import RelatedTools from '../../../../components/calc/RelatedTools.astro';
+import ResultFlag from '../../../../components/calc/ResultFlag.astro';
+import SliderField from '../../../../components/calc/SliderField.astro';
+import { splitFigure } from '../../../../components/calc/calc-ui';
+import { dcaFormat, dcaView } from '../../../../components/calc/dca-view';
+import { signed } from '../../../../components/calc/signed';
+import { DCA_START } from '../../../../components/calc/starting-values';
+import DataFreshness from '../../../../components/ui/DataFreshness.astro';
+import Disclaimer from '../../../../components/ui/Disclaimer.astro';
+import FormulaBlock from '../../../../components/ui/FormulaBlock.astro';
+import Icon from '../../../../components/ui/Icon.astro';
+import PageContainer from '../../../../components/ui/PageContainer.astro';
+import PageHeader from '../../../../components/ui/PageHeader.astro';
+import { common } from '../../../../i18n/common';
+import { localeStaticPaths } from '../../../../i18n/config';
+import type { Locale } from '../../../../i18n/config';
+import { dca as strings } from '../../../../i18n/dca';
+import { toolIndex } from '../../../../i18n/tool-index';
+import { calc } from '../../../../i18n/tools';
+import Base from '../../../../layouts/Base.astro';
+import { MAX_DCA_FILLS, dca } from '../../../../lib/calc/dca';
+import type { DcaInput } from '../../../../lib/calc/dca';
+import { fmt, formatNumber, formatPercent } from '../../../../lib/fmt';
+import { BTCUSDT, snapshotDate, tierOne } from '../../../../lib/risk-limit';
+import { breadcrumbLd, softwareApplicationLd } from '../../../../lib/seo';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const c = common[locale];
+const ui = calc[locale];
+const PATH = '/tools/dca-calculator/';
+
+// Exchange parameters come from the snapshot, never from a constant here.
+const tier = tierOne(BTCUSDT);
+const mmr = tier.maintenanceMargin;
+const cap = tier.maxLeverage;
+const tick = BTCUSDT.tickSize;
+const date = snapshotDate(BTCUSDT);
+const limit = formatNumber(tier.riskLimitValue);
+const mmrPct = formatPercent(mmr);
+
+function solve(input: DcaInput) {
+  const r = dca(input);
+  if (!r.ok) throw new Error('Worked example is invalid');
+  return r;
+}
+
+// Example 1 is also the starting state, and what a reader without JavaScript sees.
+const defaults = DCA_START;
+const first = solve({
+  fills: defaults.fills,
+  sizeUnit: 'quantity',
+  futures: { side: defaults.side, leverage: defaults.lev, mmr, maxLeverage: cap },
+});
+const view = dcaView(first, 'futures', tick, t.ui);
+const startFigure = splitFigure(view.figure);
+const ff = dcaFormat('futures', tick);
+const f1 = first.futures;
+if (!f1 || f1.liquidatedBeforeFill !== null || view.state !== 'ready') throw new Error('Worked example 1 changed meaning');
+
+// Adding at a price leaves the P&L at that price where it was. Mistake 2 says
+// so; make sure it is true of the numbers shown.
+const before = first.steps[first.steps.length - 2];
+const pnlBefore = before.totalQuantity * (first.lastPrice - before.averagePrice);
+if (Math.abs(pnlBefore - first.unrealizedAtLast) > 1e-9) throw new Error('Worked example 1: P&L before and after the last fill differ');
+
+const factor = (1 - 1 / defaults.lev + mmr).toFixed(4);
+const vars1 = {
+  lev: defaults.lev,
+  fills: first.steps.map((s) => fmt(t.examples.fillQuantity, { qty: ff.quantity(s.quantity), price: ff.typed(s.price) })).join(t.examples.join),
+  costs: first.steps.map((s) => ff.money(s.cost)).join(' + '),
+  cost: ff.money(first.totalCost),
+  qtys: first.steps.map((s) => ff.quantity(s.quantity)).join(' + '),
+  qty: ff.quantity(first.totalQuantity),
+  avg: ff.average(first.averagePrice),
+  margin: ff.money(f1.margin),
+  first: ff.typed(first.firstPrice),
+  factor,
+  firstLiq: ff.liquidation(f1.firstLiquidationPrice),
+  liq: ff.liquidation(f1.liquidationPrice),
+  firstCost: ff.money(first.steps[0].cost),
+  firstMargin: ff.money(f1.firstMargin),
+  last: ff.typed(first.lastPrice),
+  room: formatPercent(f1.lastToLiquidation),
+  fresh: formatPercent(f1.liquidationDistance),
+};
+const ex1 = {
+  title: fmt(t.examples.first, vars1),
+  setup: fmt(t.examples.setupFutures, vars1),
+  working: [
+    t.examples.workCost,
+    t.examples.workQuantity,
+    t.examples.workAverage,
+    t.examples.workMargin,
+    t.examples.workLiqFirst,
+    t.examples.workLiq,
+  ]
+    .map((line) => fmt(line, vars1))
+    .join('\n'),
+  result: fmt(t.examples.resultFutures, vars1),
+};
+
+// Example 2: spot, the same amount at three prices.
+const SPOT = { amount: 300, prices: [60000, 50000, 40000] };
+const second = solve({ fills: SPOT.prices.map((price) => ({ price, size: SPOT.amount })), sizeUnit: 'amount' });
+const fs = dcaFormat('spot', tick);
+const plainMean = (prices: number[]) => prices.reduce((sum, p) => sum + p, 0) / prices.length;
+const vars2 = {
+  amount: formatNumber(SPOT.amount),
+  prices: SPOT.prices.map((p) => fs.typed(p)).join(t.examples.join),
+  parts: SPOT.prices.map((p) => `${formatNumber(SPOT.amount)} ÷ ${fs.typed(p)}`).join(' + '),
+  qty: fs.quantity(second.totalQuantity),
+  cost: fs.money(second.totalCost),
+  avg: fs.average(second.averagePrice),
+  mean: fs.average(plainMean(SPOT.prices)),
+  last: fs.typed(second.lastPrice),
+  value: fs.money(second.totalQuantity * second.lastPrice),
+  pnl: signed(second.unrealizedAtLast),
+};
+if (!(second.averagePrice < plainMean(SPOT.prices))) throw new Error('Worked example 2 changed meaning');
+const ex2 = {
+  title: t.examples.second,
+  setup: fmt(t.examples.setupSpot, vars2),
+  working: [t.examples.workQuantityAmount, t.examples.workAverageSpot, t.examples.workMean].map((line) => fmt(line, vars2)).join('\n'),
+  result: fmt(t.examples.resultSpot, vars2),
+};
+
+const termVars = { mmr: mmrPct, limit, date };
+const AMOUNT_EX = 1000;
+const mistakeVars = {
+  ...vars1,
+  mean: ff.average(plainMean(defaults.fills.map((fill) => fill.price))),
+  pnl: signed(first.unrealizedAtLast),
+  amountEx: formatNumber(AMOUNT_EX),
+  marginEx: formatNumber(AMOUNT_EX / defaults.lev),
+};
+
+// Plain data for the browser script.
+const calcData = JSON.stringify({
+  tick,
+  maxLeverage: cap,
+  tierLimit: tier.riskLimitValue,
+  mmr,
+  maxFills: MAX_DCA_FILLS,
+  defaults,
+  strings: t.ui,
+});
+
+// The same trail for the visible breadcrumb and for JSON-LD.
+const trail = [
+  { name: c.breadcrumb.home, path: '/' },
+  { name: c.nav.tools, path: '/tools/' },
+  { name: toolIndex[locale]['dca-calculator'].name, path: PATH },
+];
+const jsonLd = [softwareApplicationLd(locale, { path: PATH, name: t.title, description: t.description }), breadcrumbLd(locale, trail)];
+---
+
+<Base locale={locale} path={PATH} title={t.title} description={t.description} jsonLd={jsonLd}>
+  <PageContainer lead class="calc-long-form">
+    <PageHeader locale={locale} title={t.title} lede={t.lede} breadcrumb={trail}>
+      <nav class="calc-jump" aria-label={ui.onThisPage}>
+        <a class="lnk" href="#how-it-is-calculated">{t.toc.formula}</a>
+        <a class="lnk" href="#worked-examples">{t.toc.examples}</a>
+        <a class="lnk" href="#common-mistakes">{t.toc.mistakes}</a>
+      </nav>
+    </PageHeader>
+
+    <CalculatorShell
+      locale={locale}
+      data={calcData}
+      label={view.label}
+      figure={startFigure.value}
+      unit={startFigure.unit}
+      tightUnit={startFigure.tight}
+      sentence={view.sentence}
+    >
+      <Fragment slot="inputs">
+        <Segmented
+          name="mode"
+          class="calc-wide"
+          label={t.fields.mode}
+          value={defaults.mode}
+          options={[
+            { value: 'futures', label: t.fields.modeFutures },
+            { value: 'spot', label: t.fields.modeSpot },
+          ]}
+        />
+        <div class="calc-wide" data-mode="futures">
+          <Segmented
+            name="side"
+            label={t.fields.side}
+            value={defaults.side}
+            options={[
+              { value: 'long', label: t.fields.long },
+              { value: 'short', label: t.fields.short },
+            ]}
+          />
+        </div>
+        <div class="calc-wide" data-mode="futures">
+          <SliderField
+            id="lev"
+            label={t.fields.leverage}
+            unit={t.fields.leverageUnit}
+            value={defaults.lev}
+            min={1}
+            max={cap}
+            sliderLabel={fmt(ui.slider, { label: t.fields.leverage })}
+            valueText={t.ui.levText}
+            minText={fmt(t.ui.levText, { value: 1 })}
+            maxText={fmt(t.ui.levText, { value: cap })}
+          />
+        </div>
+        <Segmented
+          name="unit"
+          class="calc-wide"
+          label={t.fields.unit}
+          value={defaults.unit}
+          options={[
+            { value: 'quantity', label: t.fields.unitQuantity },
+            { value: 'amount', label: t.fields.unitAmount },
+          ]}
+        />
+        <div class="calc-wide calc-dca" role="group" aria-labelledby="dca-fills-title">
+          <p class="field-label" id="dca-fills-title">{t.fields.fills}</p>
+          <div class="calc-dca-rows" id="dca-rows">
+            {
+              defaults.fills.map((fill, i) => {
+                const n = i + 1;
+                return (
+                  <div class="calc-dca-row" role="group" aria-labelledby={`fill-${n}-title`} data-fill>
+                    <div class="calc-dca-row-head">
+                      <p class="calc-dca-row-title" id={`fill-${n}-title`} data-fill-title>
+                        {fmt(t.fields.fill, { n })}
+                      </p>
+                      <button
+                        class="btn ghost sm calc-js"
+                        type="button"
+                        data-fill-remove
+                        aria-label={fmt(t.fields.removeLabel, { n })}
+                      >
+                        <Icon name="x" size={16} />
+                        {t.fields.remove}
+                      </button>
+                    </div>
+                    <div class="calc-dca-row-fields">
+                      <div class="field">
+                        <label class="field-label" for={`price-${n}`}>
+                          {t.fields.price}
+                        </label>
+                        <span class="field-box">
+                          <input
+                            id={`price-${n}`}
+                            name="price"
+                            type="text"
+                            inputmode="decimal"
+                            autocomplete="off"
+                            spellcheck="false"
+                            value={fill.price}
+                            aria-describedby={`price-${n}-error`}
+                            data-fill-price
+                          />
+                          <span aria-hidden="true">USDT</span>
+                        </span>
+                        <span class="field-error" id={`price-${n}-error`} role="alert" hidden />
+                      </div>
+                      <div class="field">
+                        <label class="field-label" for={`size-${n}`} data-fill-size-label>
+                          {t.fields.quantity}
+                        </label>
+                        <span class="field-box">
+                          <input
+                            id={`size-${n}`}
+                            name="size"
+                            type="text"
+                            inputmode="decimal"
+                            autocomplete="off"
+                            spellcheck="false"
+                            value={fill.size}
+                            aria-describedby={`size-${n}-error`}
+                            data-fill-size
+                          />
+                          <span aria-hidden="true" data-fill-size-unit>
+                            {t.fields.coin}
+                          </span>
+                        </span>
+                        <span class="field-error" id={`size-${n}-error`} role="alert" hidden />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            }
+          </div>
+          <div class="calc-dca-add calc-js">
+            <button class="btn secondary sm" type="button" id="dca-add">
+              <Icon name="plus" size={16} />
+              {t.fields.add}
+            </button>
+            <p class="calc-status" id="dca-status" role="status"></p>
+          </div>
+        </div>
+      </Fragment>
+
+      <Fragment slot="after-inputs">
+        <noscript><p class="fine">{t.noscript}</p></noscript>
+      </Fragment>
+
+      <Fragment slot="flags">
+        <ResultFlag id="calc-tier" />
+      </Fragment>
+
+      <FillsBars slot="viz" id="calc-fills" title={t.result.bars} rows={view.bars} caption={view.caption} />
+
+      <Fragment slot="metrics">
+        <table class="calc-kv">
+          <caption class="visually-hidden">{t.result.caption}</caption>
+          <tbody>
+            <tr>
+              <th scope="row">{t.result.quantity}</th>
+              <td class="num" id="out-quantity">{view.quantity}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.cost}</th>
+              <td class="num" id="out-cost">{view.cost}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.vsFirst}</th>
+              <td class="num toned" id="out-vs-first" data-tone={view.vsFirst.tone}>{view.vsFirst.text}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.multiple}</th>
+              <td class="num" id="out-multiple">{view.multiple}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.unrealized}</th>
+              <td class="num toned" id="out-unrealized" data-tone={view.unrealized.tone}>{view.unrealized.text}</td>
+            </tr>
+            <tr>
+              <th scope="row">{t.result.toAverage}</th>
+              <td class="num toned" id="out-to-average" data-tone={view.toAverage.tone}>{view.toAverage.text}</td>
+            </tr>
+            <tr data-mode="futures">
+              <th scope="row">{t.result.margin}</th>
+              <td class="num" id="out-margin">{view.margin}</td>
+            </tr>
+            <tr data-mode="futures">
+              <th scope="row">{t.result.firstLiq}</th>
+              <td class="num" id="out-first-liq">{view.firstLiq}</td>
+            </tr>
+            <tr data-mode="futures">
+              <th scope="row">{t.result.liq}</th>
+              <td class="num" id="out-liq">{view.liq}</td>
+            </tr>
+            <tr data-mode="futures">
+              <th scope="row">{t.result.room}</th>
+              <td class="num" id="out-room">{view.room}</td>
+            </tr>
+            <tr data-mode="futures">
+              <th scope="row" id="out-fresh-label">{view.freshLabel}</th>
+              <td class="num" id="out-fresh">{view.fresh}</td>
+            </tr>
+          </tbody>
+        </table>
+      </Fragment>
+
+      <Fragment slot="assumptions">
+        <ul class="calc-assume">
+          {t.assumptions.map((line) => <li>{line}</li>)}
+          <li>{fmt(t.assumption, { mmr: mmrPct, limit, date })}</li>
+          <li>{c.ui.estimate}</li>
+        </ul>
+        <DataFreshness locale={locale} date={date} source={ui.source} />
+      </Fragment>
+
+      <Cta
+        slot="cta"
+        locale={locale}
+        pageType="tool"
+        position="result"
+        primary={{ label: c.cta.testnet, exit: 'bybit-testnet' }}
+        secondary={{ label: c.cta.liveAccount, exit: 'bybit' }}
+      />
+    </CalculatorShell>
+  </PageContainer>
+
+  <DocSection id="how-it-is-calculated" title={t.toc.formula}>
+    <p>{t.formula.intro}</p>
+    <FormulaBlock formula={t.formula.lines.join('\n')} />
+    <p>{t.formula.futuresIntro}</p>
+    <FormulaBlock formula={t.formula.futuresLines.join('\n')} />
+    <dl class="calc-terms">
+      {
+        t.formula.terms.map((item) => (
+          <div>
+            <dt>{item.term}</dt>
+            <dd>{fmt(item.text, termVars)}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <Disclaimer locale={locale} kind="warning" title={t.formula.tradeoffTitle}>
+      <p>{t.formula.tradeoff}</p>
+    </Disclaimer>
+    <Disclaimer locale={locale} kind="info" title={ui.leftOut}>
+      <p>{t.formula.leftOut}</p>
+    </Disclaimer>
+  </DocSection>
+
+  <DocSection id="worked-examples" title={t.toc.examples}>
+    <div class="calc-pair">
+      {[ex1, ex2].map((ex) => <ExampleBlock title={ex.title} setup={ex.setup} working={ex.working} result={ex.result} />)}
+    </div>
+  </DocSection>
+
+  <DocSection id="common-mistakes" title={t.toc.mistakes}>
+    <ul class="calc-mistakes">
+      {
+        t.mistakes.map((m) => (
+          <li>
+            <h3>{m.title}</h3>
+            <p>{fmt(m.text, mistakeVars)}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </DocSection>
+
+  <RelatedTools locale={locale} current="dca-calculator" allLabel={t.allTools} />
+
+  <script>
+    import '../../../../scripts/dca-calculator.ts';
+  </script>
+</Base>
+
+<style is:global>
+  /* This form is taller than a laptop screen. A pinned column has to fit on
+     screen (CalculatorShell pins both), so the inputs scroll with the page
+     here; otherwise the last fields could only be reached after scrolling
+     past the whole result. */
+  @media (min-width: 960px) {
+    .calc-long-form .calc-inputs {
+      position: static;
+    }
+  }
+
+  /* A signed figure in the result table takes the colour of its sign; the
+     sign itself is printed, so the colour only repeats it. */
+  .calc-kv td.toned[data-tone] {
+    color: var(--tone);
+  }
+
+  /* The list of fills: a title, then one block per fill (its name and the
+     button that removes it, then price and size side by side). */
+  .calc-dca {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .calc-dca-rows {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .calc-dca-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+    border-top: var(--hairline) solid var(--color-border);
+  }
+
+  .calc-dca-row-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: var(--control-h-sm);
+  }
+
+  .calc-dca-row-title {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+  }
+
+  .calc-dca-row-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    align-items: start;
+  }
+
+  .calc-dca-add {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .calc-dca-add .calc-status {
+    flex: 1 1 10rem;
+    margin-top: 0;
+  }
+
+  /* A narrow inputs column (small phones): price over size. */
+  @container (max-width: 300px) {
+    .calc-dca-row-fields {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
