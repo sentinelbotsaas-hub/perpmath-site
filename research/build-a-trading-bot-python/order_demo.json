@@ -1,0 +1,53 @@
+{
+  "perpmath_version": "0.2.0",
+  "endpoint": "https://api-testnet.bybit.com",
+  "fetched_at": "2026-11-21T17:24:59Z",
+  "clock_offset_ms": 884,
+  "instrument": {
+    "qty_step": "0.001",
+    "min_qty": "0.001",
+    "tick_size": "0.10",
+    "min_notional": "5"
+  },
+  "bars": {
+    "count": 1000,
+    "first": "2026-11-11T07:15:00Z",
+    "last": "2026-11-21T17:00:00Z",
+    "missing": 0
+  },
+  "signals": {
+    "usable_bars": 904,
+    "long": 1,
+    "short": 51,
+    "share_of_bars_pct": 5.75
+  },
+  "latest_signal": {
+    "bar": "2026-11-21T10:15:00Z",
+    "close": 55399.8,
+    "side": -1,
+    "stop_raw": 56303.78571428572,
+    "planner_notes": [],
+    "order_bodies": [
+      {
+        "category": "linear",
+        "symbol": "BTCUSDT",
+        "side": "Sell",
+        "orderType": "Market",
+        "qty": "0.001",
+        "positionIdx": 0,
+        "orderLinkId": "pm-breakout-5f467f-1795256100-SE1",
+        "stopLoss": "56303.8",
+        "slTriggerBy": "LastPrice",
+        "tpslMode": "Full",
+        "slOrderType": "Market",
+        "takeProfit": "53591.8",
+        "tpTriggerBy": "LastPrice"
+      }
+    ],
+    "order_link_id": "pm-breakout-5f467f-1795256100-SE1",
+    "order_link_id_second_call": "pm-breakout-5f467f-1795256100-SE1",
+    "same": true,
+    "order_link_id_other_params": "pm-breakout-6ece7d-1795256100-SE1",
+    "order_link_id_next_bar": "pm-breakout-5f467f-1795257000-SE1"
+  }
+}

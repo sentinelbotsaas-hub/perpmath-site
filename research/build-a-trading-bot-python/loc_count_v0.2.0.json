@@ -1,0 +1,479 @@
+{
+  "engine": {
+    "repository": "https://github.com/sentinelbotsaas-hub/perpmath.git",
+    "commit": "85ee44e58a12eace4cd6645331d0d3ca74197da9",
+    "commit_date": "2026-11-19T20:48:08+08:00",
+    "describe": "v0.2.0"
+  },
+  "method": "git ls-files src tests, *.py only; lines = physical lines; code = lines - blank - comment-only - docstring lines (ast for docstrings, tokenize for comments)",
+  "files": {
+    "src/perpmath/strategies/__init__.py": {
+      "lines": 41,
+      "blank": 9,
+      "comment": 0,
+      "docstring": 9,
+      "code": 23
+    },
+    "src/perpmath/strategies/fvg.py": {
+      "lines": 96,
+      "blank": 12,
+      "comment": 2,
+      "docstring": 34,
+      "code": 48
+    },
+    "src/perpmath/strategies/liquidity_sweep.py": {
+      "lines": 60,
+      "blank": 11,
+      "comment": 1,
+      "docstring": 21,
+      "code": 27
+    },
+    "src/perpmath/strategies/ma_cross.py": {
+      "lines": 58,
+      "blank": 10,
+      "comment": 0,
+      "docstring": 16,
+      "code": 32
+    },
+    "src/perpmath/indicators.py": {
+      "lines": 75,
+      "blank": 22,
+      "comment": 0,
+      "docstring": 14,
+      "code": 39
+    },
+    "src/perpmath/engine.py": {
+      "lines": 241,
+      "blank": 34,
+      "comment": 5,
+      "docstring": 31,
+      "code": 171
+    },
+    "src/perpmath/backtest.py": {
+      "lines": 289,
+      "blank": 47,
+      "comment": 12,
+      "docstring": 22,
+      "code": 208
+    },
+    "src/perpmath/metrics.py": {
+      "lines": 80,
+      "blank": 15,
+      "comment": 0,
+      "docstring": 16,
+      "code": 49
+    },
+    "src/perpmath/grid.py": {
+      "lines": 554,
+      "blank": 59,
+      "comment": 9,
+      "docstring": 112,
+      "code": 374
+    },
+    "src/perpmath/grid_backtest.py": {
+      "lines": 550,
+      "blank": 60,
+      "comment": 12,
+      "docstring": 22,
+      "code": 456
+    },
+    "src/perpmath/data.py": {
+      "lines": 295,
+      "blank": 48,
+      "comment": 7,
+      "docstring": 23,
+      "code": 217
+    },
+    "src/perpmath/funding.py": {
+      "lines": 191,
+      "blank": 29,
+      "comment": 2,
+      "docstring": 21,
+      "code": 139
+    },
+    "src/perpmath/cli.py": {
+      "lines": 163,
+      "blank": 21,
+      "comment": 1,
+      "docstring": 7,
+      "code": 134
+    },
+    "src/perpmath/__init__.py": {
+      "lines": 26,
+      "blank": 4,
+      "comment": 0,
+      "docstring": 4,
+      "code": 18
+    },
+    "src/perpmath/__main__.py": {
+      "lines": 5,
+      "blank": 2,
+      "comment": 0,
+      "docstring": 0,
+      "code": 3
+    },
+    "src/perpmath/live/bybit.py": {
+      "lines": 308,
+      "blank": 56,
+      "comment": 18,
+      "docstring": 36,
+      "code": 198
+    },
+    "src/perpmath/live/executor.py": {
+      "lines": 894,
+      "blank": 106,
+      "comment": 39,
+      "docstring": 84,
+      "code": 665
+    },
+    "src/perpmath/live/breaker.py": {
+      "lines": 110,
+      "blank": 24,
+      "comment": 3,
+      "docstring": 22,
+      "code": 61
+    },
+    "src/perpmath/live/state.py": {
+      "lines": 69,
+      "blank": 12,
+      "comment": 0,
+      "docstring": 8,
+      "code": 49
+    },
+    "src/perpmath/live/config.py": {
+      "lines": 136,
+      "blank": 21,
+      "comment": 7,
+      "docstring": 14,
+      "code": 94
+    },
+    "src/perpmath/live/__init__.py": {
+      "lines": 20,
+      "blank": 3,
+      "comment": 0,
+      "docstring": 7,
+      "code": 10
+    },
+    "tests/conftest.py": {
+      "lines": 35,
+      "blank": 8,
+      "comment": 0,
+      "docstring": 2,
+      "code": 25
+    },
+    "tests/test_cli_output.py": {
+      "lines": 125,
+      "blank": 21,
+      "comment": 0,
+      "docstring": 1,
+      "code": 103
+    },
+    "tests/test_downloader.py": {
+      "lines": 144,
+      "blank": 35,
+      "comment": 0,
+      "docstring": 3,
+      "code": 106
+    },
+    "tests/test_fees.py": {
+      "lines": 173,
+      "blank": 39,
+      "comment": 14,
+      "docstring": 1,
+      "code": 119
+    },
+    "tests/test_funding.py": {
+      "lines": 81,
+      "blank": 17,
+      "comment": 0,
+      "docstring": 2,
+      "code": 62
+    },
+    "tests/test_grid.py": {
+      "lines": 332,
+      "blank": 86,
+      "comment": 37,
+      "docstring": 1,
+      "code": 208
+    },
+    "tests/test_grid_backtest.py": {
+      "lines": 263,
+      "blank": 48,
+      "comment": 12,
+      "docstring": 1,
+      "code": 202
+    },
+    "tests/test_metrics.py": {
+      "lines": 78,
+      "blank": 18,
+      "comment": 5,
+      "docstring": 1,
+      "code": 54
+    },
+    "tests/test_no_lookahead.py": {
+      "lines": 131,
+      "blank": 27,
+      "comment": 1,
+      "docstring": 7,
+      "code": 96
+    },
+    "tests/test_strategies.py": {
+      "lines": 140,
+      "blank": 41,
+      "comment": 9,
+      "docstring": 2,
+      "code": 88
+    },
+    "tests/live_fakes.py": {
+      "lines": 234,
+      "blank": 32,
+      "comment": 6,
+      "docstring": 7,
+      "code": 189
+    },
+    "tests/test_live.py": {
+      "lines": 661,
+      "blank": 131,
+      "comment": 34,
+      "docstring": 4,
+      "code": 492
+    },
+    "tests/test_live_testnet_smoke.py": {
+      "lines": 46,
+      "blank": 13,
+      "comment": 0,
+      "docstring": 7,
+      "code": 26
+    }
+  },
+  "groups": {
+    "Strategies (examples + registry)": {
+      "files": 4,
+      "lines": 255,
+      "blank": 42,
+      "comment": 3,
+      "docstring": 80,
+      "code": 130,
+      "share_of_lines_pct": 3.8,
+      "share_of_code_pct": 2.72
+    },
+    "Indicators": {
+      "files": 1,
+      "lines": 75,
+      "blank": 22,
+      "comment": 0,
+      "docstring": 14,
+      "code": 39,
+      "share_of_lines_pct": 1.12,
+      "share_of_code_pct": 0.82
+    },
+    "Backtest engine (simulator, result file, metrics)": {
+      "files": 3,
+      "lines": 610,
+      "blank": 96,
+      "comment": 17,
+      "docstring": 69,
+      "code": 428,
+      "share_of_lines_pct": 9.1,
+      "share_of_code_pct": 8.94
+    },
+    "Grid simulator": {
+      "files": 2,
+      "lines": 1104,
+      "blank": 119,
+      "comment": 21,
+      "docstring": 134,
+      "code": 830,
+      "share_of_lines_pct": 16.47,
+      "share_of_code_pct": 17.35
+    },
+    "Data download and cache (candles, funding)": {
+      "files": 2,
+      "lines": 486,
+      "blank": 77,
+      "comment": 9,
+      "docstring": 44,
+      "code": 356,
+      "share_of_lines_pct": 7.25,
+      "share_of_code_pct": 7.44
+    },
+    "Command line and package glue": {
+      "files": 3,
+      "lines": 194,
+      "blank": 27,
+      "comment": 1,
+      "docstring": 11,
+      "code": 155,
+      "share_of_lines_pct": 2.89,
+      "share_of_code_pct": 3.24
+    },
+    "Live: exchange client (signing, errors, rate limits)": {
+      "files": 1,
+      "lines": 308,
+      "blank": 56,
+      "comment": 18,
+      "docstring": 36,
+      "code": 198,
+      "share_of_lines_pct": 4.59,
+      "share_of_code_pct": 4.14
+    },
+    "Live: executor (orders, reconciliation, dry run)": {
+      "files": 1,
+      "lines": 894,
+      "blank": 106,
+      "comment": 39,
+      "docstring": 84,
+      "code": 665,
+      "share_of_lines_pct": 13.34,
+      "share_of_code_pct": 13.9
+    },
+    "Live: circuit breakers": {
+      "files": 1,
+      "lines": 110,
+      "blank": 24,
+      "comment": 3,
+      "docstring": 22,
+      "code": 61,
+      "share_of_lines_pct": 1.64,
+      "share_of_code_pct": 1.27
+    },
+    "Live: state file": {
+      "files": 1,
+      "lines": 69,
+      "blank": 12,
+      "comment": 0,
+      "docstring": 8,
+      "code": 49,
+      "share_of_lines_pct": 1.03,
+      "share_of_code_pct": 1.02
+    },
+    "Live: config and credentials": {
+      "files": 2,
+      "lines": 156,
+      "blank": 24,
+      "comment": 7,
+      "docstring": 21,
+      "code": 104,
+      "share_of_lines_pct": 2.33,
+      "share_of_code_pct": 2.17
+    },
+    "Tests: backtest, grid, data": {
+      "files": 10,
+      "lines": 1502,
+      "blank": 340,
+      "comment": 78,
+      "docstring": 21,
+      "code": 1063,
+      "share_of_lines_pct": 22.4,
+      "share_of_code_pct": 22.22
+    },
+    "Tests: live runner (incl. fake exchange)": {
+      "files": 3,
+      "lines": 941,
+      "blank": 176,
+      "comment": 40,
+      "docstring": 18,
+      "code": 707,
+      "share_of_lines_pct": 14.04,
+      "share_of_code_pct": 14.78
+    }
+  },
+  "buckets": {
+    "strategies": {
+      "files": 5,
+      "lines": 330,
+      "blank": 64,
+      "comment": 3,
+      "docstring": 94,
+      "code": 169,
+      "share_of_lines_pct": 4.92,
+      "share_of_code_pct": 3.53
+    },
+    "backtesting": {
+      "files": 5,
+      "lines": 1714,
+      "blank": 215,
+      "comment": 38,
+      "docstring": 203,
+      "code": 1258,
+      "share_of_lines_pct": 25.57,
+      "share_of_code_pct": 26.29
+    },
+    "data_and_cli": {
+      "files": 5,
+      "lines": 680,
+      "blank": 104,
+      "comment": 10,
+      "docstring": 55,
+      "code": 511,
+      "share_of_lines_pct": 10.14,
+      "share_of_code_pct": 10.68
+    },
+    "live_order_handling": {
+      "files": 6,
+      "lines": 1537,
+      "blank": 222,
+      "comment": 67,
+      "docstring": 171,
+      "code": 1077,
+      "share_of_lines_pct": 22.93,
+      "share_of_code_pct": 22.51
+    },
+    "tests": {
+      "files": 13,
+      "lines": 2443,
+      "blank": 516,
+      "comment": 118,
+      "docstring": 39,
+      "code": 1770,
+      "share_of_lines_pct": 36.44,
+      "share_of_code_pct": 36.99
+    }
+  },
+  "total": {
+    "files": 34,
+    "lines": 6704,
+    "blank": 1121,
+    "comment": 236,
+    "docstring": 562,
+    "code": 4785
+  },
+  "source_only_total": {
+    "lines": 4261,
+    "blank": 605,
+    "comment": 118,
+    "docstring": 523,
+    "code": 3015
+  },
+  "tests_total": {
+    "files": 13,
+    "lines": 2443,
+    "blank": 516,
+    "comment": 118,
+    "docstring": 39,
+    "code": 1770,
+    "share_of_lines_pct": 36.44,
+    "share_of_code_pct": 36.99
+  },
+  "derived": {
+    "strategy_file_code_lines": {
+      "fvg.py": 48,
+      "liquidity_sweep.py": 27,
+      "ma_cross.py": 32
+    },
+    "strategy_file_lines": {
+      "fvg.py": 96,
+      "liquidity_sweep.py": 60,
+      "ma_cross.py": 58
+    },
+    "strategy_files_code": 107,
+    "strategy_share_without_grid_pct": 5.95,
+    "strategy_and_indicator_share_without_grid_pct": 7.73,
+    "live_source_plus_live_tests_share_of_code_pct": 37.28,
+    "live_source_plus_live_tests_lines": 2478,
+    "live_source_plus_live_tests_code": 1784,
+    "code_lines_per_strategy_code_line": 44.7,
+    "live_code_per_ma_cross_code_line": 33.7,
+    "test_code_to_source_code_ratio": 0.59
+  }
+}

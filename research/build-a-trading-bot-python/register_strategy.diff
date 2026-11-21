@@ -1,0 +1,16 @@
+diff --git a/src/perpmath/strategies/__init__.py b/src/perpmath/strategies/__init__.py
+index 9343680..e265c02 100644
+--- a/src/perpmath/strategies/__init__.py
++++ b/src/perpmath/strategies/__init__.py
+@@ -14,9 +14,10 @@ from __future__ import annotations
+ 
+ from typing import Any, Dict
+ 
+-from . import fvg, liquidity_sweep, ma_cross
++from . import breakout, fvg, liquidity_sweep, ma_cross
+ 
+ STRATEGIES = {
++    "breakout": breakout,
+     "fvg": fvg,
+     "liquidity_sweep": liquidity_sweep,
+     "ma_cross": ma_cross,
