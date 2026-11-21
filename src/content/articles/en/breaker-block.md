@@ -95,7 +95,7 @@ A loss that can't be told apart from zero in-sample invites the thought that bre
 Eleven of the twelve blocks lost after costs. The exception is the breaker rule on SOLUSDT in-sample: +4.81% over 231 trades with a t-statistic of 0.34, followed by -12.95% out-of-sample. That is not a finding. Its zero-cost version has the only t-statistic above 2 anywhere in the table (2.07), and the out-of-sample block right next to it is 0.48.
 
 <!-- unique:original-calc -->
-In-sample, the breaker rule lost less than the order block rule on all three coins. Out-of-sample the order block rule lost less on ETHUSDT and SOLUSDT, by more than ten points each, and on BTCUSDT the two were within four points. If "trade the failure, not the block" were a real improvement it should survive the split, and it doesn't. The three coins also share one falling year (BTCUSDT down 29.86%, ETHUSDT 41.33%, SOLUSDT 46.03%), so they are not three independent tests.
+In-sample, the breaker rule returned more than the order block rule on all three coins. Out-of-sample the order block rule lost less on ETHUSDT and SOLUSDT, by more than ten points each, and on BTCUSDT the two were within four points. If "trade the failure, not the block" were a real improvement it should survive the split, and it doesn't. The three coins also share one falling year (BTCUSDT down 29.86%, ETHUSDT 41.33%, SOLUSDT 46.03%), so they are not three independent tests.
 
 ## Limits, and how to rerun it
 
