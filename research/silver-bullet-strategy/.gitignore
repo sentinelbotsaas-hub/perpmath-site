@@ -1,0 +1,7 @@
+# Candle files (5m and 1m, about 40 MB) and full engine outputs with every
+# trade are large and can be re-created with silver-bullet_research.py; the
+# summary JSON records their SHA-256, each config and each command.
+data/
+runs/*.json
+!runs/*.config.json
+__pycache__/

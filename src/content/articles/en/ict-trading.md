@@ -1,18 +1,18 @@
 ---
 title: "ICT trading: 12 concepts written as rules, and what we tested"
 slug: "ict-trading"
-description: "ICT trading and smart money concepts as a map: 12 terms each written as a rule a program can check, where the definitions are loose, and the five we have backtested."
+description: "ICT trading and smart money concepts as a map: 12 terms each written as a rule a program can check, where the definitions are loose, and the nine we have tested."
 date: "2026-11-25"
 lastmod: "2026-11-25"
 lang: "en"
 category: "Backtests"
 tags: ["ICT trading", "smart money concepts", "order block", "fair value gap", "liquidity sweep", "backtest"]
 keywords: ["ict trading", "smart money concepts", "ict concepts", "ict trading strategy", "smc trading"]
-tldr: "ICT trading is a way of reading price charts taught by Michael J. Huddleston under the name The Inner Circle Trader; smart money concepts (SMC) is the wider community's label for much the same vocabulary. This page writes 12 of its terms as rules a program can check and marks which ones we have backtested. Five so far, each in one mechanical form on BTCUSDT 15-minute bars from 18 November 2025 to 18 November 2026. All five lost money in-sample after costs: fair value gap 66.94%, liquidity sweep 93.98%, order block 42.33%, break of structure 43.34%, breaker block 18.44%. Out-of-sample four of them lost again, and break of structure made only 42 trades, too few to read. The other seven are untested here, and we make no claim about them either way."
+tldr: "ICT trading is a way of reading price charts taught by Michael J. Huddleston under the name The Inner Circle Trader; smart money concepts (SMC) is the wider community's label for much the same vocabulary. This page writes 12 of its terms as rules a program can check and marks which ones we have tested. Nine so far, on BTCUSDT bars from 18 November 2025 to 18 November 2026. Five zone and structure rules were backtested on 15-minute bars, each in one mechanical form, and all five lost money in-sample after costs: fair value gap 66.94%, liquidity sweep 93.98%, order block 42.33%, break of structure 43.34%, breaker block 18.44%. Out-of-sample four of them lost again, and break of structure made only 42 trades, too few to read. Four clock terms came next. The judas swing lost 27.69% in-sample and the silver bullet lost 97.43% on 1-minute bars; kill zones and the power of 3 were counted, not traded. Bitcoin turned out busy from 09:00 to 12:00 New York time and quiet in the London window, and the power of 3 fit shuffled price paths about as often as real ones. The other three are untested here, and we make no claim about them either way."
 ---
 
 <!-- unique:firsthand-data -->
-This page lists twelve ICT terms, and we have backtested five of them. All five lost money in-sample after costs on a year of BTCUSDT 15-minute candles, from 18.44% for the breaker block retest to 93.98% for the liquidity sweep fade. Three of those losses are statistically clear and two cannot be told apart from zero. With fees and slippage set to zero, none of the ten BTCUSDT sample blocks reached a t-statistic of 2 in either direction. For the other seven terms we have no result, so the table below says "not yet" and nothing more.
+This page lists twelve ICT terms, and we have tested nine of them. Five zone and structure rules were backtested first. All five lost money in-sample after costs on a year of BTCUSDT 15-minute candles, from 18.44% for the breaker block retest to 93.98% for the liquidity sweep fade. Three of those losses are statistically clear and two cannot be told apart from zero. With fees and slippage set to zero, none of the ten BTCUSDT sample blocks reached a t-statistic of 2 in either direction. Four clock terms followed: kill zones, the silver bullet, the judas swing and the power of 3. The two we could trade mechanically lost after costs and showed nothing before them. Of the two we could only count, the kill zone hours were half right about when bitcoin is busy, and the power of 3 fit shuffled days about as often as real ones. For the other three terms we have no result, so the table below says "not yet" and nothing more.
 
 ## What is ICT trading?
 
@@ -49,14 +49,16 @@ Each row has a rule short enough to type into a program, written for the bullish
 | Change of character | `uptrend, close < higherLow(k)` | which swing | Not yet |
 | Market structure shift | `CHoCH right after a sweep` | or a synonym | Not yet |
 | Inverse fair value gap | `FVG, then closed through` | gap or midpoint | Not yet |
-| Kill zones | `02:00 <= NY time < 05:00` | window edges | Not yet |
-| Judas swing | `sweeps session low, close > open` | size, session | Not yet |
-| Power of 3 | `low < open, close in top third` | no thresholds | Not yet |
-| Silver bullet | `first FVG, 10:00-11:00 NY time` | gap, target | Not yet |
+| Kill zones | `02:00 <= NY time < 05:00` | window edges | Counted, no trade rule |
+| Judas swing | `breaks 20:00-00:00 range, closes back in` | range, window | -27.69% / -10.18%* |
+| Power of 3 | `low before 05:00, close in top third` | no thresholds | Counted: 37.12% of days |
+| Silver bullet | `FVG formed and entered, 10:00-11:00 NY time` | gap, target | -97.43% / -79.68%† |
 
 "Not yet" means exactly that. We have not run it, and this page says nothing about whether it works.
 
 The asterisk marks a figure that should not be read as a result: out-of-sample, the break of structure rule made 42 trades, under the 100 the engine needs before it will call a sample sufficient. The rule we ran also has no definition of trend, so it trades every close beyond the latest swing, changes of character included.
+
+The four clock rows need their own notes. The judas swing's out-of-sample figure carries the same asterisk, 76 trades. The dagger on the silver bullet row means 1-minute bars: on 15-minute bars that rule made 71 trades in the year, too few to read, so the figures shown are from the 1-minute run over the same dates. Kill zones and the power of 3 have no entry and exit to backtest; for those two we counted what happened and compared it with a baseline.
 
 ## Each ICT concept as one sentence a program can check
 
@@ -72,9 +74,9 @@ The same twelve, in full sentences, with the job each one does in the ICT accoun
 - **Market structure shift.** A change of character that comes right after a sweep of the trend's extreme, on a bar whose range exceeds x times the ATR. Role: a stronger version of the same warning.
 - **Inverse fair value gap.** A fair value gap that a later bar closes through to its far edge; the band then flips from support to resistance or back. Role: the gap's counterpart to a breaker.
 - **Kill zones.** Bars whose open time falls inside fixed New York-time windows, for example 02:00 to 05:00 and 07:00 to 10:00. Role: a time filter laid over everything else.
-- **Judas swing.** Early in a session, price trades below the prior session's low and then closes back above the day's midnight New York open. Role: the false move that opens the day.
-- **Power of 3.** A day that trades below its midnight open first and closes above it, in the top third of its range. Role: a three-phase template of accumulation, manipulation and distribution.
-- **Silver bullet.** The first fair value gap that forms between 10:00 and 11:00 New York time, entered when price returns to it. Role: a one-setup-per-window trade model.
+- **Judas swing.** Between 00:00 and 05:00 New York time, price trades below the low of the 20:00 to 00:00 range and then closes back inside it. Role: the false move that opens the day.
+- **Power of 3.** A day that sets its low between 00:00 and 05:00 New York time and closes above its midnight open, in the top third of its range. Role: a three-phase template of accumulation, manipulation and distribution.
+- **Silver bullet.** A fair value gap that forms between 10:00 and 11:00 New York time (or in the 03:00 or 14:00 hour) and is entered when price returns to it inside the same hour. Role: a one-setup-per-window trade model.
 
 ## The five concepts we have backtested
 
@@ -147,8 +149,14 @@ The silver bullet narrows the clock to one hour. LuxAlgo's open-source [ICT Silv
 <!-- unique:cross-reference -->
 The [judas swing](https://www.luxalgo.com/library/concept/judas-swing/) and the [power of 3](https://www.luxalgo.com/library/concept/accumulation-manipulation-distribution/) describe the shape of a session: quiet around the open, a false move one way, the real move the other way. Both entries are frank that the shape is read backwards. The first says the pattern is confirmed by the failure and never assumed from the clock. The second calls the template descriptive, not mechanical, and easy to see on a finished candle.
 
-<!-- unique:field-note -->
-Two practical notes from our side, written on 22 November 2026. Crypto perpetuals trade around the clock with no session open, and the sources above set their thresholds in forex pips and index-futures ticks, so whether these windows carry over to BTCUSDT is an open question that we have not measured. And New York time moves against UTC twice a year, so a backtest that hard-codes UTC hours tests a different window for part of the year.
+<!-- unique:firsthand-data -->
+Crypto perpetuals trade around the clock with no session open, and the sources above set their thresholds in forex pips and index-futures ticks, so we measured whether these windows carry over to BTCUSDT. For [kill zones](/learn/ict-kill-zones/) we counted activity by New York clock hour over the year. The London window, 02:00 to 05:00, ran at 0.83 times the average 15-minute range. The busy stretch was 09:00 to 12:00, at 1.54 times the average with 25.33% of the year's turnover. New York time moves against UTC twice a year, and bitcoin's busiest bar moved with it, from 14:30 UTC to 13:30 UTC, so a backtest that hard-codes UTC hours tests a different window for part of the year.
+
+<!-- unique:firsthand-data -->
+The [silver bullet](/learn/silver-bullet-strategy/) we ran as the fair value gap rule restricted to the three one-hour windows. On 1-minute bars 2,447 in-sample trades lost 97.43% after costs and 1,116 out-of-sample trades lost 79.68%; with costs at zero the returns were -2.66% and +2.23%, with t-statistics of -0.26 and 0.49. Run on each of the 24 hours separately, the taught hours ranked 4th, 15th and 24th before costs.
+
+<!-- unique:firsthand-data -->
+For the [judas swing](/learn/judas-swing/) we used the 20:00 to 00:00 New York range. On 240 of 361 days price broke it between 00:00 and 05:00 and closed back inside, and 53 of those moves (22.08%) reached the far side of the range before going back beyond the false move. The same bars with random directions give 19.78%. Traded mechanically, the rule lost 27.69% in-sample over 164 trades. The power of 3 template fit 37.12% of the days and 35.13% of the same days with every bar's direction randomised.
 
 ## Why is ICT trading hard to test?
 
@@ -181,9 +189,9 @@ Step 4 is where the gap and sweep tests died. Both rules put the stop just behin
 
 ## What this page does not claim
 
-It does not claim ICT trading fails. Five of twelve concepts have been tested, each in one mechanical form, on one year of crypto data. That is thin ground for a verdict on a method whose own home page speaks to forex traders and which is used with discretion.
+It does not claim ICT trading fails. Nine of twelve concepts have been tested, each in one mechanical form, on one year of crypto data. That is thin ground for a verdict on a method whose own home page speaks to forex traders and which is used with discretion.
 
-It does not claim ICT trading works either. For seven of the twelve rows we have nothing, and for the method as a whole we found no verified record. When we publish another test, its row in the table changes and this page's date changes with it.
+It does not claim ICT trading works either. For three of the twelve rows we have nothing, and for the method as a whole we found no verified record. When we publish another test, its row in the table changes and this page's date changes with it.
 
 ## FAQ
 
@@ -197,7 +205,7 @@ Michael J. Huddleston, who publishes as The Inner Circle Trader. His own site in
 
 ### What are the ICT kill zone times?
 
-The most cited set, in New York time, is 02:00 to 05:00 for the London open and 07:00 to 10:00 for the New York morning, with further windows for the London close and the New York afternoon. Sources differ on the edges by 30 to 90 minutes.
+The most cited set, in New York time, is 02:00 to 05:00 for the London open and 07:00 to 10:00 for the New York morning, with further windows for the London close and the New York afternoon. Sources differ on the edges by 30 to 90 minutes. On BTCUSDT we measured each window, and the London one turned out quieter than the average hour.
 
 ### What is the difference between a break of structure and a change of character?
 
@@ -210,4 +218,4 @@ One at a time, yes, once each is written as a fixed rule. The combined discretio
 ### Does ICT trading work?
 
 <!-- unique:firsthand-data -->
-Nobody has published evidence that settles it, and we haven't either. We tested mechanical versions of five concepts on BTCUSDT 15-minute bars. All five lost money in-sample after costs, from 18.44% for the breaker block retest to 93.98% for the liquidity sweep fade, and none showed a measurable edge with costs removed. Seven other concepts are untested here. We found no audited performance record for the method.
+Nobody has published evidence that settles it, and we haven't either. We tested mechanical versions of nine concepts on BTCUSDT. Five were backtested on 15-minute bars and all five lost money in-sample after costs, from 18.44% for the breaker block retest to 93.98% for the liquidity sweep fade, and none showed a measurable edge with costs removed. Of the four clock concepts, the judas swing and the silver bullet also lost after costs and showed nothing before them, the kill zone count found bitcoin busy in New York's morning and quiet in the London window, and the power of 3 fit shuffled price paths about as often as real ones. Three other concepts are untested here. We found no audited performance record for the method.

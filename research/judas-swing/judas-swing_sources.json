@@ -1,0 +1,100 @@
+{
+  "article": "en/judas-swing",
+  "checked_on": "2026-11-22",
+  "method": "Each page was fetched on the check date and the statements the article relies on were located in the page text. Findings are paraphrased here; the pages themselves are the source. The rule in the article's code block is ours, written before the first run on data, and is not a quotation from any of these pages.",
+  "definition_sources": [
+    {
+      "name": "LuxAlgo library: Judas Swing",
+      "url": "https://www.luxalgo.com/library/concept/judas-swing/",
+      "page_date": "none shown",
+      "what_it_says": [
+        "ICT's name for the false move early in a session: a push in one direction, usually shortly after a session open, that takes liquidity and reverses. A liquidity sweep with a timing claim.",
+        "Most commonly around the London and New York opens, measured against the midnight New York opening price, which is the primary time anchor.",
+        "FAQ: ICT's materials most often place it in the London killzone, roughly 2:00 to 5:00 a.m. New York time; his stated windows vary across different series of teachings.",
+        "Levels to mark in advance include the overnight or Asian extremes and the prior day's high and low. It does not say the Asian range is THE swept range.",
+        "Confirmed by the failure of the sweep (rejection beyond the level, then a break back through short-term structure with displacement); 'an expectation, not a rule'; 'Every Judas swing sweeps liquidity; not every sweep is a Judas swing.'",
+        "The judas swing is the manipulation leg of the power of three; AMD is the whole-day template.",
+        "Attributes the term to Michael J. Huddleston. No frequencies, win rates or performance figures."
+      ],
+      "not_specified": ["which range, in numbers", "how far beyond the level", "how long the reclaim may take", "what counts as displacement", "the target"]
+    },
+    {
+      "name": "LuxAlgo library: Accumulation, Manipulation, Distribution (AMD)",
+      "url": "https://www.luxalgo.com/library/concept/accumulation-manipulation-distribution/",
+      "page_date": "none shown",
+      "what_it_says": [
+        "AMD is a template for how a trading period unfolds around its open; in ICT vocabulary the Power of Three (PO3).",
+        "A common intraday reading: Asia accumulates, the London open manipulates, London into New York distributes.",
+        "The open is commonly the midnight New York open for the day, Monday's open for the week, or a session open for intraday work.",
+        "'It is descriptive, not mechanical.' On a finished daily candle the anatomy is easy to see in hindsight. The third phase is what validates the second.",
+        "No statistics. No originator named beyond 'ICT's name'."
+      ]
+    },
+    {
+      "name": "TMGM academy: Judas Swing: Meaning, ICT Trading Strategy and Examples",
+      "url": "https://www.tmgm.com/en/academy/trading-academy/judas-swing",
+      "page_date": "Last updated 20 Oct 2026",
+      "what_it_says": [
+        "A false price move near the start of a trading session that breaks a key level before reversing.",
+        "Bullish: the false move breaks below the Asian session low; bearish: above the Asian session high. No clock times are given for the Asian session.",
+        "London killzone approximately 02:00 to 05:00 New York time as a common observation window; a narrower example of 03:00 to 05:30. 'These are observation periods, not guaranteed entry times.'",
+        "New York midnight open: the opening price at 00:00 New York local time. Warns that New York alternates between EST and EDT.",
+        "Confirmation by a market structure shift, then a retracement into a fair value gap. No general target rule.",
+        "'There is no universally verified Judas Swing win rate.' Its 40% win rate / 2R example is labelled a mathematical illustration."
+      ]
+    },
+    {
+      "name": "TradingView open-source script: Judas Swing ICT 01 [TradingFinder] New York Midnight Opening M15",
+      "url": "https://www.tradingview.com/script/TYoIs4Q3-Judas-Swing-ICT-01-TradingFinder-New-York-Midnight-Opening-M15/",
+      "page_date": "published 13 October 2024",
+      "what_it_says": [
+        "Reference range: the 15-minute window following New York midnight.",
+        "Bullish: price touches the high of that range, then the low, then returns up and breaks the high; a candlestick confirmation on the pullback gives the buy signal. Bearish is the mirror image.",
+        "No performance statistics."
+      ]
+    },
+    {
+      "name": "TradingView open-source script: ICT Judas Swing | Flux Charts",
+      "url": "https://www.tradingview.com/script/vT3NRUzp-ICT-Judas-Swing-Flux-Charts/",
+      "page_date": "published 4 October 2024",
+      "what_it_says": [
+        "A break of buyside or sellside liquidity (recent pivot highs and lows) must occur during the 9:30 to 9:45 New York session.",
+        "A fair value gap in the opposite direction is required for the signal.",
+        "No backtest results or win rates on the page."
+      ]
+    }
+  ],
+  "outside_test": {
+    "name": "MQL5 blog: ICT Power of Three and the Judas swing, tested on 18 years of gold (Dobril Karakanchev)",
+    "url": "https://www.mql5.com/en/blogs/post/778873",
+    "page_date": "31 October 2026",
+    "what_it_says": [
+      "Gold (XAUUSD), hourly data from Dukascopy, 2008 to 2026, 4,844 trading days. All times New York: Asia 20:00 to 00:00, London 02:00 to 05:00, New York until 16:00.",
+      "London broke above the Asian range and New York then fell: 48.9% of 2,026 days. London broke below and New York then rose: 50.0% of 1,761 days.",
+      "Judas test (the move from 00:00 to 05:00 against the move from 05:00 to 16:00): held on 50.0% of 4,841 days. Baseline: the rest of the day went up on 50.3% of all days.",
+      "Variant in which the day closes back inside the range after London breaks the Asian high or low: 46% of 4,268 days; the breakout kept going on the other 54%.",
+      "Bitcoin, 2018 to 2026: 48.2%, 52.3% and 50.1%. The post does not name the bitcoin data source, give day counts, or label which figure belongs to which test."
+    ],
+    "caveats": ["The post promotes the author's paid gold trading program and a free indicator.", "We have not reproduced its numbers. Its rules differ from ours (hourly bars, direction of the later session, no race against the false move's extreme)."]
+  },
+  "not_found": [
+    "A dated primary source in which Michael J. Huddleston defines the judas swing or the power of 3 in numbers. The article attributes the wording to the pages above, not to him.",
+    "Any audited or peer-reviewed frequency for either pattern."
+  ],
+  "engine_and_data_sources": [
+    {"name": "perpmath engine (open source)", "url": "https://github.com/sentinelbotsaas-hub/perpmath"},
+    {"name": "Bybit V5 kline endpoint (public)", "url": "https://bybit-exchange.github.io/docs/v5/market/kline"},
+    {"name": "Bybit trading fee structure", "url": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure"},
+    {"name": "NIST: Daylight Saving Time (DST)", "url": "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst"}
+  ],
+  "numbers": {
+    "everything_in_the_article": "research/judas-swing/judas-swing_summary.json, produced by research/judas-swing/judas-swing_research.py",
+    "derived_in_the_article": {
+      "share_of_days_with_no_break": "68 / 361 = 18.84%",
+      "share_of_days_break_held": "53 / 361 = 14.68%",
+      "chance_estimate_from_distances": "1 / (1 + 4.261) = 19.0%",
+      "break_held_closed_with_the_break": "100% - 20.75% = 79.25% (42 of 53)",
+      "round_trip_cost_in_r": "0.15% / 0.2738% = 0.55 in-sample; 0.15% / 0.2166% = 0.69 out-of-sample"
+    }
+  }
+}
