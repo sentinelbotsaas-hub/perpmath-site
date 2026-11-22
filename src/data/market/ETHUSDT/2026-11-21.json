@@ -4,7 +4,7 @@
   "baseCoin": "ETH",
   "category": "linear",
   "reportDate": "2026-11-21",
-  "fetchedAt": "2026-11-22T00:01:19.681Z",
+  "fetchedAt": "2026-11-22T01:42:37.855Z",
   "source": "Bybit public API v5 (no API key)",
   "endpoints": {
     "dailyKlines": "https://api.bybit.com/v5/market/kline?category=linear&symbol=ETHUSDT&interval=D&limit=130",
@@ -398,13 +398,13 @@
     "longShortChange7d": -0.16060082754538785
   },
   "atFetch": {
-    "time": "2026-11-22T00:01:18.301Z",
-    "lastPrice": 1683.34,
-    "markPrice": 1683.46,
-    "fundingRate": 0.00006787,
+    "time": "2026-11-22T01:42:36.472Z",
+    "lastPrice": 1683.72,
+    "markPrice": 1683.74,
+    "fundingRate": 0.00002083,
     "nextFundingTime": "2026-11-22T08:00:00.000Z",
-    "openInterest": 754959.94,
-    "openInterestValue": 1270944860.59
+    "openInterest": 754426.11,
+    "openInterestValue": 1270257418.45
   },
   "history": {
     "daily": [
