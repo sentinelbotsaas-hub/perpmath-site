@@ -1,31 +1,46 @@
-# Daily market data: fetch from Bybit's public API, run the tests, build the
-# site. Runs at 00:20 UTC, twenty minutes after Bybit closes the daily candle.
+# Daily release of perpmath.com.
 #
-# What this workflow does today: it proves that the day's data can be fetched
-# and that the site builds with it, and it keeps the built site as an
-# artifact. It does NOT publish anything and does NOT write to the repository.
-# The two steps that would do so are placeholders at the bottom; read them
-# before switching this on.
+#   1. fetch yesterday's market data from Bybit's public API (no key)
+#   2. build for today's UTC date: articles dated today appear, links to later
+#      ones stay plain text (scripts/unreleased-links.mjs), then test and check
+#   3. commit the day's market data to main
+#   4. deploy to production with the Vercel CLI
+#   5. check the live site, then tell IndexNow
 #
-# No secret is used. The Bybit endpoints need no API key.
-name: Daily market data
+# Nothing is deployed unless the build, the tests and the dist check pass.
+#
+# Secrets it needs (Settings > Secrets and variables > Actions):
+#   VERCEL_TOKEN        a Vercel access token for the team that owns the project
+#   VERCEL_ORG_ID       "orgId" from .vercel/project.json
+#   VERCEL_PROJECT_ID   "projectId" from .vercel/project.json
+# Without VERCEL_TOKEN the deploy step fails with a message that says so.
+#
+# GitHub starts scheduled runs late, sometimes by hours. The build day is the
+# UTC date at the moment the build runs, so a late run still releases the
+# right articles.
+name: Daily release
 
 on:
   schedule:
-    - cron: '20 0 * * *' # 00:20 UTC every day
-  workflow_dispatch: {} # allow a manual run from the Actions tab
+    - cron: '20 0 * * *' # 00:20 UTC, twenty minutes after Bybit closes the daily candle
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy to production (untick to only fetch, build and check)
+        type: boolean
+        default: true
 
 permissions:
-  contents: read
+  contents: write # step 3 pushes the market data commit
 
 concurrency:
-  group: daily-market-data
+  group: daily-release
   cancel-in-progress: false
 
 jobs:
   daily:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -34,58 +49,72 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
 
-      - run: npm ci
+      # Not `npm ci`: the lock file is written on Windows and npm leaves the
+      # dependencies of other platforms' optional packages out of it, which
+      # `npm ci` on Linux refuses. `npm install` keeps every locked version.
+      - run: npm install --no-audit --no-fund
 
-      # Exits non-zero and writes nothing if any response is empty,
-      # malformed or inconsistent. The job stops here in that case, so
-      # yesterday's pages are never replaced by empty ones.
+      # The script writes nothing unless every symbol came back complete. A
+      # failure here must not hold back the day's articles, so the job goes on
+      # with the data it already has and says so.
       - name: Fetch market data
+        id: market
+        continue-on-error: true
         run: node scripts/fetch-market.mjs
 
-      - name: Test
-        run: npm test
+      - name: Note that the market data is a day old
+        if: steps.market.outcome == 'failure'
+        run: |
+          git checkout -- src/data/market
+          echo "::warning::Market data could not be fetched. The daily reports keep yesterday's numbers."
 
       - name: Build
         run: npm run build
 
+      - name: Test
+        run: npm test
+
       - name: Check the built site
         run: npm run check:dist
 
-      - name: Keep the built site
-        uses: actions/upload-artifact@v4
-        with:
-          name: site-${{ github.run_id }}
-          path: dist
-          retention-days: 7
+      - name: Commit the day's data
+        run: |
+          git config user.name "sentinelbotsaas-hub"
+          git config user.email "321465813+sentinelbotsaas-hub@users.noreply.github.com"
+          git add src/data/market
+          if git diff --cached --quiet; then
+            echo "no new market data"
+          else
+            git commit -m "Market data for the $(date -u +%F) build"
+            git push
+          fi
+          test -z "$(git status --porcelain)" || { echo "the build left other changes behind"; git status --short; exit 1; }
 
-      # ------------------------------------------------------------------
-      # PLACEHOLDER 1: keep the dated files.
-      #
-      # /daily/<coin>/<date>/ pages are built from every dated JSON in
-      # src/data/market/. This job runs on a fresh checkout, so today's
-      # file is lost when the job ends unless it is committed back. To keep
-      # an archive, change `permissions: contents: read` above to
-      # `contents: write` and enable this step. It uses the token GitHub
-      # gives every run; no extra secret.
-      #
-      # - name: Commit the day's data
-      #   run: |
-      #     git config user.name "github-actions[bot]"
-      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      #     git add src/data/market
-      #     git diff --cached --quiet || git commit -m "Market data $(date -u +%F)"
-      #     git push
-      # ------------------------------------------------------------------
+      - name: Deploy to production
+        if: github.event_name == 'schedule' || inputs.deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "::error::VERCEL_TOKEN, VERCEL_ORG_ID or VERCEL_PROJECT_ID is not set in the repository secrets. Nothing was deployed."
+            exit 1
+          fi
+          npx --yes vercel@54 deploy --prod --yes --token "$VERCEL_TOKEN"
 
-      # ------------------------------------------------------------------
-      # PLACEHOLDER 2: deploy.
-      #
-      # The site owner deploys by hand with the Vercel CLI. Nothing here
-      # deploys. When a deploy token has been added to the repository
-      # secrets, replace this comment with the deploy step and reference
-      # that secret by the name it was given. No secret is referenced now
-      # on purpose: a workflow that names a secret that does not exist
-      # fails in ways that are hard to read.
-      # ------------------------------------------------------------------
+      # The live site must serve the home page and every article built today.
+      - name: Check the live site
+        if: github.event_name == 'schedule' || inputs.deploy
+        run: |
+          fail=0
+          for path in / /learn/ /sitemap-index.xml $(cd dist && ls -d learn/*/ zh-hant/learn/*/ 2>/dev/null | sed 's|^|/|'); do
+            code="$(curl -sS -o /dev/null -w '%{http_code}' "https://perpmath.com$path")"
+            [ "$code" = 200 ] || { echo "::error::live check failed: HTTP $code $path"; fail=1; }
+          done
+          exit $fail
+
+      - name: Tell IndexNow
+        if: github.event_name == 'schedule' || inputs.deploy
+        run: node scripts/indexnow.mjs
