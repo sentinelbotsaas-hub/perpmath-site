@@ -4,7 +4,7 @@
   "baseCoin": "SOL",
   "category": "linear",
   "reportDate": "2026-11-21",
-  "fetchedAt": "2026-11-22T01:42:40.449Z",
+  "fetchedAt": "2026-11-22T01:44:01.128Z",
   "source": "Bybit public API v5 (no API key)",
   "endpoints": {
     "dailyKlines": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=D&limit=130",
@@ -398,13 +398,13 @@
     "longShortChange7d": -0.4112286985733222
   },
   "atFetch": {
-    "time": "2026-11-22T01:42:39.095Z",
-    "lastPrice": 70.23,
-    "markPrice": 70.231,
-    "fundingRate": 0.00008829,
+    "time": "2026-11-22T01:43:59.779Z",
+    "lastPrice": 70.26,
+    "markPrice": 70.27,
+    "fundingRate": 0.00009019,
     "nextFundingTime": "2026-11-22T08:00:00.000Z",
-    "openInterest": 5719920.2,
-    "openInterestValue": 401715715.57
+    "openInterest": 5720109.1,
+    "openInterestValue": 401952066.46
   },
   "history": {
     "daily": [
