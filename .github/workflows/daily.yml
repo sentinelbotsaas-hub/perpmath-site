@@ -1,6 +1,7 @@
 # Daily release of perpmath.com.
 #
-#   1. fetch yesterday's market data from Bybit's public API (no key)
+#   1. try to fetch yesterday's market data from Bybit's public API (no key;
+#      blocked from GitHub-hosted runners, see the step)
 #   2. build for today's UTC date: articles dated today appear, links to later
 #      ones stay plain text (scripts/unreleased-links.mjs), then test and check
 #   3. commit the day's market data to main
@@ -52,12 +53,20 @@ jobs:
 
       # Not `npm ci`: the lock file is written on Windows and npm leaves the
       # dependencies of other platforms' optional packages out of it, which
-      # `npm ci` on Linux refuses. `npm install` keeps every locked version.
-      - run: npm install --no-audit --no-fund
+      # `npm ci` on Linux refuses. `npm install` keeps every locked version and
+      # adds the missing entries to the lock file; that edit is dropped again.
+      - run: |
+          npm install --no-audit --no-fund
+          git checkout -- package-lock.json
 
-      # The script writes nothing unless every symbol came back complete. A
-      # failure here must not hold back the day's articles, so the job goes on
-      # with the data it already has and says so.
+      # Bybit's public API refuses United States addresses (HTTP 403 from every
+      # Bybit host, measured from a GitHub-hosted runner on 22 November 2026),
+      # and GitHub-hosted runners are in the United States. So this step fails
+      # here today and the daily reports are only as fresh as the last market
+      # data commit pushed from a machine Bybit accepts. The step stays so that
+      # the workflow fetches by itself on a runner that can reach Bybit.
+      # It writes nothing unless every symbol came back complete, and a failure
+      # must not hold back the day's articles: the job goes on and says so.
       - name: Fetch market data
         id: market
         continue-on-error: true
