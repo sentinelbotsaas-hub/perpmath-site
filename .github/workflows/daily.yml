@@ -80,11 +80,11 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-market.mjs
 
-      - name: Note that the market data is a day old
+      - name: Keep the market data that is in the repository
         if: steps.market.outcome == 'failure'
         run: |
           git checkout -- src/data/market
-          echo "::warning::Market data could not be fetched. The daily reports keep yesterday's numbers."
+          echo "::warning::Bybit refused this runner. The build uses the market data already in the repository."
 
       - name: Build
         run: npm run build
