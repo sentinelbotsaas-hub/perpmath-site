@@ -16,12 +16,20 @@
 #   VERCEL_PROJECT_ID   "projectId" from .vercel/project.json
 # Without VERCEL_TOKEN the deploy step fails with a message that says so.
 #
-# GitHub starts scheduled runs late, sometimes by hours. The build day is the
-# UTC date at the moment the build runs, so a late run still releases the
-# right articles.
+# It runs on three occasions:
+#   - when market data is pushed to main. The site owner's computer does that
+#     once a day (it can reach Bybit), and this run starts within seconds.
+#   - every day on a schedule, so the day's articles are released even when
+#     that computer was off. GitHub starts scheduled runs late, sometimes by
+#     hours. The build day is the UTC date at the moment the build runs, so a
+#     late run still releases the right articles.
+#   - by hand, from the Actions tab.
 name: Daily release
 
 on:
+  push:
+    branches: [main]
+    paths: ['src/data/market/**']
   schedule:
     - cron: '20 0 * * *' # 00:20 UTC, twenty minutes after Bybit closes the daily candle
   workflow_dispatch:
@@ -101,7 +109,7 @@ jobs:
           test -z "$(git status --porcelain)" || { echo "the build left other changes behind"; git status --short; exit 1; }
 
       - name: Deploy to production
-        if: github.event_name == 'schedule' || inputs.deploy
+        if: github.event_name != 'workflow_dispatch' || inputs.deploy
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -115,7 +123,7 @@ jobs:
 
       # The live site must serve the home page and every article built today.
       - name: Check the live site
-        if: github.event_name == 'schedule' || inputs.deploy
+        if: github.event_name != 'workflow_dispatch' || inputs.deploy
         run: |
           fail=0
           for path in / /learn/ /sitemap-index.xml $(cd dist && ls -d learn/*/ zh-hant/learn/*/ 2>/dev/null | sed 's|^|/|'); do
@@ -125,5 +133,5 @@ jobs:
           exit $fail
 
       - name: Tell IndexNow
-        if: github.event_name == 'schedule' || inputs.deploy
+        if: github.event_name != 'workflow_dispatch' || inputs.deploy
         run: node scripts/indexnow.mjs
