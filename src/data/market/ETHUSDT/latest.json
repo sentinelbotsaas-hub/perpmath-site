@@ -3,16 +3,16 @@
   "symbol": "ETHUSDT",
   "baseCoin": "ETH",
   "category": "linear",
-  "reportDate": "2026-11-25",
-  "fetchedAt": "2026-11-26T00:20:08.322Z",
+  "reportDate": "2026-11-26",
+  "fetchedAt": "2026-11-27T00:20:08.393Z",
   "source": "Bybit public API v5 (no API key)",
   "endpoints": {
     "dailyKlines": "https://api.bybit.com/v5/market/kline?category=linear&symbol=ETHUSDT&interval=D&limit=130",
-    "hourlyKlines": "https://api.bybit.com/v5/market/kline?category=linear&symbol=ETHUSDT&interval=60&start=1795564800000&end=1795651199999&limit=24",
+    "hourlyKlines": "https://api.bybit.com/v5/market/kline?category=linear&symbol=ETHUSDT&interval=60&start=1795651200000&end=1795737599999&limit=24",
     "tickers": "https://api.bybit.com/v5/market/tickers?category=linear&symbol=ETHUSDT",
-    "fundingHistory": "https://api.bybit.com/v5/market/funding/history?category=linear&symbol=ETHUSDT&endTime=1795651199999&limit=200",
-    "openInterest": "https://api.bybit.com/v5/market/open-interest?category=linear&symbol=ETHUSDT&intervalTime=1d&endTime=1795651200000&limit=40",
-    "accountRatio": "https://api.bybit.com/v5/market/account-ratio?category=linear&symbol=ETHUSDT&period=1d&endTime=1795651200000&limit=40",
+    "fundingHistory": "https://api.bybit.com/v5/market/funding/history?category=linear&symbol=ETHUSDT&endTime=1795737599999&limit=200",
+    "openInterest": "https://api.bybit.com/v5/market/open-interest?category=linear&symbol=ETHUSDT&intervalTime=1d&endTime=1795737600000&limit=40",
+    "accountRatio": "https://api.bybit.com/v5/market/account-ratio?category=linear&symbol=ETHUSDT&period=1d&endTime=1795737600000&limit=40",
     "riskLimit": "https://api.bybit.com/v5/market/risk-limit?category=linear&symbol=ETHUSDT",
     "instrumentsInfo": "https://api.bybit.com/v5/market/instruments-info?category=linear&symbol=ETHUSDT"
   },
@@ -26,182 +26,182 @@
     }
   },
   "day": {
-    "date": "2026-11-25",
-    "open": 1679.21,
-    "high": 1698.43,
-    "low": 1607.65,
-    "close": 1691.86,
-    "adverseLong": 0.04261527742212108,
-    "adverseShort": 0.011445858469161109
+    "date": "2026-11-26",
+    "open": 1691.86,
+    "high": 1729.69,
+    "low": 1666.91,
+    "close": 1689.02,
+    "adverseLong": 0.0147470830919815,
+    "adverseShort": 0.02236000614708082
   },
   "hourly": [
     {
       "hour": 0,
-      "open": 1679.21,
-      "high": 1679.23,
-      "low": 1666.53,
-      "close": 1672.8
+      "open": 1691.86,
+      "high": 1729.69,
+      "low": 1689.56,
+      "close": 1696.8
     },
     {
       "hour": 1,
-      "open": 1672.8,
-      "high": 1674.43,
-      "low": 1652.55,
-      "close": 1657.52
+      "open": 1696.8,
+      "high": 1706.53,
+      "low": 1694.41,
+      "close": 1701.97
     },
     {
       "hour": 2,
-      "open": 1657.52,
-      "high": 1661.88,
-      "low": 1650.41,
-      "close": 1655.23
+      "open": 1701.97,
+      "high": 1708.59,
+      "low": 1694.2,
+      "close": 1697.89
     },
     {
       "hour": 3,
-      "open": 1655.23,
-      "high": 1670.82,
-      "low": 1648.21,
-      "close": 1663.68
+      "open": 1697.89,
+      "high": 1701.72,
+      "low": 1692.18,
+      "close": 1697.38
     },
     {
       "hour": 4,
-      "open": 1663.68,
-      "high": 1666.48,
-      "low": 1652.94,
-      "close": 1659.63
+      "open": 1697.38,
+      "high": 1706.83,
+      "low": 1697,
+      "close": 1701.87
     },
     {
       "hour": 5,
-      "open": 1659.63,
-      "high": 1662.6,
-      "low": 1651.92,
-      "close": 1656.54
+      "open": 1701.87,
+      "high": 1703.37,
+      "low": 1692.39,
+      "close": 1694.32
     },
     {
       "hour": 6,
-      "open": 1656.54,
-      "high": 1663.09,
-      "low": 1652.31,
-      "close": 1659.25
+      "open": 1694.32,
+      "high": 1694.45,
+      "low": 1681.6,
+      "close": 1686.53
     },
     {
       "hour": 7,
-      "open": 1659.25,
-      "high": 1664.6,
-      "low": 1631.81,
-      "close": 1640.14
+      "open": 1686.53,
+      "high": 1693.68,
+      "low": 1684.99,
+      "close": 1688.89
     },
     {
       "hour": 8,
-      "open": 1640.14,
-      "high": 1656.17,
-      "low": 1637.01,
-      "close": 1652.31
+      "open": 1688.89,
+      "high": 1702.64,
+      "low": 1686.38,
+      "close": 1700.43
     },
     {
       "hour": 9,
-      "open": 1652.31,
-      "high": 1652.74,
-      "low": 1633.85,
-      "close": 1644.49
+      "open": 1700.43,
+      "high": 1705.51,
+      "low": 1697.44,
+      "close": 1703
     },
     {
       "hour": 10,
-      "open": 1644.49,
-      "high": 1648.61,
-      "low": 1640.95,
-      "close": 1647.81
+      "open": 1703,
+      "high": 1704.33,
+      "low": 1692.36,
+      "close": 1694.2
     },
     {
       "hour": 11,
-      "open": 1647.81,
-      "high": 1648.98,
-      "low": 1634.36,
-      "close": 1637.78
+      "open": 1694.2,
+      "high": 1701.47,
+      "low": 1692.55,
+      "close": 1699.65
     },
     {
       "hour": 12,
-      "open": 1637.78,
-      "high": 1648.52,
-      "low": 1635.55,
-      "close": 1647.14
+      "open": 1699.65,
+      "high": 1711.03,
+      "low": 1698.73,
+      "close": 1705.58
     },
     {
       "hour": 13,
-      "open": 1647.14,
-      "high": 1654.45,
-      "low": 1622.44,
-      "close": 1631.21
+      "open": 1705.58,
+      "high": 1708.05,
+      "low": 1701.5,
+      "close": 1703.51
     },
     {
       "hour": 14,
-      "open": 1631.21,
-      "high": 1647.52,
-      "low": 1607.65,
-      "close": 1645.56
+      "open": 1703.51,
+      "high": 1707.24,
+      "low": 1695.56,
+      "close": 1697.08
     },
     {
       "hour": 15,
-      "open": 1645.56,
-      "high": 1672.02,
-      "low": 1623.13,
-      "close": 1648.1
+      "open": 1697.08,
+      "high": 1697.08,
+      "low": 1666.91,
+      "close": 1691.89
     },
     {
       "hour": 16,
-      "open": 1648.1,
-      "high": 1661.6,
-      "low": 1628.95,
-      "close": 1644.86
+      "open": 1691.89,
+      "high": 1697.61,
+      "low": 1682.47,
+      "close": 1691.23
     },
     {
       "hour": 17,
-      "open": 1644.86,
-      "high": 1686.04,
-      "low": 1641.42,
-      "close": 1678.36
+      "open": 1691.23,
+      "high": 1695.5,
+      "low": 1689.45,
+      "close": 1693.5
     },
     {
       "hour": 18,
-      "open": 1678.36,
-      "high": 1695.86,
-      "low": 1675.14,
-      "close": 1679.65
+      "open": 1693.5,
+      "high": 1703.76,
+      "low": 1690.96,
+      "close": 1699.46
     },
     {
       "hour": 19,
-      "open": 1679.65,
-      "high": 1698.43,
-      "low": 1678.62,
-      "close": 1683.69
+      "open": 1699.46,
+      "high": 1708.15,
+      "low": 1698.5,
+      "close": 1703.81
     },
     {
       "hour": 20,
-      "open": 1683.69,
-      "high": 1691.59,
-      "low": 1678.21,
-      "close": 1689.42
+      "open": 1703.81,
+      "high": 1705.99,
+      "low": 1701.81,
+      "close": 1703.76
     },
     {
       "hour": 21,
-      "open": 1689.42,
-      "high": 1693.93,
-      "low": 1685.12,
-      "close": 1685.21
+      "open": 1703.76,
+      "high": 1709.98,
+      "low": 1702.79,
+      "close": 1704.46
     },
     {
       "hour": 22,
-      "open": 1685.21,
-      "high": 1688.12,
-      "low": 1680.55,
-      "close": 1685.82
+      "open": 1704.46,
+      "high": 1704.46,
+      "low": 1690.2,
+      "close": 1693.01
     },
     {
       "hour": 23,
-      "open": 1685.82,
-      "high": 1696.19,
-      "low": 1679.58,
-      "close": 1691.86
+      "open": 1693.01,
+      "high": 1693.03,
+      "low": 1683.08,
+      "close": 1689.02
     }
   ],
   "survival": [
@@ -257,12 +257,12 @@
       "leverage": 50,
       "room": 0.0167,
       "long": {
-        "liquidated": true,
-        "hourUtc": 2
-      },
-      "short": {
         "liquidated": false,
         "hourUtc": null
+      },
+      "short": {
+        "liquidated": true,
+        "hourUtc": 0
       }
     },
     {
@@ -270,18 +270,18 @@
       "room": 0.0067,
       "long": {
         "liquidated": true,
-        "hourUtc": 0
+        "hourUtc": 15
       },
       "short": {
         "liquidated": true,
-        "hourUtc": 18
+        "hourUtc": 0
       }
     }
   ],
   "survival90": {
     "days": 90,
-    "from": "2026-08-28",
-    "to": "2026-11-25",
+    "from": "2026-08-29",
+    "to": "2026-11-26",
     "rows": [
       {
         "leverage": 2,
@@ -335,12 +335,12 @@
         "leverage": 50,
         "room": 0.0167,
         "long": {
-          "days": 49,
-          "share": 0.5444444444444444
+          "days": 48,
+          "share": 0.5333333333333333
         },
         "short": {
-          "days": 35,
-          "share": 0.3888888888888889
+          "days": 36,
+          "share": 0.4
         }
       },
       {
@@ -359,62 +359,55 @@
   },
   "funding": {
     "latest": {
-      "time": "2026-11-25T16:00:00.000Z",
-      "rate": 0.0000301
+      "time": "2026-11-26T16:00:00.000Z",
+      "rate": 0.00004869
     },
     "settlements7d": 21,
-    "sum7d": 0.00013346000000000004,
-    "average7d": 0.000006355238095238097,
+    "sum7d": 0.000252,
+    "average7d": 0.000012,
     "notional": 1000,
-    "costPerDay": 0.01906571428571429,
-    "costPer30Days": 0.5719714285714287
+    "costPerDay": 0.036000000000000004,
+    "costPer30Days": 1.08
   },
   "openInterest": {
     "unit": "ETH",
     "latest": {
-      "time": "2026-11-26T00:00:00.000Z",
-      "value": 742389.64
+      "time": "2026-11-27T00:00:00.000Z",
+      "value": 751219.34
     },
     "weekAgo": {
-      "time": "2026-11-19T00:00:00.000Z",
-      "value": 772228.01
+      "time": "2026-11-20T00:00:00.000Z",
+      "value": 758437.86
     },
-    "change7d": -0.03863932622697796
+    "change7d": -0.009517615589496044
   },
   "ratio": {
     "latest": {
-      "time": "2026-11-26T00:00:00.000Z",
-      "buyRatio": 0.7658,
-      "sellRatio": 0.2342,
-      "longShort": 3.2698548249359525
+      "time": "2026-11-27T00:00:00.000Z",
+      "buyRatio": 0.7628,
+      "sellRatio": 0.2372,
+      "longShort": 3.215851602023609
     },
     "weekAgo": {
-      "time": "2026-11-19T00:00:00.000Z",
-      "buyRatio": 0.7743,
-      "sellRatio": 0.2257,
-      "longShort": 3.4306601683650864
+      "time": "2026-11-20T00:00:00.000Z",
+      "buyRatio": 0.7738,
+      "sellRatio": 0.2262,
+      "longShort": 3.420866489832007
     },
-    "longShareChange7d": -0.008499999999999952,
-    "longShortChange7d": -0.16080534342913388
+    "longShareChange7d": -0.01100000000000001,
+    "longShortChange7d": -0.20501488780839816
   },
   "atFetch": {
-    "time": "2026-11-26T00:20:06.045Z",
-    "lastPrice": 1709.79,
-    "markPrice": 1709.9,
-    "fundingRate": 0.0001,
-    "nextFundingTime": "2026-11-26T08:00:00.000Z",
-    "openInterest": 740193.68,
-    "openInterestValue": 1265657173.43
+    "time": "2026-11-27T00:20:06.138Z",
+    "lastPrice": 1690.57,
+    "markPrice": 1690.65,
+    "fundingRate": 0.00007523,
+    "nextFundingTime": "2026-11-27T08:00:00.000Z",
+    "openInterest": 754156.01,
+    "openInterestValue": 1275013858.31
   },
   "history": {
     "daily": [
-      {
-        "date": "2026-08-28",
-        "open": 2509.8,
-        "high": 2534.39,
-        "low": 2404.61,
-        "close": 2441.64
-      },
       {
         "date": "2026-08-29",
         "open": 2441.64,
@@ -1037,14 +1030,16 @@
         "high": 1698.43,
         "low": 1607.65,
         "close": 1691.86
+      },
+      {
+        "date": "2026-11-26",
+        "open": 1691.86,
+        "high": 1729.69,
+        "low": 1666.91,
+        "close": 1689.02
       }
     ],
     "funding": [
-      {
-        "date": "2026-10-27",
-        "settlements": 3,
-        "sum": 0.00014717000000000002
-      },
       {
         "date": "2026-10-28",
         "settlements": 3,
@@ -1189,13 +1184,14 @@
         "date": "2026-11-25",
         "settlements": 3,
         "sum": 0.00011152
+      },
+      {
+        "date": "2026-11-26",
+        "settlements": 3,
+        "sum": 0.00021229000000000002
       }
     ],
     "openInterest": [
-      {
-        "time": "2026-10-28T00:00:00.000Z",
-        "value": 796081.57
-      },
       {
         "time": "2026-10-29T00:00:00.000Z",
         "value": 770789.67
@@ -1311,14 +1307,13 @@
       {
         "time": "2026-11-26T00:00:00.000Z",
         "value": 742389.64
+      },
+      {
+        "time": "2026-11-27T00:00:00.000Z",
+        "value": 751219.34
       }
     ],
     "ratio": [
-      {
-        "time": "2026-10-28T00:00:00.000Z",
-        "buyRatio": 0.7249,
-        "sellRatio": 0.2751
-      },
       {
         "time": "2026-10-29T00:00:00.000Z",
         "buyRatio": 0.7299,
@@ -1463,6 +1458,11 @@
         "time": "2026-11-26T00:00:00.000Z",
         "buyRatio": 0.7658,
         "sellRatio": 0.2342
+      },
+      {
+        "time": "2026-11-27T00:00:00.000Z",
+        "buyRatio": 0.7628,
+        "sellRatio": 0.2372
       }
     ]
   }
